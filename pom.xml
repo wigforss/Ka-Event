@@ -11,6 +11,7 @@
 		<unitils.version>3.1</unitils.version>
 	</properties>
   	<modules>
+  			<module>ka-commons</module>
 			<module>ka-event-core</module> 
 			<module>ka-event-aspects</module>
 			<module>ka-event-spring</module>
