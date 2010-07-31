@@ -1,12 +1,8 @@
 package org.kasource.kaevent.core.channel;
 
-import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
-
-import org.kasource.kaevent.core.event.config.EventConfig;
-import org.kasource.kaevent.core.event.register.EventRegister;
 
 
 
@@ -19,18 +15,18 @@ import org.kasource.kaevent.core.event.register.EventRegister;
 public class ChannelFactory {
 
    private ChannelRegister channelRegister;
-   private EventRegister eventRegister;
+   //private EventRegister eventRegister;
    
    public Channel createChannel(String channelName) {
        ChannelImpl channel = new ChannelImpl(channelName, channelRegister);
-       registerEvents(channel);
+       //registerEvents(channel);
        channelRegister.registerChannel(channel);
        return channel;
    }
    
    public Channel createChannel(String channelName, Set<Class<? extends EventObject>> events) {
        ChannelImpl channel = new ChannelImpl(channelName, channelRegister);
-       registerEvents(channel);
+       //registerEvents(channel);
        for(Class<? extends EventObject> eventClass : events) {
            channel.registerEvent(eventClass);
        }
@@ -40,7 +36,7 @@ public class ChannelFactory {
    
    public Channel createChannel(String channelName, Set<Class<? extends EventObject>> events, Set<EventListener> listeners) {
        ChannelImpl channel = new ChannelImpl(channelName, channelRegister);
-       registerEvents(channel);
+      // registerEvents(channel);
        for(Class<? extends EventObject> eventClass : events) {
            channel.registerEvent(eventClass);
        }
@@ -50,7 +46,7 @@ public class ChannelFactory {
        channelRegister.registerChannel(channel);
        return channel;
    }
-   
+   /* TODO: Enable later
    private void registerEvents(Channel channel) {
        Collection<EventConfig> events = eventRegister.getEvents();
        for(EventConfig event : events) {
@@ -63,4 +59,5 @@ public class ChannelFactory {
            }
        }
    }
+   */
 }

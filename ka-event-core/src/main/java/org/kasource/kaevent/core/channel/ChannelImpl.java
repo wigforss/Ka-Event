@@ -3,15 +3,10 @@ package org.kasource.kaevent.core.channel;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-
 import org.kasource.kaevent.core.event.register.EventRegister;
-import org.kasource.kaevent.core.filter.EventFilter;
-import org.kasource.kaevent.core.filter.EventFilterRegister;
 import org.kasource.kaevent.core.listener.register.ChannelListenerRegister;
-import org.springframework.beans.factory.BeanNameAware;
 
 
 

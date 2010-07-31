@@ -4,11 +4,10 @@
 package org.kasource.kaevent.core.event.dispatch;
 
 import java.util.EventObject;
+import java.util.Queue;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.kasource.kaevent.core.channel.ChannelRegister;
 import org.kasource.kaevent.core.event.EventDispatcher;
-import org.kasource.kaevent.core.listener.register.ChannelListenerRegister;
 import org.kasource.kaevent.core.listener.register.SourceObjectListenerRegister;
 
 /**
@@ -20,18 +19,18 @@ public class DefaultEventDispatcher implements EventDispatcher{
     
     private ChannelRegister channelRegister;
     private SourceObjectListenerRegister sourceObjectListenerRegister;
-   
+    private Queue<EventObject> eventQueue;
     
     @Override
     public void fire(EventObject event) {
-        // TODO Auto-generated method stub
+       
         
     }
 
    
     @Override
     public void fireBlocked(EventObject event) {
-        // TODO Auto-generated method stub
+    	eventQueue.add(event);
         
     }
 

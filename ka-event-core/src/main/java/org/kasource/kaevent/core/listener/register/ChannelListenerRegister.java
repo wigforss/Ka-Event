@@ -2,10 +2,7 @@ package org.kasource.kaevent.core.listener.register;
 
 import java.util.EventListener;
 import java.util.EventObject;
-import java.util.List;
 import java.util.Set;
-
-import org.kasource.kaevent.core.filter.EventFilter;
 
 
 public interface ChannelListenerRegister {

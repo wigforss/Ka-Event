@@ -29,7 +29,7 @@ public class AnnotationMethodResolverExtractor {
      * @param listener
      * @param methodResolving
      */
-    public MethodResolver<EventObject> getMethodResolver(Class<? extends EventObject> event,
+    public MethodResolver getMethodResolver(Class<? extends EventObject> event,
             Class<? extends EventListener> listener, MethodResolving methodResolving) {
         switch (methodResolving.value()) {
         case KEYWORD_SWITCH:
@@ -46,7 +46,7 @@ public class AnnotationMethodResolverExtractor {
      * @param listener
      */
     @SuppressWarnings("unchecked")
-    private MethodResolver<EventObject> getMethodResoverFromBeanContext(Class<? extends EventListener> listener) {
+    private MethodResolver getMethodResoverFromBeanContext(Class<? extends EventListener> listener) {
         BeanMethodResolver beanMethodResolver = listener.getAnnotation(BeanMethodResolver.class);
         if (beanMethodResolver == null) {
             throw new IllegalStateException(
@@ -54,11 +54,11 @@ public class AnnotationMethodResolverExtractor {
                             + listener
                             + " annotated with @MethodResolving(MethodResolvingType.BEAN) must be annotated with @BeanMethodResolver");
         }
-        return (MethodResolver<EventObject>) beanResolver.getBean(beanMethodResolver.value());
+        return (MethodResolver) beanResolver.getBean(beanMethodResolver.value());
     }
 
     @SuppressWarnings("unchecked")
-    private MethodResolver<EventObject> getMethodResolverFromFactoryMethod(Class<? extends EventListener> listener) {
+    private MethodResolver getMethodResolverFromFactoryMethod(Class<? extends EventListener> listener) {
         FactoryMethodResolver factoryMethodResolver = listener.getAnnotation(FactoryMethodResolver.class);
         if (factoryMethodResolver == null) {
             throw new IllegalStateException(
@@ -72,10 +72,10 @@ public class AnnotationMethodResolverExtractor {
         try {
             if (parameter == null) {
                 Method method = ReflectionUtils.getMethod(factoryClass, methodName);
-                return (MethodResolver<EventObject>) method.invoke(null);
+                return (MethodResolver) method.invoke(null);
             } else {
                 Method method = ReflectionUtils.getMethod(factoryClass, methodName, String.class);
-                return (MethodResolver<EventObject>) method.invoke(null, parameter);
+                return (MethodResolver) method.invoke(null, parameter);
             }
         } catch (Exception e) {
             throw new IllegalStateException("Could not invoke factory method " + methodName + " on " + factoryClass

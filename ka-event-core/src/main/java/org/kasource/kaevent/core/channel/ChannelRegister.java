@@ -3,7 +3,6 @@
  */
 package org.kasource.kaevent.core.channel;
 
-import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
 

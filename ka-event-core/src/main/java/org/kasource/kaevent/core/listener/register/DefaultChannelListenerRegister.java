@@ -5,7 +5,6 @@ package org.kasource.kaevent.core.listener.register;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;

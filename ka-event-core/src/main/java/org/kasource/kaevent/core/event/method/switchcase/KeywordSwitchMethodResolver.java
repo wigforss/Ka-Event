@@ -6,7 +6,6 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kasource.commons.util.ReflectionUtils;
 import org.kasource.kaevent.core.event.method.MethodResolver;
 
 /**
@@ -104,7 +103,7 @@ import org.kasource.kaevent.core.event.method.MethodResolver;
  * @author wigforss
  * @version $Id$
  **/
-public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> {
+public class KeywordSwitchMethodResolver implements MethodResolver {
 
      Map<String, Method> methodMap = new HashMap<String, Method>();
      Method defaultMethod;

@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
 
-
-import org.kasource.commons.util.ReflectionUtils;
 import org.kasource.kaevent.core.event.method.MethodResolver;
 
 
@@ -19,9 +17,9 @@ import org.kasource.kaevent.core.event.method.MethodResolver;
 public class DefaultEventConfig implements EventConfig {
     private Class<? extends EventObject> eventClass;
     private Class<? extends EventListener> listener;
-    private Method eventMethod; // May be null  
-    private MethodResolver<? extends EventObject> methodResolver;
-    private String[] channels;
+    Method defaultMethod; // May be null  
+    MethodResolver methodResolver;
+ 
 
     DefaultEventConfig(Class<? extends EventObject> eventClass, 
                            Class<? extends EventListener> listener) {
@@ -49,8 +47,8 @@ public class DefaultEventConfig implements EventConfig {
      * @return Returns the interface method to be invoked
      **/
     @Override
-    public Method getEventMethod() {
-        return eventMethod;
+    public  Method getEventMethod(EventObject event) {
+        return (defaultMethod != null ? defaultMethod : methodResolver.resolveMethod(event));
     }
 
     
@@ -66,46 +64,14 @@ public class DefaultEventConfig implements EventConfig {
     }
 
  
-    /**
-     * Returns a method in the listener interface with name <i>methodName</i>.
-     * 
-     * @param methodName
-     *            name of method to return.
-     * 
-     * @return Method of the method named <i>methodName</i>.
-     **/
-    @Override
-    public Method getListenerMethod(String methodName) {
-        return ReflectionUtils.getMethod(listener, methodName, eventClass);
-    }
+    
+   
 
    
 
-    public MethodResolver<? extends EventObject> getMethodResolver() {
-        return methodResolver;
-    }
-
-    public void setMethodResolver(MethodResolver<? extends EventObject> methodResolver) {
-        this.methodResolver = methodResolver;
-    }
-
-    @Override
-    public String[] getChannels() {
-        return channels;
-    }
-
-   public void setChannels(String[] channels) {
-        this.channels = channels;
-
-    }
+  
 
 
 
-/**
- * @param eventMethod the eventMethod to set
- */
-public void setEventMethod(Method eventMethod) {
-    this.eventMethod = eventMethod;
-}
 
 }

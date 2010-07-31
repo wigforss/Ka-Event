@@ -6,7 +6,6 @@ package org.kasource.kaevent.core.event;
 import java.util.EventObject;
 
 import org.kasource.kaevent.core.channel.ChannelRegister;
-import org.kasource.kaevent.core.listener.register.ChannelListenerRegister;
 import org.kasource.kaevent.core.listener.register.SourceObjectListenerRegister;
 
 /**
@@ -42,8 +41,6 @@ public interface EventDispatcher {
     public void fireOnCommit(EventObject event);
     
     public ChannelRegister getChannelRegister();
-    
-  
-    
+     
     public SourceObjectListenerRegister getSourceObjectListenerRegister();
 }

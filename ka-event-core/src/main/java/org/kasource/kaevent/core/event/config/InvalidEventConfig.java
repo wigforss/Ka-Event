@@ -3,7 +3,6 @@ package org.kasource.kaevent.core.event.config;
 import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
-import java.util.Map;
 
 
 
@@ -38,7 +37,7 @@ public class InvalidEventConfig implements EventConfig{
     
  
     @Override
-    public Method getEventMethod() {
+    public Method getEventMethod(EventObject event) {
     	if(cause == null) {
     		throw new InvalidEventConfigurationException(errorMessage);
     	} else {
@@ -55,34 +54,11 @@ public class InvalidEventConfig implements EventConfig{
     	}
     }
 
-    @Override
-    public org.kasource.kaevent.core.event.method.MethodResolver<EventObject> getMethodResolver() {
-    	if(cause == null) {
-    		throw new InvalidEventConfigurationException(errorMessage);
-    	} else {
-    		throw new InvalidEventConfigurationException(errorMessage, cause);
-    	}
-    }
+ 
 
     
 
-	@Override
-	public Method getListenerMethod(String methodName) {
-		if(cause == null) {
-    		throw new InvalidEventConfigurationException(errorMessage);
-    	} else {
-    		throw new InvalidEventConfigurationException(errorMessage, cause);
-    	}
-	}
-
-	@Override
-	public String[] getChannels() {
-		if(cause == null) {
-    		throw new InvalidEventConfigurationException(errorMessage);
-    	} else {
-    		throw new InvalidEventConfigurationException(errorMessage, cause);
-    	}
-	}
+	
 
 	public String getErrorMessage() {
 	    return errorMessage;

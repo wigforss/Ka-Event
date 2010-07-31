@@ -3,8 +3,6 @@ package org.kasource.kaevent.core.event.method;
 import java.lang.reflect.Method;
 import java.util.EventObject;
 
-import org.kasource.kaevent.core.event.config.EventConfig;
-
 
 /**
  * Finds the method that should be invoked on the registered {@link java.util.EventListener} implementations.
@@ -18,7 +16,7 @@ import org.kasource.kaevent.core.event.config.EventConfig;
  * @author rikard
  * @version $Id$
  **/
-public interface MethodResolver <T extends EventObject> {
+public interface MethodResolver{
     /**
      * Returns a valid event interface method to be used. The interface methods
      * must be public, return void and take only one parameter on the eventClass
@@ -31,5 +29,5 @@ public interface MethodResolver <T extends EventObject> {
      * 
      * @throws IllegalStateException
      **/
-    public  Method resolveMethod(T event);
+    public  Method resolveMethod(EventObject event);
 }
