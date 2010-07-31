@@ -264,9 +264,12 @@ public class ReflectionUtils {
      */
     
     public static void verifyMethodSignature(Method method, Class<?> returnType, Class<?>... parameters) {
+    	if(method == null) {
+                throw new IllegalArgumentException("Method is null");
+    	}
         if (!method.getReturnType().equals(returnType)) {
-            throw new IllegalArgumentException("Method " + method + " return type " + method.getReturnType()
-                    + " does not match: " + returnType);
+                throw new IllegalArgumentException("Method " + method + " return type " + method.getReturnType()
+                        + " does not match: " + returnType);
         }
         Class<?>[] actualParameters = method.getParameterTypes();
         if (actualParameters.length != parameters.length) {
