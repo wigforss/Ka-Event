@@ -17,5 +17,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface ChannelListener {
     String[] value();
-    boolean autoRegister() default true;
 }

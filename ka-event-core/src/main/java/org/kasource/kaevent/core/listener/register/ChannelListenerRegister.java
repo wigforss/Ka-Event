@@ -17,13 +17,7 @@ public interface ChannelListenerRegister {
      **/
     public abstract void registerListener(EventListener listener);
     
-    /**
-     * Register a new listener object to this channel
-     * 
-     * @param listenerRegistration
-     *            Listener registration object to register
-     **/
-    public abstract void registerListener(EventListener listener, List<EventFilter<? extends EventObject>> filters);
+    
 
     /**
      * Remove a registered listener from this channel
@@ -51,5 +45,5 @@ public interface ChannelListenerRegister {
      * 
      * @return all listener object of eventClass
      **/
-    public abstract Set<EventListenerRegistration> getListenersByEventClass(Class<? extends EventObject> eventClass);
+    public abstract Set<EventListener> getListenersByEventClass(Class<? extends EventObject> eventClass);
 }

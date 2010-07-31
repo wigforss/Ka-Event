@@ -40,7 +40,7 @@ public class KeywordSwitchAnnotationConfigurer {
         Set<Method> defaultMethods = ReflectionUtils.getAnnotatedMethods(listenerClass, DefaultListenerMethod.class);
         if (defaultMethods.size() == 1) {
             ReflectionUtils.verifyMethodSignature(defaultMethods.iterator().next(), Void.TYPE, eventClass);
-            resolver.setDefaultMethod(defaultMethods.iterator().next());
+            resolver.defaultMethod = defaultMethods.iterator().next();
             setCaseMethods();
             setCustomKeywordMethods();
         } else if (defaultMethods.size() == 0) {
@@ -61,7 +61,7 @@ public class KeywordSwitchAnnotationConfigurer {
             KeywordCase caseAnnotation = method.getAnnotation(KeywordCase.class);
             methodMap.put(caseAnnotation.value(), method);
         }
-        resolver.setMethodMap(methodMap);
+        resolver.methodMap.putAll(methodMap);
     }
 
     private void setKeywordMethod() {
@@ -69,7 +69,7 @@ public class KeywordSwitchAnnotationConfigurer {
         if(method == null) {
             throw new IllegalStateException(eventClass+" must declare one method annotated with @EventKeyword!");
         }
-        resolver.setEventKeywordMethod(method);
+        resolver.eventKeywordMethod = method;
     }
 
     private void setCustomKeywordMethods() {
@@ -100,7 +100,7 @@ public class KeywordSwitchAnnotationConfigurer {
             KeywordCase caseAnnotation = method.getAnnotation(KeywordCase.class);
             methodMap.put(caseAnnotation.value(), method);
         }
-        resolver.setMethodMap(methodMap);
+        resolver.methodMap.putAll(methodMap);
     }
 }
 

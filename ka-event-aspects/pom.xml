@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
-  	<artifactId>base</artifactId>
-  	<groupId>se.istools</groupId>
-  	<version>2.0.0-SNAPSHOT</version>
+  	<artifactId>ka-event-base</artifactId>
+  	<groupId>org.kasource</groupId>
+  	<version>SNAPSHOT</version>
   	<relativePath>../pom.xml</relativePath>
-  </parent>
+    </parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-event-aspects</artifactId>
@@ -16,6 +16,7 @@
 	<!-- Build properties -->
 	<properties>
 		<clover.version>2.6.3</clover.version>
+		<aspectj.version>1.6.9</aspectj.version>
 	</properties>
 	<build>
 		<plugins>
@@ -105,20 +106,20 @@
 			<artifactId>ka-commons</artifactId>
 			<version>SNAPSHOT</version>
 		</dependency>	
-<!--  		<dependency>
+  		<dependency>
 			<groupId>org.kasource</groupId>
-			<artifactId>ka-core</artifactId>
+			<artifactId>ka-event-core</artifactId>
 			<version>SNAPSHOT</version> 
-		</dependency>	-->
+		</dependency>	
 		<dependency>
     		<groupId>org.aspectj</groupId>
     		<artifactId>aspectjrt</artifactId>
-    		<version>1.6.9</version>
+    		<version>${aspectj.version}</version>
 		</dependency>
 		<dependency>
     		<groupId>org.aspectj</groupId>
     		<artifactId>aspectjweaver</artifactId>
-    		<version>1.6.9</version>
+    		<version>${aspectj.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>

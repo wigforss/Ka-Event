@@ -4,7 +4,7 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
 
-import com.kenai.sadelf.event.register.EventListenerRegistration;
+
 
 public interface SourceObjectListenerRegister {
 
@@ -39,6 +39,6 @@ public interface SourceObjectListenerRegister {
      * 
      * @return all listener object of eventClass
      **/
-    public abstract Set<EventListenerRegistration> getListenersByEvent(EventObject event);
+    public abstract Set<EventListener> getListenersByEvent(EventObject event);
 
 }

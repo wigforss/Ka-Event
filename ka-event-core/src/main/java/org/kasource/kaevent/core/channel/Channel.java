@@ -80,8 +80,9 @@ public interface Channel {
      * @param listenerRegistration
      *            Listener registration object to register
      **/
+    /*
     public abstract void registerListener(EventListener listener, List<EventFilter<? extends EventObject>> filters);
-    
+    */
     /**
      * Register a new listener object to this channel
      * 

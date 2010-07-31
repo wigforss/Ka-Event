@@ -7,17 +7,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import com.kenai.sadelf.event.config.EventConfig;
-import com.kenai.sadelf.event.config.EventConfigFactory;
-import com.kenai.sadelf.event.register.EventListenerRegistration;
+import org.kasource.kaevent.core.event.config.EventConfig;
+import org.kasource.kaevent.core.event.register.EventRegister;
+
+
 
 public class DefaultSourceObjectListenerRegister implements SourceObjectListenerRegister{
 	 private Map<Object, Map<EventListener,Object>> objectListeners = new WeakHashMap<Object, Map<EventListener,Object>>();
-	 private Map<Class<? extends EventObject>, Map<Object, Map<EventListenerRegistration,Object>>> objectListenersByEvent = new HashMap<Class<? extends EventObject>, Map<Object, Map<EventListenerRegistration,Object>>>();
-	 private EventConfigRegister eventConfigFactory;
+	 private Map<Class<? extends EventObject>, Map<Object, Map<EventListener,Object>>> objectListenersByEvent = new HashMap<Class<? extends EventObject>, Map<Object, Map<EventListener,Object>>>();
+	 private EventRegister eventRegister;
 	 
-	 public DefaultSourceObjectListenerRegister(EventConfigRegister eventConfigFactory) {
-		 this.eventConfigFactory = eventConfigFactory;
+	 public DefaultSourceObjectListenerRegister(EventRegister eventRegister) {
+		 this.eventRegister = eventRegister;
 	 }
 	 
 	 /**
@@ -40,20 +41,20 @@ public class DefaultSourceObjectListenerRegister implements SourceObjectListener
         Class[] interfaceClasses = listener.getClass().getInterfaces();
         for (Class interfaceClass : interfaceClasses) {
             if (EventListener.class.isAssignableFrom(interfaceClass)) {
-                EventConfig eventConfig = eventConfigFactory.getEventByListener(interfaceClass);
+                EventConfig eventConfig = eventRegister.getEventByInterface(interfaceClass);
                 if (eventConfig != null) {
-                    Map<Object, Map<EventListenerRegistration,Object>> sourceListeners = objectListenersByEvent.get(eventConfig
+                    Map<Object, Map<EventListener,Object>> sourceListeners = objectListenersByEvent.get(eventConfig
                             .getEventClass());
                     if (sourceListeners == null) {
-                        sourceListeners = new WeakHashMap<Object, Map<EventListenerRegistration,Object>>();
+                        sourceListeners = new WeakHashMap<Object, Map<EventListener,Object>>();
                         objectListenersByEvent.put(eventConfig.getEventClass(), sourceListeners);
                     }
-                    Map<EventListenerRegistration,Object> listeners = sourceListeners.get(sourceObject);
+                    Map<EventListener,Object> listeners = sourceListeners.get(sourceObject);
                     if (listeners == null) {
-                        listeners = new WeakHashMap<EventListenerRegistration,Object>();
+                        listeners = new WeakHashMap<EventListener,Object>();
                         sourceListeners.put(sourceObject, listeners);
                     }
-                    listeners.put(new EventListenerRegistration(listener, eventConfigFactory),null);
+                    listeners.put(listener,null);
                 }
             }
         }
@@ -77,14 +78,14 @@ public class DefaultSourceObjectListenerRegister implements SourceObjectListener
         Class[] interfaceClasses = listener.getClass().getInterfaces();
         for (Class interfaceClass : interfaceClasses) {
             if (EventListener.class.isAssignableFrom(interfaceClass)) {
-                EventConfig eventConfig = eventConfigFactory.getEventByListener(interfaceClass);
+                EventConfig eventConfig = eventRegister.getEventByInterface(interfaceClass);
                 if (eventConfig != null) {
-                    Map<Object, Map<EventListenerRegistration,Object>> sourceListeners = objectListenersByEvent.get(eventConfig
+                    Map<Object, Map<EventListener,Object>> sourceListeners = objectListenersByEvent.get(eventConfig
                             .getEventClass());
                     if (sourceListeners != null) {
-                        Map<EventListenerRegistration,Object> listeners = sourceListeners.get(sourceObject);
+                        Map<EventListener,Object> listeners = sourceListeners.get(sourceObject);
                         if (listeners != null) {
-                            listeners.remove(new EventListenerRegistration(listener,eventConfigFactory));
+                            listeners.remove(listener);
                         }
                 
                     }
@@ -94,10 +95,10 @@ public class DefaultSourceObjectListenerRegister implements SourceObjectListener
     }
 
 	@Override
-	public Set<EventListenerRegistration> getListenersByEvent(EventObject event) {
-		Map<Object, Map<EventListenerRegistration,Object>> sourceMap = objectListenersByEvent.get(event.getClass());
+	public Set<EventListener> getListenersByEvent(EventObject event) {
+		Map<Object, Map<EventListener,Object>> sourceMap = objectListenersByEvent.get(event.getClass());
         if (sourceMap != null) {
-            Map<EventListenerRegistration,Object> objectListenerMap = sourceMap.get(event.getSource());
+            Map<EventListener,Object> objectListenerMap = sourceMap.get(event.getSource());
             if (objectListenerMap != null) {
                return objectListenerMap.keySet();
             }

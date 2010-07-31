@@ -7,23 +7,37 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.kasource.kaevent.core.event.Event;
 import org.kasource.kaevent.core.event.EventKeyword;
+import org.kasource.kaevent.core.event.method.switchcase.KeywordSwitchMethodResolver;
 import org.kasource.kaevent.core.listener.interfaces.CustomCase;
 import org.kasource.kaevent.core.listener.interfaces.DefaultListenerMethod;
 import org.kasource.kaevent.core.listener.interfaces.KeywordCase;
 import org.kasource.kaevent.core.listener.interfaces.MethodResolverType;
 import org.kasource.kaevent.core.listener.interfaces.MethodResolving;
 
+
 /**
  * @author rikardwigforss
  *
  */
+
 public class KeywordSwitchMethodResolverTest {
 
+	@Test
+	public void resolverMethodTest() throws SecurityException, NoSuchMethodException {
+		KeywordSwitchMethodResolver resolver = new KeywordSwitchMethodResolver(CrudEvent.class, CrudEventListener.class);
+		Method method = resolver.resolveMethod(new CrudEvent("Test", CrudAction.DELETE));
+		assertEquals(CrudEventListener.class.getDeclaredMethod("deleteEvent", CrudEvent.class), method);
+	}
+	
+	
     enum CrudAction  {CREATE, READ, UPDATE, DELETE};
     
     @Event(listener=CrudEventListener.class)

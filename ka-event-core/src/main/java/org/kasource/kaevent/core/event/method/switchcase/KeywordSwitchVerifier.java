@@ -34,7 +34,7 @@ public class KeywordSwitchVerifier {
     }
 
     private void verifyKeywordMethod(Method method, Class<? extends EventObject> eventClass) {
-        if (method.getDeclaringClass().equals(eventClass)) {
+        if (!method.getDeclaringClass().equals(eventClass)) {
             throw new IllegalArgumentException(method + " must be declared in event class " + eventClass);
         }
         if (method.getReturnType().equals(Void.TYPE)) {

@@ -1,6 +1,6 @@
 package org.kasource.kaevent.core.listener.register;
 
-import static com.kenai.sadelf.util.ReflectionUtils.implementsInterface;
+
 
 import java.util.EventListener;
 import java.util.EventObject;
@@ -10,29 +10,31 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import com.kenai.sadelf.event.config.EventConfig;
-import com.kenai.sadelf.event.config.EventConfigFactory;
-import com.kenai.sadelf.event.filter.EventFilter;
-import com.kenai.sadelf.event.register.EventListenerRegistration;
+import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.kaevent.core.channel.Channel;
+import org.kasource.kaevent.core.event.config.EventConfig;
+import org.kasource.kaevent.core.event.register.EventRegister;
+
+
 
 public class DefaultChannelListenerRegister implements ChannelListenerRegister {
     // Map<EventClass, Set of event listener objects>
-    private Map<Class<? extends EventObject>, Map<EventListenerRegistration, Object>> listenersByEvent = new HashMap<Class<? extends EventObject>, Map<EventListenerRegistration, Object>>();
+    private Map<Class<? extends EventObject>, Map<EventListener, Object>> listenersByEvent = new HashMap<Class<? extends EventObject>, Map<EventListener, Object>>();
     // Set of listeners
     private Map<EventListener, Object> listeners = new WeakHashMap<EventListener, Object>();
 
     private Channel channel;
-    private EventConfigRegister eventConfigFactory;
+    private EventRegister eventRegister;
 
-    public DefaultChannelListenerRegister(Channel channel, EventConfigRegister eventConfigFactory) {
+    public DefaultChannelListenerRegister(Channel channel, EventRegister eventRegister) {
         this.channel = channel;
-        this.eventConfigFactory = eventConfigFactory;
+        this.eventRegister = eventRegister;
     }
 
-    public DefaultChannelListenerRegister(Channel channel, EventConfigRegister eventConfigFactory,
+    public DefaultChannelListenerRegister(Channel channel, EventRegister eventRegister,
             Set<EventListener> listeners) {
         this.channel = channel;
-        this.eventConfigFactory = eventConfigFactory;
+        this.eventRegister = eventRegister;
         if (listeners != null) {
             for (EventListener listener : listeners) {
                 registerListener(listener);
@@ -40,58 +42,44 @@ public class DefaultChannelListenerRegister implements ChannelListenerRegister {
         }
     }
 
-    /**
-     * Register a new listener object to this channel
-     * 
-     * @param listener
-     *            Listener  object to register
-     **/
-    @Override
-    public void registerListener(EventListener listener) {
-        registerListener(listener, null);
-    }
+    
 
     /**
      * Register a new listener object to this channel
      * 
      * @param listener
      *            Listener  object to register
-     * @param filters
+     * @param filters List<EventFilter<? extends EventObject>> filters
      **/
     @SuppressWarnings("unchecked")
     @Override
-    public void registerListener(EventListener listener, List<EventFilter<? extends EventObject>> filters) {
+    public void registerListener(EventListener listener) {
         boolean eventFound = false;
-        EventListenerRegistration listenerRegistration = null;
-        if (filters == null) {
-            listenerRegistration = new EventListenerRegistration(listener, eventConfigFactory);
-        } else {
-            listenerRegistration = new EventListenerRegistration(listener, eventConfigFactory, filters);
-        }
-        Class[] interfaces = listenerRegistration.getEventListener().getClass().getInterfaces();
+       
+        Class[] interfaces = listener.getClass().getInterfaces();
         for (Class interfaceClass : interfaces) {
             if (EventListener.class.isAssignableFrom(interfaceClass)) {
-                EventConfig eventConfig = eventConfigFactory.getEventByListener(interfaceClass);
+                EventConfig eventConfig = eventRegister.getEventByInterface(interfaceClass);
                 if (eventConfig != null) {
                     Class<? extends EventObject> eventClass = eventConfig.getEventClass();
                     if (channel.getEvents().contains(eventClass)) {
-                        Map<EventListenerRegistration, Object> listenerMap = listenersByEvent.get(eventClass);
+                        Map<EventListener, Object> listenerMap = listenersByEvent.get(eventClass);
                         if (listenerMap == null) {
-                            listenerMap = new WeakHashMap<EventListenerRegistration, Object>();
+                            listenerMap = new WeakHashMap<EventListener, Object>();
                             listenersByEvent.put(eventClass, listenerMap);
                         }
-                        listenerMap.put(listenerRegistration, null);
+                        listenerMap.put(listener, null);
                         eventFound = true;
                     }
                 }
             }
         }
         if (eventFound) {
-            if (!listeners.containsKey(listenerRegistration.getEventListener())) {
-                listeners.put(listenerRegistration.getEventListener(), null);
+            if (!listeners.containsKey(listener)) {
+                listeners.put(listener, null);
             }
         } else {
-            throw new IllegalStateException("No events found which " + listenerRegistration.getEventListener()
+            throw new IllegalStateException("No events found which " + listener
                     + " listens to");
         }
     }
@@ -109,14 +97,14 @@ public class DefaultChannelListenerRegister implements ChannelListenerRegister {
         Class[] interfaces = listener.getClass().getInterfaces();
         for (Class interfaceClass : interfaces) {
             if (EventListener.class.isAssignableFrom(interfaceClass)) {
-                EventConfig eventConfig = eventConfigFactory.getEventByListener(interfaceClass);
+                EventConfig eventConfig = eventRegister.getEventByInterface(interfaceClass);
                 if (eventConfig != null) {
                     Class<? extends EventObject> eventClass = eventConfig.getEventClass();
                     if (channel.getEvents().contains(eventClass)) { // Check
                                                                     // contains
-                        Map<EventListenerRegistration, Object> listenerMap = listenersByEvent.get(eventClass);
+                        Map<EventListener, Object> listenerMap = listenersByEvent.get(eventClass);
                         if (listenerMap != null) {
-                            listenerMap.remove(new EventListenerRegistration(listener, eventConfigFactory));
+                            listenerMap.remove(listener);
                         }
                     }
                 }
@@ -133,16 +121,16 @@ public class DefaultChannelListenerRegister implements ChannelListenerRegister {
      * @param eventClass
      **/
     public void refreshListeners(Class<? extends EventObject> eventClass) {
-        EventConfig eventConfig = eventConfigFactory.getEventByEventClass(eventClass);
+        EventConfig eventConfig = eventRegister.getEventByClass(eventClass);
         for (EventListener listener : listeners.keySet()) {
-            if (implementsInterface(eventConfig.getListener(), listener)) {
-                Map<EventListenerRegistration, Object> eventListnerMap = listenersByEvent.get(eventClass);
+            if (ReflectionUtils.implementsInterface(listener,eventConfig.getListener())) {
+                Map<EventListener, Object> eventListnerMap = listenersByEvent.get(eventClass);
                 if (eventListnerMap == null) {
-                    eventListnerMap = new WeakHashMap<EventListenerRegistration, Object>();
-                    eventListnerMap.put(new EventListenerRegistration(listener, eventConfigFactory), null);
+                    eventListnerMap = new WeakHashMap<EventListener, Object>();
+                    eventListnerMap.put(listener, null);
                     listenersByEvent.put(eventClass, eventListnerMap);
                 } else if (!eventListnerMap.containsKey(listener)) { 
-                    eventListnerMap.put(new EventListenerRegistration(listener, eventConfigFactory), null);
+                    eventListnerMap.put(listener, null);
                 }
             }
         }
@@ -157,8 +145,8 @@ public class DefaultChannelListenerRegister implements ChannelListenerRegister {
      * 
      * @return all listener object of eventClass
      **/
-    public Set<EventListenerRegistration> getListenersByEventClass(Class<? extends EventObject> eventClass) {
-        Map<EventListenerRegistration, Object> listenerMap = listenersByEvent.get(eventClass);
+    public Set<EventListener> getListenersByEventClass(Class<? extends EventObject> eventClass) {
+        Map<EventListener, Object> listenerMap = listenersByEvent.get(eventClass);
         if (listenerMap == null)
             return null;
         return listenersByEvent.get(eventClass).keySet();

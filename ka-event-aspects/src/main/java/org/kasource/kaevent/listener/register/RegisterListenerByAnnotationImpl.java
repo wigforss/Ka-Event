@@ -4,38 +4,44 @@ import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.kenai.sadelf.annotations.impl.BeanListener;
-import com.kenai.sadelf.annotations.impl.ChannelListener;
-import com.kenai.sadelf.channel.Channel;
-import com.kenai.sadelf.event.dispatcher.EventDispatcher;
-import com.kenai.sadelf.exception.CouldNotResolveBeanException;
-import com.kenai.sadelf.exception.NoSuchChannelException;
+import org.kasource.kaevent.core.bean.BeanResolver;
+import org.kasource.kaevent.core.bean.CouldNotResolveBeanException;
+import org.kasource.kaevent.core.channel.Channel;
+import org.kasource.kaevent.core.channel.ChannelRegister;
+import org.kasource.kaevent.core.channel.NoSuchChannelException;
+import org.kasource.kaevent.core.listener.register.SourceObjectListenerRegister;
+import org.kasource.kaevent.listener.BeanListener;
+import org.kasource.kaevent.listener.ChannelListener;
 
 /**
  * Register Listeners based on annotations
  * 
  * @author rikard
- * @version $Id$
+ * @version $Id: RegisterListenerByAnnotationImpl.java 2 2010-07-30 16:17:31Z
+ *          wigforss $
  **/
-public class RegisterListenerByAnnotationImpl implements RegisterListenerByAnnotation{
+public class RegisterListenerByAnnotationImpl implements
+		RegisterListenerByAnnotation {
 
-	
 	private ChannelRegister channelRegister;
 	private SourceObjectListenerRegister sourceObjectListenerRegister;
+	private BeanResolver beanResolver;
 	private Map<EventListener, String[]> channelListeners = new HashMap<EventListener, String[]>();
 	private Map<EventListener, String[]> beanListeners = new HashMap<EventListener, String[]>();
 
-	
 	/**
-	 * Register <i>listener</i> using the attributes from <i>channelListenerAnnotation</i>.
+	 * Register <i>listener</i> using the attributes from
+	 * <i>channelListenerAnnotation</i>.
 	 * 
-	 * @param channelListenerAnnotation The annotation with configuration
-	 * @param listener					The {@link java.util.EventListener} implementation
+	 * @param channelListenerAnnotation
+	 *            The annotation with configuration
+	 * @param listener
+	 *            The {@link java.util.EventListener} implementation
 	 **/
 	@Override
 	public void registerChannelListener(
 			ChannelListener channelListenerAnnotation, Object listener) {
-		if (eventDispatcher == null) {
+		if (channelRegister == null) {
 			channelListeners.put((EventListener) listener,
 					channelListenerAnnotation.value());
 		} else {
@@ -45,50 +51,56 @@ public class RegisterListenerByAnnotationImpl implements RegisterListenerByAnnot
 
 	}
 
-	
 	private void registerChannelListener(EventListener listener,
 			String[] channels) {
 		for (String channelName : channels) {
 			try {
-				Channel channel = eventDispatcher.getChannelFactory().getChannel(
-						channelName);
+				Channel channel = channelRegister.getChannel(channelName);
 				channel.registerListener((EventListener) listener);
-			}catch(NoSuchChannelException nse) {
-				throw new NoSuchChannelException("Channel: " + channelName + " in @ChannelListener on " + listener.getClass()+" could not be found!");
+			} catch (NoSuchChannelException nse) {
+				throw new NoSuchChannelException("Channel: " + channelName
+						+ " in @ChannelListener on " + listener.getClass()
+						+ " could not be found!");
 			}
 		}
 	}
 
 	/**
-	 * Unregister <i>listener</i> using the attributes from <i>channelListenerAnnotation</i>.
+	 * Unregister <i>listener</i> using the attributes from
+	 * <i>channelListenerAnnotation</i>.
 	 * 
-	 * @param channelListenerAnnotation The annotation with configuration
-	 * @param listener					The {@link java.util.EventListener} implementation
+	 * @param channelListenerAnnotation
+	 *            The annotation with configuration
+	 * @param listener
+	 *            The {@link java.util.EventListener} implementation
 	 **/
 	@Override
 	public void unregisterChannelListener(
 			ChannelListener channelListenerAnnotation, Object listener) {
-		 if(channelListenerAnnotation != null) {
-	            for (String channelName : channelListenerAnnotation.value()) {
-	                Channel channel = eventDispatcher.getChannelFactory().getChannel(channelName);
-	                if(channel != null) {
-	                	channel.unregisterListener((EventListener) listener);
-	                }
-	            }     
-		 }	
+		if (channelListenerAnnotation != null) {
+			for (String channelName : channelListenerAnnotation.value()) {
+				Channel channel = channelRegister.getChannel(channelName);
+				if (channel != null) {
+					channel.unregisterListener((EventListener) listener);
+				}
+			}
+		}
 	}
-	
+
 	/**
-	 * Register <i>listener</i> using the attributes from <i>beanListenerAnnotation</i>.
+	 * Register <i>listener</i> using the attributes from
+	 * <i>beanListenerAnnotation</i>.
 	 * 
-	 * @param beanListenerAnnotation The annotation with configuration
-	 * @param listener					The {@link java.util.EventListener} implementation
+	 * @param beanListenerAnnotation
+	 *            The annotation with configuration
+	 * @param listener
+	 *            The {@link java.util.EventListener} implementation
 	 **/
 	@Override
 	public void registerBeanListener(BeanListener beanListenerAnnotation,
 			Object listener) {
 
-		if (eventDispatcher == null) {
+		if (sourceObjectListenerRegister == null) {
 			beanListeners.put((EventListener) listener, beanListenerAnnotation
 					.value());
 		} else {
@@ -101,39 +113,50 @@ public class RegisterListenerByAnnotationImpl implements RegisterListenerByAnnot
 	private void registerBeanListener(EventListener listener, String[] beanNames) {
 		for (String beanName : beanNames) {
 			try {
-				Object eventSource = eventDispatcher.getEventConfigFactory().getBeanResolver().getBean(beanName);
-				eventDispatcher.registerListener((EventListener) listener,
-						eventSource);
-			} catch(CouldNotResolveBeanException nrsb) {
-				throw new CouldNotResolveBeanException("Bean: "+beanName+" in @BeanListener on "+listener.getClass()+" could not be found!",nrsb.getCause());
+				Object eventSource = beanResolver.getBean(beanName);
+				sourceObjectListenerRegister.registerListener(
+						(EventListener) listener, eventSource);
+			} catch (CouldNotResolveBeanException nrsb) {
+				throw new CouldNotResolveBeanException("Bean: " + beanName
+						+ " in @BeanListener on " + listener.getClass()
+						+ " could not be found!", nrsb.getCause());
 			}
-			
+
 		}
 	}
 
 	/**
-	 * unregister <i>listener</i> using the attributes from <i>beanListenerAnnotation</i>.
+	 * unregister <i>listener</i> using the attributes from
+	 * <i>beanListenerAnnotation</i>.
 	 * 
-	 * @param beanListenerAnnotation The annotation with configuration
-	 * @param listener					The {@link java.util.EventListener} implementation
+	 * @param beanListenerAnnotation
+	 *            The annotation with configuration
+	 * @param listener
+	 *            The {@link java.util.EventListener} implementation
 	 **/
 	@Override
 	public void unregisterBeanListener(BeanListener beanListenerAnnotation,
 			Object listener) {
 		for (String beanName : beanListenerAnnotation.value()) {
-            Object eventSource = eventDispatcher.getEventConfigFactory().getBeanResolver().getBean(beanName);
-            eventDispatcher.unregisterListener((EventListener) listener, eventSource);
-        }
-		
+			Object eventSource = beanResolver.getBean(beanName);
+			sourceObjectListenerRegister.unregisterListener(
+					(EventListener) listener, eventSource);
+		}
+
 	}
-	
+
 	/**
-	 * If calls are made to the register methods before the {@link EventDispatcher} is set the information is
-	 * stored, so that this method could register those {@link java.util.EventListener} implementations
-	 * once the setEventDispatcher() method is called.
+	 * If calls are made to the register methods before this method
+	 * is called the information is stored, so that this
+	 * method could register those {@link java.util.EventListener}
+	 * implementations.
 	 **/
-	@Override
-	public void initialize() {
+	public void initialize(ChannelRegister channelRegister,
+			SourceObjectListenerRegister sourceObjectListenerRegister,
+			BeanResolver beanResolver) {
+		this.channelRegister = channelRegister;
+		this.sourceObjectListenerRegister = sourceObjectListenerRegister;
+		this.beanResolver = beanResolver;
 		for (Map.Entry<EventListener, String[]> entry : channelListeners
 				.entrySet()) {
 			registerChannelListener(entry.getKey(), entry.getValue());
@@ -146,14 +169,4 @@ public class RegisterListenerByAnnotationImpl implements RegisterListenerByAnnot
 		beanListeners.clear();
 	}
 
-	
-	/**
-	 * Set the event dispatcher to use when registering {@link java.util.EventListener} implementations.
-	 * 
-	 * @param eventDispatcher the event dispatcher to be used
-	 **/
-	public void setEventDispatcher(EventDispatcher eventDispatcher) {
-		this.eventDispatcher = eventDispatcher;
-	}
-	
 }

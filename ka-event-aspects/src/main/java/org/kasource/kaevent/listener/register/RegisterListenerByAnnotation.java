@@ -1,9 +1,9 @@
 package org.kasource.kaevent.listener.register;
 
+import org.kasource.kaevent.listener.BeanListener;
+import org.kasource.kaevent.listener.ChannelListener;
 
-import com.kenai.sadelf.annotations.impl.BeanListener;
-import com.kenai.sadelf.annotations.impl.ChannelListener;
-import com.kenai.sadelf.event.dispatcher.EventDispatcher;
+
 
 /**
  * Registers {@link java.util.EventListener} implementations based on annotations
@@ -13,12 +13,7 @@ import com.kenai.sadelf.event.dispatcher.EventDispatcher;
  **/
 public interface RegisterListenerByAnnotation {
 	
-	/**
-	 * Set the event dispatcher to use when registering {@link java.util.EventListener} implementations.
-	 * 
-	 * @param eventDispatcher the event dispatcher to be used
-	 **/
-	public void setEventDispatcher(EventDispatcher eventDispatcher);
+	
 	
 	/**
 	 * Register <i>listener</i> using the attributes from <i>channelListenerAnnotation</i>.
@@ -52,10 +47,5 @@ public interface RegisterListenerByAnnotation {
 	 **/
 	public void unregisterBeanListener(BeanListener beanListenerAnnotation, Object listener);
 	
-	/**
-	 * If calls are made to the register methods before the {@link EventDispatcher} is set the information is
-	 * stored, so that this method could register those {@link java.util.EventListener} implementations
-	 * once the setEventDispatcher() method is called.
-	 **/
-	public void initialize();
+	
 }

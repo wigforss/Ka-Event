@@ -123,11 +123,12 @@ public class ChannelImpl  implements Channel {
      * @param listener
      *            Listener object to register
      **/
+    /*
     @Override
     public void registerListener(EventListener listener,List<EventFilter<? extends EventObject>> filters) {
-        listenerRegister.registerListener(listener,filters);
+        listenerRegister.registerListener(listener);
     }
-    
+    */
     /**
      * Register a new listener object to this channel
      * 

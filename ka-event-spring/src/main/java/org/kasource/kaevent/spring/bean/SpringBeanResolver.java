@@ -1,10 +1,12 @@
 package org.kasource.kaevent.spring.bean;
 
+import org.kasource.kaevent.core.bean.BeanResolver;
+import org.kasource.kaevent.core.bean.CouldNotResolveBeanException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.kenai.sadelf.exception.CouldNotResolveBeanException;
+
 
 public class SpringBeanResolver implements BeanResolver, ApplicationContextAware{
 	private ApplicationContext applicationContext;

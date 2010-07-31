@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.kasource</groupId>
-	<artifactId>base</artifactId>
+	<artifactId>ka-event-base</artifactId>
 	<packaging>pom</packaging>
 	<name>Base Project</name>
 	<version>SNAPSHOT</version>
@@ -12,6 +12,8 @@
 	</properties>
   	<modules>
 			<module>ka-event-core</module> 
+			<module>ka-event-aspects</module>
+			<module>ka-event-spring</module>
 	</modules>
 	
 	<build>

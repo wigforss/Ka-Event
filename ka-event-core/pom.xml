@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
-  	<artifactId>base</artifactId>
-  	<groupId>se.istools</groupId>
-  	<version>2.0.0-SNAPSHOT</version>
+  	<artifactId>ka-event-base</artifactId>
+  	<groupId>org.kasource</groupId>
+  	<version>SNAPSHOT</version>
   	<relativePath>../pom.xml</relativePath>
   </parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -11,7 +11,7 @@
 	<artifactId>ka-event-core</artifactId>
 	<packaging>jar</packaging>
 	<version>SNAPSHOT</version>
-	<name>ka-event-core</name>
+	<name>Ka Event Core</name>
 	<url>http://maven.apache.org</url>
 	<!-- Build properties -->
 	<properties>
@@ -180,7 +180,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<forkMode>always</forkMode>
-						<!-- 	<argLine>-javaagent:"${settings.localRepository}/org/springframework/spring-agent/${spring.version}/spring-agent-${spring.version}.jar" -server -Xmx1024m</argLine> -->
+							<argLine>-javaagent:"${settings.localRepository}/org/springframework/spring-agent/${spring.version}/spring-agent-${spring.version}.jar" -server -Xmx1024m</argLine> 
 							<useSystemClassloader>true</useSystemClassloader>
 							<useManifestOnlyJar>false</useManifestOnlyJar>
 							<testFailureIgnore>false</testFailureIgnore>

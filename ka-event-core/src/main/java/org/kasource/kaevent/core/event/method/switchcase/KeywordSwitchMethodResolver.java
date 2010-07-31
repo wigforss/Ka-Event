@@ -164,26 +164,7 @@ public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> 
         return method;
     }
 
-    /**
-     * @param methodMap the methodMap to set
-     */
-    public void setMethodMap(Map<String, Method> methodMap) {
-        this.methodMap = methodMap;
-    }
-
-    /**
-     * @param defaultMethod the defaultMethod to set
-     */
-    public void setDefaultMethod(Method defaultMethod) {
-        this.defaultMethod = defaultMethod;
-    }
-
-    /**
-     * @param eventKeywordMethod the eventKeywordMethod to set
-     */
-    public void setEventKeywordMethod(Method eventKeywordMethod) {
-        this.eventKeywordMethod = eventKeywordMethod;
-    }
+   
 }
 
 
