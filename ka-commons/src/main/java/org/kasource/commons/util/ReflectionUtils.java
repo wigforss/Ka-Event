@@ -90,7 +90,7 @@ public class ReflectionUtils {
     /**
      * Returns the number of methods declared by a class <i>clazz</i>.
      */
-    public static int getMethodCount(Class<?> clazz) {
+    public static int getDeclaredMethodCount(Class<?> clazz) {
         return clazz.getDeclaredMethods().length;
     }
 
@@ -109,7 +109,7 @@ public class ReflectionUtils {
      * 
      * @return Returns the named method from class <i>clazz</i>.
      */
-    public static Method getMethod(Class<?> clazz, String name, Class<?>... params) {
+    public static Method getDeclaredMethod(Class<?> clazz, String name, Class<?>... params) {
         try {
             return clazz.getDeclaredMethod(name, params);
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public class ReflectionUtils {
      * @return methods that match the params argument in their method signature
      * 
      **/
-    public static Set<Method> getMethods(Class<?> clazz, Class<?>... params) {
+    public static Set<Method> getDeclaredMethods(Class<?> clazz, Class<?>... params) {
         Method[] methods = clazz.getDeclaredMethods();
         Set<Method> matches = new HashSet<Method>();
         for (Method method : methods) {
@@ -153,7 +153,7 @@ public class ReflectionUtils {
      * @return methods that match the params argument in their method signature
      * 
      **/
-    public static Set<Method> getMethods(Class<?> clazz, Class<?> returnType, Class<?>... params) {
+    public static Set<Method> getDeclaredMethodsMatchingReturnType(Class<?> clazz, Class<?> returnType, Class<?>... params) {
         Method[] methods = clazz.getDeclaredMethods();
         Set<Method> matches = new HashSet<Method>();
         for (Method method : methods) {
@@ -176,7 +176,7 @@ public class ReflectionUtils {
      * 
      * @return The first method found which is annotated with annotation.
      */
-    public static Method getAnnotatedMethod(Class<?> clazz, Class<? extends Annotation> annotation) {
+    public static Method getDeclaredAnnotatedMethod(Class<?> clazz, Class<? extends Annotation> annotation) {
         Method[] methods = clazz.getDeclaredMethods();
 
         for (Method method : methods) {
@@ -188,7 +188,25 @@ public class ReflectionUtils {
     }
 
     /**
-     * Return the methods on <i>clazz</i> that is annotated with the annotation.
+     * Return the declared methods on <i>clazz</i> that are annotated with the annotation.
+     * 
+     * @param clazz
+     *            Class to use when finding the method
+     * 
+     * @param annotation
+     *            The annotation to match
+     * 
+     * @return The methods found which is annotated with annotation.
+     */
+    public static Set<Method> getDeclaredAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotation) {
+        Method[] methods = clazz.getDeclaredMethods();
+        Set<Method> methodSet = new HashSet<Method>();
+        methodSet.addAll(Arrays.asList(methods));
+        return filterAnnotatedMethods(methodSet, annotation);
+    }
+    
+    /**
+     * Return the methods on <i>clazz</i> that are annotated with the annotation.
      * 
      * @param clazz
      *            Class to use when finding the method
@@ -199,7 +217,19 @@ public class ReflectionUtils {
      * @return The methods found which is annotated with annotation.
      */
     public static Set<Method> getAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotation) {
-        Method[] methods = clazz.getDeclaredMethods();
+        Method[] methods = clazz.getMethods();
+        Set<Method> methodSet = new HashSet<Method>();
+        methodSet.addAll(Arrays.asList(methods));
+        return filterAnnotatedMethods(methodSet, annotation);
+    }
+    
+    /**
+     * Filter the methods
+     * @param methods
+     * @param annotation
+     * @return
+     */
+    public static Set<Method> filterAnnotatedMethods(Set<Method> methods, Class<? extends Annotation> annotation) {
         Set<Method> matches = new HashSet<Method>();
         for (Method method : methods) {
             if (method.getAnnotation(annotation) != null) {
@@ -210,6 +240,26 @@ public class ReflectionUtils {
     }
 
     /**
+     * Return the declared methods on <i>clazz</i> that is annotated with an annotation
+     * that is annotated with the inheritAnnotation.
+     * 
+     * 
+     * @param clazz
+     *            Class to use when finding the method
+     * 
+     * @param inheritedAnnotation
+     *           "Parent" annotation to match
+     * 
+     * @return The methods found which is annotated with annotation.
+     */
+    public static Set<Method> getDeclaredInheritlyAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> inheritedAnnotation) {
+        Method[] methods = clazz.getDeclaredMethods();
+        Set<Method> methodSet = new HashSet<Method>();
+        methodSet.addAll(Arrays.asList(methods));
+        return filterInheritlyAnnotatedMethods(methodSet, inheritedAnnotation);
+    }
+    
+    /**
      * Return the methods on <i>clazz</i> that is annotated with an annotation
      * that is annotated with the inheritAnnotation.
      * 
@@ -217,13 +267,28 @@ public class ReflectionUtils {
      * @param clazz
      *            Class to use when finding the method
      * 
-     * @param annotation
+     * @param inheritedAnnotation
      *            The annotation to match
      * 
      * @return The methods found which is annotated with annotation.
      */
     public static Set<Method> getInheritlyAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> inheritedAnnotation) {
-        Method[] methods = clazz.getDeclaredMethods();
+        Method[] methods = clazz.getMethods();
+        Set<Method> methodSet = new HashSet<Method>();
+        methodSet.addAll(Arrays.asList(methods));
+        return filterInheritlyAnnotatedMethods(methodSet, inheritedAnnotation);
+    }
+    
+    /**
+     * Filters and returns methods that is annotated with an annotation
+     * that is annotated with the inheritAnnotation.
+     * 
+     * @param methods                   Methods to inspect
+     * @param inheritedAnnotation       "Parent" annotation to match
+     * 
+     * @return Set of all methods that had a parent annotation that of <i>inheritedAnnotation</i>.
+     **/
+    public static Set<Method> filterInheritlyAnnotatedMethods(Set<Method> methods, Class<? extends Annotation> inheritedAnnotation) {
         Set<Method> matches = new HashSet<Method>();
         for (Method method : methods) {
             Annotation[] annotations = method.getDeclaredAnnotations();

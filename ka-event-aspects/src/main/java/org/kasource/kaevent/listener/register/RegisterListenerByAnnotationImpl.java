@@ -4,12 +4,11 @@ import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kasource.kaevent.core.bean.BeanResolver;
-import org.kasource.kaevent.core.bean.CouldNotResolveBeanException;
-import org.kasource.kaevent.core.channel.Channel;
-import org.kasource.kaevent.core.channel.ChannelRegister;
-import org.kasource.kaevent.core.channel.NoSuchChannelException;
-import org.kasource.kaevent.core.listener.register.SourceObjectListenerRegister;
+import org.kasource.kaevent.bean.BeanResolver;
+import org.kasource.kaevent.bean.CouldNotResolveBeanException;
+import org.kasource.kaevent.channel.Channel;
+import org.kasource.kaevent.channel.ChannelRegister;
+import org.kasource.kaevent.channel.NoSuchChannelException;
 import org.kasource.kaevent.listener.BeanListener;
 import org.kasource.kaevent.listener.ChannelListener;
 

@@ -72,104 +72,104 @@ public class ReflectionUtilsTest {
     
     @Test
     public void getMethodCountOneTest() {
-        assertEquals(1, ReflectionUtils.getMethodCount(Foo.class));
+        assertEquals(1, ReflectionUtils.getDeclaredMethodCount(Foo.class));
     }
     
     @Test
     public void getMethodCountZeroTest() {
-        assertEquals(0, ReflectionUtils.getMethodCount(Buzz.class));
+        assertEquals(0, ReflectionUtils.getDeclaredMethodCount(Buzz.class));
     }
     
     @Test
     public void getMethodTest() {
-        assertEquals("run", ReflectionUtils.getMethod(Bar.class,"run").getName());
+        assertEquals("run", ReflectionUtils.getDeclaredMethod(Bar.class,"run").getName());
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void getMethodNoSuchMethodTest() {
-        ReflectionUtils.getMethod(Buzz.class,"run");
+        ReflectionUtils.getDeclaredMethod(Buzz.class,"run");
     }
     
     @Test
     public void getMethodsTestOne() {
-        Set<Method> methods = ReflectionUtils.getMethods(Bar.class,Void.TYPE,new Class<?>[]{});
+        Set<Method> methods = ReflectionUtils.getDeclaredMethodsMatchingReturnType(Bar.class,Void.TYPE);
         assertEquals(1, methods.size());
     }
     
     @Test
     public void getMethodsTestTwo() {
-        Set<Method> methods = ReflectionUtils.getMethods(Bar.class);
+        Set<Method> methods = ReflectionUtils.getDeclaredMethods(Bar.class);
         assertEquals(2, methods.size());
     }
     
     @Test
     public void getAnnotatedMethodTest(){
-        Method method = ReflectionUtils.getAnnotatedMethod(Foo.class,RuntimeMethodAnnotation.class);
+        Method method = ReflectionUtils.getDeclaredAnnotatedMethod(Foo.class,RuntimeMethodAnnotation.class);
         assertEquals("run", method.getName());
     }
     
     @Test
     public void getAnnotatedMethodNotRuntimeAnnotationTest(){
-        Method method = ReflectionUtils.getAnnotatedMethod(Bar.class,CompileMethodAnnotation.class);
+        Method method = ReflectionUtils.getDeclaredAnnotatedMethod(Bar.class,CompileMethodAnnotation.class);
         assertNull(method);
     }
     
     @Test
     public void getAnnotatedMethodNoMethodsTest(){
-        Method method = ReflectionUtils.getAnnotatedMethod(Buzz.class,RuntimeMethodAnnotation.class);
+        Method method = ReflectionUtils.getDeclaredAnnotatedMethod(Buzz.class,RuntimeMethodAnnotation.class);
         assertNull(method);
     }
     
     @Test
     public void getAnnotatedMethodsTest() {
-        Set<Method> methods = ReflectionUtils.getAnnotatedMethods(Fuzz.class,RuntimeMethodAnnotation.class);
+        Set<Method> methods = ReflectionUtils.getDeclaredAnnotatedMethods(Fuzz.class,RuntimeMethodAnnotation.class);
         assertEquals(2, methods.size());
-        Method runMethod = ReflectionUtils.getMethod(Fuzz.class, "run");
-        Method getNameMethod = ReflectionUtils.getMethod(Fuzz.class, "getName");
+        Method runMethod = ReflectionUtils.getDeclaredMethod(Fuzz.class, "run");
+        Method getNameMethod = ReflectionUtils.getDeclaredMethod(Fuzz.class, "getName");
         assertTrue(methods.contains(runMethod));
         assertTrue(methods.contains(getNameMethod));
     }
     
     @Test
     public void getAnnotatedMethodsWrongAnnotationTest() {
-        Set<Method> methods = ReflectionUtils.getAnnotatedMethods(Fuzz.class,RuntimeTypeAnnotation.class);
+        Set<Method> methods = ReflectionUtils.getDeclaredAnnotatedMethods(Fuzz.class,RuntimeTypeAnnotation.class);
         assertEquals(0, methods.size());
       
     }
     
     @Test
     public void getInheritlyAnnotatedMethodsTest() {
-        Set<Method> methods = ReflectionUtils.getInheritlyAnnotatedMethods(Fuzz.class,RuntimeParentAnnotation.class);
+        Set<Method> methods = ReflectionUtils.getDeclaredInheritlyAnnotatedMethods(Fuzz.class,RuntimeParentAnnotation.class);
         assertEquals(2, methods.size());
-        Method runMethod = ReflectionUtils.getMethod(Fuzz.class, "run");
-        Method getNameMethod = ReflectionUtils.getMethod(Fuzz.class, "getName");
+        Method runMethod = ReflectionUtils.getDeclaredMethod(Fuzz.class, "run");
+        Method getNameMethod = ReflectionUtils.getDeclaredMethod(Fuzz.class, "getName");
         assertTrue(methods.contains(runMethod));
         assertTrue(methods.contains(getNameMethod));
     }
     
     @Test
     public void getInheritlyAnnotatedMethodsOneMethodTest() {
-        Set<Method> methods = ReflectionUtils.getInheritlyAnnotatedMethods(Foo.class,RuntimeParentAnnotation.class);
+        Set<Method> methods = ReflectionUtils.getDeclaredInheritlyAnnotatedMethods(Foo.class,RuntimeParentAnnotation.class);
         assertEquals(1, methods.size());
-        Method runMethod = ReflectionUtils.getMethod(Foo.class, "run");
+        Method runMethod = ReflectionUtils.getDeclaredMethod(Foo.class, "run");
         assertTrue(methods.contains(runMethod));
     }
     
     @Test
     public void getInheritlyAnnotatedMethodsNoInheritTest() {
-        Set<Method> methods = ReflectionUtils.getInheritlyAnnotatedMethods(Tor.class,RuntimeParentAnnotation.class);
+        Set<Method> methods = ReflectionUtils.getDeclaredInheritlyAnnotatedMethods(Tor.class,RuntimeParentAnnotation.class);
         assertEquals(0, methods.size());
         
     }
     
     @Test
     public void hasMethodVoidReturnTypeTrueTest() {
-       assertTrue( ReflectionUtils.hasMethodVoidReturnType( ReflectionUtils.getMethod(Fuzz.class, "run")) );
+       assertTrue( ReflectionUtils.hasMethodVoidReturnType( ReflectionUtils.getDeclaredMethod(Fuzz.class, "run")) );
     }
     
     @Test
     public void hasMethodVoidReturnTypeFalseTest() {
-       assertFalse( ReflectionUtils.hasMethodVoidReturnType( ReflectionUtils.getMethod(Fuzz.class, "getName")) );
+       assertFalse( ReflectionUtils.hasMethodVoidReturnType( ReflectionUtils.getDeclaredMethod(Fuzz.class, "getName")) );
     }
     
     
