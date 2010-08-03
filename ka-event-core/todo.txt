@@ -1,0 +1,3 @@
+* Implement event filtering
+* Support channel registration in Event annotation, with auto create channels?
+* test, test and test....

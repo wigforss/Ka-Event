@@ -1,0 +1,3 @@
+* Set up examples with spring
+* Test method resolving with SpringBeanResolver
+* Set up examples with aspects
