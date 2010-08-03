@@ -80,6 +80,27 @@ public class ReflectionUtils {
     public static boolean implementsInterface( Object object,Class<?> interfaceClass) {
         return interfaceClass.isAssignableFrom(object.getClass());
     }
+    
+    
+    /**
+     * Returns a set of interfaces that the object implements which extends the <i>interfaceClass</i>
+     * supplied as argument.
+     * 
+     * @param object            The object to inspect
+     * @param interfaceClass    The interface class to compare with
+     * 
+     * @return all Interface classes the object implements that extends interfaceClass
+     */
+    public static  Set<Class<?>> getInterfacesExtending(Object object, Class<?> interfaceClass) {
+        Set<Class<?>> interfacesFound = new HashSet<Class<?>>();
+        Class<?>[] interfaces = object.getClass().getInterfaces();
+        for(Class<?> i : interfaces) {
+            if(interfaceClass.isAssignableFrom(i)) {
+                interfacesFound.add(i);
+            }
+        }
+        return interfacesFound;
+    }
 
     // //////////////////////////////////////
     //

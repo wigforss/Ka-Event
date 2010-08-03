@@ -1,0 +1,40 @@
+package org.kasource.kaevent.example.channel;
+
+import org.kasource.kaevent.channel.Channel;
+import org.kasource.kaevent.event.EventDispatcher;
+import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
+import org.kasource.kaevent.example.channel.event.TemperatureChangedEvent;
+
+
+
+
+public class ExampleRunner {
+	public static void main(String[] args) {
+		EventDispatcher eventDispatcher = getEventDispatcher();
+		for(int i=0; i < 10; ++i) {
+			createThermometer(eventDispatcher,i);
+		}
+	}
+	
+	
+	
+	private static EventDispatcher getEventDispatcher() {
+		EventDispatcher eventDispatcher = new DefaultEventDispatcher("org.kasource.kaevent.example.channel");	
+		Channel temperatureChannel = eventDispatcher.createChannel("temperatureChannel");	
+		temperatureChannel.registerEvent(TemperatureChangedEvent.class);
+		temperatureChannel.registerListener(new CommandConsole());	
+		return eventDispatcher;
+	}
+	
+	private static void createThermometer(EventDispatcher eventDispatcher, int tempDiff) {
+		Thermometer thermometer = new Thermometer();
+		Cooler cooler = new Cooler();
+		Heater heater = new Heater();
+		thermometer.setEventDispatcher(eventDispatcher);
+		thermometer.setCooler(cooler);
+		thermometer.setHeater(heater);
+		thermometer.registerListers();
+		thermometer.setOptimalTemperatur(thermometer.getOptimalTemperatur()+tempDiff);
+		new Thread(thermometer).start();
+	}
+}

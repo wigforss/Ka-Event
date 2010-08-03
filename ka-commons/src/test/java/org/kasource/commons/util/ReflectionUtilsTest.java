@@ -200,15 +200,16 @@ public class ReflectionUtilsTest {
       
     
     
-    @Ignore
+    
     @RuntimeTypeAnnotation
+    ///CLOVER:OFF
     private static class Foo implements EventListener{
         @SuppressWarnings("unused")
         @RuntimeMethodAnnotation
         public void run(){}
     }
     
-    @Ignore
+    ///CLOVER:OFF
     private static class Tor{
         @SuppressWarnings("unused")
         @RuntimeMethodOrphanAnnotation
@@ -237,7 +238,7 @@ public class ReflectionUtilsTest {
     
 
     @CompileTypeAnnotation
-    @Ignore
+    ///CLOVER:OFF
     private static class Bar {
         @SuppressWarnings("unused")
         @CompileMethodAnnotation
@@ -249,12 +250,12 @@ public class ReflectionUtilsTest {
         }
     }
     
-    @Ignore
+    ///CLOVER:OFF
     public static class Buzz{
         
     }
     
-    @Ignore
+    ///CLOVER:OFF
     public static class Fuzz{
 
         @RuntimeMethodAnnotation

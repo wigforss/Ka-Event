@@ -3,8 +3,10 @@
  */
 package org.kasource.kaevent.event;
 
+import java.util.EventListener;
 import java.util.EventObject;
 
+import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
@@ -40,7 +42,11 @@ public interface EventDispatcher {
      */
     public void fireOnCommit(EventObject event);
     
+    
+    public Channel createChannel(String channelName);
+    
     public ChannelRegister getChannelRegister();
      
-    public SourceObjectListenerRegister getSourceObjectListenerRegister();
+    public void registerListener(EventListener listener,
+            Object sourceObject);
 }

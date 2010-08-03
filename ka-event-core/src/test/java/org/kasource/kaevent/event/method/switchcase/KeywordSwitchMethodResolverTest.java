@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.kasource.kaevent.event.method.switchcas;
+package org.kasource.kaevent.event.method.switchcase;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

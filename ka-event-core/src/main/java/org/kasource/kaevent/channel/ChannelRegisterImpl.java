@@ -19,6 +19,10 @@ public class ChannelRegisterImpl implements ChannelRegister{
  
     
     
+    public ChannelRegisterImpl() {
+        
+    }
+    
 
     /**
      * Add the information that <i>channel</i> now handles event <i>eventClass</i> as well.
@@ -123,5 +127,7 @@ public class ChannelRegisterImpl implements ChannelRegister{
         }
         
     }
+    
+   
 
 }

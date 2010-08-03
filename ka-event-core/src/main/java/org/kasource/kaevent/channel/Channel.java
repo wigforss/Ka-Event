@@ -1,5 +1,6 @@
 package org.kasource.kaevent.channel;
 
+import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
@@ -56,7 +57,7 @@ public interface Channel {
      **/
     public abstract Set<Class<? extends EventObject>> getEvents();
     
-   
+    public abstract Collection<Class<? extends EventListener>> getSupportedInterfaces();
     
     /**
      * Register a new Event type to the register. Any listener already registered

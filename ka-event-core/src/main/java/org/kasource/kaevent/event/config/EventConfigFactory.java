@@ -9,6 +9,7 @@ import java.util.EventObject;
 import java.util.Set;
 
 import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.listener.interfaces.MethodResolving;
@@ -23,6 +24,9 @@ import org.kasource.kaevent.listener.interfaces.MethodResolving;
  */
 public class EventConfigFactory {
 
+    public EventConfigFactory(BeanResolver beanResolver) {
+        methodResolverExtractor = new AnnotationMethodResolverExtractor(beanResolver);
+    }
 
     private AnnotationMethodResolverExtractor methodResolverExtractor;
 
@@ -38,7 +42,7 @@ public class EventConfigFactory {
             throw new IllegalArgumentException(event+" is not annotated with @Event!");
         }
         Class<? extends EventListener> listener  = eventAnnotation.listener();
-        DefaultEventConfig eventConfig = new DefaultEventConfig(event, listener);
+        EventConfigImpl eventConfig = new EventConfigImpl(event, listener);
         MethodResolving methodResolving = listener.getAnnotation(MethodResolving.class);
         if (methodResolving != null) {
             eventConfig.methodResolver = methodResolverExtractor.getMethodResolver(event, listener, methodResolving);
@@ -50,7 +54,7 @@ public class EventConfigFactory {
         return eventConfig;
     }
 
-    private void setDefaultMethod(DefaultEventConfig eventConfig, Class<? extends EventObject> event,
+    private void setDefaultMethod(EventConfigImpl eventConfig, Class<? extends EventObject> event,
             Class<? extends EventListener> listener) {
         if (ReflectionUtils.getDeclaredMethodCount(listener) == 1) {
             Set<Method> methodSet = ReflectionUtils.getDeclaredMethodsMatchingReturnType(listener, Void.TYPE, event );
@@ -62,7 +66,7 @@ public class EventConfigFactory {
 
     public EventConfig createEventConfig(Class<? extends EventObject> event, Class<? extends EventListener> listener,
             Method eventMethod) {
-    	DefaultEventConfig eventConfig = new DefaultEventConfig(event, listener);
+    	EventConfigImpl eventConfig = new EventConfigImpl(event, listener);
         ReflectionUtils.verifyMethodSignature(eventMethod, Void.TYPE, event);
         eventConfig.defaultMethod = eventMethod;
         return eventConfig;
@@ -70,7 +74,7 @@ public class EventConfigFactory {
 
     public EventConfig createEventConfig(Class<? extends EventObject> event, Class<? extends EventListener> listener,
             MethodResolver methodResolver) {
-    	DefaultEventConfig eventConfig = new DefaultEventConfig(event, listener);
+    	EventConfigImpl eventConfig = new EventConfigImpl(event, listener);
         if(methodResolver == null) {
         	throw new IllegalArgumentException("methodResolver is not allowed to be null");
         }

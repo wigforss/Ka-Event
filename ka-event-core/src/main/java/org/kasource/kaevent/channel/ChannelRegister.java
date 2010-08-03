@@ -65,5 +65,8 @@ public interface ChannelRegister {
      * @param eventClass        The eventClass added to the channel
      **/
     public void handleEvent(Channel channel, Class<? extends EventObject> eventClass);
+    
+    
+    
   
 }

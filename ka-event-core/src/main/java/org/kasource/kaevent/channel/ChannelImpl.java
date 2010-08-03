@@ -1,12 +1,17 @@
 package org.kasource.kaevent.channel;
 
+import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.ChannelListenerRegister;
+import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
 
 
 
@@ -25,15 +30,19 @@ public class ChannelImpl  implements Channel {
     // Name of the channel
     private String name;
     // Set of event classes this channel handles
-    private Set<Class<? extends EventObject>> events = new HashSet<Class<? extends EventObject>>();
-
+    private Map<Class<? extends EventObject>,Class<? extends EventListener>> eventMap = new HashMap<Class<? extends EventObject>,Class<? extends EventListener>>();
     private ChannelListenerRegister listenerRegister;
     private EventRegister eventRegister;
     private ChannelRegister channelRegister;
-
-    ChannelImpl(String name, ChannelRegister channelRegister) {
+    private EventMethodInvoker eventMethodInvoker;
+    
+    
+    ChannelImpl(String name, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker) {
         this.name = name;
         this.channelRegister = channelRegister;
+        this.eventRegister = eventRegister;
+        this.eventMethodInvoker = eventMethodInvoker;
+        listenerRegister = new ChannelListenerRegisterImpl(this, eventRegister);
     }
 
     
@@ -51,8 +60,8 @@ public class ChannelImpl  implements Channel {
         if (eventRegister.getEventByClass(eventClass) == null) {
             throw new IllegalStateException(eventClass + " is not a registered event");
         }
-        if (!events.contains(eventClass)) { 
-                events.add(eventClass);
+        if (!eventMap.containsKey(eventClass)) { 
+                eventMap.put(eventClass, eventRegister.getEventByClass(eventClass).getListener());
                 channelRegister.handleEvent(this, eventClass);
         }
     }
@@ -69,12 +78,7 @@ public class ChannelImpl  implements Channel {
      **/
     @Override
     public void fireEvent(EventObject event, boolean blocked) {
-        /*if(dispatchHelper.passFilters(event, getEventFilterRegistry().getFilters( event.getClass()))) {
-            Set<EventListenerRegistration> channelListeners = getListenerRegistry().getListenersByEventClass(event.getClass());
-            if (channelListeners != null) {
-                dispatchHelper.callListeners(event, eventRegister.getEventByEventClass(event.getClass()), channelListeners, blocked);
-            }
-        }*/
+        eventMethodInvoker.invokeEventMethod(event, listenerRegister.getListenersByEvent(event), blocked);
     }
     
     /**
@@ -84,9 +88,20 @@ public class ChannelImpl  implements Channel {
      **/
     @Override
     public Set<Class<? extends EventObject>> getEvents() {
-        return events;
+        return eventMap.keySet();
     }
 
+    /**
+     * Returns the set of events this channel handles. 
+     * 
+     * @return all events this channel handles
+     **/
+    @Override
+    public Collection<Class<? extends EventListener>> getSupportedInterfaces() {
+        
+        return eventMap.values();
+    }
+  
     
     /**
      * Return the name of the channel.

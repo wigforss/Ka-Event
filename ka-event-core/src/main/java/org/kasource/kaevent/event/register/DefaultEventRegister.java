@@ -14,7 +14,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventConfigFactory;
-import org.kasource.kaevent.event.export.AnnotationEventExporter;
+import org.kasource.kaevent.event.export.EventExporter;
 
 /**
  * @author rikardwigforss
@@ -24,26 +24,36 @@ public class DefaultEventRegister implements EventRegister{
     private static Logger logger = Logger.getLogger(DefaultEventRegister.class);
     private Map<Class<? extends EventObject>, EventConfig> eventsByClass = new HashMap<Class<? extends EventObject>, EventConfig>();
     private Map<Class<? extends EventListener>, EventConfig> eventsByInterface = new HashMap<Class<? extends EventListener>, EventConfig>();
-    private AnnotationEventExporter annotationEventExporter;
+    private EventExporter eventExporter;
     private EventConfigFactory eventConfigFactory;
     
-    public DefaultEventRegister() throws IOException {
-        
+    public DefaultEventRegister() {
+        initialize();
+    }
+    
+    public DefaultEventRegister(EventExporter eventExporter)  {
+       this.eventExporter = eventExporter;
+       initialize();
     }
 
     public void initialize() {
-        importAnnotatedEvents();
+       if(eventExporter != null) {
+           importEvents();
+       }
     }
     
-    protected void  importAnnotatedEvents() {
+    protected void  importEvents() {
         Set<EventConfig> events;
         try {
-            events = annotationEventExporter.exportEvents();
+            events = eventExporter.exportEvents();
             for(EventConfig event : events) {
                 registerEvent(event);
             }
-        } catch (Exception e) {
-          logger.error("Error when importing annotated events",e);
+        } catch (RuntimeException re) {
+          logger.error("Error when importing annotated events",re);
+          throw re;
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not import events", e);
         } 
       
     }

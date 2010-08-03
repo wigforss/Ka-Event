@@ -14,14 +14,14 @@ import org.kasource.kaevent.event.method.MethodResolver;
  * @author rikard
  * @version $Id$
  **/
-public class DefaultEventConfig implements EventConfig {
+public class EventConfigImpl implements EventConfig {
     private Class<? extends EventObject> eventClass;
     private Class<? extends EventListener> listener;
     Method defaultMethod; // May be null  
     MethodResolver methodResolver;
  
 
-    DefaultEventConfig(Class<? extends EventObject> eventClass, 
+    EventConfigImpl(Class<? extends EventObject> eventClass, 
                            Class<? extends EventListener> listener) {
         this.eventClass = eventClass;
         this.listener = listener;   

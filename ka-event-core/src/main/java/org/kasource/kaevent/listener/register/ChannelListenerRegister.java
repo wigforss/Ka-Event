@@ -4,9 +4,11 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
 
+import org.kasource.kaevent.channel.Channel;
 
-public interface ChannelListenerRegister {
-	 /**
+
+public interface ChannelListenerRegister extends EventListenerRegister{
+    /**
      * Register a new listener object to this channel
      * 
      * @param listener
@@ -42,5 +44,5 @@ public interface ChannelListenerRegister {
      * 
      * @return all listener object of eventClass
      **/
-    public abstract Set<EventListener> getListenersByEventClass(Class<? extends EventObject> eventClass);
+    public abstract Set<EventListener> getListenersByEvent(EventObject event);
 }

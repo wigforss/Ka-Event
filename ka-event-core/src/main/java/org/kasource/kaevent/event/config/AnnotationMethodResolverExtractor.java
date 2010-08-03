@@ -24,6 +24,11 @@ public class AnnotationMethodResolverExtractor {
   
     private BeanResolver beanResolver;
     
+    
+    public AnnotationMethodResolverExtractor(BeanResolver beanResolver) {
+        this.beanResolver = beanResolver;
+    }
+    
     /**
      * @param event
      * @param listener
