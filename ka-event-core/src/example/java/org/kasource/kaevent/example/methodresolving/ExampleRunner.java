@@ -6,16 +6,19 @@ import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
 
 
 
+
 /**
- * Configures and starts the example application
+ * Example that demonstrates the usage of the "Keyword Switch" method resolver.
  * 
- * @author rikard
+ * See the TemperatureChangeEventListener class.
+ * 
+ * @author wigforss
  **/
 ///CLOVER:OFF
 public class ExampleRunner {
 	public static void main(String[] args) {
 		Thermometer thermometer = new Thermometer();
-		EventDispatcher eventDispatcher = new DefaultEventDispatcher("org.kasource.kaevent.example.methodresolving");
+		EventDispatcher eventDispatcher = new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName());
 		Cooler cooler = new Cooler();
 		Heater heater = new Heater();
 		thermometer.setEventDispatcher(eventDispatcher);

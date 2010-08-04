@@ -7,7 +7,14 @@ import org.kasource.kaevent.example.channel.event.TemperatureChangedEvent;
 
 
 
-
+/**
+ * Example that demonstrate usage of Channels. 
+ * 
+ * The CommandConsole class listens to the temperatureChannel instead of
+ * a thermometer object.
+ * 
+ * @author wigforss
+ **/
 public class ExampleRunner {
 	public static void main(String[] args) {
 		EventDispatcher eventDispatcher = getEventDispatcher();
@@ -19,7 +26,7 @@ public class ExampleRunner {
 	
 	
 	private static EventDispatcher getEventDispatcher() {
-		EventDispatcher eventDispatcher = new DefaultEventDispatcher("org.kasource.kaevent.example.channel");	
+		EventDispatcher eventDispatcher = new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName());	
 		Channel temperatureChannel = eventDispatcher.createChannel("temperatureChannel");	
 		temperatureChannel.registerEvent(TemperatureChangedEvent.class);
 		temperatureChannel.registerListener(new CommandConsole());	

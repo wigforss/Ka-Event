@@ -8,5 +8,5 @@ package org.kasource.kaevent.listener.interfaces;
  *
  */
 public enum MethodResolverType {
-    NONE,KEYWORD_SWITCH, BEAN, FACTORY
+    KEYWORD_SWITCH, BEAN, FACTORY
 }

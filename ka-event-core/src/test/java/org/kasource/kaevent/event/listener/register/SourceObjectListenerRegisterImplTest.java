@@ -51,8 +51,8 @@ public class SourceObjectListenerRegisterImplTest {
                 
             }
         };
-        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
-        EasyMock.expect((Class)eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(2);
+        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
+        EasyMock.expect((Class)eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
         EasyMockUnitils.replay();
         
         register.registerListener(listener, source);
@@ -72,7 +72,7 @@ public class SourceObjectListenerRegisterImplTest {
             }
         };
         EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
-        EasyMock.expect((Class)eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(3);
+        EasyMock.expect((Class)eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
         EasyMockUnitils.replay();
         
         register.registerListener(listener, source);

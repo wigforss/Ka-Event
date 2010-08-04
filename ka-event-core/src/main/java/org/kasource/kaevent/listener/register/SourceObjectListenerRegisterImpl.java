@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-
 import org.kasource.kaevent.event.register.EventRegister;
 
 /**

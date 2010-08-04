@@ -17,13 +17,14 @@ import org.kasource.kaevent.event.export.EventExporter;
 import org.kasource.kaevent.event.register.DefaultEventRegister;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegister;
-import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
+import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 
 /**
  * @author wigforss
  *
  */
+///CLOVER:OFF
 public class FrameworkConfigurer {
 
     public void configure(DefaultEventDispatcher eventDispatcher, String scanPath) {

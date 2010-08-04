@@ -1,12 +1,13 @@
-package org.kasource.kaevent.example.simple;
+package org.kasource.kaevent.example.custom;
+
+
 
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
 
-
 /**
- * Simple example that demonstrates listening to source objects.
- * 
+ * Example which uses a custom method resolver found by invoking a factory method, see TemperatureChangeEventListener for details. 
+ *  
  * @author wigforss
  **/
 public class ExampleRunner {

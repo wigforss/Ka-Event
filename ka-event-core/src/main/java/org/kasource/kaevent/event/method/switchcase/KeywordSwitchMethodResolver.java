@@ -103,7 +103,7 @@ import org.kasource.kaevent.event.method.MethodResolver;
  * @author wigforss
  * @version $Id$
  **/
-public class KeywordSwitchMethodResolver implements MethodResolver {
+public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> {
 
      Map<String, Method> methodMap = new HashMap<String, Method>();
      Method defaultMethod;

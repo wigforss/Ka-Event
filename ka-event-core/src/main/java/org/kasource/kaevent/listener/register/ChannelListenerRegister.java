@@ -4,8 +4,6 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
 
-import org.kasource.kaevent.channel.Channel;
-
 
 public interface ChannelListenerRegister extends EventListenerRegister{
     /**

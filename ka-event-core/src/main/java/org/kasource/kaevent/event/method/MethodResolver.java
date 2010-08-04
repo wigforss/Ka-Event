@@ -16,7 +16,7 @@ import java.util.EventObject;
  * @author rikard
  * @version $Id$
  **/
-public interface MethodResolver{
+public interface MethodResolver<T extends EventObject>{
     /**
      * Returns a valid event interface method to be used. The interface methods
      * must be public, return void and take only one parameter on the eventClass
@@ -29,5 +29,5 @@ public interface MethodResolver{
      * 
      * @throws IllegalStateException
      **/
-    public  Method resolveMethod(EventObject event);
+    public  Method resolveMethod(T event);
 }

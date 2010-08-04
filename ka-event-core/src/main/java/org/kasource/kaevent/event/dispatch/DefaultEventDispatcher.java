@@ -5,7 +5,6 @@ package org.kasource.kaevent.event.dispatch;
 
 import java.util.EventListener;
 import java.util.EventObject;
-import java.util.Queue;
 
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
@@ -42,15 +41,13 @@ public class DefaultEventDispatcher implements EventDispatcher{
     
     @Override
     public void fire(EventObject event) {
-       eventSender.dispatchEvent(event, false);
-        
+        eventQueue.enqueue(event);        
     }
 
    
     @Override
     public void fireBlocked(EventObject event) {
-    	eventQueue.enqueue(event);
-        
+        eventSender.dispatchEvent(event, false);       
     }
 
   

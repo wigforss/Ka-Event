@@ -18,6 +18,7 @@ public class EventConfigImpl implements EventConfig {
     private Class<? extends EventObject> eventClass;
     private Class<? extends EventListener> listener;
     Method defaultMethod; // May be null  
+    @SuppressWarnings("unchecked")
     MethodResolver methodResolver;
  
 
@@ -46,6 +47,7 @@ public class EventConfigImpl implements EventConfig {
      * 
      * @return Returns the interface method to be invoked
      **/
+    @SuppressWarnings("unchecked")
     @Override
     public  Method getEventMethod(EventObject event) {
         return (defaultMethod != null ? defaultMethod : methodResolver.resolveMethod(event));

@@ -39,7 +39,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     
     
     public void enqueue(EventObject event) {
-        super.execute(new EventRunner(eventSender,Thread.currentThread(), event));
+        super.execute(new EventRunner(eventSender, event));
     }
     
     
@@ -84,12 +84,10 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     private static class EventRunner implements Runnable{
 
         private EventSender eventSender;
-        private Thread thread;
         private EventObject event;
         
-        EventRunner(EventSender eventSender, Thread thread, EventObject event) {
+        EventRunner(EventSender eventSender, EventObject event) {
             this.eventSender = eventSender;
-            this.thread = thread;
             this.event = event;
         }
         
@@ -100,12 +98,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
         }
 
 
-        /**
-         * @return the thread
-         */
-        public Thread getThread() {
-            return thread;
-        }
+       
         
     }
 

@@ -8,7 +8,6 @@ import java.util.EventObject;
 
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelRegister;
-import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 /**
  * @author rikardwigforss

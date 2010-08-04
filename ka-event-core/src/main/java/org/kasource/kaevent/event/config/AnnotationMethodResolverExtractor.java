@@ -34,6 +34,7 @@ public class AnnotationMethodResolverExtractor {
      * @param listener
      * @param methodResolving
      */
+    @SuppressWarnings("unchecked")
     public MethodResolver getMethodResolver(Class<? extends EventObject> event,
             Class<? extends EventListener> listener, MethodResolving methodResolving) {
         switch (methodResolving.value()) {
@@ -75,7 +76,7 @@ public class AnnotationMethodResolverExtractor {
         String methodName = factoryMethodResolver.factoryMethod();
         String parameter = factoryMethodResolver.factoryMethodArgument();
         try {
-            if (parameter == null) {
+            if (parameter == null || parameter.length() == 0) {
                 Method method = ReflectionUtils.getDeclaredMethod(factoryClass, methodName);
                 return (MethodResolver) method.invoke(null);
             } else {

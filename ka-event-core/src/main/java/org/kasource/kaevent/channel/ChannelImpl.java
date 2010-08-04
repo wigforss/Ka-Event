@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.ChannelListenerRegister;
@@ -57,11 +57,12 @@ public class ChannelImpl  implements Channel {
      **/
     @Override
     public void registerEvent(Class<? extends EventObject> eventClass) {
-        if (eventRegister.getEventByClass(eventClass) == null) {
+        EventConfig eventConfig = eventRegister.getEventByClass(eventClass);
+        if (eventConfig == null) {
             throw new IllegalStateException(eventClass + " is not a registered event");
         }
         if (!eventMap.containsKey(eventClass)) { 
-                eventMap.put(eventClass, eventRegister.getEventByClass(eventClass).getListener());
+                eventMap.put(eventClass, eventConfig.getListener());
                 channelRegister.handleEvent(this, eventClass);
         }
     }

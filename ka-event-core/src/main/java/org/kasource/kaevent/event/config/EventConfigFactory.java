@@ -72,6 +72,7 @@ public class EventConfigFactory {
         return eventConfig;
     }
 
+    @SuppressWarnings("unchecked")
     public EventConfig createEventConfig(Class<? extends EventObject> event, Class<? extends EventListener> listener,
             MethodResolver methodResolver) {
     	EventConfigImpl eventConfig = new EventConfigImpl(event, listener);
