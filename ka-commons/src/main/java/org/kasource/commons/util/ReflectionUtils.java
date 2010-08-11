@@ -1,6 +1,7 @@
 package org.kasource.commons.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,6 +15,10 @@ import java.util.Set;
  **/
 public class ReflectionUtils {
 
+    
+    // Should not be possible to create an object of ReflectionUtils
+    private ReflectionUtils() {}
+    
     // //////////////////////////////////////
     //
     // Annotations
@@ -102,6 +107,63 @@ public class ReflectionUtils {
         return interfacesFound;
     }
 
+    
+    /**
+     * Returns a set of all interfaces that the object implements that is annotated with annotation
+     * 
+     * @param object            Object to inspect
+     * @param annotation        Annotation to match
+     * 
+     * @return All interfaces that the object implements that is annotated with annotation
+     */
+    public static Set<Class<?>> getAnnotatedInterfaces(Object object, Class<? extends Annotation> annotation) {
+        Set<Class<?>> interfaceMatches = new HashSet<Class<?>>();
+        Class<?>[] interfaces = object.getClass().getInterfaces();
+        for(Class<?> i : interfaces) {
+            if(i.getAnnotation(annotation) != null) {
+                interfaceMatches.add(i);
+            }
+        }
+        return interfaceMatches;
+    }
+    
+    
+    // //////////////////////////////////////
+    //
+    // Object creation
+    //  
+    // /////////////////////////////////////
+    
+    /**
+     * Returns a new object of <i>className</i>. The objected is casted to the <i>ofType</i>, which is either super class or interface of the className class.
+     * 
+     * @param className         Name of the class to instanciate an object of
+     * @param ofType            An super class or interface of the className class.
+     * @param constructorArgs   Constructor arguments to use when creating a new instance
+     * 
+     * @return A new instance of class with name className casted to the ofType class.
+     **/
+    @SuppressWarnings("unchecked")
+    public static <T> T getInstance(String className, Class<T> ofType, Object... constructorArgs) {
+        try {
+            Class<?> clazz = Class.forName(className);
+            
+            Class<?>[] contructorParamTypes = new Class[constructorArgs.length];
+            for(int i = 0; i < constructorArgs.length; ++i) {
+                contructorParamTypes[i] = constructorArgs[i].getClass();
+            }
+            Constructor<?> constructor = clazz.getConstructor(contructorParamTypes);
+            return (T) constructor.newInstance(constructorArgs);
+        } catch (Exception e) {
+            if(e instanceof ClassCastException) {
+                throw new IllegalStateException(className + " is not of type "+ ofType.getName());
+            } else {
+                throw new IllegalStateException("Could not instanceiate " + className + " using default constructor!");
+            }
+        } 
+    }
+    
+    
     // //////////////////////////////////////
     //
     // Methods

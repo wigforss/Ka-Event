@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://kasource.org" xmlns="http://kasource.org"
+	elementFormDefault="qualified">
+	<!--  Root tag -->
+	<xs:element name="kaEventConfig">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="events" maxOccurs="1" minOccurs="0" />
+				<xs:element ref="channels" maxOccurs="1" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	
+
+	<xs:element name="annotationMethodResolver"/>
+	<xs:element name="factoryMethodResolver">
+		<xs:complexType>
+			<xs:attribute name="factoryClass" type="javaClass" use="required" />
+			<xs:attribute name="factoryMethod" type="javaMethodName" use="required"/>
+			<xs:attribute name="factoryMethodArgument" type="xs:string" use="optional"/>
+	 	</xs:complexType> 
+	</xs:element>
+	<xs:element name="beanMethodResolver">
+		<xs:complexType>
+			<xs:attribute name="bean" type="xs:Name" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="case">
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+			<xs:attribute name="method" type="javaMethodName" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="default">
+		<xs:complexType>
+			<xs:attribute name="method" type="javaMethodName" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="switchMethodResolver">
+		<xs:complexType>
+			<xs:sequence>	
+				<xs:element ref="case" maxOccurs="unbounded" />
+				<xs:element ref="default" maxOccurs="1" minOccurs="1"/>
+			</xs:sequence>
+			<xs:attribute name="keywordMethod" type="javaMethodName" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Event Config  -->	
+	<xs:element name="event">
+		<xs:complexType>
+			<xs:sequence>
+			<xs:choice maxOccurs="1" minOccurs="0">
+				<xs:element ref="annotationMethodResolver"/>
+				<xs:element ref="factoryMethodResolver"/>
+				<xs:element ref="beanMethodResolver"/>
+				<xs:element ref="switchMethodResolver"/>
+			</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="required"/>
+			<xs:attribute name="eventClass" type="javaClass" use="required" />
+			<xs:attribute name="listenerInterface" type="javaClass" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	
+	
+	<!-- List of Event Config -->
+	<xs:element name="events">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="event" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="handle">
+		<xs:complexType>
+			<xs:attribute name="event" type="xs:IDREF" use="required"/> 
+		</xs:complexType>
+	</xs:element>
+	<!-- Channel -->
+	<xs:element name="channel">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="handle" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="required" />
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- List of Channels -->
+	<xs:element name="channels">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="channel" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Types -->
+	<xs:simpleType name="javaClass">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-z]{2,6}(\.[a-zA-Z][a-zA-Z_$0-9]*)+\.([A-Z][a-zA-Z_$0-9]*){1}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="javaMethodName">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(\D){1}(\w|_|[0-9])*"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	
+</xs:schema>

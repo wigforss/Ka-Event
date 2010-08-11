@@ -3,7 +3,7 @@ package org.kasource.kaevent.example.simple;
 import org.kasource.kaevent.example.simple.event.TemperatureChangeEvent;
 import org.kasource.kaevent.example.simple.event.TemperatureChangeEventListener;
 
-
+///CLOVER:OFF
 public class Cooler implements TemperatureChangeEventListener{
 
 	

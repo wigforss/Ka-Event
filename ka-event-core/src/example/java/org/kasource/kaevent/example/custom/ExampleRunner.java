@@ -10,6 +10,7 @@ import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
  *  
  * @author wigforss
  **/
+///CLOVER:OFF
 public class ExampleRunner {
 	public static void main(String[] args) {
 		Thermometer thermometer = new Thermometer();

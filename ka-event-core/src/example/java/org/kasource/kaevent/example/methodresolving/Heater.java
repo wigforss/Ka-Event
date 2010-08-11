@@ -3,7 +3,7 @@ package org.kasource.kaevent.example.methodresolving;
 import org.kasource.kaevent.example.methodresolving.event.TemperatureChangeEvent;
 import org.kasource.kaevent.example.methodresolving.event.TemperatureChangeEventListener;
 
-
+///CLOVER:OFF
 public class Heater implements TemperatureChangeEventListener{
 
 	private boolean enabled = false;

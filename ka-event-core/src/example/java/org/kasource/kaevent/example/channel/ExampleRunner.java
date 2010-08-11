@@ -15,6 +15,7 @@ import org.kasource.kaevent.example.channel.event.TemperatureChangedEvent;
  * 
  * @author wigforss
  **/
+///CLOVER:OFF
 public class ExampleRunner {
 	public static void main(String[] args) {
 		EventDispatcher eventDispatcher = getEventDispatcher();

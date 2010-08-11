@@ -24,7 +24,7 @@ public class DefaultEventDispatcher implements EventDispatcher{
     private ChannelFactory channelFactory;
     private SourceObjectListenerRegister sourceObjectListenerRegister;
     private DispatcherQueueThread eventQueue;
-    
+    private FrameworkConfigurer configurer = new FrameworkConfigurer();
     
     public DefaultEventDispatcher(String scanPath) {
         initialize(scanPath);
@@ -34,8 +34,8 @@ public class DefaultEventDispatcher implements EventDispatcher{
         initialize(null);
     }
     
-    private void initialize(String scanPath) {
-        new FrameworkConfigurer().configure(this, scanPath);
+    protected void initialize(String scanPath) {
+        configurer.configure(this, scanPath);
     }
     
     
@@ -47,7 +47,7 @@ public class DefaultEventDispatcher implements EventDispatcher{
    
     @Override
     public void fireBlocked(EventObject event) {
-        eventSender.dispatchEvent(event, false);       
+        eventSender.dispatchEvent(event, true);       
     }
 
   

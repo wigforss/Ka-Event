@@ -4,7 +4,7 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.example.simple.event.TemperatureChangeEvent;
 
 
-
+///CLOVER:OFF
 public class Thermometer implements Runnable{
 	private double optimalTemperatur = 22.0d;
 	private double currentTemperatur = 0.0d;

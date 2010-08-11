@@ -17,6 +17,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.event.config.EventConfig;
+import org.kasource.kaevent.event.config.EventConfigFactory;
 import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
@@ -34,12 +35,16 @@ public class DefaultEventRegisterTest {
     @Mock
     private EventConfig eventConfig;
     
+    
+    @InjectIntoByType
+    private EventConfigFactory eventConfigFactory = EasyMockUnitils.createMock(EventConfigFactory.class);
+    
     @Mock
     @InjectIntoByType
     private AnnotationEventExporter eventExporter;
     
     @TestedObject
-    private DefaultEventRegister register = new DefaultEventRegister();
+    private DefaultEventRegister register = new DefaultEventRegister(eventConfigFactory);
     
     
     @SuppressWarnings("unchecked")
@@ -47,12 +52,12 @@ public class DefaultEventRegisterTest {
     public void registerAnnotatedEventsTest() throws IOException {
         Set<EventConfig> importedEvents = new HashSet<EventConfig>();
         importedEvents.add(eventConfig);
-        EasyMock.expect(eventExporter.exportEvents()).andReturn(importedEvents);
+        EasyMock.expect(eventExporter.exportEvents(eventConfigFactory,null)).andReturn(importedEvents);
         EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class);
         EasyMock.expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class);
       
         EasyMockUnitils.replay();
-        register.initialize();
+        register.initialize(null);
         assertEquals(eventConfig, register.getEventByClass(ChangeEvent.class));
         assertEquals(eventConfig, register.getEventByInterface(ChangeListener.class));  
     }

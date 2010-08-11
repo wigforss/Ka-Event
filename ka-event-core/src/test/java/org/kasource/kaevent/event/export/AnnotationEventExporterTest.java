@@ -28,11 +28,11 @@ import org.unitils.inject.annotation.TestedObject;
 public class AnnotationEventExporterTest {
     
 
-    @InjectIntoByType
-    private String scanPath ="org.kasource.kaevent.event.export.test.event";
+
+    private String scanPath = AnnotationEventExporterTest.class.getPackage().getName();
     
 
-    @InjectIntoByType
+    
     @Mock
     private EventConfigFactory eventConfigFactory;
     
@@ -40,15 +40,16 @@ public class AnnotationEventExporterTest {
     private EventConfig eventConfig;
     
     @TestedObject
-    private AnnotationEventExporter exporter = new AnnotationEventExporter(scanPath, eventConfigFactory);
+    private AnnotationEventExporter exporter = new AnnotationEventExporter();
     
     
     @Test
     public void scanAnnotationTest() throws IOException {
         EasyMock.expect(eventConfigFactory.createEventConfig(SimpleEvent.class)).andReturn(eventConfig);
         EasyMockUnitils.replay();
-        Set<EventConfig> eventSet = exporter.exportEvents();   
+        Set<EventConfig> eventSet = exporter.exportEvents(eventConfigFactory, scanPath);   
         assertEquals(1, eventSet.size());
     }
     
+   
 }

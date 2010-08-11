@@ -3,10 +3,13 @@
  */
 package org.kasource.kaevent.event.dispatch;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
+
+import javax.swing.event.ChangeEvent;
 
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.config.EventConfig;
@@ -41,17 +44,20 @@ public class EventMethodInvoker {
     private void invokeBlocked(Method method, EventListener listener, EventObject event) {
         try {
             method.invoke(listener, event);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to invoke " + method + " on " + listener, e);
-        }
+        }  catch (Exception e) {
+            throw new RuntimeException("Failed to invoke " + method + " on " + listener, e instanceof InvocationTargetException ? e.getCause() : e);
+        } 
     }
 
     private void invoke(Method method, EventListener listener, EventObject event) {
         try {
             method.invoke(listener, event);
         } catch (Exception e) {
-            logger.error("Failed to invoke " + method + " on " + listener, e);
+            logger.error("Failed to invoke " + method + " on " + listener, e instanceof InvocationTargetException ? e.getCause() : e);
         }
     }
+
+    
+    
 
 }

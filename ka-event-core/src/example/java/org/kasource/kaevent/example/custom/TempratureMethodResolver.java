@@ -14,6 +14,7 @@ import org.kasource.kaevent.example.custom.event.TemperatureChangeEventListener;
  * @author rikardwigforss
  * 
  */
+///CLOVER:OFF
 public class TempratureMethodResolver implements MethodResolver<TemperatureChangeEvent> {
     
     public static TempratureMethodResolver getInstance(){

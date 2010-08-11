@@ -3,6 +3,7 @@ package org.kasource.kaevent.example.channel;
 import org.kasource.kaevent.example.channel.event.TemperatureChangedEvent;
 import org.kasource.kaevent.example.channel.event.TemperatureChangedEventListener;
 
+///CLOVER:OFF
 public class Heater implements TemperatureChangedEventListener{
 private boolean enabled = false;
 	

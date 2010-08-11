@@ -27,25 +27,27 @@ public class DefaultEventRegister implements EventRegister{
     private EventExporter eventExporter;
     private EventConfigFactory eventConfigFactory;
     
-    public DefaultEventRegister() {
-        initialize();
+    public DefaultEventRegister(EventConfigFactory eventConfigFactory) {
+        this.eventConfigFactory = eventConfigFactory;
+        initialize(null);
     }
     
-    public DefaultEventRegister(EventExporter eventExporter)  {
+    public DefaultEventRegister(EventConfigFactory eventConfigFactory,EventExporter eventExporter,String scanClassPath)  {
+       this.eventConfigFactory = eventConfigFactory;
        this.eventExporter = eventExporter;
-       initialize();
+       initialize(scanClassPath);
     }
 
-    public void initialize() {
+    public void initialize(String scanClassPath) {
        if(eventExporter != null) {
-           importEvents();
+           importEvents(scanClassPath);
        }
     }
     
-    protected void  importEvents() {
+    protected void  importEvents(String scanClassPath) {
         Set<EventConfig> events;
         try {
-            events = eventExporter.exportEvents();
+            events = eventExporter.exportEvents(eventConfigFactory, scanClassPath);
             for(EventConfig event : events) {
                 registerEvent(event);
             }

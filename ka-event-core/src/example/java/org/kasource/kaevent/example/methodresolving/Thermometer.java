@@ -4,7 +4,7 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.example.methodresolving.event.TemperatureChangeEvent;
 import org.kasource.kaevent.example.methodresolving.event.TemperatureDirection;
 
-
+///CLOVER:OFF
 public class Thermometer implements Runnable {
 	
 	private double optimalTemperatur = 22.0d;

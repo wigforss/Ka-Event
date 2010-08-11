@@ -3,7 +3,7 @@ package org.kasource.kaevent.example.channel;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.example.channel.event.TemperatureChangedEvent;
 
-
+///CLOVER:OFF
 public class Thermometer implements Runnable{
 	private static int counter = 0;
 	

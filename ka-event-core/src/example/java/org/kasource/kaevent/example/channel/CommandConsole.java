@@ -8,7 +8,7 @@ import org.kasource.kaevent.example.channel.event.TemperatureChangedEventListene
 
 
 
-
+///CLOVER:OFF
 public class CommandConsole implements TemperatureChangedEventListener{
 
 	@Override

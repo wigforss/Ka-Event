@@ -5,6 +5,7 @@ import java.util.EventObject;
 import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.example.custom.Thermometer;
 
+///CLOVER:OFF
 @Event(listener = TemperatureChangeEventListener.class)
 public class TemperatureChangeEvent extends EventObject {
     private static final long serialVersionUID = 1L;

@@ -5,7 +5,7 @@ import org.kasource.kaevent.example.custom.event.TemperatureChangeEventListener;
 
 
 
-
+///CLOVER:OFF
 public class Heater implements TemperatureChangeEventListener{
 
 	private boolean enabled = false;

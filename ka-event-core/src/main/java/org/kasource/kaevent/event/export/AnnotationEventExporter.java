@@ -28,24 +28,20 @@ import org.scannotation.ClasspathUrlFinder;
 public class AnnotationEventExporter implements EventExporter {
     public static final Logger logger = Logger.getLogger(AnnotationEventExporter.class);
 
-    private String scanPath;
+   
     private AnnotationDB db = new AnnotationDB();
-    private EventConfigFactory eventConfigFactory;
+  
 
    
-    public AnnotationEventExporter(String scanPath, EventConfigFactory eventConfigFactory) {
-        this.scanPath = scanPath;
-        this.eventConfigFactory = eventConfigFactory;
-    }
-    
+   
     @SuppressWarnings("unchecked")
-    public Set<EventConfig> exportEvents() throws IOException {
+    public Set<EventConfig> exportEvents(EventConfigFactory eventConfigFactory, String scanPath) throws IOException {
         Set<EventConfig> eventsFound = new HashSet<EventConfig>();
         if(scanPath.contains(".")) {
             scanPath = scanPath.replace('.', '/');
         }
         URL[] urls = ClasspathUrlFinder.findResourceBases(scanPath);
-
+        String classPath = scanPath.replace('/', '.');
         db.setScanClassAnnotations(true);
         db.setScanFieldAnnotations(false);
         db.setScanMethodAnnotations(false);
@@ -56,7 +52,7 @@ public class AnnotationEventExporter implements EventExporter {
         Set<String> eventClassNames = annotationIndex.get(Event.class.getName());
         if (eventClassNames != null) {
             for (String eventClassName : eventClassNames) {
-                if(eventClassName.startsWith(scanPath.replace('/', '.'))) {
+                if(eventClassName.startsWith(classPath)) {
                 try {
                     Class<?> eventClass = Class.forName(eventClassName);
                     eventClass.asSubclass(EventObject.class);
