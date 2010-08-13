@@ -17,15 +17,18 @@ import org.kasource.kaevent.event.method.MethodResolver;
 public class EventConfigImpl implements EventConfig {
     private Class<? extends EventObject> eventClass;
     private Class<? extends EventListener> listener;
+    private String name;
     Method defaultMethod; // May be null  
     @SuppressWarnings("unchecked")
     MethodResolver methodResolver;
  
 
     EventConfigImpl(Class<? extends EventObject> eventClass, 
-                           Class<? extends EventListener> listener) {
+                           Class<? extends EventListener> listener,
+                           String name) {
         this.eventClass = eventClass;
-        this.listener = listener;   
+        this.listener = listener;
+        this.name = name;
     }
 
     
@@ -63,6 +66,16 @@ public class EventConfigImpl implements EventConfig {
     @Override
     public Class<? extends EventObject> getEventClass() {
         return eventClass;
+    }
+
+
+
+    /**
+     * @return the name
+     */
+    @Override
+    public String getName() {
+        return name;
     }
 
  

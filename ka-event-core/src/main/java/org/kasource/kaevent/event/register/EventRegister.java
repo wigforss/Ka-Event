@@ -21,9 +21,11 @@ public interface EventRegister {
     public EventConfig getEventByInterface(Class<? extends EventListener> interfaceClass);
 
     public EventConfig getEventByClass(Class<? extends EventObject> eventClass);
+    
+    public EventConfig getEventByName(String name);
 
     public void registerEvent(EventConfig event);
-
+    
     public void registerEvent(Class<? extends EventObject> eventClass);
     
     public Set<Class<? extends EventObject>> getEventClasses();

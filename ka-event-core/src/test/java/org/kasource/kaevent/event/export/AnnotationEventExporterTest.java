@@ -29,7 +29,7 @@ public class AnnotationEventExporterTest {
     
 
 
-    private String scanPath = AnnotationEventExporterTest.class.getPackage().getName();
+    
     
 
     
@@ -40,14 +40,14 @@ public class AnnotationEventExporterTest {
     private EventConfig eventConfig;
     
     @TestedObject
-    private AnnotationEventExporter exporter = new AnnotationEventExporter();
+    private AnnotationEventExporter exporter = new AnnotationEventExporter(AnnotationEventExporterTest.class.getPackage().getName());
     
     
     @Test
     public void scanAnnotationTest() throws IOException {
-        EasyMock.expect(eventConfigFactory.createEventConfig(SimpleEvent.class)).andReturn(eventConfig);
+        EasyMock.expect(eventConfigFactory.newFromAnnotatedEventClass(SimpleEvent.class)).andReturn(eventConfig);
         EasyMockUnitils.replay();
-        Set<EventConfig> eventSet = exporter.exportEvents(eventConfigFactory, scanPath);   
+        Set<EventConfig> eventSet = exporter.exportEvents(eventConfigFactory);   
         assertEquals(1, eventSet.size());
     }
     

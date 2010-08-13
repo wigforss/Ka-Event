@@ -30,27 +30,29 @@ public class EventConfigFactory {
 
     private AnnotationMethodResolverExtractor methodResolverExtractor;
 
+    
+    public EventConfig newFromAnnotatedEventClass(Class<? extends EventObject> event) {
+        Event eventAnnotation = event.getAnnotation(Event.class);
+        if(eventAnnotation == null) {
+            throw new IllegalArgumentException(event+" is not annotated with @Event!");
+        }
+       return  newFromAnnotatedInterfaceClass(event, event.getAnnotation(Event.class).listener(), event.getName());
+    }
+    
     /**
      * Create and an EventConfig based on an annotated event class
      * 
      * @param event
      * @return
      **/
-    public EventConfig createEventConfig(Class<? extends EventObject> event) {
-        Event eventAnnotation = event.getAnnotation(Event.class);
-        if(event == null) {
-            throw new IllegalArgumentException(event+" is not annotated with @Event!");
-        }
-        Class<? extends EventListener> listener  = eventAnnotation.listener();
-        EventConfigImpl eventConfig = new EventConfigImpl(event, listener);
+    public EventConfig newFromAnnotatedInterfaceClass(Class<? extends EventObject> event, Class<? extends EventListener> listener, String name) {
+        EventConfigImpl eventConfig = new EventConfigImpl(event, listener, name);
         MethodResolving methodResolving = listener.getAnnotation(MethodResolving.class);
         if (methodResolving != null) {
             eventConfig.methodResolver = methodResolverExtractor.getMethodResolver(event, listener, methodResolving);
         } else {
-        	setDefaultMethod(eventConfig, event, listener);
+                setDefaultMethod(eventConfig, event, listener);
         }
-        //TODO register event at channels
-        //eventConfig.setChannels(eventAnnotation.channels());
         return eventConfig;
     }
 
@@ -64,18 +66,18 @@ public class EventConfigFactory {
         }
     }
 
-    public EventConfig createEventConfig(Class<? extends EventObject> event, Class<? extends EventListener> listener,
-            Method eventMethod) {
-    	EventConfigImpl eventConfig = new EventConfigImpl(event, listener);
+    public EventConfig newWithEventMethod(Class<? extends EventObject> event, Class<? extends EventListener> listener,
+            Method eventMethod, String name) {
+    	EventConfigImpl eventConfig = new EventConfigImpl(event, listener, name);
         ReflectionUtils.verifyMethodSignature(eventMethod, Void.TYPE, event);
         eventConfig.defaultMethod = eventMethod;
         return eventConfig;
     }
 
     @SuppressWarnings("unchecked")
-    public EventConfig createEventConfig(Class<? extends EventObject> event, Class<? extends EventListener> listener,
-            MethodResolver methodResolver) {
-    	EventConfigImpl eventConfig = new EventConfigImpl(event, listener);
+    public EventConfig newWithMethodResolver(Class<? extends EventObject> event, Class<? extends EventListener> listener,
+            MethodResolver methodResolver, String name) {
+    	EventConfigImpl eventConfig = new EventConfigImpl(event, listener, name);
         if(methodResolver == null) {
         	throw new IllegalArgumentException("methodResolver is not allowed to be null");
         }

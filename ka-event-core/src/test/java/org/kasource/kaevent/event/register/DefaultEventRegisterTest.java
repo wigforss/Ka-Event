@@ -52,12 +52,12 @@ public class DefaultEventRegisterTest {
     public void registerAnnotatedEventsTest() throws IOException {
         Set<EventConfig> importedEvents = new HashSet<EventConfig>();
         importedEvents.add(eventConfig);
-        EasyMock.expect(eventExporter.exportEvents(eventConfigFactory,null)).andReturn(importedEvents);
+        EasyMock.expect(eventExporter.exportEvents(eventConfigFactory)).andReturn(importedEvents);
         EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class);
         EasyMock.expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class);
       
         EasyMockUnitils.replay();
-        register.initialize(null);
+        
         assertEquals(eventConfig, register.getEventByClass(ChangeEvent.class));
         assertEquals(eventConfig, register.getEventByInterface(ChangeListener.class));  
     }

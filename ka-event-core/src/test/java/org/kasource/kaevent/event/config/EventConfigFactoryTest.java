@@ -44,7 +44,7 @@ public class EventConfigFactoryTest {
     public void createEventConfig() {
         EasyMock.expect(beanResolver.getBean("testBean")).andReturn(methodResolver);
         EasyMockUnitils.replay();
-        factory.createEventConfig(TemperatureBeanChangedEvent.class);
+        factory.newFromAnnotatedEventClass(TemperatureBeanChangedEvent.class);
     }
     
     @Event(listener=TemperatureBeanEventListener.class)

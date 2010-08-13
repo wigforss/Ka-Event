@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javassist.expr.NewArray;
+
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventConfigFactory;
@@ -24,41 +26,16 @@ public class DefaultEventRegister implements EventRegister{
     private static Logger logger = Logger.getLogger(DefaultEventRegister.class);
     private Map<Class<? extends EventObject>, EventConfig> eventsByClass = new HashMap<Class<? extends EventObject>, EventConfig>();
     private Map<Class<? extends EventListener>, EventConfig> eventsByInterface = new HashMap<Class<? extends EventListener>, EventConfig>();
-    private EventExporter eventExporter;
+    private Map<String, EventConfig> eventsByName = new HashMap<String, EventConfig>();
     private EventConfigFactory eventConfigFactory;
     
     public DefaultEventRegister(EventConfigFactory eventConfigFactory) {
         this.eventConfigFactory = eventConfigFactory;
-        initialize(null);
     }
     
-    public DefaultEventRegister(EventConfigFactory eventConfigFactory,EventExporter eventExporter,String scanClassPath)  {
-       this.eventConfigFactory = eventConfigFactory;
-       this.eventExporter = eventExporter;
-       initialize(scanClassPath);
-    }
-
-    public void initialize(String scanClassPath) {
-       if(eventExporter != null) {
-           importEvents(scanClassPath);
-       }
-    }
+ 
     
-    protected void  importEvents(String scanClassPath) {
-        Set<EventConfig> events;
-        try {
-            events = eventExporter.exportEvents(eventConfigFactory, scanClassPath);
-            for(EventConfig event : events) {
-                registerEvent(event);
-            }
-        } catch (RuntimeException re) {
-          logger.error("Error when importing annotated events",re);
-          throw re;
-        } catch (IOException e) {
-            throw new IllegalStateException("Could not import events", e);
-        } 
-      
-    }
+   
     
    
     
@@ -72,21 +49,29 @@ public class DefaultEventRegister implements EventRegister{
     public EventConfig getEventByClass(Class<? extends EventObject> eventClass) {
         return eventsByClass.get(eventClass);
     }
+    
+    @Override
+    public EventConfig getEventByName(String name) {
+        return eventsByName.get(name);
+    }
 
-    
-    
     @Override
     public void registerEvent(EventConfig event) {
         eventsByClass.put(event.getEventClass(), event);
         eventsByInterface.put(event.getListener(), event);
+        eventsByName.put(event.getName(), event);
     }
+    
+    
 
     @Override
     public void registerEvent(Class<? extends EventObject> eventClass) {
-            EventConfig eventConfig = eventConfigFactory.createEventConfig(
+            EventConfig eventConfig = eventConfigFactory.newFromAnnotatedEventClass(
                 (Class<? extends EventObject>) eventClass);
             registerEvent(eventConfig);
     }
+    
+   
 
   
     @Override

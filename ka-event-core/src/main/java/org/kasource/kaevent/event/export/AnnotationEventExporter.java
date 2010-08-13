@@ -30,12 +30,15 @@ public class AnnotationEventExporter implements EventExporter {
 
    
     private AnnotationDB db = new AnnotationDB();
-  
-
+    private String scanPath;
+    
+    public AnnotationEventExporter(String scanPath) {
+        this.scanPath = scanPath;
+    }
    
    
     @SuppressWarnings("unchecked")
-    public Set<EventConfig> exportEvents(EventConfigFactory eventConfigFactory, String scanPath) throws IOException {
+    public Set<EventConfig> exportEvents(EventConfigFactory eventConfigFactory) throws IOException {
         Set<EventConfig> eventsFound = new HashSet<EventConfig>();
         if(scanPath.contains(".")) {
             scanPath = scanPath.replace('.', '/');
@@ -56,7 +59,7 @@ public class AnnotationEventExporter implements EventExporter {
                 try {
                     Class<?> eventClass = Class.forName(eventClassName);
                     eventClass.asSubclass(EventObject.class);
-                    EventConfig eventConfig = eventConfigFactory.createEventConfig(
+                    EventConfig eventConfig = eventConfigFactory.newFromAnnotatedEventClass(
                             (Class<? extends EventObject>) eventClass);
                     eventsFound.add(eventConfig);
                 } catch (ClassNotFoundException cnfe) {

@@ -36,6 +36,12 @@ public interface EventConfig {
     public abstract Class<? extends EventObject> getEventClass();
 
  
+    /**
+     * Returns the name of the event
+     * 
+     * @return name of the event
+     */
+    public String getName();
     
 
 

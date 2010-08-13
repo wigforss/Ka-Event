@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://kasource.org" xmlns="http://kasource.org"
+	elementFormDefault="qualified">
+	
+	<!--  Root tag -->
+	<xs:element name="kaEventConfig">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Configuration of Ka Event 
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:choice maxOccurs="1" minOccurs="0">
+					<xs:element ref="queueThread" />
+					<xs:element ref="threadPoolExecutor" />
+				</xs:choice>
+				<xs:element ref="beanResolver" maxOccurs="1" minOccurs="0" />
+				<xs:element ref="events" maxOccurs="1" minOccurs="0" />
+				<xs:element ref="channels" maxOccurs="1" minOccurs="0" />
+			</xs:sequence>
+
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Bean Resolver -->
+	<xs:element name="beanResolver">
+		<xs:annotation>
+			<xs:documentation>
+				The bean resolver implementation to use. If not
+				declared to default implementation with no ability to lookup beans.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="class" type="javaClass" use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						The fully qualified class name of the bean
+						resolver to use, if not set the default bean resolver will be used
+						with no ability to lookup beans.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Queue Thread -->
+	<xs:element name="queueThread">
+		<xs:annotation>
+			<xs:documentation>
+				Override the default queue thread implementation.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="class" type="javaClass" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						Class that implements
+						org.kasource.kaevent.event.dispatch.DispatcherQueueThread which
+						will
+						be used instead of the standard thread pool executor implementation.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Thread Pool Queue Executor -->
+	<xs:element name="threadPoolExecutor">
+		<xs:annotation>
+			<xs:documentation>
+				Configure the standard queue thread implementation.
+				To guarantee that events are dispatched in a sequential order the
+				maximumPoolSize attribute needs to be set to 1. See
+				http://download.oracle.com/javase/6/docs/api/java/util/concurrent/ThreadPoolExecutor.html
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="maximumPoolSize" type="xs:byte" use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						The maximum number of thread working with event
+						dispatching.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="corePoolSize" type="xs:byte" use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						The number of core threads to start should not be
+						set to more than maximumPoolSize.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="keepAliveTime" type="xs:integer"
+				use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						Keep alive time in ms, before idle threads are
+						killed.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Method resolvers -->
+	<xs:element name="annotationMethodResolver">
+		<xs:annotation>
+			<xs:documentation>
+				Find a method resolver by inspecting the
+				@MethodResolving annotation on the interface class
+			</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="factoryMethodResolver">
+		<xs:annotation>
+			<xs:documentation>
+				Use a custom method resolver obtained by invoking a static factory
+				method.
+		</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="factoryClass" type="javaClass" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						Class that has the static factory method to be
+						invoked.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="factoryMethod" type="javaMethodName"
+				use="required">
+				<xs:annotation>
+					<xs:documentation>
+						Name of the static factory method which must
+						return an object that implements
+						org.kasource.kaevent.event.method.MethodResolver
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="factoryMethodArgument" type="xs:string"
+				use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						String argument to the static factory method
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="beanMethodResolver">
+		<xs:annotation>
+			<xs:documentation>
+				Find a custom method resolver by looking up a bean
+				by name.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="bean" type="xs:Name" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						Name of bean which will looked up with the
+						BeanResolver. The object returned must implement
+						org.kasource.kaevent.event.method.MethodResolver.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="case">
+		<xs:annotation>
+			<xs:documentation>
+				A case entry which specifies a keyword value and
+				method.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The keyword value to match.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="method" type="javaMethodName" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						Name of the method on the listener interface
+						class to invoke if keyword value matches.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="default">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					The default method to invoke if no match.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:attribute name="method" type="javaMethodName" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						Name of the method on the listener interface
+						class to invoke if no matches were found.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="switchMethodResolver">
+		<xs:annotation>
+			<xs:documentation>
+				Resolve method in a switch case manner. Invokes a
+				keywordMethod on the event object and
+				matches the result to each case
+				declaration (methods on the listener interface class).
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="case" maxOccurs="unbounded" />
+				<xs:element ref="default" maxOccurs="1" minOccurs="1" />
+			</xs:sequence>
+			<xs:attribute name="keywordMethod" type="javaMethodName"
+				use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The name of a "non void" "no argument" method on
+						the event class, that returns an object which will be used as
+						the
+						keyword in the switch. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Event Config  -->
+	<xs:element name="event">
+		<xs:annotation>
+			<xs:documentation>
+				An event configuration, consist of an Event class
+				which must extend java.util.EventObject and a listener insterface
+				which must extend java.util.EventListener.
+				If more than one method is
+				declared in the listener interface a method resolver must be
+				defined, declare one of annotationMethodResolver,
+				factoryMethodResolver, beanMethodResolver or switchMethodResolver.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice maxOccurs="1" minOccurs="0">
+					<xs:element ref="annotationMethodResolver" />
+					<xs:element ref="factoryMethodResolver" />
+					<xs:element ref="beanMethodResolver" />
+					<xs:element ref="switchMethodResolver" />
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						Name of the event so it can be referenced.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="eventClass" type="javaClass" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The event class that extends
+						java.util.EventObject
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="listenerInterface" type="javaClass"
+				use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The listener interface the handles events (of the
+						eventClass type) and extends java.util.EventListener
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- List of Event Config -->
+	<xs:element name="events">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="event" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="scanClassPath" type="javaPackage"
+				use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						Class path (on dot notation) to scan for @Event
+						annotated classes. If not set no scan will be performed.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="handle">
+		<xs:annotation>
+			<xs:documentation>
+				Handles the specified event.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="event" type="xs:IDREF" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						event should refer to the name of a declared
+						event.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Channel -->
+	<xs:element name="channel">
+		<xs:annotation>
+			<xs:documentation>
+				Declares a channel
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="handle" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						A unique name of the channel so it can be
+						referenced.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- List of Channels -->
+	<xs:element name="channels">
+		<xs:annotation>
+			<xs:documentation>
+				List of all channels
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="channel" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Types -->
+	<xs:simpleType name="javaClass">
+		<xs:annotation>
+			<xs:documentation>
+				A valid Java fully qualified class name.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern
+				value="[a-z]{2,6}(\.[a-zA-Z][a-zA-Z_$0-9]*)+\.([A-Z][a-zA-Z_$0-9]*){1}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="javaMethodName">
+		<xs:annotation>
+			<xs:documentation>
+				A valid Java method name.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(\D){1}(\w|_|[0-9])*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="javaPackage">
+		<xs:annotation>
+			<xs:documentation>
+				A valid Java package name.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-z]{2,6}(\.[a-zA-Z][a-zA-Z_$0-9]*)+" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+</xs:schema>

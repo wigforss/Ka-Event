@@ -18,6 +18,23 @@
 		<clover.version>2.6.3</clover.version>
 	</properties>
 	<build>
+		<testResources>
+			<testResource>
+				<directory>src/test/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+					<include>**/*.xsd</include>
+					<include>**/*.dtd</include>
+				</includes>
+			</testResource>
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -164,6 +181,11 @@
 			<artifactId>clover</artifactId>
 			<version>${clover.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+    		<groupId>com.sun.xml.bind</groupId>
+    		<artifactId>jaxb-xjc</artifactId>
+    		<version>2.2.1</version>
 		</dependency>
 	</dependencies>
 	

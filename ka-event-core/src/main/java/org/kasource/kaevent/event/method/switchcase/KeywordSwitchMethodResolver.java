@@ -6,6 +6,8 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.kaevent.event.config.InvalidEventConfigurationException;
 import org.kasource.kaevent.event.method.MethodResolver;
 
 /**
@@ -132,14 +134,37 @@ public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> 
      * @param eventKeywordMethod        Method on event class that provides the keyword
      **/
     public KeywordSwitchMethodResolver(Class<? extends EventObject> eventClass,
-            Class<? extends EventListener> listenerClass, Method defaultMethod, Map<String, Method> methodMap,
-            Method eventKeywordMethod) {
-        this.defaultMethod = defaultMethod;
-        this.methodMap = methodMap;
-        this.eventKeywordMethod = eventKeywordMethod;
+            Class<? extends EventListener> listenerClass, String defaultMethodName, Map<String, String> methodNameMap,
+            String eventKeywordMethodName) {
+        this.defaultMethod = getListenerMethod(eventClass,listenerClass, defaultMethodName);
+        setMethodMap(eventClass, listenerClass, methodNameMap);
+        this.eventKeywordMethod = getEventKeywordMethod(eventClass, eventKeywordMethodName);
         new KeywordSwitchVerifier().verify(this, eventClass, listenerClass);
     }
 
+    
+    private Method getEventKeywordMethod(Class<? extends EventObject> eventClass,String eventKeywordMethodName) {
+        Method method = ReflectionUtils.getDeclaredMethod(eventClass, eventKeywordMethodName);
+        if(method.getReturnType().equals(Void.TYPE)) {
+            throw new InvalidEventConfigurationException("The method "+eventKeywordMethodName+" in class "+eventClass+" must return value");
+        }
+        return method;
+    }
+    
+    private Method getListenerMethod(Class<? extends EventObject> eventClass, Class<? extends EventListener> listenerClass, String methodName) {
+        Method method = ReflectionUtils.getDeclaredMethod(listenerClass, methodName, eventClass);
+        if(!method.getReturnType().equals(Void.TYPE)) {
+            throw new InvalidEventConfigurationException("The method "+methodName+" in class "+listenerClass+" should not have a return value");
+        }
+       return method;
+    }
+    
+    private void setMethodMap(Class<? extends EventObject> eventClass, Class<? extends EventListener> listenerClass, Map<String,String> methodNameMap) {
+        for(Map.Entry<String, String> methodNameEntry : methodNameMap.entrySet()) {
+            Method method = getListenerMethod(eventClass, listenerClass, methodNameEntry.getValue());
+            methodMap.put(methodNameEntry.getKey(), method);
+        }
+    }
  
     @Override
     public Method resolveMethod(EventObject event) {

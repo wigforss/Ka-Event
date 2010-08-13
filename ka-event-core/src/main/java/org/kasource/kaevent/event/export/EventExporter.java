@@ -16,6 +16,6 @@ import org.kasource.kaevent.event.config.EventConfigFactory;
 public interface EventExporter {
 
 
-    public abstract Set<EventConfig> exportEvents(EventConfigFactory eventConfigFactory, String scanPath) throws IOException;
+    public abstract Set<EventConfig> exportEvents(EventConfigFactory eventConfigFactory) throws IOException;
 
 }
