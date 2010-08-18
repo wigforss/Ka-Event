@@ -8,7 +8,6 @@ import javax.swing.event.ChangeListener;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
@@ -31,6 +30,7 @@ public class DefaultEventDispatcherTest {
     @Mock
     private EventSender eventSender;
     
+    @SuppressWarnings("unused")
     @InjectIntoByType
     @Mock
     private ChannelRegister channelRegister;

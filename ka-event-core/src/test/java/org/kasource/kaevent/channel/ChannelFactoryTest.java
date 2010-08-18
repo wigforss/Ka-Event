@@ -3,6 +3,10 @@
  */
 package org.kasource.kaevent.channel;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.junit.Assert.assertEquals;
+
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashSet;
@@ -14,11 +18,8 @@ import javax.swing.event.ChangeListener;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.Test;
-
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
+import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.register.EventRegister;
@@ -47,12 +48,16 @@ public class ChannelFactoryTest {
     @Mock
     private EventMethodInvoker eventMethodInvoker;
     
+    @InjectIntoByType
+    @Mock
+    private BeanResolver beanResolver;
+    
     @Mock
     private EventConfig eventConfig;
 
     
     @TestedObject
-    private ChannelFactory factory = new ChannelFactory(channelRegister, eventRegister, eventMethodInvoker);
+    private ChannelFactory factory = new ChannelFactory(channelRegister, eventRegister, eventMethodInvoker, beanResolver);
     
     @Test
     public void createChannelTest() {
@@ -65,6 +70,7 @@ public class ChannelFactoryTest {
         assertEquals("testChannel",channel.getName());
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void createChannelWithEventsTest() {
         Capture<Channel> capturedChannel = new Capture<Channel>();
@@ -82,6 +88,7 @@ public class ChannelFactoryTest {
         assertEquals("testChannel",channel.getName());
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void createChannelWithEventsAndListenersTest() {
         Capture<Channel> capturedChannel = new Capture<Channel>();

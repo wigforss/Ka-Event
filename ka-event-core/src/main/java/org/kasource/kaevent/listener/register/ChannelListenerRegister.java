@@ -3,7 +3,6 @@ package org.kasource.kaevent.listener.register;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
-import java.util.Set;
 
 import org.kasource.kaevent.event.filter.EventFilter;
 

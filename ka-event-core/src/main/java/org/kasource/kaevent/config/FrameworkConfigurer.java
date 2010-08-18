@@ -78,12 +78,13 @@ public class FrameworkConfigurer {
         ChannelRegister channelRegister = new ChannelRegisterImpl();
       
         // Source Object Listener Register
-        SourceObjectListenerRegister soListenerRegister = new SourceObjectListenerRegisterImpl(eventRegister);
+        SourceObjectListenerRegister soListenerRegister = new SourceObjectListenerRegisterImpl(eventRegister, beanResolver);
         EventMethodInvoker invoker = new EventMethodInvoker(eventRegister);
         EventSender eventSender = new EventSender(channelRegister,(EventListenerRegister) soListenerRegister,invoker);
         
+        
         // Channel Factory
-        ChannelFactory channelFactory = new ChannelFactory(channelRegister, eventRegister, invoker);
+        ChannelFactory channelFactory = new ChannelFactory(channelRegister, eventRegister, invoker, beanResolver);
         DispatcherQueueThread queueThread = new ThreadPoolQueueExecutor(eventSender);
         
         eventDispatcher.setChannelRegister(channelRegister);
@@ -106,7 +107,7 @@ public class FrameworkConfigurer {
         EventConfigFactory eventFactory = new EventConfigFactory(beanResolver);
         EventRegister eventRegister = new DefaultEventRegister(eventFactory);
         EventMethodInvoker invoker = new EventMethodInvoker(eventRegister);
-        SourceObjectListenerRegister soListenerRegister = new SourceObjectListenerRegisterImpl(eventRegister);
+        SourceObjectListenerRegister soListenerRegister = new SourceObjectListenerRegisterImpl(eventRegister, beanResolver);
         
         // Channel Register
         ChannelRegister channelRegister = new ChannelRegisterImpl();
@@ -115,7 +116,7 @@ public class FrameworkConfigurer {
         EventSender eventSender = new EventSender(channelRegister,(EventListenerRegister) soListenerRegister,invoker);
         
         // Channel Factory
-        ChannelFactory channelFactory = new ChannelFactory(channelRegister, eventRegister, invoker);
+        ChannelFactory channelFactory = new ChannelFactory(channelRegister, eventRegister, invoker, beanResolver);
         
         // Queue Thread
         DispatcherQueueThread queueThread = null;

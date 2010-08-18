@@ -36,7 +36,7 @@ public class MethodResolverFactory {
     
     @SuppressWarnings("unchecked")
     public static MethodResolver getFromBean(BeanResolver beanResolver, String beanName) {
-        return (MethodResolver) beanResolver.getBean(beanName);
+        return beanResolver.getBean(beanName, MethodResolver.class);
     }
     
     @SuppressWarnings("unchecked")

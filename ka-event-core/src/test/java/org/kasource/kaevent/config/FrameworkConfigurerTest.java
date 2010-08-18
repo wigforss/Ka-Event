@@ -5,24 +5,20 @@ package org.kasource.kaevent.config;
 
 
 
-import java.util.Properties;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
 
-import static org.easymock.EasyMock.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kasource.kaevent.bean.DefaultBeanResolver;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventSender;
-import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
-import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
-import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
 
 /**

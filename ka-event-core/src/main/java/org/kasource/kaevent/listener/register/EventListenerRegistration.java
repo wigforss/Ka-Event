@@ -6,7 +6,6 @@ package org.kasource.kaevent.listener.register;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
-import java.util.Map;
 
 import org.kasource.kaevent.event.filter.EventFilter;
 
@@ -15,11 +14,11 @@ import org.kasource.kaevent.event.filter.EventFilter;
  */
 public class EventListenerRegistration {
     private EventListener listener;
-    private Map<Class<? extends EventObject>,List<EventFilter<EventObject>>> filtersByEventClass;
+    private List<EventFilter<EventObject>> filters;
     
-    public EventListenerRegistration(EventListener listener, Map<Class<? extends EventObject>,List<EventFilter<EventObject>>> filtersByEventClass) {
+    public EventListenerRegistration(EventListener listener, List<EventFilter<EventObject>> filters) {
         this.listener = listener;
-        this.filtersByEventClass = filtersByEventClass;
+        this.filters = filters;
     }
 
     /**
@@ -30,12 +29,7 @@ public class EventListenerRegistration {
     }
 
     
-    /**
-     * @return the filters
-     */
-    public List<EventFilter<EventObject>> getFilters(Class<? extends EventObject> eventClass) {
-        return filtersByEventClass != null ? filtersByEventClass.get(eventClass) : null;
-    }
+   
 
     @Override
     public boolean equals(Object obj) {
@@ -49,6 +43,13 @@ public class EventListenerRegistration {
     @Override
     public int hashCode() {
         return listener.hashCode();
+    }
+
+    /**
+     * @return the filters
+     */
+    public List<EventFilter<EventObject>> getFilters() {
+        return filters;
     }
     
     

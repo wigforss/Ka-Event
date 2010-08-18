@@ -4,7 +4,6 @@
 package org.kasource.kaevent.event.dispatch;
 
 import java.util.Collection;
-import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
 

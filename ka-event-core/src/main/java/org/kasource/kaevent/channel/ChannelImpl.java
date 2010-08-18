@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.filter.EventFilter;
@@ -42,12 +43,12 @@ public class ChannelImpl  implements Channel {
     private EventMethodInvoker eventMethodInvoker;
     
     
-    ChannelImpl(String name, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker) {
+    ChannelImpl(String name, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker,BeanResolver beanResolver) {
         this.name = name;
         this.channelRegister = channelRegister;
         this.eventRegister = eventRegister;
         this.eventMethodInvoker = eventMethodInvoker;
-        listenerRegister = new ChannelListenerRegisterImpl(this, eventRegister);
+        listenerRegister = new ChannelListenerRegisterImpl(this, eventRegister, beanResolver);
     }
 
     

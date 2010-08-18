@@ -3,18 +3,17 @@
  */
 package org.kasource.kaevent.event.listener.register;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Collection;
-import java.util.EventListener;
-import java.util.EventObject;
-import java.util.Set;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
+import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
@@ -36,12 +35,16 @@ public class SourceObjectListenerRegisterImplTest {
     @Mock
     private EventRegister eventRegister;
     
+    @InjectIntoByType
+    @Mock
+    private BeanResolver beanResolver;
+    
     @Mock
     private EventConfig eventConfig;
     
     
     @TestedObject
-    private SourceObjectListenerRegisterImpl register = new SourceObjectListenerRegisterImpl(eventRegister);
+    private SourceObjectListenerRegisterImpl register = new SourceObjectListenerRegisterImpl(eventRegister, beanResolver);
     
     @SuppressWarnings("unchecked")
     @Test

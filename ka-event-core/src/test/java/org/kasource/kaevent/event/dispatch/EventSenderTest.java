@@ -3,7 +3,6 @@
  */
 package org.kasource.kaevent.event.dispatch;
 
-import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Set;

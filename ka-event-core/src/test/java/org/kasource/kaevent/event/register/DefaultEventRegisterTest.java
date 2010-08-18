@@ -3,9 +3,9 @@
  */
 package org.kasource.kaevent.event.register;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
-import java.util.EventListener;
-import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,11 +14,9 @@ import javax.swing.event.ChangeListener;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventConfigFactory;
-import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;

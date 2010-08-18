@@ -6,10 +6,7 @@ package org.kasource.kaevent.event.dispatch;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.EventListener;
 import java.util.EventObject;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.config.EventConfig;
@@ -65,8 +62,8 @@ public class EventMethodInvoker {
 
     @SuppressWarnings("unchecked")
     private boolean passFilters(EventListenerRegistration eventRegistration, EventObject event) {
-        if (eventRegistration.getFilters(event.getClass()) != null) {
-            for (EventFilter<? extends EventObject> filter : eventRegistration.getFilters(event.getClass())) {
+        if (eventRegistration.getFilters() != null) {
+            for (EventFilter<? extends EventObject> filter : eventRegistration.getFilters()) {
                 EventFilter<EventObject> eventFilter = (EventFilter<EventObject>) filter;
                 if (!eventFilter.passFilter(event)) {
                     return false;

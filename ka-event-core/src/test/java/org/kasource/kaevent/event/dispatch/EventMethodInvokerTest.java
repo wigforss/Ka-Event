@@ -3,8 +3,8 @@
  */
 package org.kasource.kaevent.event.dispatch;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.EventListener;
+import static org.junit.Assert.assertEquals;
+
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.register.EventRegister;

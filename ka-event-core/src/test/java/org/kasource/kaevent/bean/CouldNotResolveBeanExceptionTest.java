@@ -3,8 +3,9 @@
  */
 package org.kasource.kaevent.bean;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 /**
  * @author rikardwigforss
  *

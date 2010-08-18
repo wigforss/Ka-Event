@@ -3,6 +3,8 @@
  */
 package org.kasource.kaevent.channel;
 
+import static org.junit.Assert.assertEquals;
+
 import java.awt.event.WindowEvent;
 import java.util.EventObject;
 import java.util.HashSet;
@@ -12,7 +14,6 @@ import javax.swing.event.ChangeEvent;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;

@@ -3,6 +3,8 @@
  */
 package org.kasource.kaevent.event.method.switchcase;
 
+import static org.junit.Assert.assertEquals;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,10 +14,8 @@ import java.util.EventListener;
 import java.util.EventObject;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.event.EventKeyword;
-import org.kasource.kaevent.event.method.switchcase.KeywordSwitchMethodResolver;
 import org.kasource.kaevent.listener.interfaces.CustomCase;
 import org.kasource.kaevent.listener.interfaces.DefaultListenerMethod;
 import org.kasource.kaevent.listener.interfaces.KeywordCase;
@@ -40,6 +40,7 @@ public class KeywordSwitchMethodResolverTest {
 	
     enum CrudAction  {CREATE, READ, UPDATE, DELETE};
     
+    @SuppressWarnings("serial")
     @Event(listener=CrudEventListener.class)
     public class CrudEvent extends EventObject {
         

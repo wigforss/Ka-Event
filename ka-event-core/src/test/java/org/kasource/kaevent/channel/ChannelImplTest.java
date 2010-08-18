@@ -3,16 +3,18 @@
  */
 package org.kasource.kaevent.channel;
 
-import java.util.EventListener;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Set;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import static org.easymock.EasyMock.*;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
+import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.register.EventRegister;
@@ -50,6 +52,9 @@ public class ChannelImplTest {
     @Mock
     private EventMethodInvoker eventMethodInvoker;
     
+    @InjectIntoByType
+    @Mock
+    private BeanResolver beanResolver;
    
     
     
@@ -60,7 +65,7 @@ public class ChannelImplTest {
     private Set<EventListenerRegistration> listeners;
     
     @TestedObject
-    private ChannelImpl channel = new ChannelImpl(name, channelRegister, eventRegister, eventMethodInvoker);
+    private ChannelImpl channel = new ChannelImpl(name, channelRegister, eventRegister, eventMethodInvoker, beanResolver);
     
     @SuppressWarnings("unchecked")
     @Test

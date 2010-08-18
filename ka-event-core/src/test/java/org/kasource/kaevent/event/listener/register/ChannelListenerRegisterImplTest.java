@@ -7,8 +7,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
 import java.util.EventListener;
-import java.util.EventObject;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.event.ChangeEvent;
@@ -17,10 +15,10 @@ import javax.swing.event.ChangeListener;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.register.EventRegister;
-import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
 import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
 import org.unitils.UnitilsJUnit4TestClassRunner;
@@ -44,6 +42,10 @@ public class ChannelListenerRegisterImplTest {
     @Mock
     private EventRegister eventRegister;
     
+    @InjectIntoByType
+    @Mock
+    private BeanResolver beanResolver;
+    
     @Mock
     private EventConfig eventConfig;
     
@@ -51,7 +53,7 @@ public class ChannelListenerRegisterImplTest {
     private Set<? extends EventListener> events;
     
     @TestedObject
-    private ChannelListenerRegisterImpl register = new ChannelListenerRegisterImpl(channel, eventRegister);
+    private ChannelListenerRegisterImpl register = new ChannelListenerRegisterImpl(channel, eventRegister, beanResolver);
     
     
     @SuppressWarnings("unchecked")

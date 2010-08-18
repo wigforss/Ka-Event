@@ -12,7 +12,6 @@ import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.BaseEvent;
 import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.event.method.MethodResolver;
-
 import org.kasource.kaevent.listener.interfaces.BeanMethodResolver;
 import org.kasource.kaevent.listener.interfaces.MethodResolverType;
 import org.kasource.kaevent.listener.interfaces.MethodResolving;
@@ -61,7 +60,8 @@ public class EventConfigFactoryTest {
             
              
              
-         public double getCurrentTemperature()
+         @SuppressWarnings("unused")
+        public double getCurrentTemperature()
          {
              return this.currentTemperature;
          }

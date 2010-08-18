@@ -3,15 +3,15 @@
  */
 package org.kasource.kaevent.event.config;
 
-import java.util.EventListener;
+import static org.junit.Assert.assertEquals;
 
+import java.util.EventListener;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.BaseEvent;
@@ -135,7 +135,8 @@ public class AnnotationMethodResolverExtractorTest {
             
              
              
-         public double getCurrentTemperature()
+         @SuppressWarnings("unused")
+        public double getCurrentTemperature()
          {
              return this.currentTemperature;
          }

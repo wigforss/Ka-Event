@@ -9,9 +9,9 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 
@@ -24,8 +24,8 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
     
     
     
-    public SourceObjectListenerRegisterImpl(EventRegister eventRegister) {
-        super(eventRegister);
+    public SourceObjectListenerRegisterImpl(EventRegister eventRegister, BeanResolver beanResolver) {
+        super(eventRegister, beanResolver);
     }
     
   
@@ -56,11 +56,11 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
             listenerByObjectMap = new WeakHashMap<EventListener,EventListenerRegistration>();
             objectListenerMap.put(sourceObject, listenerByObjectMap);
         }
-        Map<Class<? extends EventObject>, List<EventFilter<EventObject>>> applicableFilters = null;
+      
         if(filters != null) {
-            applicableFilters = getApplicableFilters(listener, filters);
+            filters = getApplicableFilters(eventClass, filters);
         }
-        listenerByObjectMap.put(listener, new EventListenerRegistration(listener,applicableFilters));
+        listenerByObjectMap.put(listener, new EventListenerRegistration(listener,filters));
     }
     
     @Override

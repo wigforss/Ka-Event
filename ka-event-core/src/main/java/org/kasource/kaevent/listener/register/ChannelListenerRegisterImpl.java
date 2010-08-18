@@ -7,13 +7,13 @@ import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.filter.EventFilter;
@@ -25,7 +25,7 @@ import org.kasource.kaevent.event.register.EventRegister;
  * Listeners are held in WeakHashMap to enable garbage collection of listeners no longer referenced outside of 
  * the listenerByEvent map.
  * 
- * @author wigforss
+ * @author Rikard Wigforss
  **/
 public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister implements ChannelListenerRegister {
 
@@ -33,8 +33,8 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
     private Channel channel;
    
     
-    public ChannelListenerRegisterImpl(Channel channel, EventRegister eventRegister) {
-        super(eventRegister);
+    public ChannelListenerRegisterImpl(Channel channel, EventRegister eventRegister, BeanResolver beanResolver) {
+        super(eventRegister, beanResolver);
         this.channel = channel;
        
     }
@@ -112,11 +112,11 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
             listenerMap = new WeakHashMap<EventListener, EventListenerRegistration>();
             listenersByEvent.put(eventClass, listenerMap);
         }
-        Map<Class<? extends EventObject>, List<EventFilter<EventObject>>> applicableFilters = null;
+       
         if(filters != null) {
-            applicableFilters = getApplicableFilters(listener, filters);
+            filters = getApplicableFilters(eventClass, filters);
         }
-        listenerMap.put(listener,new EventListenerRegistration(listener, applicableFilters));
+        listenerMap.put(listener,new EventListenerRegistration(listener, filters));
     }
    
     /**
