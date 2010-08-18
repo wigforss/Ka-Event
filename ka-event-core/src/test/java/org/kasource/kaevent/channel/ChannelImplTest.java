@@ -52,9 +52,8 @@ public class ChannelImplTest {
     @Mock
     private EventMethodInvoker eventMethodInvoker;
     
-    @InjectIntoByType
-    @Mock
-    private BeanResolver beanResolver;
+    
+    private BeanResolver beanResolver = EasyMockUnitils.createMock(BeanResolver.class);
    
     
     

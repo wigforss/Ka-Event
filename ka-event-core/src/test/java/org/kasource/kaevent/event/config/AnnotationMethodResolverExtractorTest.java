@@ -80,7 +80,7 @@ public class AnnotationMethodResolverExtractorTest {
     @Test
     public void getMethodResolverBeanTest() {
         EasyMock.expect(methodResolving.value()).andReturn(MethodResolverType.BEAN);
-        EasyMock.expect(beanResolver.getBean("testBean")).andReturn(methodResolver);
+        EasyMock.expect(beanResolver.getBean("testBean", MethodResolver.class)).andReturn(methodResolver);
         EasyMockUnitils.replay();
         assertEquals(methodResolver, extractor.getMethodResolver(TemperatureBeanChangedEvent.class, TemperatureBeanEventListener.class, methodResolving));
     }
