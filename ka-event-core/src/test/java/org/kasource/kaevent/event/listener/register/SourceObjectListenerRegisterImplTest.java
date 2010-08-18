@@ -3,6 +3,7 @@
  */
 package org.kasource.kaevent.event.listener.register;
 
+import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
@@ -16,6 +17,7 @@ import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.register.EventRegister;
+import org.kasource.kaevent.listener.register.EventListenerRegistration;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
@@ -41,6 +43,7 @@ public class SourceObjectListenerRegisterImplTest {
     @TestedObject
     private SourceObjectListenerRegisterImpl register = new SourceObjectListenerRegisterImpl(eventRegister);
     
+    @SuppressWarnings("unchecked")
     @Test
     public void registerListenerTest() {
         Object source = new Object();
@@ -51,16 +54,18 @@ public class SourceObjectListenerRegisterImplTest {
                 
             }
         };
+        EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
         EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
         EasyMock.expect((Class)eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
         EasyMockUnitils.replay();
         
         register.registerListener(listener, source);
-        Set<EventListener> eventListeners = register.getListenersByEvent(new ChangeEvent(source));
+        Collection<EventListenerRegistration> eventListeners = register.getListenersByEvent(new ChangeEvent(source));
         assertEquals(1, eventListeners.size());
-        assertEquals(listener, eventListeners.iterator().next());
+        assertEquals(listenerReg, eventListeners.iterator().next());
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void unregisterListenerTest() {
         Object source = new Object();
@@ -71,14 +76,15 @@ public class SourceObjectListenerRegisterImplTest {
                 
             }
         };
+        EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
         EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
         EasyMock.expect((Class)eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
         EasyMockUnitils.replay();
         
         register.registerListener(listener, source);
-        Set<EventListener> eventListeners = register.getListenersByEvent(new ChangeEvent(source));
+        Collection<EventListenerRegistration> eventListeners = register.getListenersByEvent(new ChangeEvent(source));
         assertEquals(1, eventListeners.size());
-        assertEquals(listener, eventListeners.iterator().next());
+        assertEquals(listenerReg, eventListeners.iterator().next());
         register.unregisterListener(listener, source);
         eventListeners = register.getListenersByEvent(new ChangeEvent(source));
         assertEquals(0, eventListeners.size());

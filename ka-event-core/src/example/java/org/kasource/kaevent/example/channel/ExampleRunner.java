@@ -3,7 +3,7 @@ package org.kasource.kaevent.example.channel;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
-import org.kasource.kaevent.example.channel.event.TemperatureChangedEvent;
+
 
 
 
@@ -27,9 +27,8 @@ public class ExampleRunner {
 	
 	
 	private static EventDispatcher getEventDispatcher() {
-		EventDispatcher eventDispatcher = new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName());	
-		Channel temperatureChannel = eventDispatcher.createChannel("temperatureChannel");	
-		temperatureChannel.registerEvent(TemperatureChangedEvent.class);
+		EventDispatcher eventDispatcher = new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName().replace('.', '/')+"/channel-config.xml");
+		Channel temperatureChannel = eventDispatcher.getChannel("temperatureChannel");
 		temperatureChannel.registerListener(new CommandConsole());	
 		return eventDispatcher;
 	}

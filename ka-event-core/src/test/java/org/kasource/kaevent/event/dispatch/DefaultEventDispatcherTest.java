@@ -85,11 +85,7 @@ public class DefaultEventDispatcherTest {
         dispatcher.createChannel("testChannel"); 
     }
     
-    @Test
-    public void getChannelRegisterTest() {
-        assertEquals(channelRegister, dispatcher.getChannelRegister());
-    }
-    
+   
     @Test
     public void registerListenerTest() {
         ChangeListener listener = new ChangeListener() {

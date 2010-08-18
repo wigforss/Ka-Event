@@ -3,7 +3,6 @@
  */
 package org.kasource.kaevent.event.register;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -11,12 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javassist.expr.NewArray;
-
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventConfigFactory;
-import org.kasource.kaevent.event.export.EventExporter;
 
 /**
  * @author rikardwigforss

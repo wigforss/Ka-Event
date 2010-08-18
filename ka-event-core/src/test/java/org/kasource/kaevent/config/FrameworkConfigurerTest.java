@@ -35,10 +35,7 @@ public class FrameworkConfigurerTest {
     @Mock
     private DefaultEventDispatcher eventDispatcher;
     
-    @InjectIntoByType
-    @Mock
-    private Properties props;
-    
+   
     @TestedObject
     private FrameworkConfigurer configurer;
     
@@ -46,13 +43,7 @@ public class FrameworkConfigurerTest {
     
     @Test
     public void configureTest() {
-    /*    expect(props.getProperty("kaevent.scanClassPath")).andReturn(null);
-        expect(props.getProperty("kaevent.class.beanResolver", DefaultBeanResolver.class.getName())).andReturn(DefaultBeanResolver.class.getName());
-        expect(props.getProperty("kaevent.class.eventExporter", AnnotationEventExporter.class.getName())).andReturn(AnnotationEventExporter.class.getName());
-        expect(props.getProperty("kaevent.class.queueThread", ThreadPoolQueueExecutor.class.getName())).andReturn(ThreadPoolQueueExecutor.class.getName());
-        expect(props.getProperty("kaevent.threadPoolQueueExecutor.maximumPoolSize")).andReturn(null);
-        expect(props.getProperty("kaevent.threadPoolQueueExecutor.corePoolSize")).andReturn(null);
-        expect(props.getProperty("kaevent.threadPoolQueueExecutor.keepAliveTime")).andReturn(null);
+
         eventDispatcher.setEventSender(isA(EventSender.class));
         expectLastCall();
         eventDispatcher.setEventQueue(isA(DispatcherQueueThread.class));
@@ -63,7 +54,7 @@ public class FrameworkConfigurerTest {
         expectLastCall();
         eventDispatcher.setChannelFactory(isA(ChannelFactory.class));
         expectLastCall();
-        EasyMockUnitils.replay();*/
+        EasyMockUnitils.replay();
         configurer.configure(eventDispatcher, "classpath:org/kasource/kaevent/config/simple-config.xml");
     }
 }

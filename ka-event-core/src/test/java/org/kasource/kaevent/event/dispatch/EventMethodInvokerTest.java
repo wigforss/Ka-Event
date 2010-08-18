@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.register.EventRegister;
+import org.kasource.kaevent.listener.register.EventListenerRegistration;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
@@ -65,8 +66,8 @@ public class EventMethodInvokerTest {
              }
         }
         ChangeListener listener = new MyChangeListener(methodInvoked); 
-        Set<EventListener> listeners = new HashSet<EventListener>();
-        listeners.add(listener);
+        Set<EventListenerRegistration> listeners = new HashSet<EventListenerRegistration>();
+        listeners.add(new EventListenerRegistration(listener,null));
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
@@ -84,8 +85,8 @@ public class EventMethodInvokerTest {
                 throw new RuntimeException("Test exception");              
             }
         };
-        Set<EventListener> listeners = new HashSet<EventListener>();
-        listeners.add(listener);
+        Set<EventListenerRegistration> listeners = new HashSet<EventListenerRegistration>();
+        listeners.add(new EventListenerRegistration(listener,null));
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
@@ -110,8 +111,8 @@ public class EventMethodInvokerTest {
              }
         }
         ChangeListener listener = new MyChangeListener(methodInvoked); 
-        Set<EventListener> listeners = new HashSet<EventListener>();
-        listeners.add(listener);
+        Set<EventListenerRegistration> listeners = new HashSet<EventListenerRegistration>();
+        listeners.add(new EventListenerRegistration(listener, null));
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
@@ -130,8 +131,8 @@ public class EventMethodInvokerTest {
                 throw new RuntimeException("Test exception");              
             }
         }; 
-        Set<EventListener> listeners = new HashSet<EventListener>();
-        listeners.add(listener);
+        Set<EventListenerRegistration> listeners = new HashSet<EventListenerRegistration>();
+        listeners.add(new EventListenerRegistration(listener, null));
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
@@ -143,7 +144,7 @@ public class EventMethodInvokerTest {
     
     @Test
     public void invokeMethodNoListenersTest() throws SecurityException, NoSuchMethodException {       
-        Set<EventListener> listeners = new HashSet<EventListener>();
+        Set<EventListenerRegistration> listeners = new HashSet<EventListenerRegistration>();
         EventObject event = new ChangeEvent("Test");  
         eventMethodInvoker.invokeEventMethod(event, listeners, false);  
     }

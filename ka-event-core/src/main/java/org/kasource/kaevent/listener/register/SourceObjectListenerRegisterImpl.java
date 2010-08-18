@@ -3,13 +3,16 @@
  */
 package org.kasource.kaevent.listener.register;
 
+import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 
 /**
@@ -17,7 +20,7 @@ import org.kasource.kaevent.event.register.EventRegister;
  *
  */
 public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegister implements SourceObjectListenerRegister {
-    private Map<Class<? extends EventObject>, Map<Object, Map<EventListener,Object>>> objectListenersByEvent = new HashMap<Class<? extends EventObject>, Map<Object, Map<EventListener,Object>>>();
+    private Map<Class<? extends EventObject>, Map<Object, Map<EventListener,EventListenerRegistration>>> objectListenersByEvent = new HashMap<Class<? extends EventObject>, Map<Object, Map<EventListener,EventListenerRegistration>>>();
     
     
     
@@ -27,45 +30,69 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
     
   
     @Override
-    public Set<EventListener> getListenersByEvent(EventObject event) {
-        Map<Object, Map<EventListener,Object>> objectListenerMap = objectListenersByEvent.get(event.getClass());
+    public Collection<EventListenerRegistration> getListenersByEvent(EventObject event) {
+        Map<Object, Map<EventListener,EventListenerRegistration>> objectListenerMap = objectListenersByEvent.get(event.getClass());
         if(objectListenerMap != null) {
-            Map<EventListener, Object> listenerByObjectMap = objectListenerMap.get(event.getSource());
+            Map<EventListener, EventListenerRegistration> listenerByObjectMap = objectListenerMap.get(event.getSource());
             if(listenerByObjectMap != null) {
-                return listenerByObjectMap.keySet();
+                return listenerByObjectMap.values();
             }
         }
-        return EMPTY_LISTENER_SET;
+        return EMPTY_LISTENER_COLLECTION;
     }
 
  
     
     
     @Override
-    protected void addListener(EventListener listener, Class<? extends EventObject> eventClass, Object sourceObject) {
-        Map<Object, Map<EventListener, Object>> objectListenerMap = objectListenersByEvent.get(eventClass);
+    protected void addListener(EventListener listener, Class<? extends EventObject> eventClass, Object sourceObject, List<EventFilter<EventObject>> filters) {
+        Map<Object, Map<EventListener, EventListenerRegistration>> objectListenerMap = objectListenersByEvent.get(eventClass);
         if(objectListenerMap == null) {
-            objectListenerMap = new WeakHashMap<Object, Map<EventListener,Object>>();
+            objectListenerMap = new WeakHashMap<Object, Map<EventListener,EventListenerRegistration>>();
             objectListenersByEvent.put(eventClass, objectListenerMap);
         }
-        Map<EventListener, Object> listenerByObjectMap = objectListenerMap.get(sourceObject);
+        Map<EventListener, EventListenerRegistration> listenerByObjectMap = objectListenerMap.get(sourceObject);
         if(listenerByObjectMap == null) {
-            listenerByObjectMap = new WeakHashMap<EventListener,Object>();
+            listenerByObjectMap = new WeakHashMap<EventListener,EventListenerRegistration>();
             objectListenerMap.put(sourceObject, listenerByObjectMap);
         }
-        listenerByObjectMap.put(listener, null);
+        Map<Class<? extends EventObject>, List<EventFilter<EventObject>>> applicableFilters = null;
+        if(filters != null) {
+            applicableFilters = getApplicableFilters(listener, filters);
+        }
+        listenerByObjectMap.put(listener, new EventListenerRegistration(listener,applicableFilters));
     }
     
     @Override
     public void unregisterListener(EventListener listener, Object sourceObject) {
      
-        for(Map<Object, Map<EventListener,Object>> objectListenerMap : objectListenersByEvent.values()) {
-            Map<EventListener, Object> listenerByObjectMap = objectListenerMap.get(sourceObject);
+        for(Map<Object, Map<EventListener,EventListenerRegistration>> objectListenerMap : objectListenersByEvent.values()) {
+            Map<EventListener, EventListenerRegistration> listenerByObjectMap = objectListenerMap.get(sourceObject);
             if(listenerByObjectMap != null) {
                 listenerByObjectMap.remove(listener);
             }
         }
 
     }
+
+
+    
+    @Override
+    public void registerListener(EventListener listener, Object sourceObject) {
+        super.register(listener, sourceObject);
+        
+    }
+
+
+    
+    @Override
+    public void registerListener(EventListener listener, Object sourceObject, List<EventFilter<EventObject>> filters) {
+        super.register(listener, sourceObject, filters);
+        
+    }
+
+
+   
+   
 
 }

@@ -7,22 +7,26 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.EventObject;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.apache.log4j.Logger;
 import org.kasource.commons.util.ReflectionUtils;
 import org.kasource.commons.util.StringUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.DefaultBeanResolver;
+import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.channel.ChannelRegisterImpl;
+import org.kasource.kaevent.channel.NoSuchChannelException;
+import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventConfigFactory;
 import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
@@ -38,10 +42,6 @@ import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 /**
  * @author wigforss
@@ -52,7 +52,7 @@ public class FrameworkConfigurer {
     private  KaEventConfig config;
     
     public void configure(DefaultEventDispatcher eventDispatcher, String configLocation) {
-        KaEventConfig config = null;
+      
         if(configLocation != null) {
             loadXmlFromPath(configLocation);
         } else {
@@ -85,6 +85,7 @@ public class FrameworkConfigurer {
         // Channel Factory
         ChannelFactory channelFactory = new ChannelFactory(channelRegister, eventRegister, invoker);
         DispatcherQueueThread queueThread = new ThreadPoolQueueExecutor(eventSender);
+        
         eventDispatcher.setChannelRegister(channelRegister);
         eventDispatcher.setSourceObjectListenerRegister(soListenerRegister);
         eventDispatcher.setEventQueue(queueThread);
@@ -129,9 +130,9 @@ public class FrameworkConfigurer {
                  }
                 if(config.getThreadPoolExecutor().getKeepAliveTime() != null) {
                     threadPoolExecutor.setKeepAliveTime(config.getThreadPoolExecutor().getKeepAliveTime().longValue(), TimeUnit.MILLISECONDS);
-                 }
-                queueThread = threadPoolExecutor;
+                 }               
             }
+            queueThread = threadPoolExecutor;
         } else {
             queueThread = ReflectionUtils.getInstance(config.getQueueThread().getClazz(), DispatcherQueueThread.class, eventSender);
             
@@ -181,6 +182,28 @@ public class FrameworkConfigurer {
                     channelFactory.createChannel(name, eventSet);
                 }
                 
+            }
+        }
+        
+        // Register @Event annotated events with the channels referenced in the channels attribute.
+        for(Class<? extends EventObject> eventClass :eventRegister.getEventClasses()) {
+            Event eventAnno = eventClass.getAnnotation(Event.class);
+            if(eventAnno != null && eventAnno.channels().length > 0) {
+                String[] channelsByEvent = eventAnno.channels();
+                for(String channelName : channelsByEvent) {
+                    Channel channel = null;
+                    try {
+                        channel = channelRegister.getChannel(channelName);
+                        channel.registerEvent(eventClass);
+                    } catch(NoSuchChannelException nsce) { 
+                        if(eventAnno.createChannels()) {
+                            channel = channelFactory.createChannel(channelName);
+                        } else {
+                            throw new NoSuchChannelException(eventClass.getName() +" @Event annotation referenced to a channel named "+channelName+" which does not exist!");
+                        }
+                    }
+                    channel.registerEvent(eventClass);
+                }
             }
         }
      
@@ -289,6 +312,9 @@ public class FrameworkConfigurer {
                 xmlStream = new FileInputStream(path);
             }
             config = loadXmlConfig(xmlStream);
+            if(config == null) {
+                throw new IllegalArgumentException("Could not unmarshal xml configuration file "+inPath);
+            }
         } catch (JAXBException e) {
            throw new IllegalArgumentException("Could not parse xml configuration file "+inPath,e);
         } catch (FileNotFoundException e) {
@@ -307,25 +333,14 @@ public class FrameworkConfigurer {
          JAXBContext jaxbContext = JAXBContext.newInstance(KaEventConfig.class.getPackage().getName());
 
          Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-         
-         return (KaEventConfig) unmarshaller.unmarshal(istrm);
+         Object object = unmarshaller.unmarshal(istrm);
+        
+         return (KaEventConfig) object;
       
     }
     
 
-    private Properties getProperties() {
-        Properties props = new Properties();
-        try {
-            InputStream propStream = FrameworkConfigurer.class.getClassLoader().getResourceAsStream(
-                    "kaevent.properties");
-            if (propStream != null) {
-                props.load(propStream);
-                propStream.close();
-            }
-        } catch (IOException e) {
-        }
-        return props;
-    }
+ 
     
    
 

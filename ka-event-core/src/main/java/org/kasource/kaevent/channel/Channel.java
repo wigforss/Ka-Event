@@ -3,7 +3,10 @@ package org.kasource.kaevent.channel;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.List;
 import java.util.Set;
+
+import org.kasource.kaevent.event.filter.EventFilter;
 
 
 /**
@@ -76,9 +79,8 @@ public interface Channel {
      * @param listenerRegistration
      *            Listener registration object to register
      **/
-    /*
-    public abstract void registerListener(EventListener listener, List<EventFilter<? extends EventObject>> filters);
-    */
+    public abstract void registerListener(EventListener listener, List<EventFilter<EventObject>> filters);
+    
     /**
      * Register a new listener object to this channel
      * 

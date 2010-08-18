@@ -35,6 +35,23 @@
 				</includes>
 			</testResource>
 		</testResources>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+					<include>**/*.xsd</include>
+					<include>**/*.dtd</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/example/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

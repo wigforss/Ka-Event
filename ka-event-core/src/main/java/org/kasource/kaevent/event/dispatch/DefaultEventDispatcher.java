@@ -5,12 +5,14 @@ package org.kasource.kaevent.event.dispatch;
 
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.List;
 
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.config.FrameworkConfigurer;
 import org.kasource.kaevent.event.EventDispatcher;
+import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 /**
@@ -63,8 +65,8 @@ public class DefaultEventDispatcher implements EventDispatcher{
     }
  
     @Override
-    public ChannelRegister getChannelRegister() { 
-        return channelRegister;
+    public Channel getChannel(String channelName) { 
+        return channelRegister.getChannel(channelName);
     }
 
     @Override
@@ -73,6 +75,14 @@ public class DefaultEventDispatcher implements EventDispatcher{
         sourceObjectListenerRegister.registerListener(listener, sourceObject);
     }
 
+    
+    @Override
+    public void registerListener(EventListener listener, Object sourceObject, List<EventFilter<EventObject>> filters) {
+        sourceObjectListenerRegister.registerListener(listener, sourceObject);
+        
+    }
+    
+    
     /**
      * @param channelRegister the channelRegister to set
      */
@@ -107,6 +117,9 @@ public class DefaultEventDispatcher implements EventDispatcher{
     public void setChannelFactory(ChannelFactory channelFactory) {
         this.channelFactory = channelFactory;
     }
+
+    
+    
 
  
     

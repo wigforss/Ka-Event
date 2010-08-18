@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegister;
+import org.kasource.kaevent.listener.register.EventListenerRegistration;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
@@ -45,7 +46,7 @@ public class EventSenderTest {
     private Channel channel;
     
     @Mock
-    private Set<EventListener> listenerSet;
+    private Set<EventListenerRegistration> listenerSet;
     
     @TestedObject
     private EventSender eventSender = new EventSender(channelRegister, sourceObjectListenerRegister, invoker);

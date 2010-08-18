@@ -21,4 +21,5 @@ import java.util.EventListener;
 public @interface Event {
     Class<? extends EventListener> listener();
     String[] channels() default {};
+    boolean createChannels() default false;
 }

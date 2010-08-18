@@ -2,11 +2,14 @@ package org.kasource.kaevent.listener.register;
 
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.List;
 import java.util.Set;
 
+import org.kasource.kaevent.event.filter.EventFilter;
 
 
-public interface SourceObjectListenerRegister {
+
+public interface SourceObjectListenerRegister extends EventListenerRegister{
 
 	/**
 	 * Register a listener to listen on events from sourceObject
@@ -19,6 +22,19 @@ public interface SourceObjectListenerRegister {
 	public abstract void registerListener(EventListener listener,
 			Object sourceObject);
 
+	
+	/**
+         * Register a listener to listen on events from sourceObject
+         * 
+         * @param listener
+         *            Listener to register
+         * @param sourceObject
+         *            Source object to listen on
+         **/
+        public abstract void registerListener(EventListener listener,
+                        Object sourceObject, List<EventFilter<EventObject>> filters);
+
+	
 	/**
 	 * Unregister a listener to listen on events from sourceObject
 	 * 
@@ -30,15 +46,5 @@ public interface SourceObjectListenerRegister {
 	public abstract void unregisterListener(EventListener listener,
 			Object sourceObject);
 	
-	 /**
-     * Returns the set of listener objects that listens to the event class
-     * <i>eventClass</i>.
-     * 
-     * @param eventClass
-     *            The event class to find listener object for.
-     * 
-     * @return all listener object of eventClass
-     **/
-    public abstract Set<EventListener> getListenersByEvent(EventObject event);
-
+	 
 }

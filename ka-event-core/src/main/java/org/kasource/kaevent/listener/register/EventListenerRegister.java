@@ -3,9 +3,9 @@
  */
 package org.kasource.kaevent.listener.register;
 
-import java.util.EventListener;
+import java.util.Collection;
 import java.util.EventObject;
-import java.util.Set;
+
 
 /**
  * @author rikardwigforss
@@ -14,6 +14,8 @@ import java.util.Set;
 public interface EventListenerRegister {
 
 
-    public  Set<EventListener> getListenersByEvent(EventObject event);
+    public  Collection<EventListenerRegistration> getListenersByEvent(EventObject event);
+    
+  
 
 }

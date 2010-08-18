@@ -1,14 +1,18 @@
 package org.kasource.kaevent.channel;
 
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
+import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.ChannelListenerRegister;
 import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
@@ -31,6 +35,7 @@ public class ChannelImpl  implements Channel {
     private String name;
     // Set of event classes this channel handles
     private Map<Class<? extends EventObject>,Class<? extends EventListener>> eventMap = new HashMap<Class<? extends EventObject>,Class<? extends EventListener>>();
+    private Map<Class<? extends EventObject>, Collection<EventFilter<EventObject>>> filtersByEvent = new HashMap<Class<? extends EventObject>, Collection<EventFilter<EventObject>>>();
     private ChannelListenerRegister listenerRegister;
     private EventRegister eventRegister;
     private ChannelRegister channelRegister;
@@ -79,7 +84,21 @@ public class ChannelImpl  implements Channel {
      **/
     @Override
     public void fireEvent(EventObject event, boolean blocked) {
-        eventMethodInvoker.invokeEventMethod(event, listenerRegister.getListenersByEvent(event), blocked);
+        Collection<EventFilter<EventObject>> filters = filtersByEvent.get(event.getClass());
+        if(filters != null) {
+            boolean passFilter = true;
+            for(EventFilter<EventObject> filter : filters) {
+                if(!filter.passFilter(event)) {
+                    passFilter = false;
+                    break;
+                }
+            }
+            if(passFilter) {
+                eventMethodInvoker.invokeEventMethod(event, listenerRegister.getListenersByEvent(event), blocked);
+            }
+        } else {
+            eventMethodInvoker.invokeEventMethod(event, listenerRegister.getListenersByEvent(event), blocked);
+        }
     }
     
     /**
@@ -134,12 +153,12 @@ public class ChannelImpl  implements Channel {
      * @param listener
      *            Listener object to register
      **/
-    /*
+   
     @Override
-    public void registerListener(EventListener listener,List<EventFilter<? extends EventObject>> filters) {
-        listenerRegister.registerListener(listener);
+    public void registerListener(EventListener listener,List<EventFilter<EventObject>> filters) {
+        listenerRegister.registerListener(listener, filters);
     }
-    */
+    
     /**
      * Register a new listener object to this channel
      * 
@@ -163,7 +182,28 @@ public class ChannelImpl  implements Channel {
 
     }
     
+    @SuppressWarnings("unchecked")
+    public void registerFilter(EventFilter<EventObject> filter) {
+        
+        Class<? extends EventObject> eventClass = (Class<? extends EventObject>) ((ParameterizedType) filter
+                .getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        
+        Collection<EventConfig> events = eventRegister.getEvents();
+        
+        for(EventConfig eventConfig : events) {
+            if(eventClass.isAssignableFrom(eventConfig.getEventClass())){
+                Collection<EventFilter<EventObject>> filters = filtersByEvent.get(eventClass);
+                if(filters == null) {
+                    filters = new ArrayList<EventFilter<EventObject>>();
+                    filtersByEvent.put(eventConfig.getEventClass(), filters);
+                }
+                filters.add(filter);
+            }
+        }
+        
+       
+    }
    
-   
+  
 
 }

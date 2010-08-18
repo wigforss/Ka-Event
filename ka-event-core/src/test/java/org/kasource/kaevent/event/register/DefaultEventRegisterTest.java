@@ -35,29 +35,26 @@ public class DefaultEventRegisterTest {
     @Mock
     private EventConfig eventConfig;
     
-    
-    @InjectIntoByType
-    private EventConfigFactory eventConfigFactory = EasyMockUnitils.createMock(EventConfigFactory.class);
-    
     @Mock
     @InjectIntoByType
-    private AnnotationEventExporter eventExporter;
+    private EventConfigFactory eventConfigFactory;
     
+   
     @TestedObject
     private DefaultEventRegister register = new DefaultEventRegister(eventConfigFactory);
     
     
     @SuppressWarnings("unchecked")
     @Test
-    public void registerAnnotatedEventsTest() throws IOException {
+    public void registerEventTest() throws IOException {
         Set<EventConfig> importedEvents = new HashSet<EventConfig>();
         importedEvents.add(eventConfig);
-        EasyMock.expect(eventExporter.exportEvents(eventConfigFactory)).andReturn(importedEvents);
+        EasyMock.expect(eventConfigFactory.newFromAnnotatedEventClass(ChangeEvent.class)).andReturn(eventConfig);
         EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class);
         EasyMock.expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class);
-      
+        EasyMock.expect(eventConfig.getName()).andReturn("Test event");
         EasyMockUnitils.replay();
-        
+        register.registerEvent(ChangeEvent.class);
         assertEquals(eventConfig, register.getEventByClass(ChangeEvent.class));
         assertEquals(eventConfig, register.getEventByInterface(ChangeListener.class));  
     }

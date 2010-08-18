@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<kaEventConfig xmlns="http://kasource.org"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://kasource.org kaevent.xsd">
+<events scanClassPath="org.kasource.kaevent.example.custom"/> 
+</kaEventConfig>

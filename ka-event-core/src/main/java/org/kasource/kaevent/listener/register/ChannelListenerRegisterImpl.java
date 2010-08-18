@@ -3,9 +3,12 @@
  */
 package org.kasource.kaevent.listener.register;
 
+import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -13,6 +16,7 @@ import java.util.WeakHashMap;
 import org.kasource.commons.util.ReflectionUtils;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.event.config.EventConfig;
+import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 
 /**
@@ -25,7 +29,7 @@ import org.kasource.kaevent.event.register.EventRegister;
  **/
 public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister implements ChannelListenerRegister {
 
-    private Map<Class<? extends EventObject>, Map<EventListener,Object>> listenersByEvent = new HashMap<Class<? extends EventObject>, Map<EventListener,Object>>();
+    private Map<Class<? extends EventObject>, Map<EventListener,EventListenerRegistration>> listenersByEvent = new HashMap<Class<? extends EventObject>, Map<EventListener,EventListenerRegistration>>();
     private Channel channel;
    
     
@@ -45,12 +49,12 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
      * @return all listener object of eventClass
      **/
     @Override
-    public Set<EventListener> getListenersByEvent(EventObject event) {
-        Map<EventListener, Object> listeners =  listenersByEvent.get(event.getClass());
+    public Collection<EventListenerRegistration> getListenersByEvent(EventObject event) {
+        Map<EventListener, EventListenerRegistration> listeners =  listenersByEvent.get(event.getClass());
         if(listeners != null) {
-            return listeners.keySet();
+            return listeners.values();
         }
-        return EMPTY_LISTENER_SET;
+        return EMPTY_LISTENER_COLLECTION;
     }
 
     
@@ -64,10 +68,10 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
     @Override
     public void refreshListeners(Class<? extends EventObject> eventClass) {
        EventConfig eventConfig = eventRegister.getEventByClass(eventClass); 
-       for(Map<EventListener, Object> listenerMap : listenersByEvent.values()) {
+       for(Map<EventListener, EventListenerRegistration> listenerMap : listenersByEvent.values()) {
            for(EventListener listener : listenerMap.keySet()) {
                if(ReflectionUtils.implementsInterface(listener, eventConfig.getListener())) {
-                   addListener(listener, eventClass, channel);
+                   addListener(listener, eventClass, channel, null);
                }
            }
        }
@@ -87,16 +91,32 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
      * @param filters List<EventFilter<? extends EventObject>> filters
      **/
     public void registerListener(EventListener listener) {
-       super.registerListener(listener, channel);
+       super.register(listener, channel);
+    }
+    
+    /**
+     * Register a new listener object to this channel
+     * 
+     * @param listener
+     *            Listener  object to register
+     * @param filters List<EventFilter<? extends EventObject>> filters
+     **/
+    @Override
+    public void registerListener(EventListener listener, List<EventFilter<EventObject>> filters) {
+       super.register(listener, channel, filters);
     }
 
-    protected void addListener(EventListener listener, Class<? extends EventObject> eventClass, Object channel) {
-        Map<EventListener,Object> listenerMap = listenersByEvent.get(eventClass);
+    protected void addListener(EventListener listener, Class<? extends EventObject> eventClass, Object channel, List<EventFilter<EventObject>> filters) {
+        Map<EventListener,EventListenerRegistration> listenerMap = listenersByEvent.get(eventClass);
         if(listenerMap == null) {
-            listenerMap = new WeakHashMap<EventListener, Object>();
+            listenerMap = new WeakHashMap<EventListener, EventListenerRegistration>();
             listenersByEvent.put(eventClass, listenerMap);
         }
-        listenerMap.put(listener, null);
+        Map<Class<? extends EventObject>, List<EventFilter<EventObject>>> applicableFilters = null;
+        if(filters != null) {
+            applicableFilters = getApplicableFilters(listener, filters);
+        }
+        listenerMap.put(listener,new EventListenerRegistration(listener, applicableFilters));
     }
    
     /**
@@ -107,7 +127,7 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
      **/
     @Override
     public void unregisterListener(EventListener listener) {
-       for(Map<EventListener, Object> listenerMap : listenersByEvent.values()) {
+       for(Map<EventListener, EventListenerRegistration> listenerMap : listenersByEvent.values()) {
            if(listenerMap != null){
                listenerMap.remove(listener);
            }

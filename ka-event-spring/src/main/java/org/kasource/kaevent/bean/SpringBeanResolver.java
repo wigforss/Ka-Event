@@ -7,7 +7,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 
-
+/**
+ * Provides bean lookup capabilities by using the spring application context.
+ * 
+ * @author Rikard Wigforss
+ **/
 public class SpringBeanResolver implements BeanResolver, ApplicationContextAware{
 	private ApplicationContext applicationContext;
 	

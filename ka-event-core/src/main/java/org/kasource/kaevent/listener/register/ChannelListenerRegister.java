@@ -2,7 +2,10 @@ package org.kasource.kaevent.listener.register;
 
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.List;
 import java.util.Set;
+
+import org.kasource.kaevent.event.filter.EventFilter;
 
 
 public interface ChannelListenerRegister extends EventListenerRegister{
@@ -15,7 +18,14 @@ public interface ChannelListenerRegister extends EventListenerRegister{
     public abstract void registerListener(EventListener listener);
     
     
-
+    /**
+     * Register a new listener object to this channel
+     * 
+     * @param listener
+     *            Listener object to register
+     **/
+    public void registerListener(EventListener listener, List<EventFilter<EventObject>> filters);
+    
     /**
      * Remove a registered listener from this channel
      * 
@@ -33,14 +43,5 @@ public interface ChannelListenerRegister extends EventListenerRegister{
      **/
     public abstract void refreshListeners(Class<? extends EventObject> eventClass);
     
-    /**
-     * Returns the set of listener objects that listens to the event class
-     * <i>eventClass</i>.
-     * 
-     * @param eventClass
-     *            The event class to find listener object for.
-     * 
-     * @return all listener object of eventClass
-     **/
-    public abstract Set<EventListener> getListenersByEvent(EventObject event);
+   
 }

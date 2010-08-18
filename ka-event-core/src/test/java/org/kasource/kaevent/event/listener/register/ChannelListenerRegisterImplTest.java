@@ -22,6 +22,7 @@ import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
 import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
+import org.kasource.kaevent.listener.register.EventListenerRegistration;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
@@ -63,7 +64,7 @@ public class ChannelListenerRegisterImplTest {
                 
             }
         };
-        
+        EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
       
         EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
         EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
@@ -71,9 +72,9 @@ public class ChannelListenerRegisterImplTest {
         EasyMock.expect(events.contains(ChangeListener.class)).andReturn(true);
         EasyMockUnitils.replay();
         register.registerListener(listener);
-        Set<EventListener> listeners = register.getListenersByEvent(new ChangeEvent("Hej"));
+        Collection<EventListenerRegistration> listeners = register.getListenersByEvent(new ChangeEvent("Hej"));
         assertEquals(1, listeners.size());
-        assertEquals(listener, listeners.iterator().next());
+        assertEquals(listenerReg, listeners.iterator().next());
     }
     
     @SuppressWarnings("unchecked")
@@ -86,7 +87,7 @@ public class ChannelListenerRegisterImplTest {
                 
             }
         };
-        
+        EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
       
         EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
         EasyMock.expect((Class)eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
@@ -94,9 +95,9 @@ public class ChannelListenerRegisterImplTest {
         EasyMock.expect(events.contains(ChangeListener.class)).andReturn(true);
         EasyMockUnitils.replay();
         register.registerListener(listener);
-        Set<EventListener> listeners = register.getListenersByEvent(new ChangeEvent("Hej"));
+        Collection<EventListenerRegistration> listeners = register.getListenersByEvent(new ChangeEvent("Hej"));
         assertEquals(1, listeners.size());
-        assertEquals(listener, listeners.iterator().next());
+        assertEquals(listenerReg, listeners.iterator().next());
         register.unregisterListener(listener);
         listeners = register.getListenersByEvent(new ChangeEvent("Hej"));
         assertEquals(0, listeners.size());

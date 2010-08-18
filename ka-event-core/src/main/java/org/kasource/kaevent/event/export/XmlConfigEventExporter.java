@@ -21,7 +21,6 @@ import org.kasource.kaevent.event.config.EventConfigFactory;
 import org.kasource.kaevent.event.config.InvalidEventConfigurationException;
 import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.event.method.MethodResolverFactory;
-import org.kasource.kaevent.event.method.switchcase.KeywordSwitchMethodResolver;
 
 /**
  * @author rikardwigforss

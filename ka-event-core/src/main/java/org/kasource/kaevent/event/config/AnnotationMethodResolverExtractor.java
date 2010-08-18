@@ -3,15 +3,12 @@
  */
 package org.kasource.kaevent.event.config;
 
-import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
 
-import org.kasource.commons.util.ReflectionUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.event.method.MethodResolverFactory;
-import org.kasource.kaevent.event.method.switchcase.KeywordSwitchMethodResolver;
 import org.kasource.kaevent.listener.interfaces.BeanMethodResolver;
 import org.kasource.kaevent.listener.interfaces.FactoryMethodResolver;
 import org.kasource.kaevent.listener.interfaces.MethodResolving;

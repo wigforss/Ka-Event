@@ -3,6 +3,7 @@
  */
 package org.kasource.kaevent.event.dispatch;
 
+import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.Set;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegister;
+import org.kasource.kaevent.listener.register.EventListenerRegistration;
 
 
 /**
@@ -35,7 +37,8 @@ public class EventSender {
                 channel.fireEvent(event, blocked);
             }
         }
-        Set<EventListener> listeners = sourceObjectListenerRegister.getListenersByEvent(event);
+        Collection<EventListenerRegistration> listeners = sourceObjectListenerRegister.getListenersByEvent(event);
+        
         invoker.invokeEventMethod(event, listeners, blocked);
     }
 }

@@ -17,6 +17,7 @@ import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.ChannelListenerRegister;
+import org.kasource.kaevent.listener.register.EventListenerRegistration;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
@@ -56,7 +57,7 @@ public class ChannelImplTest {
     private EventConfig eventConfig;
     
     @Mock
-    private Set<EventListener> listeners;
+    private Set<EventListenerRegistration> listeners;
     
     @TestedObject
     private ChannelImpl channel = new ChannelImpl(name, channelRegister, eventRegister, eventMethodInvoker);

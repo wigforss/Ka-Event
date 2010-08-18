@@ -30,14 +30,12 @@ public class ChannelFactory {
    
    public Channel createChannel(String channelName) {
        ChannelImpl channel = new ChannelImpl(channelName, channelRegister, eventRegister, eventMethodInvoker);
-       //registerEvents(channel);
        channelRegister.registerChannel(channel);
        return channel;
    }
    
    public Channel createChannel(String channelName, Set<Class<? extends EventObject>> events) {
        ChannelImpl channel = new ChannelImpl(channelName, channelRegister, eventRegister, eventMethodInvoker);
-       //registerEvents(channel);
        for(Class<? extends EventObject> eventClass : events) {
            channel.registerEvent(eventClass);
        }
@@ -47,7 +45,6 @@ public class ChannelFactory {
    
    public Channel createChannel(String channelName, Set<Class<? extends EventObject>> events, Set<EventListener> listeners) {
        ChannelImpl channel = new ChannelImpl(channelName, channelRegister, eventRegister, eventMethodInvoker);
-      // registerEvents(channel);
        for(Class<? extends EventObject> eventClass : events) {
            channel.registerEvent(eventClass);
        }
@@ -57,18 +54,5 @@ public class ChannelFactory {
        channelRegister.registerChannel(channel);
        return channel;
    }
-   /* TODO: Enable later
-   private void registerEvents(Channel channel) {
-       Collection<EventConfig> events = eventRegister.getEvents();
-       for(EventConfig event : events) {
-           if(event.getChannels() != null) {
-               for(String channelName : event.getChannels()) {
-                   if(channel.getName().equals(channelName)) {
-                       channel.registerEvent(event.getEventClass());
-                   }
-               }
-           }
-       }
-   }
-   */
+ 
 }
