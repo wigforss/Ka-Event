@@ -1,0 +1,10 @@
+<!DOCTYPE aspectj PUBLIC    
+  "-//AspectJ//DTD//EN"    "http://www.eclipse.org/aspectj/dtd/aspectj.dtd"> 
+<aspectj>
+	<weaver options="-XnoInline -Xreweavable ">
+		<include within="org.kasource.kaevent..*"/>
+	</weaver>
+	<aspects>
+		<aspect name="org.kasource.kaevent.aspects.RegisterListenerAspect" />
+	</aspects>
+</aspectj>

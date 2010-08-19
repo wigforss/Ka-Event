@@ -8,7 +8,7 @@ import org.kasource.kaevent.listener.ChannelListener;
 /**
  * Registers {@link java.util.EventListener} implementations based on annotations
  * 
- * @author rikard
+ * @author Rikard Wigforss
  * @version $Id$
  **/
 public interface RegisterListenerByAnnotation {

@@ -25,6 +25,15 @@ public class SpringBeanResolver implements BeanResolver, ApplicationContextAware
 	}
 
 	@Override
+        public <T> T getBean(String beanName, Class<T> ofClass) {
+                try {
+                        return (T) applicationContext.getBean(beanName);
+                } catch(Exception e) {
+                        throw new CouldNotResolveBeanException(e.getMessage(),e);
+                }
+        }
+	
+	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.applicationContext = applicationContext;

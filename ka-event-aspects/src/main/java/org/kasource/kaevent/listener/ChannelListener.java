@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * registered at the named channels when a method 
  * annotated with @RegisterListener is called
  * 
- * @author rikard
+ * @author Rikard Wigforss
  * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)

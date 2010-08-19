@@ -5,6 +5,8 @@ package org.kasource.kaevent.event.export;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -41,8 +43,8 @@ public class XmlConfigEventExporter implements EventExporter {
         Set<EventConfig> eventsFound = new HashSet<EventConfig>();
         if(eventList != null && !eventList.isEmpty()) {
             for(KaEventConfig.Events.Event event : eventList) {
-                Class<? extends EventListener> interfaceClass = getInterfaceClass(event.getListenerInterface());
-                Class<? extends EventObject> eventClass = getEventClass(event.getEventClass());
+                Class<? extends EventListener> interfaceClass = ReflectionUtils.getInterfaceClass(event.getListenerInterface(), EventListener.class);
+                Class<? extends EventObject> eventClass = ReflectionUtils.getClass(event.getEventClass(), EventObject.class);
                 if(!hasMethodResolver(event)){
                     Method eventMethod = getEventMethod(eventClass, interfaceClass);
                     eventsFound.add(eventFactory.newWithEventMethod(eventClass, interfaceClass, eventMethod, event.getName()));
@@ -68,28 +70,43 @@ public class XmlConfigEventExporter implements EventExporter {
         }
     }
     
+    /*
     @SuppressWarnings("unchecked")
     private Class<? extends EventListener>  getInterfaceClass(String className) {
         try {
-            return (Class<? extends EventListener>) Class.forName(className);
-        }catch(ClassCastException cce) {
-            throw new InvalidEventConfigurationException("Listener Interface class "+className+" must extend java.util.EventListener!", cce);
-        } catch (ClassNotFoundException cnfe) {
+            Class<?> interfaceClass = Class.forName(className);
+            Type[] superInterfaces =  interfaceClass.getGenericInterfaces();
+            boolean foundInterface = false;
+            for(Type interfaceType : superInterfaces) {
+                if(EventListener.class.isAssignableFrom( (Class<?>) interfaceType )) {
+                    foundInterface = true;
+                    break;
+                }
+            }
+            if(! foundInterface) {
+                throw new InvalidEventConfigurationException("Listener Interface class "+className+" must extend java.util.EventListener!");
+            }
+            return (Class<? extends EventListener>) interfaceClass;
+        }catch (ClassNotFoundException cnfe) {
             throw new InvalidEventConfigurationException("Listener Interface class "+className+" could not be found!",cnfe);
         }
     }
-    
+    */
+    /*
     @SuppressWarnings("unchecked")
     private Class<? extends EventObject>  getEventClass(String className) {
         try {
-            return (Class<? extends EventObject>) Class.forName(className);
-        }catch(ClassCastException cce) {
-            throw new InvalidEventConfigurationException("Event class "+className+" must extend java.util.EventObject!", cce);
-        } catch (ClassNotFoundException cnfe) {
+            Class<?> eventClass = Class.forName(className);
+            Class<?> superClass = (Class<?>) eventClass.getGenericSuperclass();
+            if(superClass == null || ! EventObject.class.isAssignableFrom(superClass)) {
+                throw new InvalidEventConfigurationException("Event class "+className+" must extend java.util.EventObject!");
+            }
+            return (Class<? extends EventObject>) eventClass;
+        }catch (ClassNotFoundException cnfe) {
             throw new InvalidEventConfigurationException("Event class "+className+" could not be found!",cnfe);
         }
     }
-    
+    */
     private boolean hasMethodResolver(KaEventConfig.Events.Event event) {
         return (event.getAnnotationMethodResolver() != null || event.getFactoryMethodResolver() != null || event.getBeanMethodResolver() != null || event.getSwitchMethodResolver() != null);
     }

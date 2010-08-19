@@ -1,5 +1,7 @@
 package org.kasource.kaevent.bean;
 
+
+
 public class CouldNotResolveBeanException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 

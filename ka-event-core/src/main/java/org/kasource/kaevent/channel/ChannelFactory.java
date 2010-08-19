@@ -39,10 +39,11 @@ public class ChannelFactory {
    
    public Channel createChannel(String channelName, Set<Class<? extends EventObject>> events) {
        ChannelImpl channel = new ChannelImpl(channelName, channelRegister, eventRegister, eventMethodInvoker, beanResolver);
+       channelRegister.registerChannel(channel);
        for(Class<? extends EventObject> eventClass : events) {
            channel.registerEvent(eventClass);
        }
-       channelRegister.registerChannel(channel);
+      
        return channel;
    }
    

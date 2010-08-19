@@ -3,9 +3,13 @@ package org.kasource.commons.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Set;
+
+
 
 /**
  * Reflection utility methods used.
@@ -427,6 +431,42 @@ public class ReflectionUtils {
         if (!Arrays.equals(actualParameters,parameters)) {
             throw new IllegalArgumentException("Method " + method + " types of parameters "
                     + Arrays.toString(actualParameters) + " does not match: " + Arrays.toString(parameters));
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> Class<? extends T>  getInterfaceClass(String className, Class<T> superInterface) {
+        try {
+            
+            Class<?> interfaceClass = Class.forName(className);
+            Type[] superInterfaces =  interfaceClass.getGenericInterfaces();
+            boolean foundInterface = false;
+            for(Type interfaceType : superInterfaces) {
+                if(superInterface.isAssignableFrom( (Class<?>) interfaceType )) {
+                    foundInterface = true;
+                    break;
+                }
+            }
+            if(! foundInterface) {
+                throw new IllegalArgumentException("Class "+className+" must extend "+superInterface+ "!");
+            }
+            return (Class<? extends T>) interfaceClass;
+        }catch (ClassNotFoundException cnfe) {
+            throw new IllegalArgumentException("Class "+className+" could not be found!",cnfe);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> Class<? extends T>  getClass(String className, Class<T> superClass) {
+        try {
+            Class<?> clazz = Class.forName(className);
+            Class<?> genericSuperClass = (Class<?>) clazz.getGenericSuperclass();
+            if(superClass == null || ! EventObject.class.isAssignableFrom(superClass)) {
+                throw new IllegalArgumentException("Class "+className+" must extend "+superClass+"!");
+            }
+            return (Class<? extends T>) clazz;
+        }catch (ClassNotFoundException cnfe) {
+            throw new IllegalArgumentException("Class "+className+" could not be found!",cnfe);
         }
     }
 

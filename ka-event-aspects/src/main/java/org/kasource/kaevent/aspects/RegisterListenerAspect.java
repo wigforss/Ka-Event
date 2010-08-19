@@ -24,14 +24,14 @@ import org.kasource.kaevent.listener.register.RegisterListenerByAnnotationImpl;
  *                Also make sure the aspect is enabled in the META-INF/aop.xml
  *                file.
  * 
- * @author wigforss
+ * @author Rikard Wigforss
  * @version $Id$
  **/
 @Aspect
 public class RegisterListenerAspect {
 
   
-    private RegisterListenerByAnnotation registerListenerHandler = new RegisterListenerByAnnotationImpl();
+    private RegisterListenerByAnnotation registerListenerHandler = RegisterListenerByAnnotationImpl.getInstance();
 
     
 

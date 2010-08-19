@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * registered to listen to source objects by beanName of the value attribute, when a method 
  * annotated with @RegisterListener is called.
  * 
- * @author rikard
+ * @author Rikard Wigforss
  * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)

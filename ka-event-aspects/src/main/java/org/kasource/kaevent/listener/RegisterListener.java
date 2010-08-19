@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * method such as a constructor or other initialization method.
  * 
  * 
- * @author rikard
+ * @author Rikard Wigforss
  * @version $Id$
  **/
 @Retention(RetentionPolicy.RUNTIME)

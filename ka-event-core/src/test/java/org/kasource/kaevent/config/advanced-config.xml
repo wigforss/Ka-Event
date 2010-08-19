@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<kaEventConfig xmlns="http://kasource.org"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://kasource.org kaevent.xsd">
+<queueThread class="org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor"/>
+<beanResolver class="org.kasource.kaevent.bean.DefaultBeanResolver"/>
+<events>
+	<event name="changeEvent" eventClass="javax.swing.event.ChangeEvent"  listenerInterface="javax.swing.event.ChangeListener"/>
+</events>
+<channels>
+	<channel name="testChannel1">
+		<handle event="changeEvent"/>
+	</channel>
+	
+</channels>
+</kaEventConfig>

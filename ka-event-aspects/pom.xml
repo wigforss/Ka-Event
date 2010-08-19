@@ -20,6 +20,37 @@
 	</properties>
 	<build>
 		<plugins>
+		<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/int-test/java</source>
+							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/example/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -189,7 +220,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<forkMode>always</forkMode>
-						<!-- 	<argLine>-javaagent:"${settings.localRepository}/org/springframework/spring-agent/${spring.version}/spring-agent-${spring.version}.jar" -server -Xmx1024m</argLine> -->
+						 	<argLine>-javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/{aspectj.version}/aspectjweaver-${aspectj.version}.jar" -server -Xmx1024m</argLine>
 							<useSystemClassloader>true</useSystemClassloader>
 							<useManifestOnlyJar>false</useManifestOnlyJar>
 							<testFailureIgnore>false</testFailureIgnore>

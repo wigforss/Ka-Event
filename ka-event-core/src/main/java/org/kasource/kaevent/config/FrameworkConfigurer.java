@@ -49,145 +49,140 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
  */
 public class FrameworkConfigurer {
     private static Logger logger = Logger.getLogger(FrameworkConfigurer.class);
-    private  KaEventConfig config;
+    private  KaEventConfig xmlConfig;
     
-    public void configure(DefaultEventDispatcher eventDispatcher, String configLocation) {
+    public FrameworkConfiguration configure(String configLocation) {
       
+       
         if(configLocation != null) {
-            loadXmlFromPath(configLocation);
+             loadXmlFromPath(configLocation);
         } else {
             // Try default location
             try {
               loadXmlFromPath("classpath:kaevent-config.xml");
             } catch(IllegalArgumentException iae) {} // Ignore
         }
-        if(config != null) {
-            configureByXml(eventDispatcher);
+        if(xmlConfig != null) {
+            return configureByXml();
         } else {
-            defaultConfiguration(eventDispatcher);
+            return defaultConfiguration();
         }
+       
     }
     
-    private void defaultConfiguration(DefaultEventDispatcher eventDispatcher) {
+    private FrameworkConfiguration defaultConfiguration( ) {
+        FrameworkConfigurationImpl config = new FrameworkConfigurationImpl();
         // Bean resolver
-        BeanResolver beanResolver  = new DefaultBeanResolver();
+        config.setBeanResolver(new DefaultBeanResolver());
+      
         // Events
-        EventConfigFactory eventFactory = new EventConfigFactory(beanResolver);
-        EventRegister eventRegister = new DefaultEventRegister(eventFactory);
+        config.setEventFactory( new EventConfigFactory(config.getBeanResolver()));
+        
+        config.setEventRegister(new DefaultEventRegister(config.getEventFactory()));
+     
         // Channel Register
-        ChannelRegister channelRegister = new ChannelRegisterImpl();
+        config.setChannelRegister(new ChannelRegisterImpl());
+       
       
         // Source Object Listener Register
-        SourceObjectListenerRegister soListenerRegister = new SourceObjectListenerRegisterImpl(eventRegister, beanResolver);
-        EventMethodInvoker invoker = new EventMethodInvoker(eventRegister);
-        EventSender eventSender = new EventSender(channelRegister,(EventListenerRegister) soListenerRegister,invoker);
+        config.setSoListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config.getBeanResolver()));
         
+        config.setEventMethodinvoker(new EventMethodInvoker(config.getEventRegister()));
+        
+        config.setEventSender(new EventSender(config.getChannelRegister(),(EventListenerRegister) config.getSoListenerRegister(),config.getEventMethodinvoker()));
         
         // Channel Factory
-        ChannelFactory channelFactory = new ChannelFactory(channelRegister, eventRegister, invoker, beanResolver);
-        DispatcherQueueThread queueThread = new ThreadPoolQueueExecutor(eventSender);
+        config.setChannelFactory(new ChannelFactory(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodinvoker(), config.getBeanResolver()));
         
-        eventDispatcher.setChannelRegister(channelRegister);
-        eventDispatcher.setSourceObjectListenerRegister(soListenerRegister);
-        eventDispatcher.setEventQueue(queueThread);
-        eventDispatcher.setEventSender(eventSender);
-        eventDispatcher.setChannelFactory(channelFactory);
+        config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventSender()));
+       
+        return config;
+        
+       
     }
     
-    private void configureByXml(DefaultEventDispatcher eventDispatcher) {
+    private FrameworkConfiguration configureByXml() {
+        FrameworkConfigurationImpl config = new FrameworkConfigurationImpl();
         // Bean Resolver
         BeanResolver beanResolver = null;
-        KaEventConfig.BeanResolver beanResolverConfig = config.getBeanResolver();
+        KaEventConfig.BeanResolver beanResolverConfig = xmlConfig.getBeanResolver();
         if(beanResolverConfig != null && beanResolverConfig.getClazz() != null) {
-            beanResolver = ReflectionUtils.getInstance(beanResolverConfig.getClazz(), BeanResolver.class);
+            config.setBeanResolver(ReflectionUtils.getInstance(beanResolverConfig.getClazz(), BeanResolver.class));
         } else {
-            beanResolver = new DefaultBeanResolver();
+            config.setBeanResolver( new DefaultBeanResolver());
         }
+        
         // Events
-        EventConfigFactory eventFactory = new EventConfigFactory(beanResolver);
-        EventRegister eventRegister = new DefaultEventRegister(eventFactory);
-        EventMethodInvoker invoker = new EventMethodInvoker(eventRegister);
-        SourceObjectListenerRegister soListenerRegister = new SourceObjectListenerRegisterImpl(eventRegister, beanResolver);
+        config.setEventFactory( new EventConfigFactory(config.getBeanResolver()));
+        
+        config.setEventRegister(new DefaultEventRegister(config.getEventFactory()));
+     
+        config.setEventMethodinvoker(new EventMethodInvoker(config.getEventRegister()));
+     
+        config.setSoListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config.getBeanResolver()));
+        
+       
         
         // Channel Register
-        ChannelRegister channelRegister = new ChannelRegisterImpl();
+        config.setChannelRegister(new ChannelRegisterImpl());
+        
         
         // Sender
-        EventSender eventSender = new EventSender(channelRegister,(EventListenerRegister) soListenerRegister,invoker);
+        config.setEventSender(new EventSender(config.getChannelRegister(),(EventListenerRegister) config.getSoListenerRegister(),config.getEventMethodinvoker()));
         
         // Channel Factory
-        ChannelFactory channelFactory = new ChannelFactory(channelRegister, eventRegister, invoker, beanResolver);
+        config.setChannelFactory(new ChannelFactory(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodinvoker(), config.getBeanResolver()));
         
         // Queue Thread
-        DispatcherQueueThread queueThread = null;
-        if(config.getQueueThread() == null) {
-            ThreadPoolQueueExecutor threadPoolExecutor = new ThreadPoolQueueExecutor(eventSender);
-            if(config.getThreadPoolExecutor() != null) {
-                if(config.getThreadPoolExecutor().getMaximumPoolSize() != null) {
-                   threadPoolExecutor.setMaximumPoolSize(config.getThreadPoolExecutor().getMaximumPoolSize());
+        if(xmlConfig.getQueueThread() == null) {
+            config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventSender()));
+            ThreadPoolQueueExecutor threadPoolExecutor = new ThreadPoolQueueExecutor(config.getEventSender());
+            if(xmlConfig.getThreadPoolExecutor() != null) {
+                if(xmlConfig.getThreadPoolExecutor().getMaximumPoolSize() != null) {
+                   threadPoolExecutor.setMaximumPoolSize(xmlConfig.getThreadPoolExecutor().getMaximumPoolSize());
                 }
-                if(config.getThreadPoolExecutor().getCorePoolSize() != null) {
-                    threadPoolExecutor.setCorePoolSize(config.getThreadPoolExecutor().getCorePoolSize());
+                if(xmlConfig.getThreadPoolExecutor().getCorePoolSize() != null) {
+                    threadPoolExecutor.setCorePoolSize(xmlConfig.getThreadPoolExecutor().getCorePoolSize());
                  }
-                if(config.getThreadPoolExecutor().getKeepAliveTime() != null) {
-                    threadPoolExecutor.setKeepAliveTime(config.getThreadPoolExecutor().getKeepAliveTime().longValue(), TimeUnit.MILLISECONDS);
+                if(xmlConfig.getThreadPoolExecutor().getKeepAliveTime() != null) {
+                    threadPoolExecutor.setKeepAliveTime(xmlConfig.getThreadPoolExecutor().getKeepAliveTime().longValue(), TimeUnit.MILLISECONDS);
                  }               
             }
-            queueThread = threadPoolExecutor;
+            config.setQueueThread(threadPoolExecutor);
         } else {
-            queueThread = ReflectionUtils.getInstance(config.getQueueThread().getClazz(), DispatcherQueueThread.class, eventSender);
+            config.setQueueThread(ReflectionUtils.getInstance(xmlConfig.getQueueThread().getClazz(), DispatcherQueueThread.class, config.getEventSender()));
+          
             
         }
-        
-        
-      
-        
-        
-        eventDispatcher.setChannelRegister(channelRegister);
-        eventDispatcher.setSourceObjectListenerRegister(soListenerRegister);
-        eventDispatcher.setEventQueue(queueThread);
-        eventDispatcher.setEventSender(eventSender);
-        eventDispatcher.setChannelFactory(channelFactory);
        
        
         // import events
-        KaEventConfig.Events events = config.getEvents();
+        KaEventConfig.Events events = xmlConfig.getEvents();
         if(events != null) {
             String scanPath = events.getScanClassPath();
             if(scanPath != null && scanPath.length() > 0) {
-                importAndRegisterEvents(new AnnotationEventExporter(scanPath),eventFactory,eventRegister);
+                importAndRegisterEvents(new AnnotationEventExporter(scanPath),config.getEventFactory(), config.getEventRegister());
             }
-            importAndRegisterEvents(new XmlConfigEventExporter( events.getEvent(), beanResolver),eventFactory,eventRegister);
+            importAndRegisterEvents(new XmlConfigEventExporter( events.getEvent(), beanResolver),config.getEventFactory(),config.getEventRegister());
         }
         
-        // Create channels
-        KaEventConfig.Channels channels = config.getChannels();
-        if(channels != null) {
-            for(KaEventConfig.Channels.Channel channel : channels.getChannel()) {
-                String name = channel.getName();
-                Set<Class <? extends EventObject>> eventSet = new HashSet<Class <? extends EventObject>>();
-                if(channel.getHandle() != null) {
-                for(KaEventConfig.Channels.Channel.Handle handleEvent : channel.getHandle()) {
-                    String eventName = handleEvent.getEvent().toString();
-                    EventConfig eventConfig = eventRegister.getEventByName(eventName);
-                    if(eventConfig != null) {
-                        eventSet.add(eventConfig.getEventClass());
-                    } else {
-                        throw new IllegalStateException("Event "+eventName+" could not be found!");
-                    }
-                }
-                }
-                if(eventSet.isEmpty()) {
-                    channelFactory.createChannel(name);
-                } else {
-                    channelFactory.createChannel(name, eventSet);
-                }
-                
-            }
-        }
+        createChannels(config);
         
-        // Register @Event annotated events with the channels referenced in the channels attribute.
-        for(Class<? extends EventObject> eventClass :eventRegister.getEventClasses()) {
+        registerEvents(config);
+        
+        return config;
+     
+        
+    }
+
+    /**
+     *  Register @Event annotated events with the channels referenced in the channels attribute
+     */
+    private void registerEvents(FrameworkConfiguration config) {
+        EventRegister eventRegister = config.getEventRegister();
+        ChannelFactory channelFactory = config.getChannelFactory();
+        ChannelRegister channelRegister = config.getChannelRegister();
+        for(Class<? extends EventObject> eventClass : eventRegister.getEventClasses()) {
             Event eventAnno = eventClass.getAnnotation(Event.class);
             if(eventAnno != null && eventAnno.channels().length > 0) {
                 String[] channelsByEvent = eventAnno.channels();
@@ -207,8 +202,39 @@ public class FrameworkConfigurer {
                 }
             }
         }
-     
-        
+    }
+
+    /**
+     * 
+     */
+    private void createChannels(FrameworkConfiguration config) {
+        EventRegister eventRegister = config.getEventRegister();
+        ChannelFactory channelFactory = config.getChannelFactory();
+        // Create channels
+        KaEventConfig.Channels channels = xmlConfig.getChannels();
+        if(channels != null) {
+            for(KaEventConfig.Channels.Channel channel : channels.getChannel()) {
+                String name = channel.getName();
+                Set<Class <? extends EventObject>> eventSet = new HashSet<Class <? extends EventObject>>();
+                if(channel.getHandle() != null) {
+                for(KaEventConfig.Channels.Channel.Handle handleEvent : channel.getHandle()) {
+                    String eventName = ((KaEventConfig.Events.Event) handleEvent.getEvent()).getName();
+                    EventConfig eventConfig = eventRegister.getEventByName(eventName);
+                    if(eventConfig != null) {
+                        eventSet.add(eventConfig.getEventClass());
+                    } else {
+                        throw new IllegalStateException("Event "+eventName+" could not be found!");
+                    }
+                }
+                }
+                if(eventSet.isEmpty()) {
+                    channelFactory.createChannel(name);
+                } else {
+                    channelFactory.createChannel(name, eventSet);
+                }
+                
+            }
+        }
     }
     
     private void  importAndRegisterEvents(EventExporter eventExporter,EventConfigFactory eventConfigFactory, EventRegister eventRegister) {
@@ -227,67 +253,7 @@ public class FrameworkConfigurer {
       
     }
 
-/*
-    public void configure(DefaultEventDispatcher eventDispatcher) {
-        configure(eventDispatcher, null);
-    }
-    
-    public void configure(DefaultEventDispatcher eventDispatcher, String scanClassPath) {
-        if(props == null) {
-            props = getProperties();
-        }
-        // Scan path
-        if(scanClassPath == null) {
-            scanClassPath = props.getProperty("kaevent.scanClassPath");
-        }
-        
-     
-        // Bean Resolver
-        String beanResolverClass = props.getProperty("kaevent.class.beanResolver", DefaultBeanResolver.class.getName());
-        BeanResolver beanResolver = ReflectionUtils.getInstance(beanResolverClass, BeanResolver.class);
-        
-        
-        EventConfigFactory eventFactory = new EventConfigFactory(beanResolver);
-        
-        // Event Exporter
-        String eventExporterClass = props.getProperty("kaevent.class.eventExporter" , AnnotationEventExporter.class.getName()); 
-        EventExporter exporter = ReflectionUtils.getInstance(eventExporterClass, EventExporter.class);
-        
-        // Event Register
-        EventRegister eventRegister = null;
-        if(scanClassPath != null) {
-            eventRegister = new DefaultEventRegister(eventFactory,exporter, scanClassPath);
-        } else {
-            eventRegister = new DefaultEventRegister(eventFactory);
-        }
-        
-        // Channel Register
-        ChannelRegister channelRegister = new ChannelRegisterImpl();
-      
-        // Source Object Listener Register
-        SourceObjectListenerRegister soListenerRegister = new SourceObjectListenerRegisterImpl(eventRegister);
-        
-        
-        EventMethodInvoker invoker = new EventMethodInvoker(eventRegister);
-        EventSender eventSender = new EventSender(channelRegister,(EventListenerRegister) soListenerRegister,invoker);
-        
-        // Channel Factory
-        ChannelFactory channelFactory = new ChannelFactory(channelRegister, eventRegister, invoker);
-        
-        // DispatcherQueueThread
-        String queueClass = props.getProperty("kaevent.class.queueThread", ThreadPoolQueueExecutor.class.getName());
-        DispatcherQueueThread queueThread = ReflectionUtils.getInstance(queueClass, DispatcherQueueThread.class, eventSender);
-        if(queueThread instanceof ThreadPoolQueueExecutor) {
-            configureThreadPoolQueue((ThreadPoolQueueExecutor) queueThread);
-        }
-        eventDispatcher.setChannelRegister(channelRegister);
-        eventDispatcher.setSourceObjectListenerRegister(soListenerRegister);
-        eventDispatcher.setEventQueue(queueThread);
-        eventDispatcher.setEventSender(eventSender);
-        eventDispatcher.setChannelFactory(channelFactory);
-        
-    }
-*/
+
     
       
 
@@ -312,8 +278,8 @@ public class FrameworkConfigurer {
             } else {
                 xmlStream = new FileInputStream(path);
             }
-            config = loadXmlConfig(xmlStream);
-            if(config == null) {
+            xmlConfig = loadXmlConfig(xmlStream);
+            if(xmlConfig == null) {
                 throw new IllegalArgumentException("Could not unmarshal xml configuration file "+inPath);
             }
         } catch (JAXBException e) {

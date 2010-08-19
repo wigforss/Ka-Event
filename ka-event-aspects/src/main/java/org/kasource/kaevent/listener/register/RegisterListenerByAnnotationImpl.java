@@ -15,19 +15,29 @@ import org.kasource.kaevent.listener.ChannelListener;
 /**
  * Register Listeners based on annotations
  * 
- * @author rikard
+ * @author Rikard Wigforss
  * @version $Id: RegisterListenerByAnnotationImpl.java 2 2010-07-30 16:17:31Z
  *          wigforss $
  **/
 public class RegisterListenerByAnnotationImpl implements
 		RegisterListenerByAnnotation {
 
+        private static RegisterListenerByAnnotationImpl INSTANCE = new RegisterListenerByAnnotationImpl();
+    
 	private ChannelRegister channelRegister;
 	private SourceObjectListenerRegister sourceObjectListenerRegister;
 	private BeanResolver beanResolver;
 	private Map<EventListener, String[]> channelListeners = new HashMap<EventListener, String[]>();
 	private Map<EventListener, String[]> beanListeners = new HashMap<EventListener, String[]>();
 
+	
+	private RegisterListenerByAnnotationImpl(){}
+	
+	
+	public static RegisterListenerByAnnotationImpl getInstance() {
+	    return INSTANCE;
+	}
+	
 	/**
 	 * Register <i>listener</i> using the attributes from
 	 * <i>channelListenerAnnotation</i>.

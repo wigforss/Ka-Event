@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * 
  * Suitable candidate methods to annotate with @Unregister could be close(), {@link Object#finalize() finalize()} or destroy() 
  * 
- * @author rikard
+ * @author Rikard Wigforss
  * @version $Id$
  **/
 @Retention(RetentionPolicy.RUNTIME)

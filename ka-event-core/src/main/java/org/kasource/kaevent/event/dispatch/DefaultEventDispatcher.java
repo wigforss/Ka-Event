@@ -10,6 +10,7 @@ import java.util.List;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
+import org.kasource.kaevent.config.FrameworkConfiguration;
 import org.kasource.kaevent.config.FrameworkConfigurer;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.filter.EventFilter;
@@ -27,6 +28,7 @@ public class DefaultEventDispatcher implements EventDispatcher{
     private SourceObjectListenerRegister sourceObjectListenerRegister;
     private DispatcherQueueThread eventQueue;
     private FrameworkConfigurer configurer = new FrameworkConfigurer();
+    private FrameworkConfiguration config;
     
     public DefaultEventDispatcher(String scanPath) {
         initialize(scanPath);
@@ -37,9 +39,16 @@ public class DefaultEventDispatcher implements EventDispatcher{
     }
     
     protected void initialize(String scanPath) {
-        configurer.configure(this, scanPath);
+        this.config = configurer.configure(scanPath);
+        
+        this.channelRegister = config.getChannelRegister();
+        this.sourceObjectListenerRegister = config.getSoListenerRegister();
+        this.eventQueue = config.getQueueThread();
+        this.eventSender = config.getEventSender();
+        this.channelFactory = config.getChannelFactory();
     }
     
+   
     
     @Override
     public void fire(EventObject event) {
@@ -83,40 +92,10 @@ public class DefaultEventDispatcher implements EventDispatcher{
     }
     
     
-    /**
-     * @param channelRegister the channelRegister to set
-     */
-    public void setChannelRegister(ChannelRegister channelRegister) {
-        this.channelRegister = channelRegister;
-    }
-
-    /**
-     * @param sourceObjectListenerRegister the sourceObjectListenerRegister to set
-     */
-    public void setSourceObjectListenerRegister(SourceObjectListenerRegister sourceObjectListenerRegister) {
-        this.sourceObjectListenerRegister = sourceObjectListenerRegister;
-    }
-
-    /**
-     * @param eventQueue the eventQueue to set
-     */
-    public void setEventQueue(DispatcherQueueThread eventQueue) {
-        this.eventQueue = eventQueue;
-    }
-
-    /**
-     * @param eventSender the eventSender to set
-     */
-    public void setEventSender(EventSender eventSender) {
-        this.eventSender = eventSender;
-    }
-
-    /**
-     * @param channelFactory the channelFactory to set
-     */
-    public void setChannelFactory(ChannelFactory channelFactory) {
-        this.channelFactory = channelFactory;
-    }
+    
+    
+    
+   
 
     
     
