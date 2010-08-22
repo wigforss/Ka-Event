@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://kasource.org/schema/kaevent-spring"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:beans="http://www.springframework.org/schema/beans"
+	targetNamespace="http://kasource.org/schema/kaevent-spring"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:import namespace="http://www.springframework.org/schema/beans" />
+
+
+	<xsd:element name="channels">
+		<xsd:annotation>
+			<xsd:documentation>
+				List of all channels
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="channel" maxOccurs="unbounded"
+					minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation>
+							Declares a channel
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="handle" minOccurs="0" maxOccurs="unbounded">
+								<xsd:annotation>
+									<xsd:documentation>
+										Handles the specified event.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:attribute name="event" type="xsd:IDREF" use="required">
+										<xsd:annotation>
+											<xsd:documentation>
+												event should refer to the name of a declared
+												event.
+											</xsd:documentation>
+										</xsd:annotation>
+									</xsd:attribute>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+						<xsd:attribute name="id" type="xsd:ID" use="required">
+							<xsd:annotation>
+								<xsd:documentation>
+									A unique name of the channel so it can be
+									referenced.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<!-- Bean Resolver -->
+	<xsd:element name="beanResolver">
+		<xsd:annotation>
+			<xsd:documentation>
+				The bean resolver implementation to use. If not
+				declared to default implementation with no ability to lookup beans.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="class" type="javaClass" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						The fully qualified class name of the bean
+						resolver to use, if not set the default bean resolver will be
+						used
+						with no ability to lookup beans.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+	<!-- Types -->
+	<xsd:simpleType name="javaClass">
+		<xsd:annotation>
+			<xsd:documentation>
+				A valid Java fully qualified class name.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern
+				value="[a-z]{2,6}(\.[a-zA-Z][a-zA-Z_$0-9]*)+\.([A-Z][a-zA-Z_$0-9]*){1}" />
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

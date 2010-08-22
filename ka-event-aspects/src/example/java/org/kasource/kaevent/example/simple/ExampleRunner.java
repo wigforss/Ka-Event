@@ -1,8 +1,12 @@
 package org.kasource.kaevent.example.simple;
 
+import org.kasource.kaevent.bean.BeanResolver;
+import org.kasource.kaevent.config.KaEventConfiguration;
+import org.kasource.kaevent.config.KaEventConfigurer;
+import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
-import org.kasource.kaevent.listener.register.RegisterListenerByAnnotationImpl;
+
 
 
 /**
@@ -11,16 +15,32 @@ import org.kasource.kaevent.listener.register.RegisterListenerByAnnotationImpl;
  * @author wigforss
  **/
 ///CLOVER:OFF
-public class ExampleRunner {
+public class ExampleRunner implements KaEventInitializedListener{
+    private Thermometer thermometer;
+    
+    private ExampleRunner(Thermometer thermometer) {
+        this.thermometer = thermometer;
+        KaEventConfigurer.getInstance().addListener(this);
+    }
+    
 	public static void main(String[] args) {
+	    
 		Thermometer thermometer = new Thermometer();
-		EventDispatcher eventDispatcher = new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName().replace('.', '/')+"/simple-config.xml");	
+		new ExampleRunner(thermometer);
+		EventDispatcher eventDispatcher = new DefaultEventDispatcher("org/kasource/kaevent/example/simple/simple-config.xml");	
 		Cooler cooler = new Cooler();
 		Heater heater = new Heater();
 		thermometer.setEventDispatcher(eventDispatcher);
 		thermometer.setCooler(cooler);
 		thermometer.setHeater(heater);
-		// RegisterListenerByAnnotationImpl.getInstance().initialize(channelRegister, sourceObjectListenerRegister, beanResolver)
 		new Thread(thermometer).start();
 	}
+
+   
+    @Override
+    public void doInitialize(KaEventConfiguration configuration) {
+        BeanResolver beanResolver = configuration.getBeanResolver();
+        ((CustomBeanResolver) beanResolver).putBean("thermometer", thermometer);
+        
+    }
 }

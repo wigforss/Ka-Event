@@ -9,6 +9,9 @@ import org.kasource.kaevent.bean.CouldNotResolveBeanException;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.channel.NoSuchChannelException;
+import org.kasource.kaevent.config.KaEventConfiguration;
+import org.kasource.kaevent.config.KaEventConfigurer;
+import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.listener.BeanListener;
 import org.kasource.kaevent.listener.ChannelListener;
 
@@ -20,7 +23,7 @@ import org.kasource.kaevent.listener.ChannelListener;
  *          wigforss $
  **/
 public class RegisterListenerByAnnotationImpl implements
-		RegisterListenerByAnnotation {
+		RegisterListenerByAnnotation, KaEventInitializedListener {
 
         private static RegisterListenerByAnnotationImpl INSTANCE = new RegisterListenerByAnnotationImpl();
     
@@ -31,7 +34,9 @@ public class RegisterListenerByAnnotationImpl implements
 	private Map<EventListener, String[]> beanListeners = new HashMap<EventListener, String[]>();
 
 	
-	private RegisterListenerByAnnotationImpl(){}
+	private RegisterListenerByAnnotationImpl(){
+	    KaEventConfigurer.getInstance().addListener(this);
+	}
 	
 	
 	public static RegisterListenerByAnnotationImpl getInstance() {
@@ -177,5 +182,13 @@ public class RegisterListenerByAnnotationImpl implements
 		}
 		beanListeners.clear();
 	}
+
+
+    
+    @Override
+    public void doInitialize(KaEventConfiguration configuration) {
+       initialize(configuration.getChannelRegister(), configuration.getSoListenerRegister(), configuration.getBeanResolver());
+        
+    }
 
 }

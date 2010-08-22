@@ -10,8 +10,9 @@ import java.util.List;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
-import org.kasource.kaevent.config.FrameworkConfiguration;
-import org.kasource.kaevent.config.FrameworkConfigurer;
+import org.kasource.kaevent.config.KaEventConfiguration;
+import org.kasource.kaevent.config.KaEventConfigurer;
+import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
@@ -20,15 +21,15 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
  * @author wigforss
  *
  */
-public class DefaultEventDispatcher implements EventDispatcher{
+public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializedListener{
 
-    private EventSender eventSender;
+    private EventSenderImpl eventSender;
     private ChannelRegister channelRegister;
     private ChannelFactory channelFactory;
     private SourceObjectListenerRegister sourceObjectListenerRegister;
     private DispatcherQueueThread eventQueue;
-    private FrameworkConfigurer configurer = new FrameworkConfigurer();
-    private FrameworkConfiguration config;
+   
+   
     
     public DefaultEventDispatcher(String scanPath) {
         initialize(scanPath);
@@ -39,16 +40,20 @@ public class DefaultEventDispatcher implements EventDispatcher{
     }
     
     protected void initialize(String scanPath) {
-        this.config = configurer.configure(scanPath);
-        
+       KaEventConfigurer.getInstance().addListener(this);
+       KaEventConfigurer.getInstance().configure(this,scanPath);
+    }
+    
+    @Override
+    public void doInitialize(KaEventConfiguration config) {
         this.channelRegister = config.getChannelRegister();
         this.sourceObjectListenerRegister = config.getSoListenerRegister();
         this.eventQueue = config.getQueueThread();
         this.eventSender = config.getEventSender();
         this.channelFactory = config.getChannelFactory();
     }
-    
    
+  
     
     @Override
     public void fire(EventObject event) {
@@ -90,6 +95,9 @@ public class DefaultEventDispatcher implements EventDispatcher{
         sourceObjectListenerRegister.registerListener(listener, sourceObject);
         
     }
+
+   
+    
     
     
     

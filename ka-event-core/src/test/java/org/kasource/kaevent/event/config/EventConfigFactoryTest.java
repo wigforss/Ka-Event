@@ -37,7 +37,7 @@ public class EventConfigFactoryTest {
     
     
     @TestedObject
-    private EventConfigFactory factory = new EventConfigFactory(beanResolver);
+    private EventConfigFactory factory = new EventConfigFactoryImpl(beanResolver);
     
     @Test
     public void createEventConfig() {

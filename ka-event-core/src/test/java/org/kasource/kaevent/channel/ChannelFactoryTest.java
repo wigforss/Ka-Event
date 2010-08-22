@@ -57,7 +57,7 @@ public class ChannelFactoryTest {
 
     
     @TestedObject
-    private ChannelFactory factory = new ChannelFactory(channelRegister, eventRegister, eventMethodInvoker, beanResolver);
+    private ChannelFactory factory = new ChannelFactoryImpl(channelRegister, eventRegister, eventMethodInvoker, beanResolver);
     
     @Test
     public void createChannelTest() {

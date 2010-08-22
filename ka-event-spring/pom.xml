@@ -18,6 +18,25 @@
 		<spring.version>2.5.6</spring.version>
 	</properties>
 	<build>
+	<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+					<include>**/*.xsd</include>
+					<include>**/*.dtd</include>
+					<include>**/spring.handlers</include>
+					<include>**/spring.schema</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/example/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -37,6 +56,37 @@
 					</descriptorRefs>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/int-test/java</source>
+							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/example/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -55,6 +105,11 @@
 		<dependency>
 			<groupId>org.kasource</groupId>
 			<artifactId>ka-event-core</artifactId>
+			<version>SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kasource</groupId>
+			<artifactId>ka-event-aspects</artifactId>
 			<version>SNAPSHOT</version>
 		</dependency>
 		<dependency>

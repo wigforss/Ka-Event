@@ -35,7 +35,7 @@ import org.unitils.inject.util.PropertyAccess;
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class EventMethodInvokerTest {
 
-    @InjectIntoStaticByType(propertyAccess=PropertyAccess.FIELD, target=EventMethodInvoker.class)
+    @InjectIntoStaticByType(propertyAccess=PropertyAccess.FIELD, target=EventMethodInvokerImpl.class)
     @Mock
     private Logger logger;
     
@@ -47,7 +47,7 @@ public class EventMethodInvokerTest {
     private EventConfig eventConfig;
     
     @TestedObject
-    private EventMethodInvoker eventMethodInvoker = new EventMethodInvoker(eventRegister);
+    private EventMethodInvoker eventMethodInvoker = new EventMethodInvokerImpl(eventRegister);
     
     
     

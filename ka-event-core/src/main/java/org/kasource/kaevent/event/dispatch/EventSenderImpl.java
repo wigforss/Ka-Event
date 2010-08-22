@@ -7,22 +7,32 @@ import java.util.Collection;
 import java.util.EventObject;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelRegister;
-import org.kasource.kaevent.listener.register.EventListenerRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
+import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 
 /**
- * @author rikardwigforss
+ * @author Rikard Wigforss
  *
  */
-public class EventSender {
+public class EventSenderImpl {
+    
+    @Resource
     private ChannelRegister channelRegister;
-    private EventListenerRegister sourceObjectListenerRegister;
+    
+    @Resource
+    private SourceObjectListenerRegister sourceObjectListenerRegister;
+    
+    @Resource
     private EventMethodInvoker invoker;
     
-    public EventSender(ChannelRegister channelRegister, EventListenerRegister sourceObjectListenerRegister, EventMethodInvoker invoker) {
+    protected EventSenderImpl(){}
+    
+    public EventSenderImpl(ChannelRegister channelRegister, SourceObjectListenerRegister sourceObjectListenerRegister, EventMethodInvoker invoker) {
         this.channelRegister = channelRegister;
         this.sourceObjectListenerRegister = sourceObjectListenerRegister;
         this.invoker = invoker;

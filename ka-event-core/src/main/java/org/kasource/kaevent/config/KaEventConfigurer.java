@@ -23,16 +23,18 @@ import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.DefaultBeanResolver;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
+import org.kasource.kaevent.channel.ChannelFactoryImpl;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.channel.ChannelRegisterImpl;
 import org.kasource.kaevent.channel.NoSuchChannelException;
 import org.kasource.kaevent.event.Event;
+import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventConfigFactory;
-import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
+import org.kasource.kaevent.event.config.EventConfigFactoryImpl;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
-import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
-import org.kasource.kaevent.event.dispatch.EventSender;
+import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
+import org.kasource.kaevent.event.dispatch.EventSenderImpl;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.kasource.kaevent.event.export.EventExporter;
@@ -40,43 +42,75 @@ import org.kasource.kaevent.event.export.XmlConfigEventExporter;
 import org.kasource.kaevent.event.register.DefaultEventRegister;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegister;
-import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 
 /**
  * @author wigforss
  * 
  */
-public class FrameworkConfigurer {
-    private static Logger logger = Logger.getLogger(FrameworkConfigurer.class);
-    private  KaEventConfig xmlConfig;
+public class KaEventConfigurer {
+    private static Logger logger = Logger.getLogger(KaEventConfigurer.class);
     
-    public FrameworkConfiguration configure(String configLocation) {
-      
-       
+    private static final  KaEventConfigurer INSTANCE = new KaEventConfigurer();
+    
+    private Set<KaEventInitializedListener> listeners = new HashSet<KaEventInitializedListener>();
+    
+    private boolean configured = false;
+    
+    private KaEventConfigurationImpl configuration = null;
+    
+    public static KaEventConfigurer getInstance() {
+        return INSTANCE;
+    }
+    
+    private KaEventConfigurer() {      
+    }
+    
+    
+    public void addListener(KaEventInitializedListener listener) {
+        
+        if(configured) {
+            listener.doInitialize(configuration);
+        } else {
+            listeners.add(listener);
+        }
+    }
+    
+    public void removeListener(KaEventInitializedListener listener) {
+        listeners.remove(listener);
+    }
+    
+    
+    public void configure(EventDispatcher eventDispatcher,String configLocation) {
+        
+        KaEventConfig xmlConfig = null;
         if(configLocation != null) {
-             loadXmlFromPath(configLocation);
+            xmlConfig = loadXmlFromPath(configLocation);
         } else {
             // Try default location
             try {
-              loadXmlFromPath("classpath:kaevent-config.xml");
+              xmlConfig = loadXmlFromPath("classpath:kaevent-config.xml");
             } catch(IllegalArgumentException iae) {} // Ignore
         }
         if(xmlConfig != null) {
-            return configureByXml();
+            configuration = configureByXml(xmlConfig);
         } else {
-            return defaultConfiguration();
+            configuration = defaultConfiguration();
         }
-       
+        for(KaEventInitializedListener listener : listeners) {
+            listener.doInitialize(configuration);
+        }
+        configuration.setEventDispatcher(eventDispatcher);
+        configured = true;
     }
     
-    private FrameworkConfiguration defaultConfiguration( ) {
-        FrameworkConfigurationImpl config = new FrameworkConfigurationImpl();
+    private KaEventConfigurationImpl defaultConfiguration( ) {
+        KaEventConfigurationImpl config = new KaEventConfigurationImpl();
         // Bean resolver
         config.setBeanResolver(new DefaultBeanResolver());
       
         // Events
-        config.setEventFactory( new EventConfigFactory(config.getBeanResolver()));
+        config.setEventFactory( new EventConfigFactoryImpl(config.getBeanResolver()));
         
         config.setEventRegister(new DefaultEventRegister(config.getEventFactory()));
      
@@ -87,12 +121,12 @@ public class FrameworkConfigurer {
         // Source Object Listener Register
         config.setSoListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config.getBeanResolver()));
         
-        config.setEventMethodinvoker(new EventMethodInvoker(config.getEventRegister()));
+        config.setEventMethodinvoker(new EventMethodInvokerImpl(config.getEventRegister()));
         
-        config.setEventSender(new EventSender(config.getChannelRegister(),(EventListenerRegister) config.getSoListenerRegister(),config.getEventMethodinvoker()));
+        config.setEventSender(new EventSenderImpl(config.getChannelRegister(), config.getSoListenerRegister(),config.getEventMethodinvoker()));
         
         // Channel Factory
-        config.setChannelFactory(new ChannelFactory(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodinvoker(), config.getBeanResolver()));
+        config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodinvoker(), config.getBeanResolver()));
         
         config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventSender()));
        
@@ -101,8 +135,8 @@ public class FrameworkConfigurer {
        
     }
     
-    private FrameworkConfiguration configureByXml() {
-        FrameworkConfigurationImpl config = new FrameworkConfigurationImpl();
+    private KaEventConfigurationImpl configureByXml(KaEventConfig xmlConfig) {
+        KaEventConfigurationImpl config = new KaEventConfigurationImpl();
         // Bean Resolver
         BeanResolver beanResolver = null;
         KaEventConfig.BeanResolver beanResolverConfig = xmlConfig.getBeanResolver();
@@ -113,11 +147,11 @@ public class FrameworkConfigurer {
         }
         
         // Events
-        config.setEventFactory( new EventConfigFactory(config.getBeanResolver()));
+        config.setEventFactory( new EventConfigFactoryImpl(config.getBeanResolver()));
         
         config.setEventRegister(new DefaultEventRegister(config.getEventFactory()));
      
-        config.setEventMethodinvoker(new EventMethodInvoker(config.getEventRegister()));
+        config.setEventMethodinvoker(new EventMethodInvokerImpl(config.getEventRegister()));
      
         config.setSoListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config.getBeanResolver()));
         
@@ -128,10 +162,10 @@ public class FrameworkConfigurer {
         
         
         // Sender
-        config.setEventSender(new EventSender(config.getChannelRegister(),(EventListenerRegister) config.getSoListenerRegister(),config.getEventMethodinvoker()));
+        config.setEventSender(new EventSenderImpl(config.getChannelRegister(), config.getSoListenerRegister(),config.getEventMethodinvoker()));
         
         // Channel Factory
-        config.setChannelFactory(new ChannelFactory(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodinvoker(), config.getBeanResolver()));
+        config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodinvoker(), config.getBeanResolver()));
         
         // Queue Thread
         if(xmlConfig.getQueueThread() == null) {
@@ -166,7 +200,7 @@ public class FrameworkConfigurer {
             importAndRegisterEvents(new XmlConfigEventExporter( events.getEvent(), beanResolver),config.getEventFactory(),config.getEventRegister());
         }
         
-        createChannels(config);
+        createChannels(xmlConfig, config);
         
         registerEvents(config);
         
@@ -178,7 +212,7 @@ public class FrameworkConfigurer {
     /**
      *  Register @Event annotated events with the channels referenced in the channels attribute
      */
-    private void registerEvents(FrameworkConfiguration config) {
+    private void registerEvents(KaEventConfiguration config) {
         EventRegister eventRegister = config.getEventRegister();
         ChannelFactory channelFactory = config.getChannelFactory();
         ChannelRegister channelRegister = config.getChannelRegister();
@@ -207,7 +241,7 @@ public class FrameworkConfigurer {
     /**
      * 
      */
-    private void createChannels(FrameworkConfiguration config) {
+    private void createChannels(KaEventConfig xmlConfig,KaEventConfiguration config) {
         EventRegister eventRegister = config.getEventRegister();
         ChannelFactory channelFactory = config.getChannelFactory();
         // Create channels
@@ -257,7 +291,7 @@ public class FrameworkConfigurer {
     
       
 
-    private void loadXmlFromPath(String inPath) {
+    private KaEventConfig loadXmlFromPath(String inPath) {
         boolean fromFile = false;
         String path = inPath;
         if(path.startsWith("classpath:")) {
@@ -271,17 +305,18 @@ public class FrameworkConfigurer {
        
         try {
             if(!fromFile) {
-                xmlStream = FrameworkConfigurer.class.getClassLoader().getResourceAsStream(path);
+                xmlStream = KaEventConfigurer.class.getClassLoader().getResourceAsStream(path);
                 if(xmlStream == null) {
                     throw new IllegalArgumentException("Could not load xml configuration file "+inPath+" from class path");
                 }
             } else {
                 xmlStream = new FileInputStream(path);
             }
-            xmlConfig = loadXmlConfig(xmlStream);
+            KaEventConfig xmlConfig = loadXmlConfig(xmlStream);
             if(xmlConfig == null) {
                 throw new IllegalArgumentException("Could not unmarshal xml configuration file "+inPath);
             }
+            return xmlConfig;
         } catch (JAXBException e) {
            throw new IllegalArgumentException("Could not parse xml configuration file "+inPath,e);
         } catch (FileNotFoundException e) {

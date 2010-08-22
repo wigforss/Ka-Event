@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventConfigFactory;
@@ -23,7 +25,12 @@ public class DefaultEventRegister implements EventRegister{
     private Map<Class<? extends EventObject>, EventConfig> eventsByClass = new HashMap<Class<? extends EventObject>, EventConfig>();
     private Map<Class<? extends EventListener>, EventConfig> eventsByInterface = new HashMap<Class<? extends EventListener>, EventConfig>();
     private Map<String, EventConfig> eventsByName = new HashMap<String, EventConfig>();
+    
+    @Resource
     private EventConfigFactory eventConfigFactory;
+    
+    public DefaultEventRegister() {
+    }
     
     public DefaultEventRegister(EventConfigFactory eventConfigFactory) {
         this.eventConfigFactory = eventConfigFactory;

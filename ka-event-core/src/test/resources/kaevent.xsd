@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://kasource.org" xmlns="http://kasource.org"
+	targetNamespace="http://kasource.org/schema/kaevent" 
+	xmlns="http://kasource.org/schema/kaevent"
 	elementFormDefault="qualified">
 
 	<!--  Root tag -->
@@ -349,35 +350,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Bean Resolver -->
-
-
-	<!-- Queue Thread -->
-
-
-	<!-- Thread Pool Queue Executor -->
-
-
-	<!-- Method resolvers -->
-
-
-
-
-
-
-
-
-	<!-- Event Config  -->
-
-
-	<!-- List of Event Config -->
-
-
-
-	<!-- Channel -->
-
-
-	<!-- List of Channels -->
 
 
 	<!-- Types -->

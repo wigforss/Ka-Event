@@ -3,6 +3,7 @@
  */
 package org.kasource.kaevent.channel;
 
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public interface ChannelRegister {
     public abstract Set<Channel> getChannelsByEvent(Class<? extends EventObject> eventClass);
 
   
-          
+    public abstract Collection<Channel> getChannels();      
     
     /**
      * Register a channel with this factory.

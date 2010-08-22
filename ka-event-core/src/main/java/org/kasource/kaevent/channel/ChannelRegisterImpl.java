@@ -3,6 +3,7 @@
  */
 package org.kasource.kaevent.channel;
 
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,8 +20,7 @@ public class ChannelRegisterImpl implements ChannelRegister{
  
     
     
-    public ChannelRegisterImpl() {
-        
+    public ChannelRegisterImpl() {      
     }
     
 
@@ -126,6 +126,14 @@ public class ChannelRegisterImpl implements ChannelRegister{
             throw new NoSuchChannelException("No Channel named "+channelName+" can be found");
         }
         
+    }
+
+
+   
+    @Override
+    public Collection<Channel> getChannels() {
+     
+        return channels.values();
     }
     
    

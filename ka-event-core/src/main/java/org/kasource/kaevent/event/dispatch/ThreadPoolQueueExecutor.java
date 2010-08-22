@@ -9,6 +9,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
+
 
 
 
@@ -24,11 +26,17 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     private static final TimeUnit DEFAULT_KEEP_ALIVE_TIME_UNIT = TimeUnit.SECONDS;
     private static final int DEFAULT_QUEUE_CAPACITY = 1000;
     
-    
-    private EventSender eventSender;
+    @Resource
+    private EventSenderImpl eventSender;
   
+    protected ThreadPoolQueueExecutor() {
+        super(DEFAULT_CORE_POOL_SIZE, 
+                DEFAULT_MAXIMUM_POOL_SIZE, 
+                DEFAULT_KEEP_ALIVE_TIME, 
+                DEFAULT_KEEP_ALIVE_TIME_UNIT, new LinkedBlockingDeque<Runnable>(DEFAULT_QUEUE_CAPACITY));   
+    }
     
-    public ThreadPoolQueueExecutor(EventSender eventSender) {
+    public ThreadPoolQueueExecutor(EventSenderImpl eventSender) {
         super(DEFAULT_CORE_POOL_SIZE, 
                 DEFAULT_MAXIMUM_POOL_SIZE, 
                 DEFAULT_KEEP_ALIVE_TIME, 
@@ -83,10 +91,10 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     
     private static class EventRunner implements Runnable{
 
-        private EventSender eventSender;
+        private EventSenderImpl eventSender;
         private EventObject event;
         
-        EventRunner(EventSender eventSender, EventObject event) {
+        EventRunner(EventSenderImpl eventSender, EventObject event) {
             this.eventSender = eventSender;
             this.event = event;
         }

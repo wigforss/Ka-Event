@@ -6,10 +6,11 @@ package org.kasource.kaevent.config;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
+import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventConfigFactory;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
-import org.kasource.kaevent.event.dispatch.EventSender;
+import org.kasource.kaevent.event.dispatch.EventSenderImpl;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
@@ -17,8 +18,14 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
  * @author rikardwigforss
  *
  */
-public interface FrameworkConfiguration {
+public interface KaEventConfiguration {
 
+
+    /**
+     * @return the eventDispatcher
+     */
+    public EventDispatcher getEventDispatcher();
+    
     /**
      * @return the beanResolver
      */
@@ -52,7 +59,7 @@ public interface FrameworkConfiguration {
     /**
      * @return the eventSender
      */
-    public abstract EventSender getEventSender();
+    public abstract EventSenderImpl getEventSender();
 
     /**
      * @return the channelFactory

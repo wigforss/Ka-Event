@@ -3,43 +3,56 @@
  */
 package org.kasource.kaevent.config;
 
+import javax.annotation.Resource;
+
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
-import org.kasource.kaevent.channel.ChannelRegisterImpl;
+import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventConfigFactory;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
-import org.kasource.kaevent.event.dispatch.EventSender;
-import org.kasource.kaevent.event.register.DefaultEventRegister;
+import org.kasource.kaevent.event.dispatch.EventSenderImpl;
 import org.kasource.kaevent.event.register.EventRegister;
-import org.kasource.kaevent.listener.register.EventListenerRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 /**
- * @author rikardwigforss
+ * @author Rikard Wigforss
  * 
  */
-public class FrameworkConfigurationImpl implements FrameworkConfiguration {
+public class KaEventConfigurationImpl implements KaEventConfiguration {
 
+    @Resource
+    private EventDispatcher eventDispatcher;
+    
+    @Resource
     private BeanResolver beanResolver;
 
+    @Resource
     private EventConfigFactory eventFactory;
 
+    @Resource
     private EventRegister eventRegister;
 
+    @Resource
     private EventMethodInvoker eventMethodinvoker;
 
+    @Resource
     private SourceObjectListenerRegister soListenerRegister;
 
+    @Resource
     private ChannelRegister channelRegister;
 
-    private EventSender eventSender;
+    @Resource
+    private EventSenderImpl eventSender;
 
+    @Resource
     private ChannelFactory channelFactory;
 
+    @Resource
     private DispatcherQueueThread queueThread;
 
+    @Override
     public BeanResolver getBeanResolver() {
         return beanResolver;
     }
@@ -52,6 +65,7 @@ public class FrameworkConfigurationImpl implements FrameworkConfiguration {
         this.beanResolver = beanResolver;
     }
 
+    @Override
     public EventConfigFactory getEventFactory() {
         return eventFactory;
     }
@@ -64,6 +78,7 @@ public class FrameworkConfigurationImpl implements FrameworkConfiguration {
         this.eventFactory = eventFactory;
     }
 
+    @Override
     public EventRegister getEventRegister() {
         return eventRegister;
     }
@@ -76,6 +91,7 @@ public class FrameworkConfigurationImpl implements FrameworkConfiguration {
         this.eventRegister = eventRegister;
     }
 
+    @Override
     public EventMethodInvoker getEventMethodinvoker() {
         return eventMethodinvoker;
     }
@@ -88,6 +104,7 @@ public class FrameworkConfigurationImpl implements FrameworkConfiguration {
         this.eventMethodinvoker = eventMethodinvoker;
     }
 
+    @Override
     public SourceObjectListenerRegister getSoListenerRegister() {
         return soListenerRegister;
     }
@@ -100,6 +117,7 @@ public class FrameworkConfigurationImpl implements FrameworkConfiguration {
         this.soListenerRegister = soListenerRegister;
     }
 
+    @Override
     public ChannelRegister getChannelRegister() {
         return channelRegister;
     }
@@ -112,7 +130,8 @@ public class FrameworkConfigurationImpl implements FrameworkConfiguration {
         this.channelRegister = channelRegister;
     }
 
-    public EventSender getEventSender() {
+    @Override
+    public EventSenderImpl getEventSender() {
         return eventSender;
     }
 
@@ -120,10 +139,11 @@ public class FrameworkConfigurationImpl implements FrameworkConfiguration {
      * @param eventSender
      *            the eventSender to set
      */
-    public void setEventSender(EventSender eventSender) {
+    public void setEventSender(EventSenderImpl eventSender) {
         this.eventSender = eventSender;
     }
 
+    @Override
     public ChannelFactory getChannelFactory() {
         return channelFactory;
     }
@@ -136,6 +156,7 @@ public class FrameworkConfigurationImpl implements FrameworkConfiguration {
         this.channelFactory = channelFactory;
     }
 
+    @Override
     public DispatcherQueueThread getQueueThread() {
         return queueThread;
     }
@@ -146,6 +167,21 @@ public class FrameworkConfigurationImpl implements FrameworkConfiguration {
      */
     public void setQueueThread(DispatcherQueueThread queueThread) {
         this.queueThread = queueThread;
+    }
+
+    /**
+     * @return the eventDispatcher
+     */
+    @Override
+    public EventDispatcher getEventDispatcher() {
+        return eventDispatcher;
+    }
+
+    /**
+     * @param eventDispatcher the eventDispatcher to set
+     */
+    public void setEventDispatcher(EventDispatcher eventDispatcher) {
+        this.eventDispatcher = eventDispatcher;
     }
 
 }
