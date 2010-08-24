@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventConfigFactory;
+import org.kasource.kaevent.event.config.EventFactory;
 
 /**
  * @author rikardwigforss
@@ -27,13 +27,13 @@ public class DefaultEventRegister implements EventRegister{
     private Map<String, EventConfig> eventsByName = new HashMap<String, EventConfig>();
     
     @Resource
-    private EventConfigFactory eventConfigFactory;
+    private EventFactory eventFactory;
     
     public DefaultEventRegister() {
     }
     
-    public DefaultEventRegister(EventConfigFactory eventConfigFactory) {
-        this.eventConfigFactory = eventConfigFactory;
+    public DefaultEventRegister(EventFactory eventFactory) {
+        this.eventFactory = eventFactory;
     }
     
  
@@ -69,7 +69,7 @@ public class DefaultEventRegister implements EventRegister{
 
     @Override
     public void registerEvent(Class<? extends EventObject> eventClass) {
-            EventConfig eventConfig = eventConfigFactory.newFromAnnotatedEventClass(
+            EventConfig eventConfig = eventFactory.newFromAnnotatedEventClass(
                 (Class<? extends EventObject>) eventClass);
             registerEvent(eventConfig);
     }

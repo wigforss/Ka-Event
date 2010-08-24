@@ -30,8 +30,8 @@ import org.kasource.kaevent.channel.NoSuchChannelException;
 import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventConfigFactory;
-import org.kasource.kaevent.event.config.EventConfigFactoryImpl;
+import org.kasource.kaevent.event.config.EventFactory;
+import org.kasource.kaevent.event.config.EventFactoryImpl;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
 import org.kasource.kaevent.event.dispatch.EventSenderImpl;
@@ -110,7 +110,7 @@ public class KaEventConfigurer {
         config.setBeanResolver(new DefaultBeanResolver());
       
         // Events
-        config.setEventFactory( new EventConfigFactoryImpl(config.getBeanResolver()));
+        config.setEventFactory( new EventFactoryImpl(config.getBeanResolver()));
         
         config.setEventRegister(new DefaultEventRegister(config.getEventFactory()));
      
@@ -147,7 +147,7 @@ public class KaEventConfigurer {
         }
         
         // Events
-        config.setEventFactory( new EventConfigFactoryImpl(config.getBeanResolver()));
+        config.setEventFactory( new EventFactoryImpl(config.getBeanResolver()));
         
         config.setEventRegister(new DefaultEventRegister(config.getEventFactory()));
      
@@ -271,10 +271,10 @@ public class KaEventConfigurer {
         }
     }
     
-    private void  importAndRegisterEvents(EventExporter eventExporter,EventConfigFactory eventConfigFactory, EventRegister eventRegister) {
+    private void  importAndRegisterEvents(EventExporter eventExporter,EventFactory eventFactory, EventRegister eventRegister) {
         Set<EventConfig> events;
         try {
-            events = eventExporter.exportEvents(eventConfigFactory);
+            events = eventExporter.exportEvents(eventFactory);
             for(EventConfig event : events) {
                 eventRegister.registerEvent(event);
             }

@@ -9,7 +9,7 @@ import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.event.EventDispatcher;
-import org.kasource.kaevent.event.config.EventConfigFactory;
+import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.dispatch.EventSenderImpl;
@@ -29,7 +29,7 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
     private BeanResolver beanResolver;
 
     @Resource
-    private EventConfigFactory eventFactory;
+    private EventFactory eventFactory;
 
     @Resource
     private EventRegister eventRegister;
@@ -66,7 +66,7 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
     }
 
     @Override
-    public EventConfigFactory getEventFactory() {
+    public EventFactory getEventFactory() {
         return eventFactory;
     }
 
@@ -74,7 +74,7 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
      * @param eventFactory
      *            the eventFactory to set
      */
-    public void setEventFactory(EventConfigFactory eventFactory) {
+    public void setEventFactory(EventFactory eventFactory) {
         this.eventFactory = eventFactory;
     }
 

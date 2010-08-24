@@ -25,17 +25,17 @@ import org.kasource.kaevent.listener.interfaces.MethodResolving;
  * @author Rikard Wigforss
  * 
  */
-public class EventConfigFactoryImpl implements EventConfigFactory {
+public class EventFactoryImpl implements EventFactory {
 
     
     @Resource
     private BeanResolver beanResolver;
     
-    protected EventConfigFactoryImpl() {
+    protected EventFactoryImpl() {
         
     }
     
-    public EventConfigFactoryImpl(BeanResolver beanResolver) {
+    public EventFactoryImpl(BeanResolver beanResolver) {
         methodResolverExtractor = new AnnotationMethodResolverExtractor(beanResolver);
     }
 
@@ -47,10 +47,7 @@ public class EventConfigFactoryImpl implements EventConfigFactory {
     
     private AnnotationMethodResolverExtractor methodResolverExtractor;
 
-    
-    /* (non-Javadoc)
-     * @see org.kasource.kaevent.event.config.EventConfigFactory#newFromAnnotatedEventClass(java.lang.Class)
-     */
+  
     public EventConfig newFromAnnotatedEventClass(Class<? extends EventObject> event) {
         Event eventAnnotation = event.getAnnotation(Event.class);
         if(eventAnnotation == null) {
@@ -59,9 +56,7 @@ public class EventConfigFactoryImpl implements EventConfigFactory {
        return  newFromAnnotatedInterfaceClass(event, event.getAnnotation(Event.class).listener(), event.getName());
     }
     
-    /* (non-Javadoc)
-     * @see org.kasource.kaevent.event.config.EventConfigFactory#newFromAnnotatedInterfaceClass(java.lang.Class, java.lang.Class, java.lang.String)
-     */
+   
     public EventConfig newFromAnnotatedInterfaceClass(Class<? extends EventObject> event, Class<? extends EventListener> listener, String name) {
         EventConfigImpl eventConfig = new EventConfigImpl(event, listener, name);
         MethodResolving methodResolving = listener.getAnnotation(MethodResolving.class);
@@ -83,9 +78,7 @@ public class EventConfigFactoryImpl implements EventConfigFactory {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.kasource.kaevent.event.config.EventConfigFactory#newWithEventMethod(java.lang.Class, java.lang.Class, java.lang.reflect.Method, java.lang.String)
-     */
+   
     public EventConfig newWithEventMethod(Class<? extends EventObject> event, Class<? extends EventListener> listener,
             Method eventMethod, String name) {
     	EventConfigImpl eventConfig = new EventConfigImpl(event, listener, name);
@@ -94,12 +87,9 @@ public class EventConfigFactoryImpl implements EventConfigFactory {
         return eventConfig;
     }
 
-    /* (non-Javadoc)
-     * @see org.kasource.kaevent.event.config.EventConfigFactory#newWithMethodResolver(java.lang.Class, java.lang.Class, org.kasource.kaevent.event.method.MethodResolver, java.lang.String)
-     */
-    @SuppressWarnings("unchecked")
+    
     public EventConfig newWithMethodResolver(Class<? extends EventObject> event, Class<? extends EventListener> listener,
-            MethodResolver methodResolver, String name) {
+            MethodResolver<EventObject> methodResolver, String name) {
     	EventConfigImpl eventConfig = new EventConfigImpl(event, listener, name);
         if(methodResolver == null) {
         	throw new IllegalArgumentException("methodResolver is not allowed to be null");

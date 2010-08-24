@@ -19,7 +19,7 @@ import org.kasource.commons.util.ReflectionUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.config.KaEventConfig;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventConfigFactory;
+import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.config.InvalidEventConfigurationException;
 import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.event.method.MethodResolverFactory;
@@ -39,7 +39,7 @@ public class XmlConfigEventExporter implements EventExporter {
    }
     
     @Override
-    public Set<EventConfig> exportEvents(EventConfigFactory eventFactory) throws IOException {
+    public Set<EventConfig> exportEvents(EventFactory eventFactory) throws IOException {
         Set<EventConfig> eventsFound = new HashSet<EventConfig>();
         if(eventList != null && !eventList.isEmpty()) {
             for(KaEventConfig.Events.Event event : eventList) {

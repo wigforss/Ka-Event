@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventConfigFactory;
+import org.kasource.kaevent.event.config.EventFactory;
 
 /**
  * @author rikardwigforss
@@ -16,6 +16,6 @@ import org.kasource.kaevent.event.config.EventConfigFactory;
 public interface EventExporter {
 
 
-    public abstract Set<EventConfig> exportEvents(EventConfigFactory eventConfigFactory) throws IOException;
+    public abstract Set<EventConfig> exportEvents(EventFactory eventFactory) throws IOException;
 
 }

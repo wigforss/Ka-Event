@@ -13,7 +13,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventConfigFactory;
+import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.config.InvalidEventConfigurationException;
 import org.scannotation.AnnotationDB;
 import org.scannotation.ClasspathUrlFinder;
@@ -38,7 +38,7 @@ public class AnnotationEventExporter implements EventExporter {
    
    
     @SuppressWarnings("unchecked")
-    public Set<EventConfig> exportEvents(EventConfigFactory eventConfigFactory) throws IOException {
+    public Set<EventConfig> exportEvents(EventFactory eventFactory) throws IOException {
         Set<EventConfig> eventsFound = new HashSet<EventConfig>();
         if(scanPath.contains(".")) {
             scanPath = scanPath.replace('.', '/');
@@ -59,7 +59,7 @@ public class AnnotationEventExporter implements EventExporter {
                 try {
                     Class<?> eventClass = Class.forName(eventClassName);
                     eventClass.asSubclass(EventObject.class);
-                    EventConfig eventConfig = eventConfigFactory.newFromAnnotatedEventClass(
+                    EventConfig eventConfig = eventFactory.newFromAnnotatedEventClass(
                             (Class<? extends EventObject>) eventClass);
                     eventsFound.add(eventConfig);
                 } catch (ClassNotFoundException cnfe) {

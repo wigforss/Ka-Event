@@ -21,8 +21,19 @@ spring/schema/kaevent-spring.xsd"
     	<constructor-arg ref="eventSender"/>
     </bean>
   
-
-    
+  <kaevent:event id="tempratureChangeEvent" 
+  				 eventClass="org.kasource.kaevent.example.simple.event.TemperatureChangeEvent" 
+  				 listenerInterface="org.kasource.kaevent.example.simple.event.TemperatureChangeEventListener">
+  				 
+  </kaevent:event>
+  				 
+  
+  <kaevent:channel id="testChannel"/>
+  <!--  
+	<bean name="testChannel" class="org.kasource.kaevent.channel.ChannelFactoryBean">
+		<property name="name" value="testChannel"/>
+	</bean>
+    -->
   	
     
  

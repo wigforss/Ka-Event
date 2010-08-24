@@ -12,7 +12,7 @@ import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventConfigFactory;
+import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.export.test.event.SimpleEvent;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
@@ -33,7 +33,7 @@ public class AnnotationEventExporterTest {
 
     
     @Mock
-    private EventConfigFactory eventConfigFactory;
+    private EventFactory eventFactory;
     
     @Mock
     private EventConfig eventConfig;
@@ -44,9 +44,9 @@ public class AnnotationEventExporterTest {
     
     @Test
     public void scanAnnotationTest() throws IOException {
-        EasyMock.expect(eventConfigFactory.newFromAnnotatedEventClass(SimpleEvent.class)).andReturn(eventConfig);
+        EasyMock.expect(eventFactory.newFromAnnotatedEventClass(SimpleEvent.class)).andReturn(eventConfig);
         EasyMockUnitils.replay();
-        Set<EventConfig> eventSet = exporter.exportEvents(eventConfigFactory);   
+        Set<EventConfig> eventSet = exporter.exportEvents(eventFactory);   
         assertEquals(1, eventSet.size());
     }
     

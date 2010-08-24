@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @author Rikard Wigforss
  *
  */
-@Component("eventConfigFactory")
-public class SpringEventConfigFactory extends EventConfigFactoryImpl{
+@Component("eventFactory")
+public class SpringEventFactory extends EventFactoryImpl{
 
 }

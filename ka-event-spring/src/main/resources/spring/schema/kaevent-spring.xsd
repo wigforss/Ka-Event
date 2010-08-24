@@ -7,41 +7,14 @@
 	<xsd:import namespace="http://www.springframework.org/schema/beans" />
 
 
-	<xsd:element name="channels">
-		<xsd:annotation>
-			<xsd:documentation>
-				List of all channels
-			</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="channel" maxOccurs="unbounded"
-					minOccurs="0">
+	
+				<xsd:element name="channel">
 					<xsd:annotation>
 						<xsd:documentation>
 							Declares a channel
 						</xsd:documentation>
 					</xsd:annotation>
 					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element name="handle" minOccurs="0" maxOccurs="unbounded">
-								<xsd:annotation>
-									<xsd:documentation>
-										Handles the specified event.
-									</xsd:documentation>
-								</xsd:annotation>
-								<xsd:complexType>
-									<xsd:attribute name="event" type="xsd:IDREF" use="required">
-										<xsd:annotation>
-											<xsd:documentation>
-												event should refer to the name of a declared
-												event.
-											</xsd:documentation>
-										</xsd:annotation>
-									</xsd:attribute>
-								</xsd:complexType>
-							</xsd:element>
-						</xsd:sequence>
 						<xsd:attribute name="id" type="xsd:ID" use="required">
 							<xsd:annotation>
 								<xsd:documentation>
@@ -52,9 +25,187 @@
 						</xsd:attribute>
 					</xsd:complexType>
 				</xsd:element>
-			</xsd:sequence>
+	
+	
+	
+	<xsd:element name="event">
+		<xsd:annotation>
+			<xsd:documentation>
+				An event configuration, consist of an Event class
+				which must extend java.util.EventObject and a listener insterface
+				which must extend java.util.EventListener.
+				If more than one method is
+				declared in the listener interface a method resolver must be
+				defined, declare one of annotationMethodResolver,
+				factoryMethodResolver, beanMethodResolver or switchMethodResolver.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		<xsd:sequence>
+				<xsd:choice maxOccurs="1" minOccurs="0">
+					<xsd:element name="annotationMethodResolver">
+						<xsd:annotation>
+							<xsd:documentation>
+								Find a method resolver by inspecting the
+								@MethodResolving annotation on the interface class
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="factoryMethodResolver">
+						<xsd:annotation>
+							<xsd:documentation>
+								Use a custom method resolver obtained by invoking a static factory
+								method.
+							</xsd:documentation>
+						</xsd:annotation>
+						<xsd:complexType>
+							<xsd:attribute name="factoryClass" type="javaClass" use="required">
+								<xsd:annotation>
+									<xsd:documentation>
+										Class that has the static factory method to be
+										invoked.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:attribute>
+						<xsd:attribute name="factoryMethod" type="javaMethodName" use="required">
+							<xsd:annotation>
+								<xsd:documentation>
+									Name of the static factory method which must
+									return an object that implements
+									org.kasource.kaevent.event.method.MethodResolver
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="factoryMethodArgument" type="xsd:string" use="optional">
+							<xsd:annotation>
+								<xsd:documentation>
+									String argument to the static factory method
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+				</xsd:complexType>
+				</xsd:element>
+					<xsd:element name="beanMethodResolver">
+						<xsd:annotation>
+							<xsd:documentation>
+								Find a custom method resolver by looking up a bean
+								by name.
+							</xsd:documentation>
+						</xsd:annotation>
+					<xsd:complexType>
+						<xsd:attribute name="bean" type="xsd:Name" use="required">
+							<xsd:annotation>
+								<xsd:documentation>
+									Name of bean which will looked up with the
+									BeanResolver. The object returned must implement
+									org.kasource.kaevent.event.method.MethodResolver.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+					</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="switchMethodResolver">
+												<xsd:annotation>
+													<xsd:documentation>
+														Resolve method in a switch case manner. Invokes a
+														keywordMethod on the event object and
+														matches the result to each case
+														declaration (methods on the listener interface class).
+													</xsd:documentation>
+												</xsd:annotation>
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="case" maxOccurs="unbounded">
+															<xsd:annotation>
+																<xsd:documentation>
+																	A case entry which specifies a keyword value and
+																	method.
+																</xsd:documentation>
+															</xsd:annotation>
+															<xsd:complexType>
+																<xsd:attribute name="value" type="xsd:string"
+																	use="required">
+																	<xsd:annotation>
+																		<xsd:documentation>
+																			The keyword value to match.
+																		</xsd:documentation>
+																	</xsd:annotation>
+																</xsd:attribute>
+																<xsd:attribute name="method" type="javaMethodName"
+																	use="required">
+																	<xsd:annotation>
+																		<xsd:documentation>
+																			Name of the method on the listener interface
+																			class to invoke if keyword value matches.
+																		</xsd:documentation>
+																	</xsd:annotation>
+																</xsd:attribute>
+															</xsd:complexType>
+														</xsd:element>
+
+														<xsd:element name="default" maxOccurs="1"
+															minOccurs="1">
+															<xsd:complexType>
+																<xsd:annotation>
+																	<xsd:documentation>
+																		The default method to invoke if no match.
+																	</xsd:documentation>
+																</xsd:annotation>
+																<xsd:attribute name="method" type="javaMethodName"
+																	use="required">
+																	<xsd:annotation>
+																		<xsd:documentation>
+																			Name of the method on the listener interface
+																			class to invoke if no matches were found.
+																		</xsd:documentation>
+																	</xsd:annotation>
+																</xsd:attribute>
+															</xsd:complexType>
+														</xsd:element>
+
+													</xsd:sequence>
+													<xsd:attribute name="keywordMethod" type="javaMethodName"
+														use="required">
+														<xsd:annotation>
+															<xsd:documentation>
+																The name of a "non void" "no argument" method on
+																the event class, that returns an object which will be used
+																as the keyword in the switch. 
+															</xsd:documentation>
+														</xsd:annotation>
+													</xsd:attribute>
+												</xsd:complexType>
+											</xsd:element>
+										</xsd:choice>
+		  </xsd:sequence>
+			<xsd:attribute name="id" type="xsd:ID" use="required">
+				<xsd:annotation>
+					<xsd:documentation>
+						Name of the event so it can be referenced.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="eventClass" type="javaClass" use="required">
+				<xsd:annotation>
+					<xsd:documentation>
+						The event class that extends
+						java.util.EventObject
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="listenerInterface" type="javaClass"
+				use="required">
+				<xsd:annotation>
+					<xsd:documentation>
+						The listener interface the handles events (of the
+						eventClass type) and extends java.util.EventListener
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			
 		</xsd:complexType>
 	</xsd:element>
+			
 
 	<!-- Bean Resolver -->
 	<xsd:element name="beanResolver">
@@ -88,6 +239,17 @@
 		<xsd:restriction base="xsd:string">
 			<xsd:pattern
 				value="[a-z]{2,6}(\.[a-zA-Z][a-zA-Z_$0-9]*)+\.([A-Z][a-zA-Z_$0-9]*){1}" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="javaMethodName">
+		<xsd:annotation>
+			<xsd:documentation>
+				A valid Java method name.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="(\D){1}(\w|_|[0-9])*" />
 		</xsd:restriction>
 	</xsd:simpleType>
 </xsd:schema>

@@ -25,7 +25,7 @@ import org.unitils.inject.annotation.TestedObject;
  *
  */
 @RunWith(UnitilsJUnit4TestClassRunner.class)
-public class EventConfigFactoryTest {
+public class EventFactoryTest {
 
     
     
@@ -37,7 +37,7 @@ public class EventConfigFactoryTest {
     
     
     @TestedObject
-    private EventConfigFactory factory = new EventConfigFactoryImpl(beanResolver);
+    private EventFactory factory = new EventFactoryImpl(beanResolver);
     
     @Test
     public void createEventConfig() {
