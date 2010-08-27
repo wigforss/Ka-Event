@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.config.KaEventConfiguration;
+import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.event.filter.EventFilter;
 
 /**
@@ -54,5 +55,6 @@ public interface EventDispatcher {
     public void registerListener(EventListener listener,
             Object sourceObject, List<EventFilter<EventObject>> filters);
     
+   
     
 }

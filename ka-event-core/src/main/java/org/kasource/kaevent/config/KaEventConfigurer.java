@@ -34,6 +34,7 @@ import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.config.EventFactoryImpl;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
+import org.kasource.kaevent.event.dispatch.EventSender;
 import org.kasource.kaevent.event.dispatch.EventSenderImpl;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 import org.kasource.kaevent.event.export.AnnotationEventExporter;
@@ -48,37 +49,18 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
  * @author wigforss
  * 
  */
-public class KaEventConfigurer {
+public class KaEventConfigurer  {
     private static Logger logger = Logger.getLogger(KaEventConfigurer.class);
     
-    private static final  KaEventConfigurer INSTANCE = new KaEventConfigurer();
     
-    private Set<KaEventInitializedListener> listeners = new HashSet<KaEventInitializedListener>();
     
-    private boolean configured = false;
+   
+    
+   
     
     private KaEventConfigurationImpl configuration = null;
     
-    public static KaEventConfigurer getInstance() {
-        return INSTANCE;
-    }
     
-    private KaEventConfigurer() {      
-    }
-    
-    
-    public void addListener(KaEventInitializedListener listener) {
-        
-        if(configured) {
-            listener.doInitialize(configuration);
-        } else {
-            listeners.add(listener);
-        }
-    }
-    
-    public void removeListener(KaEventInitializedListener listener) {
-        listeners.remove(listener);
-    }
     
     
     public void configure(EventDispatcher eventDispatcher,String configLocation) {
@@ -97,12 +79,14 @@ public class KaEventConfigurer {
         } else {
             configuration = defaultConfiguration();
         }
-        for(KaEventInitializedListener listener : listeners) {
-            listener.doInitialize(configuration);
-        }
+        
         configuration.setEventDispatcher(eventDispatcher);
-        configured = true;
+        KaEventInitializer.setConfiguration(configuration);
+        
     }
+    
+    
+    
     
     private KaEventConfigurationImpl defaultConfiguration( ) {
         KaEventConfigurationImpl config = new KaEventConfigurationImpl();
@@ -119,14 +103,14 @@ public class KaEventConfigurer {
        
       
         // Source Object Listener Register
-        config.setSoListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config.getBeanResolver()));
+        config.setSourceObjectListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config.getBeanResolver()));
         
-        config.setEventMethodinvoker(new EventMethodInvokerImpl(config.getEventRegister()));
+        config.setEventMethodInvoker(new EventMethodInvokerImpl(config.getEventRegister()));
         
-        config.setEventSender(new EventSenderImpl(config.getChannelRegister(), config.getSoListenerRegister(),config.getEventMethodinvoker()));
+        config.setEventSender(new EventSenderImpl(config.getChannelRegister(), config.getSourceObjectListenerRegister(),config.getEventMethodInvoker()));
         
         // Channel Factory
-        config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodinvoker(), config.getBeanResolver()));
+        config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodInvoker(), config.getBeanResolver()));
         
         config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventSender()));
        
@@ -151,9 +135,9 @@ public class KaEventConfigurer {
         
         config.setEventRegister(new DefaultEventRegister(config.getEventFactory()));
      
-        config.setEventMethodinvoker(new EventMethodInvokerImpl(config.getEventRegister()));
+        config.setEventMethodInvoker(new EventMethodInvokerImpl(config.getEventRegister()));
      
-        config.setSoListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config.getBeanResolver()));
+        config.setSourceObjectListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config.getBeanResolver()));
         
        
         
@@ -162,10 +146,10 @@ public class KaEventConfigurer {
         
         
         // Sender
-        config.setEventSender(new EventSenderImpl(config.getChannelRegister(), config.getSoListenerRegister(),config.getEventMethodinvoker()));
+        config.setEventSender(new EventSenderImpl(config.getChannelRegister(), config.getSourceObjectListenerRegister(),config.getEventMethodInvoker()));
         
         // Channel Factory
-        config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodinvoker(), config.getBeanResolver()));
+        config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodInvoker(), config.getBeanResolver()));
         
         // Queue Thread
         if(xmlConfig.getQueueThread() == null) {
@@ -184,8 +168,11 @@ public class KaEventConfigurer {
             }
             config.setQueueThread(threadPoolExecutor);
         } else {
-            config.setQueueThread(ReflectionUtils.getInstance(xmlConfig.getQueueThread().getClazz(), DispatcherQueueThread.class, config.getEventSender()));
-          
+        	try {
+        		config.setQueueThread(ReflectionUtils.getInstance(xmlConfig.getQueueThread().getClazz(), DispatcherQueueThread.class, new Class<?>[]{EventSender.class},new Object[]{config.getEventSender()}));
+        	} catch(IllegalStateException ise) {
+        		config.setQueueThread(ReflectionUtils.getInstance(xmlConfig.getQueueThread().getClazz(), DispatcherQueueThread.class));
+        	}
             
         }
        
@@ -202,7 +189,7 @@ public class KaEventConfigurer {
         
         createChannels(xmlConfig, config);
         
-        registerEvents(config);
+        registerEventsAtChannels(config);
         
         return config;
      
@@ -212,7 +199,7 @@ public class KaEventConfigurer {
     /**
      *  Register @Event annotated events with the channels referenced in the channels attribute
      */
-    private void registerEvents(KaEventConfiguration config) {
+    protected void registerEventsAtChannels(KaEventConfiguration config) {
         EventRegister eventRegister = config.getEventRegister();
         ChannelFactory channelFactory = config.getChannelFactory();
         ChannelRegister channelRegister = config.getChannelRegister();
@@ -271,7 +258,7 @@ public class KaEventConfigurer {
         }
     }
     
-    private void  importAndRegisterEvents(EventExporter eventExporter,EventFactory eventFactory, EventRegister eventRegister) {
+    protected void  importAndRegisterEvents(EventExporter eventExporter,EventFactory eventFactory, EventRegister eventRegister) {
         Set<EventConfig> events;
         try {
             events = eventExporter.exportEvents(eventFactory);

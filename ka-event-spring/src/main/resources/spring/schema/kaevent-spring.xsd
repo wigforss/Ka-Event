@@ -6,7 +6,53 @@
 
 	<xsd:import namespace="http://www.springframework.org/schema/beans" />
 
+	<xsd:attribute name="listen-on-bean" type="xsd:Name"/>
 
+	<xsd:attribute name="listen-on-channel" type="xsd:Name"/>
+
+	<xsd:element name="kaevent">
+		<xsd:complexType>
+			<xsd:attribute name="scanClassPath" type="javaPackage"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Class path (on dot notation) to scan for @Event
+						annotated classes. If not set no scan will be performed.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="queueBean" type="xsd:boolean" default="false"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Use the declared DispatcherQueueThread bean instead of the default, will override
+						the queueClass and concurrentQueue attributes.
+					</xsd:documentation>
+				</xsd:annotation>
+				</xsd:attribute>
+			<xsd:attribute name="queueClass" type="javaClass"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Class that implements
+						org.kasource.kaevent.event.dispatch.DispatcherQueueThread which
+						will be used instead of the standard thread pool executor implementation. 
+						Will not have any effect if a queueBean is set.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+	
+				<xsd:attribute name="concurrentQueue" type="xsd:boolean" default="true"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Set the concurrency mode of the event dispatcher queue. Will not have any effect if
+						queueBean is set. 
+					</xsd:documentation>
+				</xsd:annotation>
+				</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
 	
 				<xsd:element name="channel">
 					<xsd:annotation>
@@ -15,7 +61,26 @@
 						</xsd:documentation>
 					</xsd:annotation>
 					<xsd:complexType>
-						<xsd:attribute name="id" type="xsd:ID" use="required">
+					<xsd:sequence>
+						<xsd:element name="handle" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>
+									Handles the specified event.
+								</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+							<xsd:attribute name="event" type="xsd:Name" use="required">
+								<xsd:annotation>
+									<xsd:documentation>
+										event should refer to the name of a declared
+										event.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:attribute>
+						</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="xsd:ID" use="required">
 							<xsd:annotation>
 								<xsd:documentation>
 									A unique name of the channel so it can be
@@ -47,7 +112,8 @@
 						<xsd:annotation>
 							<xsd:documentation>
 								Find a method resolver by inspecting the
-								@MethodResolving annotation on the interface class
+								@MethodResolving annotation on the interface class, this is the 
+								default behavior if no method resolver is declared.
 							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
@@ -194,11 +260,12 @@
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="listenerInterface" type="javaClass"
-				use="required">
+				use="optional">
 				<xsd:annotation>
 					<xsd:documentation>
 						The listener interface the handles events (of the
-						eventClass type) and extends java.util.EventListener
+						eventClass type) and extends java.util.EventListener.
+						If not set the eventClass needs to be annotated with @Event
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
@@ -250,6 +317,17 @@
 		</xsd:annotation>
 		<xsd:restriction base="xsd:string">
 			<xsd:pattern value="(\D){1}(\w|_|[0-9])*" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="javaPackage">
+		<xsd:annotation>
+			<xsd:documentation>
+				A valid Java package name.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-z]{2,6}(\.[a-zA-Z][a-zA-Z_$0-9]*)+" />
 		</xsd:restriction>
 	</xsd:simpleType>
 </xsd:schema>

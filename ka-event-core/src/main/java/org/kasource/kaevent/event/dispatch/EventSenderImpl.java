@@ -19,15 +19,12 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
  * @author Rikard Wigforss
  *
  */
-public class EventSenderImpl {
-    
-    @Resource
+public class EventSenderImpl implements EventSender {
+      
     private ChannelRegister channelRegister;
     
-    @Resource
     private SourceObjectListenerRegister sourceObjectListenerRegister;
     
-    @Resource
     private EventMethodInvoker invoker;
     
     protected EventSenderImpl(){}
@@ -37,6 +34,7 @@ public class EventSenderImpl {
         this.sourceObjectListenerRegister = sourceObjectListenerRegister;
         this.invoker = invoker;
     }
+    
     
     
     public void dispatchEvent(EventObject event, boolean blocked) {

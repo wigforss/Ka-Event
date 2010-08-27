@@ -10,7 +10,7 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
-import org.kasource.kaevent.event.dispatch.EventSenderImpl;
+import org.kasource.kaevent.event.dispatch.EventSender;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
@@ -44,12 +44,12 @@ public interface KaEventConfiguration {
     /**
      * @return the eventMethodinvoker
      */
-    public abstract EventMethodInvoker getEventMethodinvoker();
+    public abstract EventMethodInvoker getEventMethodInvoker();
 
     /**
      * @return the soListenerRegister
      */
-    public abstract SourceObjectListenerRegister getSoListenerRegister();
+    public abstract SourceObjectListenerRegister getSourceObjectListenerRegister();
 
     /**
      * @return the channelRegister
@@ -59,7 +59,7 @@ public interface KaEventConfiguration {
     /**
      * @return the eventSender
      */
-    public abstract EventSenderImpl getEventSender();
+    public abstract EventSender getEventSender();
 
     /**
      * @return the channelFactory

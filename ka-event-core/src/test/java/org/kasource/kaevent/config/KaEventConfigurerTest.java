@@ -31,7 +31,7 @@ public class KaEventConfigurerTest {
 
     @Test
     public void configureDefaultTest() {
-        configurer.addListener(new KaEventInitializedListener() {
+        KaEventInitializer.getInstance().addListener(new KaEventInitializedListener() {
             
             @Override
             public void doInitialize(KaEventConfiguration config) {
@@ -39,11 +39,11 @@ public class KaEventConfigurerTest {
                 assertNotNull(config.getChannelFactory());
                 assertNotNull(config.getChannelRegister());
                 assertNotNull(config.getEventFactory());
-                assertNotNull(config.getEventMethodinvoker());
+                assertNotNull(config.getEventMethodInvoker());
                 assertNotNull(config.getEventRegister());
                 assertNotNull(config.getEventSender());
                 assertNotNull(config.getQueueThread());
-                assertNotNull(config.getSoListenerRegister());
+                assertNotNull(config.getSourceObjectListenerRegister());
                 
             }
         });
@@ -53,7 +53,7 @@ public class KaEventConfigurerTest {
     
     @Test
     public void configureTest() {
-        configurer.addListener(new KaEventInitializedListener() {
+    	KaEventInitializer.getInstance().addListener(new KaEventInitializedListener() {
             
             @Override
             public void doInitialize(KaEventConfiguration config) {
@@ -61,11 +61,11 @@ public class KaEventConfigurerTest {
                 assertNotNull(config.getChannelFactory());
                 assertNotNull(config.getChannelRegister());
                 assertNotNull(config.getEventFactory());
-                assertNotNull(config.getEventMethodinvoker());
+                assertNotNull(config.getEventMethodInvoker());
                 assertNotNull(config.getEventRegister());
                 assertNotNull(config.getEventSender());
                 assertNotNull(config.getQueueThread());
-                assertNotNull(config.getSoListenerRegister());
+                assertNotNull(config.getSourceObjectListenerRegister());
                 
             }
         });
@@ -75,18 +75,18 @@ public class KaEventConfigurerTest {
     
     @Test
     public void configureAdvancedTest() {
-        configurer.addListener(new KaEventInitializedListener() {
+    	KaEventInitializer.getInstance().addListener(new KaEventInitializedListener() {
             @Override
             public void doInitialize(KaEventConfiguration config) {
                 assertNotNull(config.getBeanResolver());
                 assertNotNull(config.getChannelFactory());
                 assertNotNull(config.getChannelRegister());
                 assertNotNull(config.getEventFactory());
-                assertNotNull(config.getEventMethodinvoker());
+                assertNotNull(config.getEventMethodInvoker());
                 assertNotNull(config.getEventRegister());
                 assertNotNull(config.getEventSender());
                 assertNotNull(config.getQueueThread());
-                assertNotNull(config.getSoListenerRegister());
+                assertNotNull(config.getSourceObjectListenerRegister());
                 
             }
         });

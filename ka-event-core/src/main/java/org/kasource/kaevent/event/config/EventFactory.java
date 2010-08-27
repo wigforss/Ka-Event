@@ -17,6 +17,7 @@ public interface EventFactory {
 
     public abstract EventConfig newFromAnnotatedEventClass(Class<? extends EventObject> event);
 
+    public abstract EventConfig newFromAnnotatedEventClass(Class<? extends EventObject> event, String name);
     /**
      * Create and an EventConfig based on an annotated event class
      * 

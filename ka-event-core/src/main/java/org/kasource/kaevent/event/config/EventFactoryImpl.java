@@ -28,11 +28,10 @@ import org.kasource.kaevent.listener.interfaces.MethodResolving;
 public class EventFactoryImpl implements EventFactory {
 
     
-    @Resource
+
     private BeanResolver beanResolver;
     
-    protected EventFactoryImpl() {
-        
+    protected EventFactoryImpl() {    
     }
     
     public EventFactoryImpl(BeanResolver beanResolver) {
@@ -49,11 +48,15 @@ public class EventFactoryImpl implements EventFactory {
 
   
     public EventConfig newFromAnnotatedEventClass(Class<? extends EventObject> event) {
+       return  newFromAnnotatedEventClass(event, event.getName());
+    }
+    
+    public EventConfig newFromAnnotatedEventClass(Class<? extends EventObject> event, String name) {
         Event eventAnnotation = event.getAnnotation(Event.class);
         if(eventAnnotation == null) {
             throw new IllegalArgumentException(event+" is not annotated with @Event!");
         }
-       return  newFromAnnotatedInterfaceClass(event, event.getAnnotation(Event.class).listener(), event.getName());
+       return  newFromAnnotatedInterfaceClass(event, event.getAnnotation(Event.class).listener(),name);
     }
     
    

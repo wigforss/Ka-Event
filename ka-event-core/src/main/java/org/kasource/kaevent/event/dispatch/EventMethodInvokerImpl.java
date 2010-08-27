@@ -23,7 +23,7 @@ import org.kasource.kaevent.listener.register.EventListenerRegistration;
 public class EventMethodInvokerImpl implements EventMethodInvoker {
     private static Logger logger = Logger.getLogger(EventMethodInvokerImpl.class);
     
-    @Resource
+   
     private EventRegister eventRegister;
 
     public EventMethodInvokerImpl() {}

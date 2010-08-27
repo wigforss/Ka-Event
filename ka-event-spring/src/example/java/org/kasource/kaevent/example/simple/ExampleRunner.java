@@ -1,9 +1,13 @@
 package org.kasource.kaevent.example.simple;
 
 import org.kasource.kaevent.channel.Channel;
-import org.kasource.kaevent.event.EventDispatcher;
+import org.kasource.kaevent.channel.ChannelRegister;
+
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
+
+import org.kasource.kaevent.event.register.EventRegister;
+import org.kasource.kaevent.example.simple.event.TemperatureChangeEvent;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -16,21 +20,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 ///CLOVER:OFF
 public class ExampleRunner {
 	public static void main(String[] args) {
-	    ApplicationContext context = new ClassPathXmlApplicationContext("org/kasource/kaevent/example/simple/simple-context.xml"); 
-	    Channel channel = (Channel) context.getBean("testChannel");
-	    System.out.println(channel.getName());
-	    EventConfig event = (EventConfig) context.getBean("tempratureChangeEvent");
-	    System.out.println(event.getEventClass());
-	/*	Thermometer thermometer = new Thermometer();
-		EventDispatcher eventDispatcher = new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName().replace('.', '/')+"/simple-config.xml");	
-		Cooler cooler = new Cooler();
-		Heater heater = new Heater();
-		thermometer.setEventDispatcher(eventDispatcher);
-		thermometer.setCooler(cooler);
-		thermometer.setHeater(heater);
-		thermometer.registerListers();
-		new Thread(thermometer).start(); */
+	    ApplicationContext context = new ClassPathXmlApplicationContext("org/kasource/kaevent/example/simple/simple-context.xml");
+	    Thermometer thermometer = (Thermometer) context.getBean("thermometer");
+	    thermometer.run();
+	  
 	    
-	    System.out.println("Done");
+	    
 	}
 }

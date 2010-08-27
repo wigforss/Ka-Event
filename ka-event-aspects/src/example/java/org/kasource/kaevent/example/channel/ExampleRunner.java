@@ -4,6 +4,7 @@ import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.config.KaEventConfiguration;
 import org.kasource.kaevent.config.KaEventConfigurer;
 import org.kasource.kaevent.config.KaEventInitializedListener;
+import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
 
@@ -13,7 +14,7 @@ import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
  * The CommandConsole class listens to the temperatureChannel instead of a
  * thermometer object.
  * 
- * @author wigforss
+ * @author Rikard Wigforss
  **/
 // /CLOVER:OFF
 public class ExampleRunner implements KaEventInitializedListener {
@@ -22,7 +23,7 @@ public class ExampleRunner implements KaEventInitializedListener {
 
     private ExampleRunner(Thermometer thermometer) {
         this.thermometer = thermometer;
-        KaEventConfigurer.getInstance().addListener(this);
+        KaEventInitializer.getInstance().addListener(this);
     }
 
     public static void main(String[] args) {

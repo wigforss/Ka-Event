@@ -12,7 +12,7 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
-import org.kasource.kaevent.event.dispatch.EventSenderImpl;
+import org.kasource.kaevent.event.dispatch.EventSender;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
@@ -21,35 +21,25 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
  * 
  */
 public class KaEventConfigurationImpl implements KaEventConfiguration {
-
-    @Resource
+ 
     private EventDispatcher eventDispatcher;
     
-    @Resource
     private BeanResolver beanResolver;
 
-    @Resource
     private EventFactory eventFactory;
 
-    @Resource
     private EventRegister eventRegister;
 
-    @Resource
-    private EventMethodInvoker eventMethodinvoker;
+    private EventMethodInvoker eventMethodInvoker;
 
-    @Resource
-    private SourceObjectListenerRegister soListenerRegister;
-
-    @Resource
+    private SourceObjectListenerRegister sourceObjectListenerRegister;
+    
     private ChannelRegister channelRegister;
 
-    @Resource
-    private EventSenderImpl eventSender;
+    private EventSender eventSender;
 
-    @Resource
     private ChannelFactory channelFactory;
 
-    @Resource
     private DispatcherQueueThread queueThread;
 
     @Override
@@ -92,29 +82,29 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
     }
 
     @Override
-    public EventMethodInvoker getEventMethodinvoker() {
-        return eventMethodinvoker;
+    public EventMethodInvoker getEventMethodInvoker() {
+        return eventMethodInvoker;
     }
 
     /**
      * @param eventMethodinvoker
      *            the eventMethodinvoker to set
      */
-    public void setEventMethodinvoker(EventMethodInvoker eventMethodinvoker) {
-        this.eventMethodinvoker = eventMethodinvoker;
+    public void setEventMethodInvoker(EventMethodInvoker eventMethodInvoker) {
+        this.eventMethodInvoker = eventMethodInvoker;
     }
 
     @Override
-    public SourceObjectListenerRegister getSoListenerRegister() {
-        return soListenerRegister;
+    public SourceObjectListenerRegister getSourceObjectListenerRegister() {
+        return sourceObjectListenerRegister;
     }
 
     /**
      * @param soListenerRegister
      *            the soListenerRegister to set
      */
-    public void setSoListenerRegister(SourceObjectListenerRegister soListenerRegister) {
-        this.soListenerRegister = soListenerRegister;
+    public void setSourceObjectListenerRegister(SourceObjectListenerRegister sourceObjectListenerRegister) {
+        this.sourceObjectListenerRegister = sourceObjectListenerRegister;
     }
 
     @Override
@@ -131,7 +121,7 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
     }
 
     @Override
-    public EventSenderImpl getEventSender() {
+    public EventSender getEventSender() {
         return eventSender;
     }
 
@@ -139,7 +129,7 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
      * @param eventSender
      *            the eventSender to set
      */
-    public void setEventSender(EventSenderImpl eventSender) {
+    public void setEventSender(EventSender eventSender) {
         this.eventSender = eventSender;
     }
 

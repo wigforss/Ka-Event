@@ -28,7 +28,7 @@ public class DefaultEventDispatcherTest {
     
     @InjectIntoByType
     @Mock
-    private EventSenderImpl eventSender;
+    private EventSender eventSender;
     
     @SuppressWarnings("unused")
     @InjectIntoByType

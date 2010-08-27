@@ -32,4 +32,5 @@ public class Cooler implements TemperatureChangeEventListener{
 
 	}
 
+
 }

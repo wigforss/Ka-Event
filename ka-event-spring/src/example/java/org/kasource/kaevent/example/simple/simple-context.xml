@@ -12,31 +12,18 @@ http://kasource.org/schema/kaevent-spring
 spring/schema/kaevent-spring.xsd"
 >
 
+	<kaevent:kaevent scanClassPath="org.kasource.kaevent.example.simple"/>
 
-	<context:component-scan base-package="org.kasource.kaevent"/>
+	<bean name="thermometer" class="org.kasource.kaevent.example.simple.Thermometer">
+		<property name="eventDispatcher" ref="kaEvent.eventDispatcher"/>
+		<property name="heater" ref="heater"/>
+		<property name="cooler" ref="cooler"/>
+		<property name="optimalTemperatur" value="20.0"/>
+	</bean>
+	
+	<bean name="cooler" class="org.kasource.kaevent.example.simple.Cooler"/>
+	
+	<bean name="heater" class="org.kasource.kaevent.example.simple.Heater"/>
 	
 
-    
-    <bean name="eventQueue" class="org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor">
-    	<constructor-arg ref="eventSender"/>
-    </bean>
-  
-  <kaevent:event id="tempratureChangeEvent" 
-  				 eventClass="org.kasource.kaevent.example.simple.event.TemperatureChangeEvent" 
-  				 listenerInterface="org.kasource.kaevent.example.simple.event.TemperatureChangeEventListener">
-  				 
-  </kaevent:event>
-  				 
-  
-  <kaevent:channel id="testChannel"/>
-  <!--  
-	<bean name="testChannel" class="org.kasource.kaevent.channel.ChannelFactoryBean">
-		<property name="name" value="testChannel"/>
-	</bean>
-    -->
-  	
-    
- 
-    
-   
 </beans>

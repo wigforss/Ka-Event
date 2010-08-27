@@ -138,6 +138,10 @@ public class ReflectionUtils {
     //  
     // /////////////////////////////////////
     
+    public static <T> T getInstance(String className, Class<T> ofType) {
+    	return getInstance(className, ofType, new Class<?>[]{}, new Object[]{});
+    }
+    
     /**
      * Returns a new object of <i>className</i>. The objected is casted to the <i>ofType</i>, which is either super class or interface of the className class.
      * 
@@ -148,24 +152,21 @@ public class ReflectionUtils {
      * @return A new instance of class with name className casted to the ofType class.
      **/
     @SuppressWarnings("unchecked")
-    public static <T> T getInstance(String className, Class<T> ofType, Object... constructorArgs) {
-        try {
+    public static <T> T getInstance(String className, Class<T> ofType, Class<?>[] constructorParams, Object[] constructorArgs) {
+    	Constructor<?> constructor = null;
+    	try {
             Class<?> clazz = Class.forName(className);
-            
-            Class<?>[] contructorParamTypes = new Class[constructorArgs.length];
-            for(int i = 0; i < constructorArgs.length; ++i) {
-                contructorParamTypes[i] = constructorArgs[i].getClass();
-            }
-            Constructor<?> constructor = clazz.getConstructor(contructorParamTypes);
+            constructor = clazz.getConstructor(constructorParams);
             return (T) constructor.newInstance(constructorArgs);
         } catch (Exception e) {
             if(e instanceof ClassCastException) {
                 throw new IllegalStateException(className + " is not of type "+ ofType.getName());
             } else {
-                throw new IllegalStateException("Could not instanceiate " + className + " using default constructor!");
+                throw new IllegalStateException("Could not instanceiate using" + className + ((constructorParams.length == 0) ? " the default constructor!" : constructor));
             }
         } 
     }
+    
     
     
     // //////////////////////////////////////

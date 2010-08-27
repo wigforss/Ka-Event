@@ -69,8 +69,14 @@ public class StringUtilsTest {
     @Test
     public void twoVariableReplacementOneEnvironmentFallbackTest() {
         Map<String, Object> variables = new HashMap<String, Object>();
+        String envVar = getEnvKey();
         variables.put("name", "tstName");
-        assertEquals("hello tstName I'm running Java "+System.getenv("JAVA_JVM_VERSION"), StringUtils.replaceVariables("hello ${name} I'm running Java ${JAVA_JVM_VERSION}", variables, false));
+        assertEquals("hello tstName "+System.getenv(envVar), StringUtils.replaceVariables("hello ${name} ${"+envVar+"}", variables, false));
+    }
+    
+    private String getEnvKey() {
+    	Map<String, String> envMap = System.getenv();
+    	return envMap.keySet().iterator().next();
     }
     
     @Test
@@ -94,11 +100,12 @@ public class StringUtilsTest {
     @Test
     public void twoVariableReplacementOneEnvironmentOverrideTest() {
         Map<String, Object> variables = new HashMap<String, Object>();
+        String envVar = getEnvKey();
         variables.put("name", "tstName");
-        variables.put("JAVA_JVM_VERSION", "1.5.0");
+        variables.put(envVar, "ABC");
         Properties sysProps = System.getProperties();
-        sysProps.remove("JAVA_JVM_VERSION");
-        assertEquals("hello tstName I'm running Java "+System.getenv("JAVA_JVM_VERSION"), StringUtils.replaceVariables("hello ${name} I'm running Java ${JAVA_JVM_VERSION}", variables, true));
+        sysProps.remove(envVar);
+        assertEquals("hello tstName "+System.getenv(envVar), StringUtils.replaceVariables("hello ${name} ${"+envVar+"}", variables, true));
     }
     
     @Test

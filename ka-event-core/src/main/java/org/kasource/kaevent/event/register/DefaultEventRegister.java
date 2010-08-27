@@ -26,7 +26,7 @@ public class DefaultEventRegister implements EventRegister{
     private Map<Class<? extends EventListener>, EventConfig> eventsByInterface = new HashMap<Class<? extends EventListener>, EventConfig>();
     private Map<String, EventConfig> eventsByName = new HashMap<String, EventConfig>();
     
-    @Resource
+  
     private EventFactory eventFactory;
     
     public DefaultEventRegister() {
@@ -36,26 +36,32 @@ public class DefaultEventRegister implements EventRegister{
         this.eventFactory = eventFactory;
     }
     
- 
-    
-   
-    
-   
-    
-    
+
     @Override
     public EventConfig getEventByInterface(Class<? extends EventListener> interfaceClass) {
-        return eventsByInterface.get(interfaceClass);
+    	EventConfig event =  eventsByInterface.get(interfaceClass);
+    	if(event == null) {
+    		throw new NoSuchEventException("Can not find any event for interface "+interfaceClass);
+    	}
+    	return event;
     }
     
     @Override
     public EventConfig getEventByClass(Class<? extends EventObject> eventClass) {
-        return eventsByClass.get(eventClass);
+    	EventConfig event =  eventsByClass.get(eventClass);
+    	if(event == null) {
+    		throw new NoSuchEventException("Can not find any event for event class "+eventClass);
+    	}
+    	return event;
     }
     
     @Override
     public EventConfig getEventByName(String name) {
-        return eventsByName.get(name);
+    	EventConfig event = eventsByName.get(name);
+    	if(event == null) {
+    		throw new NoSuchEventException("Can not find any event by name "+name);
+    	}
+    	return event;
     }
 
     @Override

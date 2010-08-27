@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author wigforss
+ * @author Rikard Wigforss
  *
  */
 public class ChannelRegisterImpl implements ChannelRegister{

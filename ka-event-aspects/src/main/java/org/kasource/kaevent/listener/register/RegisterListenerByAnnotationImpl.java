@@ -12,6 +12,7 @@ import org.kasource.kaevent.channel.NoSuchChannelException;
 import org.kasource.kaevent.config.KaEventConfiguration;
 import org.kasource.kaevent.config.KaEventConfigurer;
 import org.kasource.kaevent.config.KaEventInitializedListener;
+import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.listener.BeanListener;
 import org.kasource.kaevent.listener.ChannelListener;
 
@@ -25,7 +26,7 @@ import org.kasource.kaevent.listener.ChannelListener;
 public class RegisterListenerByAnnotationImpl implements
 		RegisterListenerByAnnotation, KaEventInitializedListener {
 
-        private static RegisterListenerByAnnotationImpl INSTANCE = new RegisterListenerByAnnotationImpl();
+    private static RegisterListenerByAnnotationImpl INSTANCE = new RegisterListenerByAnnotationImpl();
     
 	private ChannelRegister channelRegister;
 	private SourceObjectListenerRegister sourceObjectListenerRegister;
@@ -35,7 +36,7 @@ public class RegisterListenerByAnnotationImpl implements
 
 	
 	private RegisterListenerByAnnotationImpl(){
-	    KaEventConfigurer.getInstance().addListener(this);
+		KaEventInitializer.getInstance().addListener(this);
 	}
 	
 	
@@ -187,7 +188,7 @@ public class RegisterListenerByAnnotationImpl implements
     
     @Override
     public void doInitialize(KaEventConfiguration configuration) {
-       initialize(configuration.getChannelRegister(), configuration.getSoListenerRegister(), configuration.getBeanResolver());
+       initialize(configuration.getChannelRegister(), configuration.getSourceObjectListenerRegister(), configuration.getBeanResolver());
         
     }
 

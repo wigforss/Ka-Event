@@ -27,7 +27,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     private static final int DEFAULT_QUEUE_CAPACITY = 1000;
     
     @Resource
-    private EventSenderImpl eventSender;
+    private EventSender eventSender;
   
     protected ThreadPoolQueueExecutor() {
         super(DEFAULT_CORE_POOL_SIZE, 
@@ -36,7 +36,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
                 DEFAULT_KEEP_ALIVE_TIME_UNIT, new LinkedBlockingDeque<Runnable>(DEFAULT_QUEUE_CAPACITY));   
     }
     
-    public ThreadPoolQueueExecutor(EventSenderImpl eventSender) {
+    public ThreadPoolQueueExecutor(EventSender eventSender) {
         super(DEFAULT_CORE_POOL_SIZE, 
                 DEFAULT_MAXIMUM_POOL_SIZE, 
                 DEFAULT_KEEP_ALIVE_TIME, 
@@ -91,10 +91,10 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     
     private static class EventRunner implements Runnable{
 
-        private EventSenderImpl eventSender;
+        private EventSender eventSender;
         private EventObject event;
         
-        EventRunner(EventSenderImpl eventSender, EventObject event) {
+        EventRunner(EventSender eventSender, EventObject event) {
             this.eventSender = eventSender;
             this.event = event;
         }
@@ -139,5 +139,19 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     public  void close() {
         super.shutdown();
     }
+
+	@Override
+	public boolean isConcurrent() {	
+		return this.getMaximumPoolSize() > 1;
+	}
+
+	@Override
+	public void setConcurrent(boolean concurrent) {
+		if(concurrent) {
+			this.setMaximumPoolSize(DEFAULT_MAXIMUM_POOL_SIZE);
+		} else {
+			this.setMaximumPoolSize(1);
+		}
+	}
 
 }

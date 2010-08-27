@@ -26,4 +26,14 @@ public interface DispatcherQueueThread {
      * @return true if any events in or currently executing an event.
      */
     public boolean hasUndispatchedEvents();
+    
+    /**
+     * Set the true to enable concurrent event dispatching false for 
+     * dispatching events in strict sequence.
+     * 
+     * @param concurrent
+     */
+    public void setConcurrent(boolean concurrent);
+    
+    public boolean isConcurrent();
 }

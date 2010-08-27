@@ -4,6 +4,7 @@ import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.config.KaEventConfiguration;
 import org.kasource.kaevent.config.KaEventConfigurer;
 import org.kasource.kaevent.config.KaEventInitializedListener;
+import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
 
@@ -20,14 +21,14 @@ public class ExampleRunner implements KaEventInitializedListener{
     
     private ExampleRunner(Thermometer thermometer) {
         this.thermometer = thermometer;
-        KaEventConfigurer.getInstance().addListener(this);
     }
     
 	public static void main(String[] args) {
 	    
 		Thermometer thermometer = new Thermometer();
-		new ExampleRunner(thermometer);
-		EventDispatcher eventDispatcher = new DefaultEventDispatcher("org/kasource/kaevent/example/simple/simple-config.xml");	
+		
+		EventDispatcher eventDispatcher = new DefaultEventDispatcher("org/kasource/kaevent/example/simple/simple-config.xml");
+		KaEventInitializer.getInstance().addListener(new ExampleRunner(thermometer));
 		Cooler cooler = new Cooler();
 		Heater heater = new Heater();
 		thermometer.setEventDispatcher(eventDispatcher);

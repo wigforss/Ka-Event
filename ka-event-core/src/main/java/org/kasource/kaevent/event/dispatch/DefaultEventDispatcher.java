@@ -13,6 +13,7 @@ import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.config.KaEventConfiguration;
 import org.kasource.kaevent.config.KaEventConfigurer;
 import org.kasource.kaevent.config.KaEventInitializedListener;
+import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
@@ -23,13 +24,13 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
  */
 public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializedListener{
 
-    private EventSenderImpl eventSender;
+    private EventSender eventSender;
     private ChannelRegister channelRegister;
     private ChannelFactory channelFactory;
     private SourceObjectListenerRegister sourceObjectListenerRegister;
     private DispatcherQueueThread eventQueue;
    
-   
+    private KaEventConfigurer configurer = new KaEventConfigurer();
     
     public DefaultEventDispatcher(String scanPath) {
         initialize(scanPath);
@@ -40,14 +41,14 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     }
     
     protected void initialize(String scanPath) {
-       KaEventConfigurer.getInstance().addListener(this);
-       KaEventConfigurer.getInstance().configure(this,scanPath);
+    	KaEventInitializer.getInstance().addListener(this);
+    	configurer.configure(this,scanPath);
     }
     
     @Override
     public void doInitialize(KaEventConfiguration config) {
         this.channelRegister = config.getChannelRegister();
-        this.sourceObjectListenerRegister = config.getSoListenerRegister();
+        this.sourceObjectListenerRegister = config.getSourceObjectListenerRegister();
         this.eventQueue = config.getQueueThread();
         this.eventSender = config.getEventSender();
         this.channelFactory = config.getChannelFactory();
@@ -95,6 +96,8 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
         sourceObjectListenerRegister.registerListener(listener, sourceObject);
         
     }
+
+	
 
    
     

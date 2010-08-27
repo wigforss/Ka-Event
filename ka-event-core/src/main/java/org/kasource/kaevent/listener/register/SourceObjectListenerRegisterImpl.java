@@ -16,13 +16,13 @@ import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 
 /**
- * @author rikardwigforss
+ * @author Rikard Wigforss
  *
  */
 public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegister implements SourceObjectListenerRegister {
     private Map<Class<? extends EventObject>, Map<Object, Map<EventListener,EventListenerRegistration>>> objectListenersByEvent = new HashMap<Class<? extends EventObject>, Map<Object, Map<EventListener,EventListenerRegistration>>>();
     
-    
+    private Map<EventListener, Object> listeners;
     
     public SourceObjectListenerRegisterImpl(EventRegister eventRegister, BeanResolver beanResolver) {
         super(eventRegister, beanResolver);
@@ -91,7 +91,20 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
         
     }
 
+    private void registerListeners() {
+    	for(Map.Entry<EventListener, Object> listenerEntry : listeners.entrySet()) {
+    		registerListener(listenerEntry.getKey(), listenerEntry.getValue());
+    	}
+    }
+    
 
+	public void setListeners(Map<EventListener, Object> listeners) {
+		this.listeners = listeners;
+		registerListeners();
+	}
+
+
+	
    
    
 

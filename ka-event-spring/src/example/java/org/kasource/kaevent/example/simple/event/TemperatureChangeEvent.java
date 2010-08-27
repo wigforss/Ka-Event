@@ -26,5 +26,9 @@ public class TemperatureChangeEvent extends EventObject{
      {
          return this.currentTemperature;
      }
+     
+     public String getKeyword(){
+    	 return "TWO";
+     }
 
 }

@@ -19,13 +19,13 @@ import org.kasource.kaevent.event.register.EventRegister;
  * @version $Id$
  **/
 public class ChannelFactoryImpl implements ChannelFactory {
-   @Resource
+   
    private ChannelRegister channelRegister;
-   @Resource
+
    private EventRegister eventRegister;
-   @Resource
+  
    private EventMethodInvoker eventMethodInvoker;
-   @Resource
+  
    private BeanResolver beanResolver;
    
    public ChannelFactoryImpl() {}
