@@ -1,9 +1,7 @@
-* Set up examples with spring
-* Set up examples with aspects
-* Fix channels to handle events;
-* Fix KaEventConfigurer spring version... Make sure initalized listeners are called.
-* Add event filtering support to XML
 * Add listeners to XML (EXTEND BEAN)
 * Add transactional support
+* Set up examples with spring
+* Set up examples with aspects
+* Add event filtering support to XML
 * Add Spring integration choice
 * Make sure that no Spring annotated example classes ends up in the built jar!
