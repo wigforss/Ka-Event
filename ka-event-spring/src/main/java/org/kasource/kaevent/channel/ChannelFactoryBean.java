@@ -4,6 +4,7 @@
 package org.kasource.kaevent.channel;
 
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
@@ -32,11 +33,19 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
     
     private ApplicationContext applicationContext;
     
+    private List<EventListener> listeners;
+    
+    
     @Override
     public Object getObject() throws Exception {
     	Channel channel = getChannel();
     	ChannelRegister channelRegister = (ChannelRegister) applicationContext.getBean(KaEventSpringBean.CHANNEL_REGISTER.getId());
     	channelRegister.registerChannel(channel);
+    	if(listeners != null) {
+    		for(EventListener listener : listeners) {
+    			channel.registerListener(listener);
+    		}
+    	}
     	return channel;
     }
 
@@ -86,6 +95,11 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
 			throws BeansException {
 		this.applicationContext = applicationContext;
 		
+	}
+
+
+	public void setListeners(List<EventListener> listeners) {
+		this.listeners = listeners;
 	}
 
    

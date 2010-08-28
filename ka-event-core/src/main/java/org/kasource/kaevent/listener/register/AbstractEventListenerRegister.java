@@ -16,6 +16,7 @@ import org.kasource.commons.util.ReflectionUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
+import org.kasource.kaevent.event.register.NoSuchEventException;
 import org.kasource.kaevent.listener.implementations.EventListenerFilter;
 
 /**
@@ -41,10 +42,12 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
         Set<Class<?>> interfaces = ReflectionUtils.getInterfacesExtending(listener, EventListener.class);
         Set<Class<? extends EventListener>> registeredEvents = new HashSet<Class<? extends EventListener>>();
         for (Class<?> interfaceClass : interfaces) {
-            if (eventRegister.getEventByInterface((Class<? extends EventListener>) interfaceClass) != null) {
-                registeredEvents.add((Class<? extends EventListener>) interfaceClass);
-            }
+            try {
+            	eventRegister.getEventByInterface((Class<? extends EventListener>) interfaceClass);
+            	registeredEvents.add((Class<? extends EventListener>) interfaceClass);
+            }catch(NoSuchEventException nse){}
         }
+            
         filterInterfaces(registeredEvents);
         return registeredEvents;
     }
@@ -74,9 +77,13 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
         
         // Add one lister registration per registered interface of the listener
         Set<Class<? extends EventListener>> interfaces = getRegisteredInterfaces(listener);
-        for (Class<? extends EventListener> interfaceClass : interfaces) {
-            addListener(listener, eventRegister.getEventByInterface(interfaceClass).getEventClass(), sourceObject,
-                    filters);
+        if(interfaces.isEmpty()) {
+        	throw new IllegalStateException(listener+" does not implement any registered event listener!");
+        } else {
+        	for (Class<? extends EventListener> interfaceClass : interfaces) {
+        		addListener(listener, eventRegister.getEventByInterface(interfaceClass).getEventClass(), sourceObject,
+        				filters);
+        	}
         }
 
     }

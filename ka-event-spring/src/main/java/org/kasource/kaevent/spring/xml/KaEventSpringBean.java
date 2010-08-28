@@ -14,17 +14,69 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 
 public enum KaEventSpringBean {
 
-	BEAN_RESOLVER(SpringBeanResolver.class,"kaEvent.beanResolver",new String[]{},new String[]{},new String[]{}),
-	EVENT_FACTORY(EventFactoryImpl.class,"kaEvent.eventFactory", new String[]{"kaEvent.beanResolver"},new String[]{},new String[]{}),
-	EVENT_REGISTER(DefaultEventRegister.class,"kaEvent.eventRegister", new String[]{"kaEvent.eventFactory"},new String[]{},new String[]{}),
-	CHANNEL_REGISTER(ChannelRegisterImpl.class,"kaEvent.channelRegister", new String[]{},new String[]{},new String[]{}),
-	SOURCE_OBJECT_LISTENER_REGISTER(SourceObjectListenerRegisterImpl.class,"kaEvent.sourceObjectListenerRegister", new String[]{"kaEvent.eventRegister","kaEvent.beanResolver"},new String[]{},new String[]{}),
-	EVENT_METHOD_INVOKER(EventMethodInvokerImpl.class,"kaEvent.eventMethodInvoker", new String[]{"kaEvent.eventRegister"},new String[]{},new String[]{}),
-	EVENT_SENDER(EventSenderImpl.class, "kaEvent.eventSender", new String[]{"kaEvent.channelRegister","kaEvent.sourceObjectListenerRegister", "kaEvent.eventMethodInvoker"},new String[]{},new String[]{}),
-	CHANNEL_FACTORY(ChannelFactoryImpl.class,"kaEvent.channelFactory", new String[]{"kaEvent.channelRegister","kaEvent.eventRegister","kaEvent.eventMethodInvoker","kaEvent.beanResolver"},new String[]{},new String[]{}),
-	QUEUE_BEAN(ThreadPoolQueueExecutor.class,"kaEvent.eventQueue", new String[]{"kaEvent.eventSender"},new String[]{},new String[]{}),
-	EVENT_DISPATCHER(SpringEventDispatcher.class,"kaEvent.eventDispatcher", new String[]{"kaEvent.channelRegister","kaEvent.channelFactory","kaEvent.sourceObjectListenerRegister","kaEvent.eventQueue","kaEvent.eventSender"},new String[]{},new String[]{}),
-	CONFIGURATION(KaEventConfigurationImpl.class,"kaEvent.configuration", new String[]{},
+	BEAN_RESOLVER(SpringBeanResolver.class,"kaEvent.beanResolver",
+			      "",
+			      new String[]{},
+			      new String[]{},
+			      new String[]{}),
+	EVENT_FACTORY(EventFactoryImpl.class,
+			"kaEvent.eventFactory", 
+			"",
+			new String[]{"kaEvent.beanResolver"},
+			new String[]{},
+			new String[]{}),
+	EVENT_REGISTER(DefaultEventRegister.class,
+			"kaEvent.eventRegister",
+			"",
+			new String[]{"kaEvent.eventFactory"},
+			new String[]{},
+			new String[]{}),
+	CHANNEL_REGISTER(ChannelRegisterImpl.class,
+			"kaEvent.channelRegister", 
+			"",
+			new String[]{},
+			new String[]{},
+			new String[]{}),
+	SOURCE_OBJECT_LISTENER_REGISTER(SourceObjectListenerRegisterImpl.class,
+			"kaEvent.sourceObjectListenerRegister",
+			"",
+			new String[]{"kaEvent.eventRegister","kaEvent.beanResolver"},
+			new String[]{},
+			new String[]{}),
+	EVENT_METHOD_INVOKER(EventMethodInvokerImpl.class,
+			"kaEvent.eventMethodInvoker", 
+			"",
+			new String[]{"kaEvent.eventRegister"},
+			new String[]{},
+			new String[]{}),
+	EVENT_SENDER(EventSenderImpl.class, 
+			"kaEvent.eventSender", 
+			"",
+			new String[]{"kaEvent.channelRegister","kaEvent.sourceObjectListenerRegister", "kaEvent.eventMethodInvoker"},
+			new String[]{},
+			new String[]{}),
+	CHANNEL_FACTORY(ChannelFactoryImpl.class,
+			"kaEvent.channelFactory", 
+			"",
+			new String[]{"kaEvent.channelRegister","kaEvent.eventRegister","kaEvent.eventMethodInvoker","kaEvent.beanResolver"},
+			new String[]{},
+			new String[]{}),
+	QUEUE_BEAN(ThreadPoolQueueExecutor.class,
+			"kaEvent.eventQueue", 
+			"",
+			new String[]{"kaEvent.eventSender"},
+			new String[]{},
+			new String[]{}),
+	EVENT_DISPATCHER(SpringEventDispatcher.class,
+			"kaEvent.eventDispatcher", 
+			"",
+			new String[]{"kaEvent.channelRegister","kaEvent.channelFactory","kaEvent.sourceObjectListenerRegister","kaEvent.eventQueue","kaEvent.eventSender"},
+			new String[]{},
+			new String[]{}),
+	CONFIGURATION(KaEventConfigurationImpl.class,
+			"kaEvent.configuration", 
+			"",
+			new String[]{},
 			new String[]{"eventDispatcher",
 						 "beanResolver",
 						 "eventFactory",
@@ -49,13 +101,15 @@ public enum KaEventSpringBean {
 	
 	private String id;
 	private Class<?> beanClass;
+	private String initMethod;
 	private String[] constructorRefs;
 	private String[] refProperties;
 	private String[] propertyRefValues;
 	
-	KaEventSpringBean(Class<?> beanClass, String id, String[] constructorRefs,String[] refProperties, String[] propertyRefValues) {
+	KaEventSpringBean(Class<?> beanClass, String id, String initMethod,String[] constructorRefs,String[] refProperties, String[] propertyRefValues) {
 		this.beanClass = beanClass;
 		this.id = id;
+		this.initMethod = initMethod;
 		this.constructorRefs = constructorRefs;
 		this.refProperties = refProperties;
 		this.propertyRefValues = propertyRefValues;
@@ -81,6 +135,10 @@ public enum KaEventSpringBean {
 
 	public String[] getRefProperties() {
 		return refProperties;
+	}
+
+	public String getInitMethod() {
+		return initMethod;
 	}
 	    
 }

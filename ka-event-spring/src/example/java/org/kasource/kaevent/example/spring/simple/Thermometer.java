@@ -1,7 +1,8 @@
-package org.kasource.kaevent.example.simple;
+package org.kasource.kaevent.example.spring.simple;
 
 import org.kasource.kaevent.event.EventDispatcher;
-import org.kasource.kaevent.example.simple.event.TemperatureChangeEvent;
+import org.kasource.kaevent.example.spring.simple.event.TemperatureChangeEvent;
+
 
 
 ///CLOVER:OFF
@@ -15,10 +16,7 @@ public class Thermometer implements Runnable{
 	
 	
 
-	public void registerListers() {
-		eventDispatcher.registerListener(cooler, this);
-		eventDispatcher.registerListener(heater, this);
-	}
+	
 	
 
 	public double getOptimalTemperatur() {

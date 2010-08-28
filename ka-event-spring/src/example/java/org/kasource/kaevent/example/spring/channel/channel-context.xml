@@ -1,0 +1,32 @@
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:kaevent="http://kasource.org/schema/kaevent-spring"
+    xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://kasource.org/schema/kaevent-spring
+spring/schema/kaevent-spring.xsd"
+>
+
+	<kaevent:kaevent scanClassPath="org.kasource.kaevent.example.spring.channel"/>
+
+	<kaevent:channel id="temperatureChannel">
+		<kaevent:handle event="org.kasource.kaevent.example.spring.channel.event.TemperatureChangedEvent"/>
+	</kaevent:channel>
+	
+
+	<bean name="thermometer" class="org.kasource.kaevent.example.spring.channel.Thermometer">
+		<property name="eventDispatcher" ref="kaEvent.eventDispatcher"/>
+		<property name="heater" ref="heater"/>
+		<property name="cooler" ref="cooler"/>
+		<property name="optimalTemperatur" value="20.0"/>
+	</bean>
+	
+	<bean name="cooler" class="org.kasource.kaevent.example.spring.channel.Cooler" kaevent:listen-on-bean="thermometer"/>
+	
+	<bean name="heater" class="org.kasource.kaevent.example.spring.channel.Heater" kaevent:listen-on-bean="thermometer"/>
+	
+	<bean name="commandConsole" class="org.kasource.kaevent.example.spring.channel.CommandConsole" kaevent:listen-on-channel="temperatureChannel"/>
+
+</beans>

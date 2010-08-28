@@ -27,7 +27,7 @@ public class KaEventConfigurerBeanDefinitionParser extends
 
 	protected void doParse(Element element, ParserContext pc,
 			BeanDefinitionBuilder bean) {
-		element.setAttribute(ID_ATTRIBUTE, "kaEventConfigurer");
+		element.setAttribute(ID_ATTRIBUTE, "kaEvent.configurer");
 		bean.addPropertyValue("scanClassPath", element
 				.getAttribute("scanClassPath"));
 
@@ -59,7 +59,9 @@ public class KaEventConfigurerBeanDefinitionParser extends
 		for(KaEventSpringBean bean : KaEventSpringBean.values()) {
 			if(!excludeSet.contains(bean)) {
 				BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(bean.getBeanClass());
-				
+				if(bean.getInitMethod().length() > 0) {
+					builder.setInitMethodName(bean.getInitMethod());
+				}
 				for(String beanRef : bean.getConstructorRefs()) {
 					builder.addConstructorArgReference(beanRef);
 				}

@@ -1,9 +1,9 @@
-package org.kasource.kaevent.example.simple.event;
+package org.kasource.kaevent.example.spring.simple.event;
 
 import java.util.EventObject;
 
 import org.kasource.kaevent.event.Event;
-import org.kasource.kaevent.example.simple.Thermometer;
+import org.kasource.kaevent.example.spring.simple.Thermometer;
 
 ///CLOVER:OFF
 @Event(listener=TemperatureChangeEventListener.class)

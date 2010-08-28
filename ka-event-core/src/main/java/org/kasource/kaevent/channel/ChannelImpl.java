@@ -34,7 +34,7 @@ import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
 public class ChannelImpl  implements Channel {
     // Name of the channel
     private String name;
-    // Set of event classes this channel handles
+   
     private Map<Class<? extends EventObject>,Class<? extends EventListener>> eventMap = new HashMap<Class<? extends EventObject>,Class<? extends EventListener>>();
     private Map<Class<? extends EventObject>, Collection<EventFilter<EventObject>>> filtersByEvent = new HashMap<Class<? extends EventObject>, Collection<EventFilter<EventObject>>>();
     private ChannelListenerRegister listenerRegister;

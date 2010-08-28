@@ -1,7 +1,9 @@
-package org.kasource.kaevent.example.simple;
+package org.kasource.kaevent.example.spring.simple;
 
-import org.kasource.kaevent.example.simple.event.TemperatureChangeEvent;
-import org.kasource.kaevent.example.simple.event.TemperatureChangeEventListener;
+import org.kasource.kaevent.example.spring.simple.event.TemperatureChangeEvent;
+import org.kasource.kaevent.example.spring.simple.event.TemperatureChangeEventListener;
+
+
 
 ///CLOVER:OFF
 public class Heater implements TemperatureChangeEventListener{

@@ -1,4 +1,4 @@
-package org.kasource.kaevent.example.simple.event;
+package org.kasource.kaevent.example.spring.simple.event;
 
 import java.util.EventListener;
 
