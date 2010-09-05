@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
@@ -28,7 +28,9 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
 
     protected EventRegister eventRegister;
     protected BeanResolver beanResolver;
-
+    
+    
+    
     public AbstractEventListenerRegister(EventRegister eventRegister, BeanResolver beanResolver) {
         this.eventRegister = eventRegister;
         this.beanResolver = beanResolver;

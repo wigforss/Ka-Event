@@ -5,7 +5,7 @@ package org.kasource.kaevent.example.custom;
 
 import java.lang.reflect.Method;
 
-import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.example.custom.event.TemperatureChangeEvent;
 import org.kasource.kaevent.example.custom.event.TemperatureChangeEventListener;

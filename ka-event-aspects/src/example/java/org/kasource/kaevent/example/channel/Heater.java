@@ -2,8 +2,8 @@ package org.kasource.kaevent.example.channel;
 
 import org.kasource.kaevent.example.channel.event.TemperatureChangedEvent;
 import org.kasource.kaevent.example.channel.event.TemperatureChangedEventListener;
-import org.kasource.kaevent.listener.BeanListener;
 import org.kasource.kaevent.listener.RegisterListener;
+import org.kasource.kaevent.listener.implementations.BeanListener;
 
 ///CLOVER:OFF
 @BeanListener("thermometer")

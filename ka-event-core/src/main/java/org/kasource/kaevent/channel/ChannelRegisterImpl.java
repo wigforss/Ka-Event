@@ -31,7 +31,7 @@ public class ChannelRegisterImpl implements ChannelRegister{
      * @param eventClass        The eventClass added to the channel
      **/
     @Override
-    public void handleEvent(Channel channel, Class<? extends EventObject> eventClass) {
+    public void registerEventHandler(Channel channel, Class<? extends EventObject> eventClass) {
         if(channels.get(channel.getName()) == null) {
             throw new NoSuchChannelException("No Channel named "+channel.getName()+" can be found");
         }
@@ -46,7 +46,13 @@ public class ChannelRegisterImpl implements ChannelRegister{
       
     }
 
-    
+    @Override
+    public void unregisterEventHandler(Channel channel, Class<? extends EventObject> eventClass) {
+    	Set<Channel> channels = channelsByEvent.get(eventClass);
+    	if(channels != null) {
+    		channels.remove(channel);
+    	}
+    }
    
     
     

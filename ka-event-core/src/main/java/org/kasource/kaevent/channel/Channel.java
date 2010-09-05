@@ -72,6 +72,7 @@ public interface Channel {
      **/
     public abstract void registerEvent(Class<? extends EventObject> eventClass);
     
+    public abstract void unregisterEvent(Class<? extends EventObject> eventClass);
     
     /**
      * Register a new listener object to this channel with specific filters for that particular listener.

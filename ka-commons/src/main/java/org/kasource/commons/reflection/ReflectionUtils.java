@@ -1,4 +1,4 @@
-package org.kasource.commons.util;
+package org.kasource.commons.reflection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

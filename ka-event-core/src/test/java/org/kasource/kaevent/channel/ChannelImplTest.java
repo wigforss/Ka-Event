@@ -18,6 +18,7 @@ import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.register.EventRegister;
+import org.kasource.kaevent.event.register.NoSuchEventException;
 import org.kasource.kaevent.listener.register.ChannelListenerRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
 import org.unitils.UnitilsJUnit4TestClassRunner;
@@ -71,7 +72,7 @@ public class ChannelImplTest {
     public void registerEventTest() {
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
         expect((Class)eventConfig.getListener()).andReturn(ChangeListener.class);
-        channelRegister.handleEvent(channel, ChangeEvent.class);
+        channelRegister.registerEventHandler(channel, ChangeEvent.class);
         expectLastCall();
         EasyMockUnitils.replay();
         channel.registerEvent(ChangeEvent.class);
@@ -84,7 +85,7 @@ public class ChannelImplTest {
     public void registerEventTwiceTest() {
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig).times(2);
         expect((Class)eventConfig.getListener()).andReturn(ChangeListener.class);
-        channelRegister.handleEvent(channel, ChangeEvent.class);
+        channelRegister.registerEventHandler(channel, ChangeEvent.class);
         expectLastCall();
         EasyMockUnitils.replay();
         channel.registerEvent(ChangeEvent.class);
@@ -93,9 +94,9 @@ public class ChannelImplTest {
         assertEquals( ChangeListener.class, channel.getSupportedInterfaces().iterator().next() );
     }
     
-    @Test(expected=IllegalStateException.class)
+    @Test(expected=NoSuchEventException.class)
     public void registerUnsupportedEventTest() {
-        expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(null);
+        expect(eventRegister.getEventByClass(ChangeEvent.class)).andThrow(new NoSuchEventException("Test"));
         EasyMockUnitils.replay();
         channel.registerEvent(ChangeEvent.class);
     }

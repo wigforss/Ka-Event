@@ -6,7 +6,7 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.event.config.InvalidEventConfigurationException;
 import org.kasource.kaevent.event.method.MethodResolver;
 

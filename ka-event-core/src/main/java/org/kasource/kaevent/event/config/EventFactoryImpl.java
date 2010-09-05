@@ -11,7 +11,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.event.method.MethodResolver;

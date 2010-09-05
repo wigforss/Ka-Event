@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.config.KaEventConfig;
 import org.kasource.kaevent.event.config.EventConfig;

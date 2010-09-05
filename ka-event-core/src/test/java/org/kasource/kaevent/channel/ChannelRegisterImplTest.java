@@ -71,7 +71,7 @@ public class ChannelRegisterImplTest {
         EasyMock.expect(channel.getEvents()).andReturn(eventSet);
         EasyMockUnitils.replay();
         register.registerChannel(channel);
-        register.handleEvent(channel, WindowEvent.class);
+        register.registerEventHandler(channel, WindowEvent.class);
     }
     
     @Test
@@ -82,7 +82,7 @@ public class ChannelRegisterImplTest {
         EasyMock.expect(channel.getEvents()).andReturn(eventSet);
         EasyMockUnitils.replay();
         register.registerChannel(channel);
-        register.handleEvent(channel, ChangeEvent.class);
+        register.registerEventHandler(channel, ChangeEvent.class);
     }
     
     
@@ -90,7 +90,7 @@ public class ChannelRegisterImplTest {
     public void handleEventUnknownChannelTest() {
         EasyMock.expect(channel.getName()).andReturn("testChannel").times(2);
         EasyMockUnitils.replay();
-        register.handleEvent(channel, ChangeEvent.class);
+        register.registerEventHandler(channel, ChangeEvent.class);
     }
     
     @Test

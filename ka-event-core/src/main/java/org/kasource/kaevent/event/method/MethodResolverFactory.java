@@ -8,7 +8,7 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Map;
 
-import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.method.switchcase.KeywordSwitchMethodResolver;
 

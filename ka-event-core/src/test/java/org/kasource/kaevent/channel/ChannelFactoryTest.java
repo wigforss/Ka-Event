@@ -78,7 +78,7 @@ public class ChannelFactoryTest {
         events.add(ChangeEvent.class);
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
         expect((Class)eventConfig.getListener()).andReturn(ChangeListener.class);
-        channelRegister.handleEvent(EasyMock.capture(capturedChannel), EasyMock.same(ChangeEvent.class));
+        channelRegister.registerEventHandler(EasyMock.capture(capturedChannel), EasyMock.same(ChangeEvent.class));
         expectLastCall();
         channelRegister.registerChannel(EasyMock.capture(capturedChannel));
         EasyMock.expectLastCall();
@@ -107,7 +107,7 @@ public class ChannelFactoryTest {
         listeners.add(listener);
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
         expect((Class)eventConfig.getListener()).andReturn(ChangeListener.class);
-        channelRegister.handleEvent(EasyMock.capture(capturedChannel), EasyMock.same(ChangeEvent.class));
+        channelRegister.registerEventHandler(EasyMock.capture(capturedChannel), EasyMock.same(ChangeEvent.class));
         expectLastCall();
         channelRegister.registerChannel(EasyMock.capture(capturedChannel));
         expectLastCall();

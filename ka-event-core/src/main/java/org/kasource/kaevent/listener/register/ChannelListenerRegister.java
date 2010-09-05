@@ -1,5 +1,6 @@
 package org.kasource.kaevent.listener.register;
 
+import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
@@ -16,6 +17,7 @@ public interface ChannelListenerRegister extends EventListenerRegister{
      **/
     public abstract void registerListener(EventListener listener);
     
+    public Collection<EventListenerRegistration> getListenersByEvent(Class<? extends EventObject> eventClass);
     
     /**
      * Register a new listener object to this channel

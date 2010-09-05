@@ -1,7 +1,7 @@
 package org.kasource.kaevent.listener.register;
 
-import org.kasource.kaevent.listener.BeanListener;
-import org.kasource.kaevent.listener.ChannelListener;
+import org.kasource.kaevent.listener.implementations.BeanListener;
+import org.kasource.kaevent.listener.implementations.ChannelListener;
 
 
 

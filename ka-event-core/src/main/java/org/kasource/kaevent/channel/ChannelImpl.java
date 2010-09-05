@@ -17,6 +17,7 @@ import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.ChannelListenerRegister;
 import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
+import org.kasource.kaevent.listener.register.EventListenerRegistration;
 
 
 
@@ -64,16 +65,23 @@ public class ChannelImpl  implements Channel {
     @Override
     public void registerEvent(Class<? extends EventObject> eventClass) {
         EventConfig eventConfig = eventRegister.getEventByClass(eventClass);
-        if (eventConfig == null) {
-            throw new IllegalStateException(eventClass + " is not a registered event");
-        }
+       
         if (!eventMap.containsKey(eventClass)) { 
                 eventMap.put(eventClass, eventConfig.getListener());
-                channelRegister.handleEvent(this, eventClass);
+                channelRegister.registerEventHandler(this, eventClass);
         }
     }
     
-    
+    @Override
+	public void unregisterEvent(Class<? extends EventObject> eventClass) {
+		eventMap.remove(eventClass);
+		filtersByEvent.remove(eventClass);
+		channelRegister.unregisterEventHandler(this, eventClass);
+		 Collection<EventListenerRegistration> listeners = listenerRegister.getListenersByEvent(eventClass);
+		 for(EventListenerRegistration listenerReg : listeners) {
+			 listenerRegister.unregisterListener(listenerReg.getListener());
+		 }
+	}
 
     
 
@@ -204,6 +212,10 @@ public class ChannelImpl  implements Channel {
         
        
     }
+
+
+
+	
    
   
 

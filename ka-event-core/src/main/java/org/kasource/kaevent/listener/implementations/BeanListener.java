@@ -1,4 +1,4 @@
-package org.kasource.kaevent.listener;
+package org.kasource.kaevent.listener.implementations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,14 +7,14 @@ import java.lang.annotation.Target;
 
 /**
  * {@link java.util.EventListener} implementations annotated with this annotation will be
- * registered at the named channels when a method 
- * annotated with @RegisterListener is called
+ * registered to listen to source objects by beanName of the value attribute, when a method 
+ * annotated with @RegisterListener is called.
  * 
  * @author Rikard Wigforss
  * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface ChannelListener {
+public @interface BeanListener {
     String[] value();
 }

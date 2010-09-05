@@ -17,7 +17,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.log4j.Logger;
-import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.commons.util.StringUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.DefaultBeanResolver;

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.event.EventKeyword;
 import org.kasource.kaevent.listener.interfaces.CustomCase;
 import org.kasource.kaevent.listener.interfaces.DefaultListenerMethod;

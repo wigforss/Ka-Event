@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.event.config.EventConfig;
@@ -50,7 +50,12 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
      **/
     @Override
     public Collection<EventListenerRegistration> getListenersByEvent(EventObject event) {
-        Map<EventListener, EventListenerRegistration> listeners =  listenersByEvent.get(event.getClass());
+    	return getListenersByEvent(event.getClass());
+    }
+    
+    @Override
+    public Collection<EventListenerRegistration> getListenersByEvent(Class<? extends EventObject> eventClass) {
+        Map<EventListener, EventListenerRegistration> listeners =  listenersByEvent.get(eventClass);
         if(listeners != null) {
             return listeners.values();
         }

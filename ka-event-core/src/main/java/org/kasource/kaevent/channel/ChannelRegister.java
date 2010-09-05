@@ -65,9 +65,9 @@ public interface ChannelRegister {
      * @param channel           The channel that has added a new eventClass
      * @param eventClass        The eventClass added to the channel
      **/
-    public void handleEvent(Channel channel, Class<? extends EventObject> eventClass);
+    public void registerEventHandler(Channel channel, Class<? extends EventObject> eventClass);
     
-    
+    public void unregisterEventHandler(Channel channel, Class<? extends EventObject> eventClass);
     
   
 }

@@ -74,5 +74,10 @@
 			<version>${unitils.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>1.4.0</version>
+		</dependency>
 	</dependencies>
 </project>

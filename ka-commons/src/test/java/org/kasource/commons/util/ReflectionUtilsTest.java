@@ -15,6 +15,8 @@ import java.util.Set;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kasource.commons.reflection.ReflectionUtils;
+
 import static org.junit.Assert.*;
 
 /**

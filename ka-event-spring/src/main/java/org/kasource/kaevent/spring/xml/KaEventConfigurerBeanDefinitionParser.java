@@ -3,7 +3,7 @@ package org.kasource.kaevent.spring.xml;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kasource.commons.util.ReflectionUtils;
+import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.config.SpringKaEventConfigurer;
 import org.kasource.kaevent.event.config.EventFactoryBean;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;

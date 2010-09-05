@@ -13,8 +13,8 @@ import org.kasource.kaevent.config.KaEventConfiguration;
 import org.kasource.kaevent.config.KaEventConfigurer;
 import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.config.KaEventInitializer;
-import org.kasource.kaevent.listener.BeanListener;
-import org.kasource.kaevent.listener.ChannelListener;
+import org.kasource.kaevent.listener.implementations.BeanListener;
+import org.kasource.kaevent.listener.implementations.ChannelListener;
 
 /**
  * Register Listeners based on annotations
