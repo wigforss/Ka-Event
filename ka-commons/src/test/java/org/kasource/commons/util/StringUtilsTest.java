@@ -11,7 +11,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @author rikardwigforss
+ * @author Rikard Wigforss
  *
  */
 public class StringUtilsTest {

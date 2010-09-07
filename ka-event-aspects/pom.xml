@@ -116,7 +116,7 @@
 				<version>2.6</version>
 
 				<configuration>
-					<excludePackageNames>com.kenai.sadelf.example.*:com.kenai.sadelf.xa</excludePackageNames>
+					<excludePackageNames>org.kasource.example.*</excludePackageNames>
 					<detectLinks>true</detectLinks>
 					<links>
 						<link>http://java.sun.com/javase/6/docs/api/</link>
@@ -167,7 +167,7 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
+			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.unitils</groupId>

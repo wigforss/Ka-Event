@@ -9,12 +9,14 @@
 	<properties>
 		<spring.version>2.5.6</spring.version>
 		<unitils.version>3.1</unitils.version>
+		<log4j.version>1.2.16</log4j.version>
 	</properties>
   	<modules>
   			<module>ka-commons</module>
 			<module>ka-event-core</module> 
 			<module>ka-event-aspects</module>
 			<module>ka-event-spring</module>
+			<module>ka-event-osgi</module>
 	</modules>
 	
 	<build>

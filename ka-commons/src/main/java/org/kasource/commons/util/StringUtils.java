@@ -50,7 +50,7 @@ public class StringUtils {
             variableName = variableName.substring(2, variableName.length()-1);
             Object variable = resolveVariable(variableName, variables, systemOverrideMode);
             if(variable != null) {
-               result = result.replaceFirst(VARIABLE_PATTERN.pattern(), variable.toString());
+               result = result.replaceFirst(VARIABLE_PATTERN.pattern(), variable.toString().replace("\\", "\\\\"));
             }
         }
         return result;
