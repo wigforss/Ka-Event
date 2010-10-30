@@ -55,6 +55,11 @@ public interface EventDispatcher {
     public void registerListener(EventListener listener,
             Object sourceObject, List<EventFilter<EventObject>> filters);
     
+    public void addToBatch(EventObject event);
+    
+    public void clearBatch();
+    
+    public void fireBatch();
    
     
 }

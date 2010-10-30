@@ -5,6 +5,7 @@ package org.kasource.kaevent.event.dispatch;
 
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.kasource.kaevent.channel.Channel;
@@ -24,11 +25,13 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
  */
 public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializedListener{
 
-    private EventSender eventSender;
-    private ChannelRegister channelRegister;
-    private ChannelFactory channelFactory;
-    private SourceObjectListenerRegister sourceObjectListenerRegister;
-    private DispatcherQueueThread eventQueue;
+	private final ThreadLocal<LinkedList<EventObject>> batchListByThread = new ThreadLocal<LinkedList<EventObject>>();
+	
+    protected EventSender eventSender;
+    protected ChannelRegister channelRegister;
+    protected ChannelFactory channelFactory;
+    protected SourceObjectListenerRegister sourceObjectListenerRegister;
+    protected DispatcherQueueThread eventQueue;
    
     private KaEventConfigurer configurer = new KaEventConfigurer();
     
@@ -70,7 +73,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
   
     @Override
     public void fireOnCommit(EventObject event) {
-        throw new IllegalStateException("Not implemented on "+this.getClass());
+        throw new IllegalStateException("Not implemented in "+this.getClass());
         
     }
 
@@ -99,8 +102,45 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
 
 	
 
-   
+   /**
+    * Add event to this threads batch
+    * 
+    * @param event
+    **/
+    @Override
+    public void addToBatch(EventObject event) {
+        LinkedList<EventObject> batchList = batchListByThread.get();
+        if (batchList == null) {
+            batchList = new LinkedList<EventObject>();
+            batchListByThread.set(batchList);
+        }
+        batchList.add(event);
+    }
     
+    /**
+     * Clear this threads batch 
+     **/
+    @Override
+    public void clearBatch() {
+        LinkedList<EventObject> batchList = batchListByThread.get();
+        if (batchList != null) {
+            batchList.clear();
+        }
+    }
+
+    /**
+     * Fire all events in this threads batch
+     **/
+    @Override
+    public void fireBatch() {
+        LinkedList<EventObject> batchList = batchListByThread.get();
+        if (batchList != null) {
+            while (!batchList.isEmpty()) {
+            	eventSender.dispatchEvent(batchList.removeFirst(), false);       
+            }
+        }
+    }
+
     
     
     

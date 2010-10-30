@@ -3,40 +3,32 @@
  */
 package org.kasource.kaevent.event.dispatch;
 
-import java.util.EventListener;
 import java.util.EventObject;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import javax.annotation.Resource;
 
-import org.kasource.kaevent.channel.Channel;
+import org.kasource.commons.spring.transaction.TransactionListener;
+import org.kasource.commons.spring.transaction.TransactionResult;
+import org.kasource.commons.spring.transaction.TransactionSupport;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
-import org.kasource.kaevent.config.KaEventInitializer;
-import org.kasource.kaevent.event.EventDispatcher;
-import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Rikard Wigforss
  * 
  */
 
-public class SpringEventDispatcher implements EventDispatcher {
+public class SpringEventDispatcher extends DefaultEventDispatcher implements TransactionListener {
 
-   
-    private ChannelRegister channelRegister;
-
-    private ChannelFactory channelFactory;
-
-    private SourceObjectListenerRegister sourceObjectListenerRegister;
-
-    private DispatcherQueueThread eventQueue;
-
-    private EventSender eventSender;
-
+	private ThreadLocal<Queue<EventObject>> commitEventQueue = new ThreadLocal<Queue<EventObject>>();
+	
+	@Resource
+	private TransactionSupport txSupport;
+    
+    
     /**
      * Used when configured in XML
      * 
@@ -58,45 +50,50 @@ public class SpringEventDispatcher implements EventDispatcher {
         this.eventSender = eventSender;
     }
 
-    @Override
-    public Channel createChannel(String channelName) {
-        return channelFactory.createChannel(channelName);
-    }
+   
 
-    @Override
-    public void fire(EventObject event) {
-        eventQueue.enqueue(event);
-
-    }
-
-    @Override
-    public void fireBlocked(EventObject event) {
-        eventSender.dispatchEvent(event, true);
-
-    }
+  
 
     @Override
     public void fireOnCommit(EventObject event) {
-        // TODO Auto-generated method stub
+    	txSupport.addListener(this);
+		if(commitEventQueue.get() == null) {
+			commitEventQueue.set(new LinkedList<EventObject>());
+		}
+		commitEventQueue.get().add(event);
 
     }
 
-    @Override
-    public Channel getChannel(String channelName) {
-        return channelRegister.getChannel(channelName);
-    }
+   
 
-    @Override
-    public void registerListener(EventListener listener, Object sourceObject) {
-        sourceObjectListenerRegister.registerListener(listener, sourceObject);
+    
 
-    }
+	@Override
+	public void afterCommit() {
+		if(commitEventQueue.get() != null) {
+			while(!commitEventQueue.get().isEmpty()) {
+				EventObject event = commitEventQueue.get().poll();
+				eventSender.dispatchEvent(event, false);
+			}
+		}
+		
+	}
 
-    @Override
-    public void registerListener(EventListener listener, Object sourceObject, List<EventFilter<EventObject>> filters) {
-        sourceObjectListenerRegister.registerListener(listener, sourceObject, filters);
+	@Override
+	public void afterCompletion(TransactionResult status) {
+		if(commitEventQueue.get() != null) {
+			commitEventQueue.get().clear();
+		}
+		
+	}
 
-    }
+	@Override
+	public void beforeCommit(boolean readOnly) {	
+	}
+
+	@Override
+	public void beforeCompletion() {	
+	}
 
 	
 
