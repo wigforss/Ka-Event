@@ -17,14 +17,7 @@ public class CustomBeanResolver implements BeanResolver {
 
     Map<String, Object> beans = new HashMap<String, Object>();
 
-    @Override
-    public Object getBean(String beanName) {
-        Object bean = beans.get(beanName);
-        if(bean == null) {
-             throw new CouldNotResolveBeanException("Could not find bean "+beanName);
-        }
-        return bean;
-    }
+   
 
     
     @Override

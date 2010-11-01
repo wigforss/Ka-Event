@@ -128,7 +128,7 @@ public class RegisterListenerByAnnotationImpl implements
 	private void registerBeanListener(EventListener listener, String[] beanNames) {
 		for (String beanName : beanNames) {
 			try {
-				Object eventSource = beanResolver.getBean(beanName);
+				Object eventSource = beanResolver.getBean(beanName, Object.class);
 				sourceObjectListenerRegister.registerListener(
 						(EventListener) listener, eventSource);
 			} catch (CouldNotResolveBeanException nrsb) {
@@ -153,7 +153,7 @@ public class RegisterListenerByAnnotationImpl implements
 	public void unregisterBeanListener(BeanListener beanListenerAnnotation,
 			Object listener) {
 		for (String beanName : beanListenerAnnotation.value()) {
-			Object eventSource = beanResolver.getBean(beanName);
+			Object eventSource = beanResolver.getBean(beanName, Object.class);
 			sourceObjectListenerRegister.unregisterListener(
 					(EventListener) listener, eventSource);
 		}

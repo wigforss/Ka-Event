@@ -16,14 +16,7 @@ import org.springframework.stereotype.Component;
 public class SpringBeanResolver implements BeanResolver, ApplicationContextAware {
     private ApplicationContext applicationContext;
 
-    @Override
-    public Object getBean(String beanName) {
-        try {
-            return applicationContext.getBean(beanName);
-        } catch (Exception e) {
-            throw new CouldNotResolveBeanException(e.getMessage(), e);
-        }
-    }
+    
 
     @SuppressWarnings("unchecked")
     @Override
