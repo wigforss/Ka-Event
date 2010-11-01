@@ -103,7 +103,7 @@
 								<xs:annotation>
 									<xs:documentation>
 										An event configuration, consist of an Event class
-										which must extend java.util.EventObject and a listener insterface
+										which must extend java.util.EventObject and a listener interface
 										which must extend java.util.EventListener.
 										If more than one method is
 										declared in the listener interface a method resolver must be
@@ -350,35 +350,7 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Bean Resolver -->
 
-
-	<!-- Queue Thread -->
-
-
-	<!-- Thread Pool Queue Executor -->
-
-
-	<!-- Method resolvers -->
-
-
-
-
-
-
-
-
-	<!-- Event Config  -->
-
-
-	<!-- List of Event Config -->
-
-
-
-	<!-- Channel -->
-
-
-	<!-- List of Channels -->
 
 
 	<!-- Types -->

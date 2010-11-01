@@ -25,9 +25,11 @@ import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.event.method.MethodResolverFactory;
 
 /**
- * @author rikardwigforss
- *
- */
+ * Exports event configurations from a XML configuration object
+ * 
+ * 
+ * @author Rikard Wigforss
+ **/
 public class XmlConfigEventExporter implements EventExporter {
 
    private List<KaEventConfig.Events.Event> eventList;
@@ -70,43 +72,7 @@ public class XmlConfigEventExporter implements EventExporter {
         }
     }
     
-    /*
-    @SuppressWarnings("unchecked")
-    private Class<? extends EventListener>  getInterfaceClass(String className) {
-        try {
-            Class<?> interfaceClass = Class.forName(className);
-            Type[] superInterfaces =  interfaceClass.getGenericInterfaces();
-            boolean foundInterface = false;
-            for(Type interfaceType : superInterfaces) {
-                if(EventListener.class.isAssignableFrom( (Class<?>) interfaceType )) {
-                    foundInterface = true;
-                    break;
-                }
-            }
-            if(! foundInterface) {
-                throw new InvalidEventConfigurationException("Listener Interface class "+className+" must extend java.util.EventListener!");
-            }
-            return (Class<? extends EventListener>) interfaceClass;
-        }catch (ClassNotFoundException cnfe) {
-            throw new InvalidEventConfigurationException("Listener Interface class "+className+" could not be found!",cnfe);
-        }
-    }
-    */
-    /*
-    @SuppressWarnings("unchecked")
-    private Class<? extends EventObject>  getEventClass(String className) {
-        try {
-            Class<?> eventClass = Class.forName(className);
-            Class<?> superClass = (Class<?>) eventClass.getGenericSuperclass();
-            if(superClass == null || ! EventObject.class.isAssignableFrom(superClass)) {
-                throw new InvalidEventConfigurationException("Event class "+className+" must extend java.util.EventObject!");
-            }
-            return (Class<? extends EventObject>) eventClass;
-        }catch (ClassNotFoundException cnfe) {
-            throw new InvalidEventConfigurationException("Event class "+className+" could not be found!",cnfe);
-        }
-    }
-    */
+    
     private boolean hasMethodResolver(KaEventConfig.Events.Event event) {
         return (event.getAnnotationMethodResolver() != null || event.getFactoryMethodResolver() != null || event.getBeanMethodResolver() != null || event.getSwitchMethodResolver() != null);
     }

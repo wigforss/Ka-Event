@@ -17,6 +17,7 @@
 			<module>ka-event-aspects</module>
 			<module>ka-event-spring</module>
 			<module>ka-event-osgi</module>
+			<module>ka-event-guice</module>
 	</modules>
 	
 	<build>

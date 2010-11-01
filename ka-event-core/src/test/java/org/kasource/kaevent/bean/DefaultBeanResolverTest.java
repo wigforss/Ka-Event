@@ -20,7 +20,7 @@ public class DefaultBeanResolverTest {
     
     @Test(expected=CouldNotResolveBeanException.class)
     public void getBeanTest() {
-        resolver.getBean("test");
+        resolver.getBean("test", String.class);
     }
     
 }

@@ -47,7 +47,7 @@ public class KaEventConfigurerTest {
                 
             }
         });
-        configurer.configure(eventDispatcher,null);
+        configurer.configure(eventDispatcher,(String)null);
         
     }
     

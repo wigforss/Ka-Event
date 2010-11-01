@@ -17,8 +17,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.log4j.Logger;
-import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.commons.util.StringUtils;
+import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.DefaultBeanResolver;
 import org.kasource.kaevent.channel.Channel;
@@ -42,7 +42,6 @@ import org.kasource.kaevent.event.export.EventExporter;
 import org.kasource.kaevent.event.export.XmlConfigEventExporter;
 import org.kasource.kaevent.event.register.DefaultEventRegister;
 import org.kasource.kaevent.event.register.EventRegister;
-import org.kasource.kaevent.listener.register.EventListenerRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 
 /**
@@ -60,7 +59,16 @@ public class KaEventConfigurer  {
     
     private KaEventConfigurationImpl configuration = null;
     
-    
+    public void configure(EventDispatcher eventDispatcher,KaEventConfig xmlConfig) {
+    	if(xmlConfig != null) {
+            configuration = configureByXml(xmlConfig);
+        } else {
+            configuration = defaultConfiguration();
+        }
+        
+        configuration.setEventDispatcher(eventDispatcher);
+        KaEventInitializer.setConfiguration(configuration);
+    }
     
     
     public void configure(EventDispatcher eventDispatcher,String configLocation) {
@@ -74,18 +82,15 @@ public class KaEventConfigurer  {
               xmlConfig = loadXmlFromPath("classpath:kaevent-config.xml");
             } catch(IllegalArgumentException iae) {} // Ignore
         }
-        if(xmlConfig != null) {
-            configuration = configureByXml(xmlConfig);
-        } else {
-            configuration = defaultConfiguration();
-        }
-        
-        configuration.setEventDispatcher(eventDispatcher);
-        KaEventInitializer.setConfiguration(configuration);
+        configure(eventDispatcher,xmlConfig);
         
     }
     
-    
+    public void scanClassPathForEvents(String scanClassPath) {
+    	if(scanClassPath != null && scanClassPath.length() > 0) {
+            importAndRegisterEvents(new AnnotationEventExporter(scanClassPath),configuration.getEventFactory(), configuration.getEventRegister());
+        }
+    }
     
     
     private KaEventConfigurationImpl defaultConfiguration( ) {

@@ -11,6 +11,7 @@ import java.util.List;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
+import org.kasource.kaevent.config.KaEventConfig;
 import org.kasource.kaevent.config.KaEventConfiguration;
 import org.kasource.kaevent.config.KaEventConfigurer;
 import org.kasource.kaevent.config.KaEventInitializedListener;
@@ -35,17 +36,37 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
    
     private KaEventConfigurer configurer = new KaEventConfigurer();
     
-    public DefaultEventDispatcher(String scanPath) {
-        initialize(scanPath);
+    /**
+     * Create an Event Dispatcher configured by file found af <i>configLocation</i>.
+     * 
+     * @param configLocation	Location of configuration XML file. <i>classpath:</i> and <i>file:</i> prefixes are supported, default is classpath.
+     **/
+    public DefaultEventDispatcher(String configLocation) {
+        initialize(configLocation);
+    }
+    
+    /**
+     * Create an Event Dispatcher configured by the configuration object, see org.kasource.kaevent.config.KaEventConfigBuilder to build
+     * a configuration object programmatically.
+     *  
+     * @param config	The configuration object
+     **/
+    public DefaultEventDispatcher(KaEventConfig config) {
+        initialize(config);
     }
     
     public DefaultEventDispatcher() {
-        initialize(null);
+        initialize((String)null);
     }
     
-    protected void initialize(String scanPath) {
+    protected void initialize(String configLocation) {
     	KaEventInitializer.getInstance().addListener(this);
-    	configurer.configure(this,scanPath);
+    	configurer.configure(this,configLocation);
+    }
+    
+    protected void initialize(KaEventConfig config) {
+    	KaEventInitializer.getInstance().addListener(this);
+    	configurer.configure(this,config);
     }
     
     @Override
