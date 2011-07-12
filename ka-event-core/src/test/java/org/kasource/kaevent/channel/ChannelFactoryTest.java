@@ -83,7 +83,7 @@ public class ChannelFactoryTest {
         channelRegister.registerChannel(EasyMock.capture(capturedChannel));
         EasyMock.expectLastCall();
         EasyMockUnitils.replay();
-        Channel channel = factory.createChannel("testChannel",events);
+        Channel channel = factory.createChannel(ChannelImpl.class,"testChannel",events);
         assertEquals(channel, capturedChannel.getValue());
         assertEquals("testChannel",channel.getName());
     }
@@ -114,7 +114,7 @@ public class ChannelFactoryTest {
         expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
         expect((Class)eventConfig.getEventClass()).andReturn(ChangeEvent.class);
         EasyMockUnitils.replay();
-        Channel channel = factory.createChannel("testChannel",events,listeners);
+        Channel channel = factory.createChannel(ChannelImpl.class,"testChannel",events,listeners);
         assertEquals(channel, capturedChannel.getValue());
         assertEquals("testChannel",channel.getName());
     }

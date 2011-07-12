@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>ka-event-base</artifactId>
 		<groupId>org.kasource</groupId>
-		<version>SNAPSHOT</version>
+		<version>0.5-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -11,7 +11,7 @@
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-event-osgi</artifactId>
 	<packaging>bundle</packaging>
-	<version>SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<name>Ka Event OSGi Bundle</name>
 	<url>http://kasource.org</url>
 
@@ -125,12 +125,12 @@
 		<dependency>
 			<groupId>org.kasource</groupId>
 			<artifactId>ka-event-core</artifactId>
-			<version>SNAPSHOT</version>
+			<version>${version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.kasource</groupId>
 			<artifactId>ka-commons</artifactId>
-			<version>SNAPSHOT</version>
+			<version>${version}</version>
 		</dependency>	
 		<dependency>
 			<groupId>org.easymock</groupId>

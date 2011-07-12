@@ -338,6 +338,14 @@
 												referenced.
 								</xs:documentation>
 										</xs:annotation>
+										
+									</xs:attribute>
+									<xs:attribute name="class" type="javaClass" use="optional">
+										<xs:annotation>
+											<xs:documentation>
+												Implementation class to use. If not set the default channel class will be used.
+											</xs:documentation>
+										</xs:annotation>
 									</xs:attribute>
 								</xs:complexType>
 							</xs:element>

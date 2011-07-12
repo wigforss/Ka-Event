@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-commons</artifactId>
-	<version>SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<name>Ka Commons</name>
 	<url>http://kasource.org</url>
 	<properties>

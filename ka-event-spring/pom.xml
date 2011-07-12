@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>ka-event-base</artifactId>
 		<groupId>org.kasource</groupId>
-		<version>SNAPSHOT</version>
+		<version>0.5-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -11,7 +11,7 @@
 	<artifactId>ka-event-spring</artifactId>
 	<packaging>jar</packaging>
 	<name>Ka Event Spring</name>
-	<version>SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<url>http://kasource.org</url>
 	<!-- Build properties -->
 	<properties>
@@ -100,17 +100,17 @@
 		<dependency>
 			<groupId>org.kasource</groupId>
 			<artifactId>ka-event-core</artifactId>
-			<version>SNAPSHOT</version>
+			<version>${version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.kasource</groupId>
 			<artifactId>ka-event-core</artifactId>
-			<version>SNAPSHOT</version>
+			<version>${version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.kasource</groupId>
 			<artifactId>ka-event-aspects</artifactId>
-			<version>SNAPSHOT</version>
+			<version>${version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

@@ -10,9 +10,10 @@ import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.CouldNotResolveBeanException;
 
 /**
- * @author rikardwigforss
+ * A simple BeanResolver implementation
  * 
- */
+ * @author Rikard Wigforss
+ **/
 public class CustomBeanResolver implements BeanResolver {
 
     Map<String, Object> beans = new HashMap<String, Object>();

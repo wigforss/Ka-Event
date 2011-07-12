@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
+import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.config.KaEventConfig;
 import org.kasource.kaevent.config.KaEventConfiguration;

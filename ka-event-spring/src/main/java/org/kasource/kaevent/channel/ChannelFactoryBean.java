@@ -62,7 +62,7 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
         if(eventSet.isEmpty()) {
         	return channelFactory.createChannel(name);
         } else {
-        	return channelFactory.createChannel(name, eventSet);
+        	return channelFactory.createChannel(ChannelImpl.class, name, eventSet);
         }
     }
     

@@ -44,7 +44,7 @@ public class ChannelImpl  implements Channel {
     private EventMethodInvoker eventMethodInvoker;
     
     
-    ChannelImpl(String name, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker,BeanResolver beanResolver) {
+    public ChannelImpl(String name, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker,BeanResolver beanResolver) {
         this.name = name;
         this.channelRegister = channelRegister;
         this.eventRegister = eventRegister;

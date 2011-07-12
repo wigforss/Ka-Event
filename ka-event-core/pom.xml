@@ -3,14 +3,14 @@
 	<parent>
   	<artifactId>ka-event-base</artifactId>
   	<groupId>org.kasource</groupId>
-  	<version>SNAPSHOT</version>
+  	<version>0.5-SNAPSHOT</version>
   	<relativePath>../pom.xml</relativePath>
   </parent>
 	<modelVersion>4.0.0</modelVersion>
+	<version>0.5-SNAPSHOT</version>
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-event-core</artifactId>
 	<packaging>jar</packaging>
-	<version>SNAPSHOT</version>
 	<name>Ka Event Core</name>
 	<url>http://maven.apache.org</url>
 	<!-- Build properties -->
@@ -137,7 +137,7 @@
 		<dependency>
 			<groupId>org.kasource</groupId>
 			<artifactId>ka-commons</artifactId>
-			<version>SNAPSHOT</version>
+			<version>${version}</version>
 		</dependency>	
 		<dependency>
 			<groupId>org.easymock</groupId>

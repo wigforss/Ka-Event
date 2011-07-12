@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
+import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.unitils.UnitilsJUnit4TestClassRunner;

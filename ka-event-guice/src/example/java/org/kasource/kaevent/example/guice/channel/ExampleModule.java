@@ -2,8 +2,6 @@ package org.kasource.kaevent.example.guice.channel;
 
 
 import org.kasource.kaevent.channel.ChannelFactory;
-
-
 import org.kasource.kaevent.config.KaEventConfigBuilder;
 import org.kasource.kaevent.config.KaEventModule;
 import org.kasource.kaevent.channel.Channel;

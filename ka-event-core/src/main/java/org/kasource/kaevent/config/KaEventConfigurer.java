@@ -24,6 +24,7 @@ import org.kasource.kaevent.bean.DefaultBeanResolver;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelFactoryImpl;
+import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.channel.ChannelRegisterImpl;
 import org.kasource.kaevent.channel.NoSuchChannelException;
@@ -233,7 +234,8 @@ public class KaEventConfigurer  {
     /**
      * 
      */
-    private void createChannels(KaEventConfig xmlConfig,KaEventConfiguration config) {
+    @SuppressWarnings("unchecked")
+	private void createChannels(KaEventConfig xmlConfig,KaEventConfiguration config) {
         EventRegister eventRegister = config.getEventRegister();
         ChannelFactory channelFactory = config.getChannelFactory();
         // Create channels
@@ -253,10 +255,21 @@ public class KaEventConfigurer  {
                     }
                 }
                 }
+                Class<? extends Channel> channelClass = ChannelImpl.class;
+                if(channel.getClassName() != null) {
+                	try {
+                	channelClass = (Class<? extends Channel>)Class.forName(channel.getClassName());
+                	} catch(ClassNotFoundException cnfe) {
+                		throw new IllegalStateException(channel.getClassName() + " Could not be found ", cnfe);
+                	} catch(ClassCastException cce) {
+                		throw new IllegalStateException(channel.getClassName() + " Must implement " + Channel.class, cce);
+                	}
+                }
                 if(eventSet.isEmpty()) {
-                    channelFactory.createChannel(name);
+                	
+                    channelFactory.createChannel(channelClass, name);
                 } else {
-                    channelFactory.createChannel(name, eventSet);
+                    channelFactory.createChannel(channelClass,name, eventSet);
                 }
                 
             }
