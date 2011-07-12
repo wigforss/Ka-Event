@@ -11,6 +11,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * The CommandConsole class listens to the temperatureChannel instead of a
  * thermometer object.
  * 
+ * The channel-context.xml uses the kaevent xml namespace.
+ * 
  * @author Rikard Wigforss
  **/
 // /CLOVER:OFF

@@ -88,6 +88,15 @@
 								</xsd:documentation>
 							</xsd:annotation>
 						</xsd:attribute>
+						<xsd:attribute name="class" type="javaClass" use="optional">
+							<xsd:annotation>
+								<xsd:documentation>
+									Use to set a channel implementation class, if not set the standard
+									Channel Implementation will be used. This class must implement the 
+									org.kasource.kaevent.channel.Channel interface.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
 					</xsd:complexType>
 				</xsd:element>
 	

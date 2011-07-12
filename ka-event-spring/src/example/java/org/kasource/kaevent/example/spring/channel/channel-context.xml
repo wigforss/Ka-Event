@@ -11,7 +11,7 @@ spring/schema/kaevent-spring.xsd"
 
 	<kaevent:kaevent scanClassPath="org.kasource.kaevent.example.spring.channel"/>
 
-	<kaevent:channel id="temperatureChannel">
+	<kaevent:channel id="temperatureChannel" class="org.kasource.kaevent.example.spring.channel.MyChannel">
 		<kaevent:handle event="org.kasource.kaevent.example.spring.channel.event.TemperatureChangedEvent"/>
 	</kaevent:channel>
 	

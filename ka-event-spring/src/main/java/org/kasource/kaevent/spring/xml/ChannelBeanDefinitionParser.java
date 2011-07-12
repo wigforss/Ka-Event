@@ -26,6 +26,10 @@ public class ChannelBeanDefinitionParser  extends AbstractSingleBeanDefinitionPa
          if(!events.isEmpty()) {
         	 bean.addPropertyValue("events", events);
          }
+         String channelClass = element.getAttribute("class");
+         if(channelClass != null) {
+        	 bean.addPropertyValue("channelClass", channelClass);
+         }
      }
      
      protected List<String> getEventsHandled(List<Element> handles) {

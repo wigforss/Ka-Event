@@ -3,14 +3,11 @@
  */
 package org.kasource.kaevent.channel;
 
-import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.annotation.Resource;
 
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.spring.xml.KaEventSpringBean;
@@ -29,7 +26,12 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
     
     private String name;
 
-    private List<String> events;
+    private Class<? extends Channel> channelClass;
+    
+    
+
+
+	private List<String> events;
     
     private ApplicationContext applicationContext;
     
@@ -60,9 +62,9 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
         }
         }
         if(eventSet.isEmpty()) {
-        	return channelFactory.createChannel(name);
+        	return channelFactory.createChannel(channelClass, name);
         } else {
-        	return channelFactory.createChannel(ChannelImpl.class, name, eventSet);
+        	return channelFactory.createChannel(channelClass, name, eventSet);
         }
     }
     
@@ -102,5 +104,12 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
 		this.listeners = listeners;
 	}
 
+	public void setChannelClass(Class<? extends Channel> channelClass) {
+		if(channelClass == null) {
+			this.channelClass = ChannelImpl.class;
+		} else {
+			this.channelClass = channelClass;
+		}
+	}
    
 }
