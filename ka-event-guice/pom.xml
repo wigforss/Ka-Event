@@ -93,12 +93,12 @@
 		<dependency>
 			<groupId>org.kasource</groupId>
 			<artifactId>ka-commons</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>	
   		<dependency>
 			<groupId>org.kasource</groupId>
 			<artifactId>ka-event-core</artifactId>
-			<version>${version}</version> 
+			<version>${project.version}</version> 
 		</dependency>	
 		<dependency>
 			<groupId>org.easymock</groupId>
