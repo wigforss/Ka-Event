@@ -5,8 +5,6 @@ package org.kasource.kaevent.event.export;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -40,7 +38,8 @@ public class XmlConfigEventExporter implements EventExporter {
        this.beanResolver = beanResolver;
    }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public Set<EventConfig> exportEvents(EventFactory eventFactory) throws IOException {
         Set<EventConfig> eventsFound = new HashSet<EventConfig>();
         if(eventList != null && !eventList.isEmpty()) {
@@ -77,7 +76,7 @@ public class XmlConfigEventExporter implements EventExporter {
         return (event.getAnnotationMethodResolver() != null || event.getFactoryMethodResolver() != null || event.getBeanMethodResolver() != null || event.getSwitchMethodResolver() != null);
     }
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     private MethodResolver getMethodResolver(KaEventConfig.Events.Event event,  Class<? extends EventObject> eventClass, Class<? extends EventListener> interfaceClass) {
         if(event.getBeanMethodResolver() != null) {
             KaEventConfig.Events.Event.BeanMethodResolver beanMethodResolver = event.getBeanMethodResolver();

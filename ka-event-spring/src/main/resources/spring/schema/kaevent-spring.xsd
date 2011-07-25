@@ -12,7 +12,7 @@
 
 	<xsd:element name="kaevent">
 		<xsd:complexType>
-			<xsd:attribute name="scanClassPath" type="javaPackage"
+			<xsd:attribute name="scanClassPath" type="javaPackageList"
 				use="optional">
 				<xsd:annotation>
 					<xsd:documentation>
@@ -337,6 +337,16 @@
 		</xsd:annotation>
 		<xsd:restriction base="xsd:string">
 			<xsd:pattern value="[a-z]{2,6}(\.[a-zA-Z][a-zA-Z_$0-9]*)+" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="javaPackageList">
+		<xsd:annotation>
+			<xsd:documentation>
+				A valid Java package name.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="([a-z]{2,6}(\.[a-zA-Z][a-zA-Z_$0-9]*)+,?)+" />
 		</xsd:restriction>
 	</xsd:simpleType>
 </xsd:schema>

@@ -70,7 +70,7 @@ public enum KaEventSpringBean {
 	EVENT_DISPATCHER(SpringEventDispatcher.class,
 			"kaEvent.eventDispatcher", 
 			"",
-			new String[]{"kaEvent.channelRegister","kaEvent.channelFactory","kaEvent.sourceObjectListenerRegister","kaEvent.eventQueue","kaEvent.eventSender"},
+			new String[]{"kaEvent.channelRegister","kaEvent.channelFactory","kaEvent.sourceObjectListenerRegister","kaEvent.eventQueue","kaEvent.eventRouter"},
 			new String[]{},
 			new String[]{}),
 	CONFIGURATION(KaEventConfigurationImpl.class,

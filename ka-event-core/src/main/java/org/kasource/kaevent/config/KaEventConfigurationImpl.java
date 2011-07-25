@@ -3,8 +3,6 @@
  */
 package org.kasource.kaevent.config;
 
-import javax.annotation.Resource;
-
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;

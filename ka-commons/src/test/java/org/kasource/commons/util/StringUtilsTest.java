@@ -4,6 +4,7 @@
 package org.kasource.commons.util;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -76,7 +77,12 @@ public class StringUtilsTest {
     
     private String getEnvKey() {
     	Map<String, String> envMap = System.getenv();
-    	return envMap.keySet().iterator().next();
+    	Iterator<String> it = envMap.keySet().iterator();
+    	String key = it.next();
+    	if(key.contains("jvmMode")) {
+    		key = it.next();
+    	}
+    	return key;
     }
     
     @Test

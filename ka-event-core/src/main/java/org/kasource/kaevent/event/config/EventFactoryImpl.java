@@ -9,7 +9,6 @@ import java.util.EventObject;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
 import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.annotations.event.Event;

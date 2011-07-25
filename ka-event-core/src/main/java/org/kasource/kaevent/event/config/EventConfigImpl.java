@@ -19,7 +19,7 @@ public class EventConfigImpl implements EventConfig {
     private Class<? extends EventListener> listener;
     private String name;
     Method defaultMethod; // May be null  
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     MethodResolver methodResolver;
  
 

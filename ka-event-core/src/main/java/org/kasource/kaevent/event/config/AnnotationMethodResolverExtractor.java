@@ -32,7 +32,7 @@ public class AnnotationMethodResolverExtractor {
      * @param listener
      * @param methodResolving
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public MethodResolver getMethodResolver(Class<? extends EventObject> event,
             Class<? extends EventListener> listener, MethodResolving methodResolving) {
         switch (methodResolving.value()) {
@@ -49,7 +49,7 @@ public class AnnotationMethodResolverExtractor {
     /**
      * @param listener
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     private MethodResolver getMethodResoverFromBeanContext(Class<? extends EventListener> listener) {
         BeanMethodResolver beanMethodResolver = listener.getAnnotation(BeanMethodResolver.class);
         if (beanMethodResolver == null) {
@@ -61,7 +61,7 @@ public class AnnotationMethodResolverExtractor {
         return MethodResolverFactory.getFromBean(beanResolver, beanMethodResolver.value());
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     private MethodResolver getMethodResolverFromFactoryMethod(Class<? extends EventListener> listener) {
         FactoryMethodResolver factoryMethodResolver = listener.getAnnotation(FactoryMethodResolver.class);
         if (factoryMethodResolver == null) {
