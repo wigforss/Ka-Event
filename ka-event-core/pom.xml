@@ -2,11 +2,11 @@
 	<parent>
   	<artifactId>ka-event-base</artifactId>
   	<groupId>org.kasource</groupId>
-  	<version>0.5</version>
+  	<version>0.5-SNAPSHOT</version>
   	<relativePath>../pom.xml</relativePath>
   </parent>
 	<modelVersion>4.0.0</modelVersion>
-	<version>0.5</version>
+	<version>0.5-SNAPSHOT</version>
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-event-core</artifactId>
 	<packaging>jar</packaging>
