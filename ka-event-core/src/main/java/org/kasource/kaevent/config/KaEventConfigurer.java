@@ -19,6 +19,7 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.log4j.Logger;
 import org.kasource.commons.util.StringUtils;
 import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.DefaultBeanResolver;
 import org.kasource.kaevent.channel.Channel;
@@ -28,15 +29,14 @@ import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.channel.ChannelRegisterImpl;
 import org.kasource.kaevent.channel.NoSuchChannelException;
-import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.config.EventFactoryImpl;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
-import org.kasource.kaevent.event.dispatch.EventSender;
-import org.kasource.kaevent.event.dispatch.EventSenderImpl;
+import org.kasource.kaevent.event.dispatch.EventRouter;
+import org.kasource.kaevent.event.dispatch.EventRouterImpl;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.kasource.kaevent.event.export.EventExporter;
@@ -113,12 +113,12 @@ public class KaEventConfigurer  {
         
         config.setEventMethodInvoker(new EventMethodInvokerImpl(config.getEventRegister()));
         
-        config.setEventSender(new EventSenderImpl(config.getChannelRegister(), config.getSourceObjectListenerRegister(),config.getEventMethodInvoker()));
+        config.setEventRouter(new EventRouterImpl(config.getChannelRegister(), config.getSourceObjectListenerRegister(),config.getEventMethodInvoker()));
         
         // Channel Factory
         config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodInvoker(), config.getBeanResolver()));
         
-        config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventSender()));
+        config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventRouter()));
        
         return config;
         
@@ -152,15 +152,15 @@ public class KaEventConfigurer  {
         
         
         // Sender
-        config.setEventSender(new EventSenderImpl(config.getChannelRegister(), config.getSourceObjectListenerRegister(),config.getEventMethodInvoker()));
+        config.setEventRouter(new EventRouterImpl(config.getChannelRegister(), config.getSourceObjectListenerRegister(),config.getEventMethodInvoker()));
         
         // Channel Factory
         config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodInvoker(), config.getBeanResolver()));
         
         // Queue Thread
         if(xmlConfig.getQueueThread() == null) {
-            config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventSender()));
-            ThreadPoolQueueExecutor threadPoolExecutor = new ThreadPoolQueueExecutor(config.getEventSender());
+            config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventRouter()));
+            ThreadPoolQueueExecutor threadPoolExecutor = new ThreadPoolQueueExecutor(config.getEventRouter());
             if(xmlConfig.getThreadPoolExecutor() != null) {
                 if(xmlConfig.getThreadPoolExecutor().getMaximumPoolSize() != null) {
                    threadPoolExecutor.setMaximumPoolSize(xmlConfig.getThreadPoolExecutor().getMaximumPoolSize());
@@ -175,7 +175,7 @@ public class KaEventConfigurer  {
             config.setQueueThread(threadPoolExecutor);
         } else {
         	try {
-        		config.setQueueThread(ReflectionUtils.getInstance(xmlConfig.getQueueThread().getClazz(), DispatcherQueueThread.class, new Class<?>[]{EventSender.class},new Object[]{config.getEventSender()}));
+        		config.setQueueThread(ReflectionUtils.getInstance(xmlConfig.getQueueThread().getClazz(), DispatcherQueueThread.class, new Class<?>[]{EventRouter.class},new Object[]{config.getEventRouter()}));
         	} catch(IllegalStateException ise) {
         		config.setQueueThread(ReflectionUtils.getInstance(xmlConfig.getQueueThread().getClazz(), DispatcherQueueThread.class));
         	}

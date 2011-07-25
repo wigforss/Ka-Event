@@ -9,12 +9,12 @@ import java.util.Queue;
 
 import javax.annotation.Resource;
 
-import org.kasource.commons.spring.transaction.TransactionListener;
-import org.kasource.commons.spring.transaction.TransactionResult;
-import org.kasource.commons.spring.transaction.TransactionSupport;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
+import org.kasource.spring.transaction.TransactionListener;
+import org.kasource.spring.transaction.TransactionResult;
+import org.kasource.spring.transaction.TransactionSupport;
 
 /**
  * @author Rikard Wigforss
@@ -36,18 +36,18 @@ public class SpringEventDispatcher extends DefaultEventDispatcher implements Tra
      * @param channelFactory
      * @param sourceObjectListenerRegister
      * @param eventQueue
-     * @param eventSender
+     * @param eventRouter
      */
     private SpringEventDispatcher(ChannelRegister channelRegister, 
     							  ChannelFactory channelFactory,
     							  SourceObjectListenerRegister sourceObjectListenerRegister, 
     							  DispatcherQueueThread eventQueue,
-    							  EventSender eventSender) {
+    							  EventRouter eventRouter) {
         this.channelFactory = channelFactory;
         this.channelRegister = channelRegister;
         this.sourceObjectListenerRegister = sourceObjectListenerRegister;
         this.eventQueue = eventQueue;
-        this.eventSender = eventSender;
+        this.eventRouter = eventRouter;
     }
 
    
@@ -73,7 +73,7 @@ public class SpringEventDispatcher extends DefaultEventDispatcher implements Tra
 		if(commitEventQueue.get() != null) {
 			while(!commitEventQueue.get().isEmpty()) {
 				EventObject event = commitEventQueue.get().poll();
-				eventSender.dispatchEvent(event, false);
+				eventRouter.dispatchEvent(event, false);
 			}
 		}
 		

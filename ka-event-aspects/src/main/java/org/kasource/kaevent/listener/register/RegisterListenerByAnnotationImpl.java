@@ -4,6 +4,8 @@ import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kasource.kaevent.annotations.listener.BeanListener;
+import org.kasource.kaevent.annotations.listener.ChannelListener;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.CouldNotResolveBeanException;
 import org.kasource.kaevent.channel.Channel;
@@ -13,8 +15,6 @@ import org.kasource.kaevent.config.KaEventConfiguration;
 import org.kasource.kaevent.config.KaEventConfigurer;
 import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.config.KaEventInitializer;
-import org.kasource.kaevent.listener.implementations.BeanListener;
-import org.kasource.kaevent.listener.implementations.ChannelListener;
 
 /**
  * Register Listeners based on annotations

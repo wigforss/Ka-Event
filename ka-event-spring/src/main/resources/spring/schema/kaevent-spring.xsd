@@ -106,7 +106,7 @@
 		<xsd:annotation>
 			<xsd:documentation>
 				An event configuration, consist of an Event class
-				which must extend java.util.EventObject and a listener insterface
+				which must extend java.util.EventObject and a listener interface
 				which must extend java.util.EventListener.
 				If more than one method is
 				declared in the listener interface a method resolver must be

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.kasource.kaevent.event.Event;
+import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.config.InvalidEventConfigurationException;

@@ -76,11 +76,11 @@ public class KaEventConfigurerBeanDefinitionParser extends
 		}
 	}
 	
-	protected void createQueueBean(Class<?> clazz, ParserContext pc, boolean setEventSender, String concurrent) {
+	protected void createQueueBean(Class<?> clazz, ParserContext pc, boolean setEventRouter, String concurrent) {
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder
 				.rootBeanDefinition(clazz);
-		if(setEventSender) {
-			builder.addConstructorArgReference(KaEventSpringBean.EVENT_SENDER.getId());
+		if(setEventRouter) {
+			builder.addConstructorArgReference(KaEventSpringBean.EVENT_ROUTER.getId());
 		}
 		builder.addPropertyValue("concurrent", concurrent);
 		builder.setLazyInit(false);

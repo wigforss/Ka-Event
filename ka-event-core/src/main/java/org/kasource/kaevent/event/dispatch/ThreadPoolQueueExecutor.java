@@ -27,7 +27,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     private static final int DEFAULT_QUEUE_CAPACITY = 1000;
     
     @Resource
-    private EventSender eventSender;
+    private EventRouter eventRouter;
   
     protected ThreadPoolQueueExecutor() {
         super(DEFAULT_CORE_POOL_SIZE, 
@@ -36,18 +36,18 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
                 DEFAULT_KEEP_ALIVE_TIME_UNIT, new LinkedBlockingDeque<Runnable>(DEFAULT_QUEUE_CAPACITY));   
     }
     
-    public ThreadPoolQueueExecutor(EventSender eventSender) {
+    public ThreadPoolQueueExecutor(EventRouter eventRouter) {
         super(DEFAULT_CORE_POOL_SIZE, 
                 DEFAULT_MAXIMUM_POOL_SIZE, 
                 DEFAULT_KEEP_ALIVE_TIME, 
                 DEFAULT_KEEP_ALIVE_TIME_UNIT, new LinkedBlockingDeque<Runnable>(DEFAULT_QUEUE_CAPACITY));
-        this.eventSender = eventSender;
+        this.eventRouter = eventRouter;
     }
     
     
     
     public void enqueue(EventObject event) {
-        super.execute(new EventRunner(eventSender, event));
+        super.execute(new EventRunner(eventRouter, event));
     }
     
     
@@ -91,18 +91,18 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     
     private static class EventRunner implements Runnable{
 
-        private EventSender eventSender;
+        private EventRouter eventRouter;
         private EventObject event;
         
-        EventRunner(EventSender eventSender, EventObject event) {
-            this.eventSender = eventSender;
+        EventRunner(EventRouter eventRouter, EventObject event) {
+            this.eventRouter = eventRouter;
             this.event = event;
         }
         
         
         @Override
         public void run() {
-            eventSender.dispatchEvent(event, false);
+        	eventRouter.dispatchEvent(event, false);
         }
 
 

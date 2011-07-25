@@ -2,10 +2,10 @@ package org.kasource.kaevent.example.custom.event;
 
 import java.util.EventListener;
 
+import org.kasource.kaevent.annotations.event.methodresolving.FactoryMethodResolver;
+import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType;
+import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
 import org.kasource.kaevent.example.custom.TempratureMethodResolver;
-import org.kasource.kaevent.listener.interfaces.FactoryMethodResolver;
-import org.kasource.kaevent.listener.interfaces.MethodResolverType;
-import org.kasource.kaevent.listener.interfaces.MethodResolving;
 
 
 @MethodResolving(MethodResolverType.FACTORY)

@@ -12,7 +12,7 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
-import org.kasource.kaevent.event.dispatch.EventSender;
+import org.kasource.kaevent.event.dispatch.EventRouter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
@@ -36,7 +36,7 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
     
     private ChannelRegister channelRegister;
 
-    private EventSender eventSender;
+    private EventRouter eventRouter;
 
     private ChannelFactory channelFactory;
 
@@ -121,16 +121,16 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
     }
 
     @Override
-    public EventSender getEventSender() {
-        return eventSender;
+    public EventRouter getEventRouter() {
+        return eventRouter;
     }
 
     /**
-     * @param eventSender
-     *            the eventSender to set
+     * @param eventRouter
+     *            the eventRouter to set
      */
-    public void setEventSender(EventSender eventSender) {
-        this.eventSender = eventSender;
+    public void setEventRouter(EventRouter eventRouter) {
+        this.eventRouter = eventRouter;
     }
 
     @Override

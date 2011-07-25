@@ -5,7 +5,7 @@ package org.kasource.kaevent.event.export.test.event;
 
 import java.util.EventObject;
 
-import org.kasource.kaevent.event.Event;
+import org.kasource.kaevent.annotations.event.Event;
 
 /**
  * @author rikardwigforss

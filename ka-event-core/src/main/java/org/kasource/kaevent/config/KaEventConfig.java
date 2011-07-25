@@ -204,6 +204,16 @@ public class KaEventConfig {
     @XmlElement(required = true)
     protected KaEventConfig.Channels channels;
 
+    
+    public KaEventConfig() {}
+    
+    public KaEventConfig(String scanClassPath) {
+    	if(scanClassPath != null) {
+    		events = new Events();
+    		events.scanClassPath = scanClassPath.trim();
+    	}
+    }
+    
     /**
      * Gets the value of the queueThread property.
      * 

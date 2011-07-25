@@ -6,10 +6,12 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.kasource.commons.osgi.OsgiUtils;
 import org.kasource.commons.reflection.AnnotationClassFilter;
 import org.kasource.commons.reflection.AssignableFromClassFilter;
 import org.kasource.commons.reflection.FilterList;
+
+import org.kasource.kaevent.annotations.event.Event;
+import org.kasource.kaevent.annotations.listener.ChannelListener;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
@@ -17,13 +19,12 @@ import org.kasource.kaevent.channel.NoSuchChannelException;
 import org.kasource.kaevent.config.KaEventConfiguration;
 import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.config.KaEventInitializer;
-import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
 import org.kasource.kaevent.event.register.EventRegister;
-import org.kasource.kaevent.listener.implementations.ChannelListener;
+import org.kasource.kaevent.osgi.util.OsgiUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

@@ -4,12 +4,10 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
+import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType;
 import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.event.method.MethodResolverFactory;
 import org.kasource.kaevent.event.register.EventRegister;
-import org.kasource.kaevent.listener.interfaces.MethodResolverType;
 import org.kasource.kaevent.spring.xml.KaEventSpringBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;

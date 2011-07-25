@@ -10,7 +10,7 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
-import org.kasource.kaevent.event.dispatch.EventSender;
+import org.kasource.kaevent.event.dispatch.EventRouter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
@@ -57,9 +57,9 @@ public interface KaEventConfiguration {
     public abstract ChannelRegister getChannelRegister();
 
     /**
-     * @return the eventSender
+     * @return the eventRouter
      */
-    public abstract EventSender getEventSender();
+    public abstract EventRouter getEventRouter();
 
     /**
      * @return the channelFactory

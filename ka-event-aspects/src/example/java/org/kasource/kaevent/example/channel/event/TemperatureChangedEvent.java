@@ -1,7 +1,7 @@
 package org.kasource.kaevent.example.channel.event;
 
+import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.event.BaseEvent;
-import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.example.channel.Thermometer;
 
 ///CLOVER:OFF

@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
-import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.config.KaEventConfig;
 import org.kasource.kaevent.config.KaEventConfiguration;
@@ -29,13 +28,15 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
 
 	private final ThreadLocal<LinkedList<EventObject>> batchListByThread = new ThreadLocal<LinkedList<EventObject>>();
 	
-    protected EventSender eventSender;
+    protected EventRouter eventRouter;
     protected ChannelRegister channelRegister;
     protected ChannelFactory channelFactory;
     protected SourceObjectListenerRegister sourceObjectListenerRegister;
     protected DispatcherQueueThread eventQueue;
-   
-    private KaEventConfigurer configurer = new KaEventConfigurer();
+    
+    
+
+	private KaEventConfigurer configurer = new KaEventConfigurer();
     
     /**
      * Create an Event Dispatcher configured by file found af <i>configLocation</i>.
@@ -48,7 +49,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     
     /**
      * Create an Event Dispatcher configured by the configuration object, see org.kasource.kaevent.config.KaEventConfigBuilder to build
-     * a configuration object programmatically.
+     * a configuration object programatically.
      *  
      * @param config	The configuration object
      **/
@@ -56,9 +57,16 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
         initialize(config);
     }
     
+    
+   
+    
     public DefaultEventDispatcher() {
         initialize((String)null);
     }
+   
+    
+   
+    
     
     protected void initialize(String configLocation) {
     	KaEventInitializer.getInstance().addListener(this);
@@ -75,11 +83,10 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
         this.channelRegister = config.getChannelRegister();
         this.sourceObjectListenerRegister = config.getSourceObjectListenerRegister();
         this.eventQueue = config.getQueueThread();
-        this.eventSender = config.getEventSender();
+        this.eventRouter = config.getEventRouter();
         this.channelFactory = config.getChannelFactory();
     }
    
-  
     
     @Override
     public void fire(EventObject event) {
@@ -89,7 +96,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
    
     @Override
     public void fireBlocked(EventObject event) {
-        eventSender.dispatchEvent(event, true);       
+        eventRouter.dispatchEvent(event, true);       
     }
 
   
@@ -158,7 +165,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
         LinkedList<EventObject> batchList = batchListByThread.get();
         if (batchList != null) {
             while (!batchList.isEmpty()) {
-            	eventSender.dispatchEvent(batchList.removeFirst(), false);       
+             eventRouter.dispatchEvent(batchList.removeFirst(), false);       
             }
         }
     }

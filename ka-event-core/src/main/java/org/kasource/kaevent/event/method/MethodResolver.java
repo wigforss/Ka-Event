@@ -9,7 +9,7 @@ import java.util.EventObject;
  * 
  * If you want to change how to find which "listener interface" method to
  * trigger. You can implement this interface and reference that implementation in
- * the {@link org.kasource.kaevent.listener.interfaces.kenai.sadelf.annotations.listener.BeanMethodResolver} or {@link org.kasource.kaevent.listener.interfaces.kenai.sadelf.annotations.listener.FactoryMethodResolver} 
+ * the {@link org.kasource.kaevent.annotations.event.methodresolving.kenai.sadelf.annotations.listener.BeanMethodResolver} or {@link org.kasource.kaevent.annotations.event.methodresolving.kenai.sadelf.annotations.listener.FactoryMethodResolver} 
  * annotation which allows you to use specific a MethodResolver for a specific {@Link java.util.EventListener}
  * implementation.
  * 

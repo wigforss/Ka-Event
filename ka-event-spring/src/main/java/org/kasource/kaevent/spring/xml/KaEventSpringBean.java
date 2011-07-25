@@ -6,7 +6,7 @@ import org.kasource.kaevent.channel.ChannelRegisterImpl;
 import org.kasource.kaevent.config.KaEventConfigurationImpl;
 import org.kasource.kaevent.event.config.EventFactoryImpl;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
-import org.kasource.kaevent.event.dispatch.EventSenderImpl;
+import org.kasource.kaevent.event.dispatch.EventRouterImpl;
 import org.kasource.kaevent.event.dispatch.SpringEventDispatcher;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 import org.kasource.kaevent.event.register.DefaultEventRegister;
@@ -49,8 +49,8 @@ public enum KaEventSpringBean {
 			new String[]{"kaEvent.eventRegister"},
 			new String[]{},
 			new String[]{}),
-	EVENT_SENDER(EventSenderImpl.class, 
-			"kaEvent.eventSender", 
+	EVENT_ROUTER(EventRouterImpl.class, 
+			"kaEvent.eventRouter", 
 			"",
 			new String[]{"kaEvent.channelRegister","kaEvent.sourceObjectListenerRegister", "kaEvent.eventMethodInvoker"},
 			new String[]{},
@@ -64,7 +64,7 @@ public enum KaEventSpringBean {
 	QUEUE_BEAN(ThreadPoolQueueExecutor.class,
 			"kaEvent.eventQueue", 
 			"",
-			new String[]{"kaEvent.eventSender"},
+			new String[]{"kaEvent.eventRouter"},
 			new String[]{},
 			new String[]{}),
 	EVENT_DISPATCHER(SpringEventDispatcher.class,
@@ -84,7 +84,7 @@ public enum KaEventSpringBean {
 						 "eventMethodInvoker",
 						 "sourceObjectListenerRegister",
 						 "channelRegister",
-						 "eventSender",
+						 "eventRouter",
 						 "channelFactory",
 						 "queueThread"},
 			new String[]{"kaEvent.eventDispatcher",
@@ -94,7 +94,7 @@ public enum KaEventSpringBean {
 						 "kaEvent.eventMethodInvoker",
 						 "kaEvent.sourceObjectListenerRegister",
 						 "kaEvent.channelRegister",
-						 "kaEvent.eventSender",
+						 "kaEvent.eventRouter",
 						 "kaEvent.channelFactory",
 						 "kaEvent.eventQueue"});
 	

@@ -1,9 +1,9 @@
 package org.kasource.kaevent.example.simple;
 
+import org.kasource.kaevent.annotations.listener.BeanListener;
+import org.kasource.kaevent.annotations.listener.RegisterListener;
 import org.kasource.kaevent.example.simple.event.TemperatureChangeEvent;
 import org.kasource.kaevent.example.simple.event.TemperatureChangeEventListener;
-import org.kasource.kaevent.listener.RegisterListener;
-import org.kasource.kaevent.listener.implementations.BeanListener;
 
 ///CLOVER:OFF
 @BeanListener("thermometer")

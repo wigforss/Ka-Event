@@ -13,9 +13,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.config.KaEventConfig.Channels;
-import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 
 public class KaEventConfigBuilder {

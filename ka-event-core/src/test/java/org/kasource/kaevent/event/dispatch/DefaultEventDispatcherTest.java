@@ -29,7 +29,7 @@ public class DefaultEventDispatcherTest {
     
     @InjectIntoByType
     @Mock
-    private EventSender eventSender;
+    private EventRouter eventRouter;
     
     @SuppressWarnings("unused")
     @InjectIntoByType
@@ -66,7 +66,7 @@ public class DefaultEventDispatcherTest {
     @Test
     public void fireBlocked() {
         ChangeEvent event = new ChangeEvent("test");
-        eventSender.dispatchEvent(event, true);
+        eventRouter.dispatchEvent(event, true);
         EasyMock.expectLastCall();
         EasyMockUnitils.replay();
         dispatcher.fireBlocked(event);

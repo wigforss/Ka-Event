@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.kaevent.annotations.listener.EventListenerFilter;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.event.register.NoSuchEventException;
-import org.kasource.kaevent.listener.implementations.EventListenerFilter;
 
 /**
  * @author rikardwigforss

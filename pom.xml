@@ -1,20 +1,57 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	 <parent>
+    	<groupId>org.sonatype.oss</groupId>
+    	<artifactId>oss-parent</artifactId>
+    	<version>7</version>
+  	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-event-base</artifactId>
 	<packaging>pom</packaging>
-	<name>Base Project</name>
+	<name>Ka-Event Base Project</name>
 	<version>0.5-SNAPSHOT</version>
+	<description>
+		Ka-Event base project, which builds all modules.
+	</description>
+    <url />
+    <licenses>
+    	<license>
+      		<name>The Apache Software License, Version 2.0</name>
+      		<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      		<distribution>repo</distribution>
+    	</license>
+  	</licenses>
+	<scm>
+		<tag>scm:svn:https://svn.kenai.com/svn/ka-event~src/tags</tag>
+		<url>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</url>
+    	<developerConnection>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</developerConnection>
+    	<connection>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</connection>
+  	</scm>
+	<issueManagement>
+		<system>JIRA</system>
+		<url>http://kenai.com/jira/browse/KA_EVENT</url>
+	</issueManagement>
+	<developers>
+		<developer>
+			<id>wigforss</id>
+			<name>Rikard Wigforss</name>
+			<email>rikard.wigforss@gmail.com</email>
+		</developer>
+	</developers>
 	<properties>
 		<spring.version>2.5.6</spring.version>
+		<junit.version>4.4</junit.version>
+		<easymock.version>2.5.1</easymock.version>
 		<unitils.version>3.1</unitils.version>
 		<log4j.version>1.2.16</log4j.version>
+		<clover.version>2.6.3</clover.version>
 	</properties>
   	<modules>
   			<module>ka-commons</module>
+  			<module>ka-event-annotations</module>
 			<module>ka-event-core</module> 
 			<module>ka-event-aspects</module>
+			<module>ka-spring</module>
 			<module>ka-event-spring</module>
 			<module>ka-event-osgi</module>
 			<module>ka-event-guice</module>
@@ -49,7 +86,123 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
+			
+			
 		</plugins>	
 	</build>
-	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>	
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymock</artifactId>
+				<version>${easymock.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymockclassextension</artifactId>
+				<version>2.5.1</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.unitils</groupId>
+				<artifactId>unitils-core</artifactId>
+				<version>${unitils.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.unitils</groupId>
+				<artifactId>unitils-test</artifactId>
+				<version>${unitils.version}</version>
+				<scope>test</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>javax.transaction</groupId>
+    					<artifactId>jta</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.unitils</groupId>
+				<artifactId>unitils-inject</artifactId>
+				<version>${unitils.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.unitils</groupId>
+				<artifactId>unitils-mock</artifactId>
+				<version>${unitils.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.unitils</groupId>
+				<artifactId>unitils-easymock</artifactId>
+				<version>${unitils.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.cenqua.clover</groupId>
+				<artifactId>clover</artifactId>
+				<version>${clover.version}</version>
+				<scope>provided</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<profiles>
+	<profile>
+      <id>release</id>
+      <activation>
+		<activeByDefault>false</activeByDefault>
+	  </activation>
+      <build>
+        <plugins>
+        <plugin>
+        	<artifactId>maven-release-plugin</artifactId>
+        	<configuration>
+          		<tagBase>
+            		scm:svn:https://svn.kenai.com/svn/ka-event~src/tags
+          		</tagBase>
+        	</configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar</goal>
+                  <goal>test-jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                  <goal>test-jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    </profiles>
 </project>

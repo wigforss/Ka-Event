@@ -10,6 +10,7 @@ import java.util.List;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.config.KaEventConfiguration;
 import org.kasource.kaevent.config.KaEventInitializer;
+import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.filter.EventFilter;
 
 /**
@@ -43,7 +44,6 @@ public interface EventDispatcher {
      *            Event to fire
      */
     public void fireOnCommit(EventObject event);
-    
     
     public Channel createChannel(String channelName);
     

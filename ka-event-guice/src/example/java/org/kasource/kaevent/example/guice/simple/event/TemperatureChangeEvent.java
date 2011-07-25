@@ -2,7 +2,7 @@ package org.kasource.kaevent.example.guice.simple.event;
 
 import java.util.EventObject;
 
-import org.kasource.kaevent.event.Event;
+import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.example.guice.simple.Thermometer;
 
 ///CLOVER:OFF

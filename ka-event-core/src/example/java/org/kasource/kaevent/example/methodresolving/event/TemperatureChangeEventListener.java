@@ -2,10 +2,10 @@ package org.kasource.kaevent.example.methodresolving.event;
 
 import java.util.EventListener;
 
-import org.kasource.kaevent.listener.interfaces.DefaultListenerMethod;
-import org.kasource.kaevent.listener.interfaces.KeywordCase;
-import org.kasource.kaevent.listener.interfaces.MethodResolverType;
-import org.kasource.kaevent.listener.interfaces.MethodResolving;
+import org.kasource.kaevent.annotations.event.methodresolving.DefaultListenerMethod;
+import org.kasource.kaevent.annotations.event.methodresolving.KeywordCase;
+import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType;
+import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
 
 
 

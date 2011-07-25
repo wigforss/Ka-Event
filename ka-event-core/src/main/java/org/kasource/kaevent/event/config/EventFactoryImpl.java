@@ -12,10 +12,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.kaevent.annotations.event.Event;
+import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
 import org.kasource.kaevent.bean.BeanResolver;
-import org.kasource.kaevent.event.Event;
 import org.kasource.kaevent.event.method.MethodResolver;
-import org.kasource.kaevent.listener.interfaces.MethodResolving;
 
 /**
  * Create EventConfig objects

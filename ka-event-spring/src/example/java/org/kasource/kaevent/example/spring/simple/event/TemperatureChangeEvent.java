@@ -2,7 +2,8 @@ package org.kasource.kaevent.example.spring.simple.event;
 
 import java.util.EventObject;
 
-import org.kasource.kaevent.event.Event;
+
+import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.example.spring.simple.Thermometer;
 
 ///CLOVER:OFF

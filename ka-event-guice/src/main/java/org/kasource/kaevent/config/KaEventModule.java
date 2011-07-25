@@ -13,8 +13,8 @@ import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
-import org.kasource.kaevent.event.dispatch.EventSender;
-import org.kasource.kaevent.event.dispatch.EventSenderImpl;
+import org.kasource.kaevent.event.dispatch.EventRouter;
+import org.kasource.kaevent.event.dispatch.EventRouterImpl;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 import org.kasource.kaevent.event.register.DefaultEventRegister;
 import org.kasource.kaevent.event.register.EventRegister;
@@ -109,8 +109,8 @@ public class KaEventModule extends AbstractModule implements KaEventInitializedL
 	}
 
 	@Provides
-	EventSender provideEventSender() {
-		return configuration.getEventSender();
+	EventRouter provideEventRouter() {
+		return configuration.getEventRouter();
 	}
 
 	@Provides

@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType;
 import org.kasource.kaevent.channel.ChannelFactoryBean;
 import org.kasource.kaevent.event.config.EventFactoryBean;
 import org.kasource.kaevent.event.method.MethodResolverFactory;
-import org.kasource.kaevent.listener.interfaces.MethodResolverType;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.util.xml.DomUtils;

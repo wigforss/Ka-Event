@@ -4,8 +4,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.kasource.kaevent.listener.implementations.BeanListener;
-import org.kasource.kaevent.listener.implementations.ChannelListener;
+import org.kasource.kaevent.annotations.listener.BeanListener;
+import org.kasource.kaevent.annotations.listener.ChannelListener;
 import org.kasource.kaevent.listener.register.RegisterListenerByAnnotation;
 import org.kasource.kaevent.listener.register.RegisterListenerByAnnotationImpl;
 
@@ -36,23 +36,23 @@ public class RegisterListenerAspect {
     
 
     @SuppressWarnings("unused")
-    @Pointcut("@target(org.kasource.kaevent.listener.implementations.ChannelListener) && execution(@org.kasource.kaevent.listener.RegisterListener * *(..))")
+    @Pointcut("@target(org.kasource.kaevent.annotations.listener.ChannelListener) && execution(@org.kasource.kaevent.annotations.listener.RegisterListener * *(..))")
     private void channelListenerRegisterAnnotatedMethod() {
     }
 
     @SuppressWarnings("unused")
-    @Pointcut("@target(org.kasource.kaevent.listener.implementations.ChannelListener) && execution(@org.kasource.kaevent.listener.UnregisterListener * *(..))")
+    @Pointcut("@target(org.kasource.kaevent.annotations.listener.ChannelListener) && execution(@org.kasource.kaevent.annotations.listener.UnregisterListener * *(..))")
     private void channelListenerUnregisterAnnotatedMethod() {
     }
 
 
     @SuppressWarnings("unused")
-    @Pointcut("@target(org.kasource.kaevent.listener.implementations.BeanListener) && execution(@org.kasource.kaevent.listener.RegisterListener * *(..))")
+    @Pointcut("@target(org.kasource.kaevent.annotations.listener.BeanListener) && execution(@org.kasource.kaevent.annotations.listener.RegisterListener * *(..))")
     private void beanListenerRegisterAnnotatedMethod() {
     }
 
     @SuppressWarnings("unused")
-    @Pointcut("@target(org.kasource.kaevent.listener.implementations.BeanListener) && execution(@org.kasource.kaevent.listener.UnregisterListener * *(..))")
+    @Pointcut("@target(org.kasource.kaevent.annotations.listener.BeanListener) && execution(@org.kasource.kaevent.annotations.listener.UnregisterListener * *(..))")
     private void beanListenerUnregisterAnnotatedMethod() {
     }
 

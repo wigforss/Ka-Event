@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.kaevent.annotations.event.methodresolving.CustomCase;
+import org.kasource.kaevent.annotations.event.methodresolving.DefaultListenerMethod;
+import org.kasource.kaevent.annotations.event.methodresolving.KeywordCase;
 import org.kasource.kaevent.event.EventKeyword;
-import org.kasource.kaevent.listener.interfaces.CustomCase;
-import org.kasource.kaevent.listener.interfaces.DefaultListenerMethod;
-import org.kasource.kaevent.listener.interfaces.KeywordCase;
 
 /**
  * @author rikardwigforss

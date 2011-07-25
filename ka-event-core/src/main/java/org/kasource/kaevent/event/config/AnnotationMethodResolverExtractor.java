@@ -6,12 +6,12 @@ package org.kasource.kaevent.event.config;
 import java.util.EventListener;
 import java.util.EventObject;
 
+import org.kasource.kaevent.annotations.event.methodresolving.BeanMethodResolver;
+import org.kasource.kaevent.annotations.event.methodresolving.FactoryMethodResolver;
+import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.event.method.MethodResolverFactory;
-import org.kasource.kaevent.listener.interfaces.BeanMethodResolver;
-import org.kasource.kaevent.listener.interfaces.FactoryMethodResolver;
-import org.kasource.kaevent.listener.interfaces.MethodResolving;
 
 /**
  * Extracts a method resolver from an event (and listener) by inspecting the annotations

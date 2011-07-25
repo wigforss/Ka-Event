@@ -12,6 +12,8 @@ spring/schema/kaevent-spring.xsd"
 	<kaevent:kaevent scanClassPath="org.kasource.kaevent.example.spring.channel"/>
 
 	
+		
+	
 
 	<bean name="thermometer" class="org.kasource.kaevent.example.spring.channel.Thermometer">
 		<property name="eventDispatcher" ref="kaEvent.eventDispatcher"/>

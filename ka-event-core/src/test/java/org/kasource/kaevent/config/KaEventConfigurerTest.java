@@ -41,7 +41,7 @@ public class KaEventConfigurerTest {
                 assertNotNull(config.getEventFactory());
                 assertNotNull(config.getEventMethodInvoker());
                 assertNotNull(config.getEventRegister());
-                assertNotNull(config.getEventSender());
+                assertNotNull(config.getEventRouter());
                 assertNotNull(config.getQueueThread());
                 assertNotNull(config.getSourceObjectListenerRegister());
                 
@@ -63,7 +63,7 @@ public class KaEventConfigurerTest {
                 assertNotNull(config.getEventFactory());
                 assertNotNull(config.getEventMethodInvoker());
                 assertNotNull(config.getEventRegister());
-                assertNotNull(config.getEventSender());
+                assertNotNull(config.getEventRouter());
                 assertNotNull(config.getQueueThread());
                 assertNotNull(config.getSourceObjectListenerRegister());
                 
@@ -84,7 +84,7 @@ public class KaEventConfigurerTest {
                 assertNotNull(config.getEventFactory());
                 assertNotNull(config.getEventMethodInvoker());
                 assertNotNull(config.getEventRegister());
-                assertNotNull(config.getEventSender());
+                assertNotNull(config.getEventRouter());
                 assertNotNull(config.getQueueThread());
                 assertNotNull(config.getSourceObjectListenerRegister());
                 

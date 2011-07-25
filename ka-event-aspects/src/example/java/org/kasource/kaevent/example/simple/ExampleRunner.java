@@ -2,7 +2,6 @@ package org.kasource.kaevent.example.simple;
 
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.config.KaEventConfiguration;
-import org.kasource.kaevent.config.KaEventConfigurer;
 import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.event.EventDispatcher;

@@ -3,10 +3,10 @@ package org.kasource.kaevent.example.guice.custom.event;
 import java.util.EventListener;
 
 
-import org.kasource.kaevent.listener.interfaces.BeanMethodResolver;
+import org.kasource.kaevent.annotations.event.methodresolving.BeanMethodResolver;
+import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType;
+import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
 
-import org.kasource.kaevent.listener.interfaces.MethodResolverType;
-import org.kasource.kaevent.listener.interfaces.MethodResolving;
 
 
 @MethodResolving(MethodResolverType.BEAN)
