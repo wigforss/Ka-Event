@@ -22,7 +22,7 @@
     	</license>
   	</licenses>
 	<scm>
-		<tag>scm:svn:https://svn.kenai.com/svn/ka-event~src/tags</tag>
+		<tag>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</tag>
 		<url>scm:svn:https://svn.kenai.com/svn/ka-event~src/tags/ka-event-base-0.5</url>
     	<developerConnection>scm:svn:https://svn.kenai.com/svn/ka-event~src/tags/ka-event-base-0.5</developerConnection>
     	<connection>scm:svn:https://svn.kenai.com/svn/ka-event~src/tags/ka-event-base-0.5</connection>
