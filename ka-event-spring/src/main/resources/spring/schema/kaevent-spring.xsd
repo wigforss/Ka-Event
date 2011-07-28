@@ -6,9 +6,39 @@
 
 	<xsd:import namespace="http://www.springframework.org/schema/beans" />
 
-	<xsd:attribute name="listen-on-bean" type="xsd:Name"/>
+	<xsd:attribute name="listen-on-bean" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>
+				Adding this attribute to the normal bean definition will allow that
+				bean to be registered as a listener to one or more source objects (beans).
+				The value of this attribute is a comma separated list of names of beans to listen to.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:attribute>
 
-	<xsd:attribute name="listen-on-channel" type="xsd:Name"/>
+	<xsd:attribute name="listen-on-channel" type="xsd:string">
+	<xsd:annotation>
+			<xsd:documentation>
+				Adding this attribute to the normal bean definition will allow that
+				bean to be registered as a listener to one or more channels (beans).
+				The value of this attribute is a comma separated list of names of channels to listen to.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:attribute>
+
+	<xsd:attribute name="filter" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>
+				Adding this attribute to the normal bean definition together with listen-on-bean
+				and listen-on-channel, will allow the named filters to executed when events are 
+				propagated to this listener. The value is a comma separated list of bean names of
+				beans which implements org.kasource.kaevent.event.filter.EventFilter.
+				
+				Using this attribute without listen-on-bean or listen-on-channel will cause an 
+				exception to be thrown.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:attribute>
 
 	<xsd:element name="kaevent">
 		<xsd:complexType>

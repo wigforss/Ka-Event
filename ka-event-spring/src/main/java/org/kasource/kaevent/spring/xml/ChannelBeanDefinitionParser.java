@@ -15,7 +15,8 @@ public class ChannelBeanDefinitionParser  extends AbstractSingleBeanDefinitionPa
        return ChannelFactoryBean.class;
      }
 
-     protected void doParse(Element element, BeanDefinitionBuilder bean) {
+     @SuppressWarnings("unchecked")
+	protected void doParse(Element element, BeanDefinitionBuilder bean) {
          bean.addPropertyValue("name", element.getAttribute(ID_ATTRIBUTE));
          bean.addDependsOn(KaEventSpringBean.CHANNEL_REGISTER.getId());
          bean.addDependsOn(KaEventSpringBean.CHANNEL_FACTORY.getId());

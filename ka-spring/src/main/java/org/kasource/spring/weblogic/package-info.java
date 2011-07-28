@@ -1,5 +1,5 @@
 /**
- * JAXB Utility classes.
+ * WebLogic Utility classes.
  *
  * @author rikardwi
  **/

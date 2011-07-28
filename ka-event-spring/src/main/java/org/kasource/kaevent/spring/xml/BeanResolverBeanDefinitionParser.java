@@ -5,10 +5,7 @@ package org.kasource.kaevent.spring.xml;
 
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.SpringBeanResolver;
-import org.springframework.beans.BeanMetadataAttribute;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.w3c.dom.Element;
 

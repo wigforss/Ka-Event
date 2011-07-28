@@ -7,8 +7,10 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.spring.xml.KaEventSpringBean;
 import org.springframework.beans.BeansException;
@@ -37,29 +39,44 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
     
     private List<EventListener> listeners;
     
+    private Map<EventListener, List<EventFilter<EventObject>>> filterMap;
     
-    @Override
+   
+
+
+	@Override
     public Object getObject() throws Exception {
     	Channel channel = getChannel();
     	ChannelRegister channelRegister = (ChannelRegister) applicationContext.getBean(KaEventSpringBean.CHANNEL_REGISTER.getId());
     	channelRegister.registerChannel(channel);
     	if(listeners != null) {
     		for(EventListener listener : listeners) {
-    			channel.registerListener(listener);
+    			List<EventFilter<EventObject>> filters = getFilter(listener);
+    			if(filters != null) {
+    				channel.registerListener(listener, filters);
+    			} else {
+    				channel.registerListener(listener);
+    			}
     		}
     	}
     	return channel;
     }
 
+	private List<EventFilter<EventObject>> getFilter(Object listener) {
+		if(filterMap != null) {
+			return filterMap.get(listener);
+		}
+		return null;
+	}
     
     private Channel getChannel() {
     	ChannelFactory channelFactory = (ChannelFactory) applicationContext.getBean(KaEventSpringBean.CHANNEL_FACTORY.getId());
     	EventRegister eventRegister = (EventRegister) applicationContext.getBean(KaEventSpringBean.EVENT_REGISTER.getId());
         Set<Class<? extends EventObject>> eventSet = new HashSet<Class<? extends EventObject>>();
         if(events != null) {
-        for(String eventName : events) {
-        	eventSet.add(eventRegister.getEventByName(eventName).getEventClass());
-        }
+        	for(String eventName : events) {
+        		eventSet.add(eventRegister.getEventByName(eventName).getEventClass());
+        	}
         }
         if(eventSet.isEmpty()) {
         	return channelFactory.createChannel(channelClass, name);
@@ -110,6 +127,10 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
 		} else {
 			this.channelClass = channelClass;
 		}
+	}
+	
+	public void setFilterMap(Map<EventListener, List<EventFilter<EventObject>>> filterMap) {
+		this.filterMap = filterMap;
 	}
    
 }

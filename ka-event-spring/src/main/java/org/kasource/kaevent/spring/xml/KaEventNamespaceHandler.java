@@ -1,6 +1,8 @@
 /**
+ * Name space handler form ka-event spring name space.
  * 
- */
+ * @author wigforss
+ **/
 package org.kasource.kaevent.spring.xml;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
@@ -15,8 +17,11 @@ public class KaEventNamespaceHandler extends NamespaceHandlerSupport{
         registerBeanDefinitionParser("event", new EventBeanDefinitionParser()); 
         registerBeanDefinitionParser("kaevent", new KaEventConfigurerBeanDefinitionParser()); 
 
-        registerBeanDefinitionDecoratorForAttribute("listen-on-bean",new RegisterBeanListenerBeanDefinitionDecorator());
-        registerBeanDefinitionDecoratorForAttribute("listen-on-channel",new RegisterChannelListenerBeanDefinitionDecorator());
+        registerBeanDefinitionDecoratorForAttribute("listen-on-bean", new RegisterBeanListenerBeanDefinitionDecorator());
+        registerBeanDefinitionDecoratorForAttribute("listen-on-channel", new RegisterChannelListenerBeanDefinitionDecorator());
+        registerBeanDefinitionDecoratorForAttribute("filter", new RegisterEventFilterBeanDefinitionDecorator());
+        
+		
     }
 
 }

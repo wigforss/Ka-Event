@@ -5,14 +5,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType;
-import org.kasource.kaevent.channel.ChannelFactoryBean;
 import org.kasource.kaevent.event.config.EventFactoryBean;
-import org.kasource.kaevent.event.method.MethodResolverFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
+/**
+ * Handler for the event XML element.
+ * 
+ * @author rikardwi
+ **/
 public class EventBeanDefinitionParser extends
 		AbstractSingleBeanDefinitionParser {
 	protected Class<?> getBeanClass(Element element) {
@@ -61,6 +64,7 @@ public class EventBeanDefinitionParser extends
 		bean.addPropertyReference("methodResolver", beanName);
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected void addSwitchMethodResolver(Element element, BeanDefinitionBuilder bean)  {
 		bean.addPropertyValue("methodResolverType", MethodResolverType.KEYWORD_SWITCH);
 		bean.addPropertyValue("keywordMethodName", element.getAttribute("keywordMethod"));

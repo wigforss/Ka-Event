@@ -23,10 +23,18 @@ spring/schema/kaevent-spring.xsd"
 		<property name="optimalTemperatur" value="20.0"/>
 	</bean>
 	
-	<bean name="cooler" class="org.kasource.kaevent.example.spring.channel.Cooler" kaevent:listen-on-bean="thermometer"/>
+	<bean name="blockFilter" class="org.kasource.kaevent.example.spring.channel.BinaryFilter">
+		<constructor-arg value="false"/>
+	</bean>
+	
+	<bean name="allowFilter" class="org.kasource.kaevent.example.spring.channel.BinaryFilter">
+		<constructor-arg value="true"/>
+	</bean>
+	
+	<bean name="cooler" class="org.kasource.kaevent.example.spring.channel.Cooler" kaevent:listen-on-bean="thermometer" kaevent:filter="allowFilter"/>
 	
 	<bean name="heater" class="org.kasource.kaevent.example.spring.channel.Heater" kaevent:listen-on-bean="thermometer"/>
 	
-	<bean name="commandConsole" class="org.kasource.kaevent.example.spring.channel.CommandConsole" kaevent:listen-on-channel="temperatureChannel"/>
+	<bean name="commandConsole" class="org.kasource.kaevent.example.spring.channel.CommandConsole" kaevent:listen-on-channel="temperatureChannel" kaevent:filter="allowFilter"/>
 
 </beans>

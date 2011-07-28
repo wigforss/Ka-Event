@@ -3,17 +3,10 @@ package org.kasource.kaevent.spring.xml;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.config.SpringKaEventConfigurer;
-import org.kasource.kaevent.event.config.EventFactoryBean;
-import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanReference;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
