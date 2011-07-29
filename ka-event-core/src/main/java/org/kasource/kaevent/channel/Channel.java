@@ -10,6 +10,8 @@ import org.kasource.kaevent.event.filter.EventFilter;
 
 
 /**
+ * The channel is a "Publish / Subscribe Channel" which sends events to all its listeners.
+ * 
  * Channels allows listeners to listen to all types of events (registered at the
  * channel) without knowing the events source.
  * 
@@ -21,9 +23,6 @@ import org.kasource.kaevent.event.filter.EventFilter;
  * @version $Id$
  **/
 public interface Channel {
-
-  
-
    
     /**
      * Fire event synchronously to all channel listeners
@@ -32,9 +31,6 @@ public interface Channel {
      **/
     public  abstract void fireEvent(EventObject event, boolean blocked);
 
-   
-
-   
 
     /**
      * Return the name of the channel.
@@ -60,6 +56,11 @@ public interface Channel {
      **/
     public abstract Set<Class<? extends EventObject>> getEvents();
     
+    /**
+     * Returns a collection of all Event Listener Interfaces supported by this channel.
+     * 
+     * @return List of EventListener interfaces supported.
+     **/
     public abstract Collection<Class<? extends EventListener>> getSupportedInterfaces();
     
     /**
@@ -72,6 +73,11 @@ public interface Channel {
      **/
     public abstract void registerEvent(Class<? extends EventObject> eventClass);
     
+    /**
+     * Unregister the event from this channel. 
+     * 
+     * @param eventClass	Class of the event to unregister.
+     **/
     public abstract void unregisterEvent(Class<? extends EventObject> eventClass);
     
     /**
@@ -97,6 +103,18 @@ public interface Channel {
      *            Listener object to unregister
      **/
     public abstract void unregisterListener(EventListener listener);
-    
+   
+    /**
+     * Register a filter which will invoked on all events routed
+     * to this channel. Returns true if filter added else false.
+     * 
+     * Will only add the filter if it is relevant to the events registered
+     * to the channel.
+     * 
+     * @param filter	Filter to add to the channel filters list.
+     * 
+     * @return Returns true if filter added else false.
+     **/
+    public boolean registerFilter(EventFilter<EventObject> filter);
    
 }

@@ -5,6 +5,8 @@ import java.util.EventObject;
 /**
  * Optional base class to derive event object implementations from.
  * 
+ * Will automatically add information on creation time stamp, thread and id.
+ * 
  * @author rikard
  * @version $Id$
  **/
@@ -24,14 +26,29 @@ public abstract class BaseEvent extends EventObject {
         this.id = ++idCounter; 
     }
 
+    /**
+     * Returns the creation time stamp.
+     * 
+     * @return creation time stamp
+     **/
     public long getCreationTimestamp() {
         return creationTimestamp;
     }
 
+    /**
+     * Returns the creation thread name.
+     * 
+     * @return creation thread name
+     **/
     public String getCreatorThreadName() {
         return creatorThreadName;
     }
 
+    /**
+     * Returns the event ID.
+     * 
+     * @return event ID.
+     **/
     public long getId() {
         return id;
     }

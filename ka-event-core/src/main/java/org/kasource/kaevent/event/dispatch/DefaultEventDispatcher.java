@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.event.dispatch;
 
 import java.util.EventListener;
@@ -21,8 +18,10 @@ import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 /**
+ * The default implementation of EventDispatcher.
+ * 
  * @author wigforss
- *
+ * @version $Id$
  */
 public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializedListener{
 
@@ -96,7 +95,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
    
     @Override
     public void fireBlocked(EventObject event) {
-        eventRouter.dispatchEvent(event, true);       
+        eventRouter.routeEvent(event, true);       
     }
 
   
@@ -165,22 +164,8 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
         LinkedList<EventObject> batchList = batchListByThread.get();
         if (batchList != null) {
             while (!batchList.isEmpty()) {
-             eventRouter.dispatchEvent(batchList.removeFirst(), false);       
+             eventRouter.routeEvent(batchList.removeFirst(), false);       
             }
         }
     }
-
-    
-    
-    
-    
-    
-   
-
-    
-    
-
- 
-    
-
 }

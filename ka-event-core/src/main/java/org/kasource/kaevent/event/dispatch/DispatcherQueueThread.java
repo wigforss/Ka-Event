@@ -8,7 +8,7 @@ import java.util.EventObject;
 /**
  * @author rikardwigforss
  *
- */
+ **/
 public interface DispatcherQueueThread {
     
     public void enqueue(EventObject event);

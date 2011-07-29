@@ -20,12 +20,11 @@ import org.scannotation.AnnotationDB;
 import org.scannotation.ClasspathUrlFinder;
 
 /**
- * 
  * Finds any class in scanPath that is annotated with @Event and exports them
  * 
  * @author rikardwigforss
- * 
- */
+ * @version $Id$ 
+ **/
 public class AnnotationEventExporter implements EventExporter {
     public static final Logger logger = Logger.getLogger(AnnotationEventExporter.class);
 

@@ -15,9 +15,14 @@ import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 /**
+ * The result of running the configuration.
+ * 
+ * This object holds the configured ka-event environment. So it can be accessed 
+ * after the configuration code has been ran.
+ * 
  * @author rikardwigforss
- *
- */
+ * @version $Id$
+ **/
 public interface KaEventConfiguration {
 
 

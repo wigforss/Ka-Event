@@ -1,4 +1,4 @@
-package org.kasource.kaevent.event;
+package org.kasource.kaevent.annotations.event;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

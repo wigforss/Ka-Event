@@ -22,7 +22,13 @@ public class EventConfigImpl implements EventConfig {
     @SuppressWarnings({ "rawtypes" })
     MethodResolver methodResolver;
  
-
+    /**
+     * Constructor.
+     * 
+     * @param eventClass	Event class.
+     * @param listener		Event Listener interface class.
+     * @param name			Name of the event.
+     **/
     EventConfigImpl(Class<? extends EventObject> eventClass, 
                            Class<? extends EventListener> listener,
                            String name) {
@@ -77,16 +83,5 @@ public class EventConfigImpl implements EventConfig {
     public String getName() {
         return name;
     }
-
- 
-    
-   
-
-   
-
-  
-
-
-
 
 }

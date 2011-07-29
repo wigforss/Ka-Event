@@ -64,7 +64,7 @@ public class EventRouterTest {
         invoker.invokeEventMethod(event, listenerSet, false);
         EasyMock.expectLastCall();
         EasyMockUnitils.replay();
-        eventRouter.dispatchEvent(event, false);
+        eventRouter.routeEvent(event, false);
     }
 }
 

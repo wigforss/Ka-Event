@@ -3,8 +3,18 @@ package org.kasource.kaevent.config;
 /**
  * Builds the XML Configuration programmatically.
  * 
+ * Create an instance and invoke method by method chaining and end with the
+ * build method.
+ * <p/>
+ * <p/>
+ * KaEventConfig config = new KaEventConfigBuilder().scan("org.abc.my").maxPoolSize(1).build()
+ * <p/>
+ * Which will create a new configuration the scans for @Event annotated classes under org.abc.my and
+ * set the event queue max size to 1 (allowing only one thread making it strictly sequential).
+ * 
  * @author Rikard Wigforss
- */
+ * @version $Id: $
+ **/
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.EventObject;
@@ -285,7 +295,11 @@ public class KaEventConfigBuilder {
 		return this;
 	}
 	
-	
+	/**
+	 * Channel Registration.
+	 * 
+	 * @author rikardwi
+	 **/
 	private static class ChannelReg {
 		private String channelName;
 		private Class<? extends EventObject>[] events;

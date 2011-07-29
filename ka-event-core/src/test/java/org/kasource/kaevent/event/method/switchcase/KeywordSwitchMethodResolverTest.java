@@ -15,12 +15,12 @@ import java.util.EventObject;
 
 import org.junit.Test;
 import org.kasource.kaevent.annotations.event.Event;
+import org.kasource.kaevent.annotations.event.EventKeyword;
 import org.kasource.kaevent.annotations.event.methodresolving.CustomCase;
 import org.kasource.kaevent.annotations.event.methodresolving.DefaultListenerMethod;
 import org.kasource.kaevent.annotations.event.methodresolving.KeywordCase;
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType;
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
-import org.kasource.kaevent.event.EventKeyword;
 
 
 /**

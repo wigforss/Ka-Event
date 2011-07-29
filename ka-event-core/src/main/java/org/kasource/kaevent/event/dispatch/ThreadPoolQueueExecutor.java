@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.event.dispatch;
 
 import java.util.EventObject;
@@ -15,9 +12,11 @@ import javax.annotation.Resource;
 
 
 /**
+ * The default DispatcherQueueThread implementation.
+ * 
  * @author wigforss
- *
- */
+ * @version $Id$
+ **/
 public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements DispatcherQueueThread {
     
     private static final int DEFAULT_CORE_POOL_SIZE = 5;
@@ -102,7 +101,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
         
         @Override
         public void run() {
-        	eventRouter.dispatchEvent(event, false);
+        	eventRouter.routeEvent(event, false);
         }
 
 

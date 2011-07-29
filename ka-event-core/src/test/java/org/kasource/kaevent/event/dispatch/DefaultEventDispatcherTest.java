@@ -66,7 +66,7 @@ public class DefaultEventDispatcherTest {
     @Test
     public void fireBlocked() {
         ChangeEvent event = new ChangeEvent("test");
-        eventRouter.dispatchEvent(event, true);
+        eventRouter.routeEvent(event, true);
         EasyMock.expectLastCall();
         EasyMockUnitils.replay();
         dispatcher.fireBlocked(event);

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.config;
 
 import org.kasource.kaevent.bean.BeanResolver;
@@ -15,8 +12,12 @@ import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 /**
- * @author Rikard Wigforss
+ * The default KaEventConfiguration implementation.
  * 
+ * Provides access to the configured ka-event environment.
+ * 
+ * @author Rikard Wigforss
+ * @version $Id$
  */
 public class KaEventConfigurationImpl implements KaEventConfiguration {
  

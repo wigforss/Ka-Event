@@ -8,8 +8,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.EventObject;
 
-import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.filter.EventFilter;
@@ -17,11 +15,13 @@ import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
 
 /**
- * @author wigforss
+ * Default implementation of the EventMethodInvoker.
  * 
+ * @author wigforss
+ * @version $Id$
  */
 public class EventMethodInvokerImpl implements EventMethodInvoker {
-    private static Logger logger = Logger.getLogger(EventMethodInvokerImpl.class);
+    private static final Logger LOG = Logger.getLogger(EventMethodInvokerImpl.class);
     
    
     private EventRegister eventRegister;
@@ -62,7 +62,7 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
         try {
             method.invoke(listener.getListener(), event);
         } catch (Exception e) {
-            logger.error("Failed to invoke " + method + " on " + listener, e instanceof InvocationTargetException ? e
+            LOG.error("Failed to invoke " + method + " on " + listener, e instanceof InvocationTargetException ? e
                     .getCause() : e);
         }
     }

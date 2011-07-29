@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.channel;
 
 import java.util.Collection;
@@ -11,9 +8,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Default implementation of ChannelRegister.
+ * 
  * @author Rikard Wigforss
- *
- */
+ * @version $Id$
+ **/
 public class ChannelRegisterImpl implements ChannelRegister{
     private Map<String, Channel> channels = new HashMap<String, Channel>();
     private Map<Class<? extends EventObject>, Set<Channel>> channelsByEvent = new HashMap<Class<? extends EventObject>, Set<Channel>>();
@@ -46,6 +45,12 @@ public class ChannelRegisterImpl implements ChannelRegister{
       
     }
 
+    /**
+     * Unregister a channel event.
+     * 
+     * @param channel		Channel to unregister eventClass from.
+     * @param eventClass	Class of event to unregister from channel.
+     **/
     @Override
     public void unregisterEventHandler(Channel channel, Class<? extends EventObject> eventClass) {
     	Set<Channel> channels = channelsByEvent.get(eventClass);
@@ -135,10 +140,13 @@ public class ChannelRegisterImpl implements ChannelRegister{
     }
 
 
-   
+    /**
+     * Returns all channels registered.
+     * 
+     * @return List of all channels registered.
+     **/
     @Override
-    public Collection<Channel> getChannels() {
-     
+    public Collection<Channel> getChannels() {    
         return channels.values();
     }
     

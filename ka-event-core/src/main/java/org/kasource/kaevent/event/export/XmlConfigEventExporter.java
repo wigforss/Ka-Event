@@ -27,6 +27,7 @@ import org.kasource.kaevent.event.method.MethodResolverFactory;
  * 
  * 
  * @author Rikard Wigforss
+ * @version $Id$
  **/
 public class XmlConfigEventExporter implements EventExporter {
 

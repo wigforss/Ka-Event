@@ -4,6 +4,8 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2010.08.12 at 04:54:21 PM CEST 
 //
-
+/**
+ * Configuration classes, used to configure the ka-event environment.
+ **/
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://kasource.org", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.kasource.kaevent.config;

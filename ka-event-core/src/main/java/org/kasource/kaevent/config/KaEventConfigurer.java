@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.config;
 
 import java.io.FileInputStream;
@@ -46,20 +43,22 @@ import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 
 /**
- * @author wigforss
+ * Class that performs the actual configuration of the ka-event environment.
  * 
- */
+ * @author wigforss
+ * @version $Id$
+ **/
 public class KaEventConfigurer  {
-    private static Logger logger = Logger.getLogger(KaEventConfigurer.class);
-    
-    
-    
-   
-    
-   
+    private final static Logger LOG = Logger.getLogger(KaEventConfigurer.class);
     
     private KaEventConfigurationImpl configuration = null;
     
+    /**
+     * Configure the environment based on the configuration provided.
+     * 
+     * @param eventDispatcher	The event dispatcher.
+     * @param xmlConfig			Configuration to use.
+     **/
     public void configure(EventDispatcher eventDispatcher,KaEventConfig xmlConfig) {
     	if(xmlConfig != null) {
             configuration = configureByXml(xmlConfig);
@@ -71,7 +70,16 @@ public class KaEventConfigurer  {
         KaEventInitializer.setConfiguration(configuration);
     }
     
-    
+    /**
+     * Configure the environment based on a XML Configuration file.
+     * 
+     * The configLocation can be read from both classpath and file, 
+     * use a prefix to indicate which kind of location to use. Supported 
+     * prefixes are classpath: and file:
+     * 
+     * @param eventDispatcher	The event dispatcher.
+     * @param configLocation	Location of the XML file.
+     **/
     public void configure(EventDispatcher eventDispatcher,String configLocation) {
         
         KaEventConfig xmlConfig = null;
@@ -87,13 +95,26 @@ public class KaEventConfigurer  {
         
     }
     
+    /**
+     * Scan the classpath for classes annated with @Event and register the events found.
+     * 
+     * The scanClassPath parameter should be a package name on dot notation. All sub-packages 
+     * to the supplied package will also be scanned. You can also provide a comma separated list of 
+     * packages to scan. 
+     *  
+     * @param scanClassPath package(s) to scan
+     **/
     public void scanClassPathForEvents(String scanClassPath) {
     	if(scanClassPath != null && scanClassPath.length() > 0) {
             importAndRegisterEvents(new AnnotationEventExporter(scanClassPath),configuration.getEventFactory(), configuration.getEventRegister());
         }
     }
     
-    
+    /**
+     * Creates and returns the default configuration.
+     * 
+     * @return The result of configuring the default.
+     **/
     private KaEventConfigurationImpl defaultConfiguration( ) {
         KaEventConfigurationImpl config = new KaEventConfigurationImpl();
         // Bean resolver
@@ -125,6 +146,14 @@ public class KaEventConfigurer  {
        
     }
     
+    /**
+     * Configure the ka-event environment by a configuration object and
+     * return the result. 
+     * 
+     * @param xmlConfig	Configuration to use.
+     * 
+     * @return The result of applying the xmlConfig.
+     **/
     private KaEventConfigurationImpl configureByXml(KaEventConfig xmlConfig) {
         KaEventConfigurationImpl config = new KaEventConfigurationImpl();
         // Bean Resolver
@@ -232,10 +261,13 @@ public class KaEventConfigurer  {
     }
 
     /**
+     * Create the channel configured in the xmlConfig parameters.
      * 
-     */
+     * @param xmlConfig	The configuration to use.
+     * @param config	Use this to lookup the environment configured this far.
+     **/
     @SuppressWarnings("unchecked")
-	private void createChannels(KaEventConfig xmlConfig,KaEventConfiguration config) {
+	private void createChannels(KaEventConfig xmlConfig, KaEventConfiguration config) {
         EventRegister eventRegister = config.getEventRegister();
         ChannelFactory channelFactory = config.getChannelFactory();
         // Create channels
@@ -276,7 +308,16 @@ public class KaEventConfigurer  {
         }
     }
     
-    protected void  importAndRegisterEvents(EventExporter eventExporter,EventFactory eventFactory, EventRegister eventRegister) {
+    /**
+     * Import and register events from the eventExporter provided.
+     * 
+     * @param eventExporter	Creates the events to register.
+     * @param eventFactory	Used by the exporter.
+     * @param eventRegister	Event Register.
+     **/
+    protected void  importAndRegisterEvents(EventExporter eventExporter,
+    									   EventFactory eventFactory, 
+    									   EventRegister eventRegister) {
         Set<EventConfig> events;
         try {
             events = eventExporter.exportEvents(eventFactory);
@@ -284,7 +325,7 @@ public class KaEventConfigurer  {
                 eventRegister.registerEvent(event);
             }
         } catch (RuntimeException re) {
-          logger.error("Error when importing annotated events",re);
+          LOG.error("Error when importing annotated events",re);
           throw re;
         } catch (IOException e) {
             throw new IllegalStateException("Could not import events", e);
@@ -293,10 +334,15 @@ public class KaEventConfigurer  {
     }
 
 
-    
-      
-
-    private KaEventConfig loadXmlFromPath(String inPath) {
+    /**
+     * Loads a configuration from file or classpath location and returns it.
+     * 
+     * @param inPath Location of the XML Configuration file.
+     * 
+     * @return The Configuration created from the XML file.
+     * @throws IllegalArgumentException if no XML file could be found or the XML could not be unmarshalled.
+     **/
+    private KaEventConfig loadXmlFromPath(String inPath) throws IllegalArgumentException{
         boolean fromFile = false;
         String path = inPath;
         if(path.startsWith("classpath:")) {
@@ -336,6 +382,15 @@ public class KaEventConfigurer  {
         
     }
     
+    /**
+     * Helper to loadXmlFromPath, loads the configuration from an InputStream.
+     * 
+     * @param istrm	InputStream to load configuration from.
+     * 
+     * @return The configuration.
+     * 
+     * @throws JAXBException	If the XML file (instrn) could not be unmarshalled.
+     **/
     private KaEventConfig loadXmlConfig(InputStream istrm) throws JAXBException {
          JAXBContext jaxbContext = JAXBContext.newInstance(KaEventConfig.class.getPackage().getName());
 
@@ -345,10 +400,6 @@ public class KaEventConfigurer  {
          return (KaEventConfig) object;
       
     }
-    
-
- 
-    
-   
+     
 
 }

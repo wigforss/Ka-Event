@@ -17,21 +17,29 @@ import org.kasource.kaevent.event.method.MethodResolverFactory;
  * Extracts a method resolver from an event (and listener) by inspecting the annotations
  * 
  * @author wigforss
+ * @version $Id$
  **/
 public class AnnotationMethodResolverExtractor {
   
     private BeanResolver beanResolver;
     
-    
+    /**
+     * Constructor.
+     * 
+     * @param beanResolver BeanResolver to use.
+     **/
     public AnnotationMethodResolverExtractor(BeanResolver beanResolver) {
         this.beanResolver = beanResolver;
     }
     
     /**
-     * @param event
-     * @param listener
-     * @param methodResolving
-     */
+     * Returns the method resolver by inspecting the methodResolving parameter from
+     * the listener instance.
+     * 
+     * @param event				Event class.	
+     * @param listener		  	Listener to get method resolver from.
+     * @param methodResolving 	Method resolver annotation from event interface class.
+     **/
     @SuppressWarnings("rawtypes")
     public MethodResolver getMethodResolver(Class<? extends EventObject> event,
             Class<? extends EventListener> listener, MethodResolving methodResolving) {
@@ -47,7 +55,11 @@ public class AnnotationMethodResolverExtractor {
     }
 
     /**
-     * @param listener
+     * Returns MethodResolver from a the bean resolver for the listener parameter.
+     * 
+     * @param listener	Event Listener interface class.
+     * 
+     * @return the method resolver found using the bean resolver.
      */
     @SuppressWarnings("rawtypes")
     private MethodResolver getMethodResoverFromBeanContext(Class<? extends EventListener> listener) {
@@ -61,6 +73,13 @@ public class AnnotationMethodResolverExtractor {
         return MethodResolverFactory.getFromBean(beanResolver, beanMethodResolver.value());
     }
 
+    /**
+     * Return MethodResolver by invoking a static factory method.
+     * 
+     * @param listener Event Listener interface class
+     * 
+     * @return The MethodResolver from factory.
+     **/
     @SuppressWarnings("rawtypes")
     private MethodResolver getMethodResolverFromFactoryMethod(Class<? extends EventListener> listener) {
         FactoryMethodResolver factoryMethodResolver = listener.getAnnotation(FactoryMethodResolver.class);

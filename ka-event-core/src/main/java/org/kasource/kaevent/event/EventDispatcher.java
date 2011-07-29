@@ -11,8 +11,11 @@ import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.event.filter.EventFilter;
 
 /**
+ * Used to dispatch events, creating channels and registering listeners.
+ * 
+ * 
  * @author rikardwigforss
- *
+ * @version $Id$
  */
 public interface EventDispatcher {
     /**

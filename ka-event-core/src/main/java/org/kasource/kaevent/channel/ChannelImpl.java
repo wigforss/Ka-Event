@@ -22,6 +22,8 @@ import org.kasource.kaevent.listener.register.EventListenerRegistration;
 
 
 /**
+ * Default Channel Implementation.
+ * 
  * Channels allows listeners to listen to all types of events (registered at the
  * channel) without knowing the events source.
  * 
@@ -43,8 +45,16 @@ public class ChannelImpl  implements Channel {
     private ChannelRegister channelRegister;
     private EventMethodInvoker eventMethodInvoker;
     
-    
-    public ChannelImpl(String name, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker,BeanResolver beanResolver) {
+    /**
+     * Constructor, should only be invoked by the ChannelFactory.
+     * 
+     * @param name					Name of the channel.
+     * @param channelRegister		Register of all channels.
+     * @param eventRegister		 	Register of all events.
+     * @param eventMethodInvoker	Helper class to invoke event listener method.
+     * @param beanResolver			Bean resolver to use.
+     **/
+    ChannelImpl(String name, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker,BeanResolver beanResolver) {
         this.name = name;
         this.channelRegister = channelRegister;
         this.eventRegister = eventRegister;
@@ -72,6 +82,11 @@ public class ChannelImpl  implements Channel {
         }
     }
     
+    /**
+     * Unregister the event from this channel. 
+     * 
+     * @param eventClass	Class of the event to unregister.
+     **/
     @Override
 	public void unregisterEvent(Class<? extends EventObject> eventClass) {
 		eventMap.remove(eventClass);
@@ -82,8 +97,6 @@ public class ChannelImpl  implements Channel {
 			 listenerRegister.unregisterListener(listenerReg.getListener());
 		 }
 	}
-
-    
 
     
     /**
@@ -161,8 +174,7 @@ public class ChannelImpl  implements Channel {
      * 
      * @param listener
      *            Listener object to register
-     **/
-   
+     **/ 
     @Override
     public void registerListener(EventListener listener,List<EventFilter<EventObject>> filters) {
         listenerRegister.registerListener(listener, filters);
@@ -191,14 +203,26 @@ public class ChannelImpl  implements Channel {
 
     }
     
+    /**
+     * Register a filter which will invoked on all events routed
+     * to this channel. Returns true if filter added else false.
+     * 
+     * Will only add the filter if it is relevant to the events registered
+     * to the channel.
+     * 
+     * @param filter	Filter to add to the channel filters list.
+     * 
+     * @return Returns true if filter added else false.
+     **/
+    @Override
     @SuppressWarnings("unchecked")
-    public void registerFilter(EventFilter<EventObject> filter) {
+    public boolean registerFilter(EventFilter<EventObject> filter) {
         
         Class<? extends EventObject> eventClass = (Class<? extends EventObject>) ((ParameterizedType) filter
                 .getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
         
         Collection<EventConfig> events = eventRegister.getEvents();
-        
+        boolean found = false;
         for(EventConfig eventConfig : events) {
             if(eventClass.isAssignableFrom(eventConfig.getEventClass())){
                 Collection<EventFilter<EventObject>> filters = filtersByEvent.get(eventClass);
@@ -207,9 +231,10 @@ public class ChannelImpl  implements Channel {
                     filtersByEvent.put(eventConfig.getEventClass(), filters);
                 }
                 filters.add(filter);
+                found = true;
             }
         }
-        
+        return found;
        
     }
 

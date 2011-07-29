@@ -4,8 +4,6 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2010.08.12 at 04:54:21 PM CEST 
 //
-
-
 package org.kasource.kaevent.config;
 
 import java.math.BigInteger;
@@ -27,9 +25,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
+ * Configuration of Ka Event. 
+ * 		
+ * Generated JAXB class.		
  * 
- * 					Configuration of Ka Event 
- * 				
+ * Don't use this class directly when programmatically creating a configuration, use the KaEventConfigBuilder 
+ * instead.
  * 
  * <p>Java class for anonymous complex type.
  * 
@@ -184,8 +185,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * &lt;/complexType>
  * </pre>
  * 
- * 
- */
+ * @version $Id$
+ **/
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "queueThread",

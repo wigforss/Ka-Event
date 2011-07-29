@@ -8,9 +8,13 @@ import java.util.EventObject;
 import java.util.Set;
 
 /**
+ * Register of all Channels.
+ * 
+ * Manages and register channels.
+ * 
  * @author rikardwigforss
- *
- */
+ * @version $Id$
+ **/
 public interface ChannelRegister {
     /**
      * Returns a channel by name
@@ -34,7 +38,11 @@ public interface ChannelRegister {
      **/
     public abstract Set<Channel> getChannelsByEvent(Class<? extends EventObject> eventClass);
 
-  
+    /**
+     * Returns all channels registered.
+     * 
+     * @return List of all channels registered.
+     **/
     public abstract Collection<Channel> getChannels();      
     
     /**
@@ -67,6 +75,12 @@ public interface ChannelRegister {
      **/
     public void registerEventHandler(Channel channel, Class<? extends EventObject> eventClass);
     
+    /**
+     * Unregister a channel event.
+     * 
+     * @param channel		Channel to unregister eventClass from.
+     * @param eventClass	Class of event to unregister from channel.
+     **/
     public void unregisterEventHandler(Channel channel, Class<? extends EventObject> eventClass);
     
   
