@@ -15,6 +15,7 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.kasource.spring.transaction.TransactionListener;
 import org.kasource.spring.transaction.TransactionResult;
 import org.kasource.spring.transaction.TransactionSupport;
+import org.kasource.spring.transaction.TransactionSupportImpl;
 
 /**
  * @author Rikard Wigforss
@@ -25,8 +26,8 @@ public class SpringEventDispatcher extends DefaultEventDispatcher implements Tra
 
 	private ThreadLocal<Queue<EventObject>> commitEventQueue = new ThreadLocal<Queue<EventObject>>();
 	
-	@Resource
-	private TransactionSupport txSupport;
+
+	private TransactionSupport txSupport = new TransactionSupportImpl();
     
     
     /**
@@ -73,7 +74,7 @@ public class SpringEventDispatcher extends DefaultEventDispatcher implements Tra
 		if(commitEventQueue.get() != null) {
 			while(!commitEventQueue.get().isEmpty()) {
 				EventObject event = commitEventQueue.get().poll();
-				eventRouter.dispatchEvent(event, false);
+				eventRouter.routeEvent(event, false);
 			}
 		}
 		

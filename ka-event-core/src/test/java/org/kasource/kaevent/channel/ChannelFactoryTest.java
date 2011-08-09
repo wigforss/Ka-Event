@@ -61,7 +61,8 @@ public class ChannelFactoryTest {
     
     @Test
     public void createChannelTest() {
-        Capture<Channel> capturedChannel = new Capture<Channel>();
+        Capture<ListenerChannel> capturedChannel = new Capture<ListenerChannel>();
+        expect(channelRegister.getChannel("testChannel")).andThrow(new NoSuchChannelException("test"));
         channelRegister.registerChannel(EasyMock.capture(capturedChannel));
         EasyMock.expectLastCall();
         EasyMockUnitils.replay();
@@ -73,9 +74,10 @@ public class ChannelFactoryTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createChannelWithEventsTest() {
-        Capture<Channel> capturedChannel = new Capture<Channel>();
+        Capture<ListenerChannel> capturedChannel = new Capture<ListenerChannel>();
         Set<Class<? extends EventObject>> events = new HashSet<Class<? extends EventObject>>();
         events.add(ChangeEvent.class);
+        expect(channelRegister.getChannel("testChannel")).andThrow(new NoSuchChannelException("test"));
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
         expect((Class)eventConfig.getListener()).andReturn(ChangeListener.class);
         channelRegister.registerEventHandler(EasyMock.capture(capturedChannel), EasyMock.same(ChangeEvent.class));
@@ -91,7 +93,7 @@ public class ChannelFactoryTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createChannelWithEventsAndListenersTest() {
-        Capture<Channel> capturedChannel = new Capture<Channel>();
+        Capture<ListenerChannel> capturedChannel = new Capture<ListenerChannel>();
         Set<Class<? extends EventObject>> events = new HashSet<Class<? extends EventObject>>();
         events.add(ChangeEvent.class);
         ChangeListener listener = new ChangeListener() {
@@ -105,6 +107,7 @@ public class ChannelFactoryTest {
           };
         Set<EventListener> listeners = new HashSet<EventListener>();
         listeners.add(listener);
+        expect(channelRegister.getChannel("testChannel")).andThrow(new NoSuchChannelException("test"));
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
         expect((Class)eventConfig.getListener()).andReturn(ChangeListener.class);
         channelRegister.registerEventHandler(EasyMock.capture(capturedChannel), EasyMock.same(ChangeEvent.class));
@@ -114,7 +117,7 @@ public class ChannelFactoryTest {
         expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
         expect((Class)eventConfig.getEventClass()).andReturn(ChangeEvent.class);
         EasyMockUnitils.replay();
-        Channel channel = factory.createChannel(ChannelImpl.class,"testChannel",events,listeners);
+        ListenerChannel channel = factory.createChannel(ChannelImpl.class,"testChannel",events,listeners);
         assertEquals(channel, capturedChannel.getValue());
         assertEquals("testChannel",channel.getName());
     }

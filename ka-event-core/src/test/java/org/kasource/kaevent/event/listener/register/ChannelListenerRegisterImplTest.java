@@ -16,7 +16,7 @@ import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.bean.BeanResolver;
-import org.kasource.kaevent.channel.Channel;
+import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
@@ -36,7 +36,7 @@ public class ChannelListenerRegisterImplTest {
 
     @InjectIntoByType
     @Mock
-    private Channel channel;
+    private ListenerChannel channel;
     
     @InjectIntoByType
     @Mock

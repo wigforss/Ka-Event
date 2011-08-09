@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.kasource.kaevent.channel.Channel;
+import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.config.KaEventConfig;
@@ -127,8 +128,28 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
         sourceObjectListenerRegister.registerListener(listener, sourceObject);
         
     }
-
-	
+    
+    @Override
+    public void registerListenerAtChannel(EventListener listener,
+            String channelName) {
+    	Channel channel = channelRegister.getChannel(channelName);
+    	if(channel instanceof ListenerChannel) {
+    		((ListenerChannel) channel).registerListener(listener);
+    	} else {
+    		throw new IllegalArgumentException("Channel "+channelName + " is not an ListenerChannel.");
+    	}
+    }
+    
+    @Override
+    public void registerListenerAtChannel(EventListener listener,
+            String channelName, List<EventFilter<EventObject>> filters) {
+    	Channel channel = channelRegister.getChannel(channelName);
+    	if(channel instanceof ListenerChannel) {
+    		((ListenerChannel) channel).registerListener(listener, filters);
+    	} else {
+    		throw new IllegalArgumentException("Channel "+channelName + " is not an ListenerChannel.");
+    	}
+    }
 
    /**
     * Add event to this threads batch

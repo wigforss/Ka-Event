@@ -52,6 +52,12 @@ public interface EventDispatcher {
     public void registerListener(EventListener listener,
             Object sourceObject);
     
+    public void registerListenerAtChannel(EventListener listener,
+            String channelName);
+    
+    public void registerListenerAtChannel(EventListener listener,
+            String channelName, List<EventFilter<EventObject>> filters);
+    
     public void registerListener(EventListener listener,
             Object sourceObject, List<EventFilter<EventObject>> filters);
     

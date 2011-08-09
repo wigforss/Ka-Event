@@ -4,8 +4,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -20,11 +22,13 @@ import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.DefaultBeanResolver;
 import org.kasource.kaevent.channel.Channel;
+import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelFactoryImpl;
 import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.channel.ChannelRegisterImpl;
+import org.kasource.kaevent.channel.FilterableChannel;
 import org.kasource.kaevent.channel.NoSuchChannelException;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventConfig;
@@ -38,6 +42,7 @@ import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.kasource.kaevent.event.export.EventExporter;
 import org.kasource.kaevent.event.export.XmlConfigEventExporter;
+import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.DefaultEventRegister;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
@@ -278,7 +283,7 @@ public class KaEventConfigurer  {
                 Set<Class <? extends EventObject>> eventSet = new HashSet<Class <? extends EventObject>>();
                 if(channel.getHandle() != null) {
                 for(KaEventConfig.Channels.Channel.Handle handleEvent : channel.getHandle()) {
-                    String eventName = ((KaEventConfig.Events.Event) handleEvent.getEvent()).getName();
+                    String eventName = handleEvent.getEvent();;
                     EventConfig eventConfig = eventRegister.getEventByName(eventName);
                     if(eventConfig != null) {
                         eventSet.add(eventConfig.getEventClass());
@@ -290,20 +295,29 @@ public class KaEventConfigurer  {
                 Class<? extends Channel> channelClass = ChannelImpl.class;
                 if(channel.getClassName() != null) {
                 	try {
-                	channelClass = (Class<? extends Channel>)Class.forName(channel.getClassName());
+                		channelClass = (Class<? extends ListenerChannel>)Class.forName(channel.getClassName());
                 	} catch(ClassNotFoundException cnfe) {
                 		throw new IllegalStateException(channel.getClassName() + " Could not be found ", cnfe);
                 	} catch(ClassCastException cce) {
-                		throw new IllegalStateException(channel.getClassName() + " Must implement " + Channel.class, cce);
+                		throw new IllegalStateException(channel.getClassName() + " Must implement " + ListenerChannel.class, cce);
                 	}
                 }
+                Channel newChannel = null;
                 if(eventSet.isEmpty()) {
                 	
-                    channelFactory.createChannel(channelClass, name);
+                	newChannel = channelFactory.createChannel(channelClass, name);
                 } else {
-                    channelFactory.createChannel(channelClass,name, eventSet);
+                	newChannel = channelFactory.createChannel(channelClass,name, eventSet);
                 }
-                
+                if(newChannel != null && newChannel instanceof FilterableChannel && channel.getFilter() != null) {
+                	String[] filters = channel.getFilter().split(",");
+                	
+                	for(String filter : filters) {
+                		EventFilter<EventObject> eventFilter = config.getBeanResolver().getBean(filter.trim(), EventFilter.class);
+                		((FilterableChannel) newChannel).registerFilter(eventFilter);
+                	}
+                	
+                }
             }
         }
     }

@@ -28,7 +28,7 @@ import org.unitils.inject.annotation.TestedObject;
 public class ChannelRegisterImplTest {
     
     @Mock
-    private Channel channel;
+    private ListenerChannel channel;
     
     @TestedObject
     private ChannelRegisterImpl register;

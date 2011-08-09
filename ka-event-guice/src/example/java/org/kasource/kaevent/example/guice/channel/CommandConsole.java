@@ -1,6 +1,6 @@
 package org.kasource.kaevent.example.guice.channel;
 
-import org.kasource.kaevent.channel.Channel;
+import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.example.guice.channel.event.TemperatureChangedEvent;
 import org.kasource.kaevent.example.guice.channel.event.TemperatureChangedEventListener;
 
@@ -13,7 +13,7 @@ import com.google.inject.name.Named;
 public class CommandConsole implements TemperatureChangedEventListener {
 
     @Inject
-	public CommandConsole(@Named("temperatureChannel") Channel channel){
+	public CommandConsole(@Named("temperatureChannel") ListenerChannel channel){
 		channel.registerListener(this);
 	}
 

@@ -3,21 +3,15 @@ package org.kasource.kaevent.channel;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
-import org.kasource.kaevent.listener.register.ChannelListenerRegister;
-import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
-import org.kasource.kaevent.listener.register.EventListenerRegistration;
 
 
 
@@ -34,15 +28,13 @@ import org.kasource.kaevent.listener.register.EventListenerRegistration;
  * @author rikard
  * @version $Id$
  **/
-public class ChannelImpl  implements Channel {
-    // Name of the channel
-    private String name;
+public class ChannelImpl extends ListenerChannelAdapter  implements FilterableChannel, ListenerChannel {
    
-    private Map<Class<? extends EventObject>,Class<? extends EventListener>> eventMap = new HashMap<Class<? extends EventObject>,Class<? extends EventListener>>();
+    
     private Map<Class<? extends EventObject>, Collection<EventFilter<EventObject>>> filtersByEvent = new HashMap<Class<? extends EventObject>, Collection<EventFilter<EventObject>>>();
-    private ChannelListenerRegister listenerRegister;
-    private EventRegister eventRegister;
-    private ChannelRegister channelRegister;
+    
+    
+ 
     private EventMethodInvoker eventMethodInvoker;
     
     /**
@@ -54,49 +46,12 @@ public class ChannelImpl  implements Channel {
      * @param eventMethodInvoker	Helper class to invoke event listener method.
      * @param beanResolver			Bean resolver to use.
      **/
-    ChannelImpl(String name, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker,BeanResolver beanResolver) {
-        this.name = name;
-        this.channelRegister = channelRegister;
-        this.eventRegister = eventRegister;
-        this.eventMethodInvoker = eventMethodInvoker;
-        listenerRegister = new ChannelListenerRegisterImpl(this, eventRegister, beanResolver);
+    public ChannelImpl(String name, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker,BeanResolver beanResolver) {
+    	super(name, channelRegister, eventRegister, beanResolver);
     }
 
     
    
-    /**
-     * Register a new Event type to the register.
-     * 
-     * @param eventClass
-     *            New event type to handle
-     * @param refreshListeners
-     *            true to refresh listeners
-     **/
-    @Override
-    public void registerEvent(Class<? extends EventObject> eventClass) {
-        EventConfig eventConfig = eventRegister.getEventByClass(eventClass);
-       
-        if (!eventMap.containsKey(eventClass)) { 
-                eventMap.put(eventClass, eventConfig.getListener());
-                channelRegister.registerEventHandler(this, eventClass);
-        }
-    }
-    
-    /**
-     * Unregister the event from this channel. 
-     * 
-     * @param eventClass	Class of the event to unregister.
-     **/
-    @Override
-	public void unregisterEvent(Class<? extends EventObject> eventClass) {
-		eventMap.remove(eventClass);
-		filtersByEvent.remove(eventClass);
-		channelRegister.unregisterEventHandler(this, eventClass);
-		 Collection<EventListenerRegistration> listeners = listenerRegister.getListenersByEvent(eventClass);
-		 for(EventListenerRegistration listenerReg : listeners) {
-			 listenerRegister.unregisterListener(listenerReg.getListener());
-		 }
-	}
 
     
     /**
@@ -116,92 +71,26 @@ public class ChannelImpl  implements Channel {
                 }
             }
             if(passFilter) {
-                eventMethodInvoker.invokeEventMethod(event, listenerRegister.getListenersByEvent(event), blocked);
+                eventMethodInvoker.invokeEventMethod(event, getListenerRegister().getListenersByEvent(event), blocked);
             }
         } else {
-            eventMethodInvoker.invokeEventMethod(event, listenerRegister.getListenersByEvent(event), blocked);
+            eventMethodInvoker.invokeEventMethod(event, getListenerRegister().getListenersByEvent(event), blocked);
         }
     }
     
-    /**
-     * Returns the set of events this channel handles. 
-     * 
-     * @return all events this channel handles
-     **/
-    @Override
-    public Set<Class<? extends EventObject>> getEvents() {
-        return eventMap.keySet();
-    }
+   
 
-    /**
-     * Returns the set of events this channel handles. 
-     * 
-     * @return all events this channel handles
-     **/
     @Override
-    public Collection<Class<? extends EventListener>> getSupportedInterfaces() {
-        
-        return eventMap.values();
+	public void unregisterEvent(Class<? extends EventObject> eventClass) {
+    	super.unregisterEvent(eventClass);
+    	filtersByEvent.remove(eventClass);
     }
   
     
-    /**
-     * Return the name of the channel.
-     * 
-     * @return name of the channel
-     **/
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Set the name of the channel.
-     * 
-     * @param name
-     *            Name of the channel. Name should be unique within a single
-     *            ChannelFactory.
-     **/
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    
     
 
-    /**
-     * Register a new listener object to this channel
-     * 
-     * @param listener
-     *            Listener object to register
-     **/ 
-    @Override
-    public void registerListener(EventListener listener,List<EventFilter<EventObject>> filters) {
-        listenerRegister.registerListener(listener, filters);
-    }
     
-    /**
-     * Register a new listener object to this channel
-     * 
-     * @param listener
-     *            Listener object to register
-     **/
-    @Override
-    public void registerListener(EventListener listener) {
-        listenerRegister.registerListener(listener);
-    }
-
-    /**
-     * Remove a registered listener from this channel
-     * 
-     * @param listener
-     *            Listener object to unregister
-     **/
-    @Override
-    public void unregisterListener(EventListener listener) {
-        listenerRegister.unregisterListener(listener);
-
-    }
     
     /**
      * Register a filter which will invoked on all events routed
@@ -221,7 +110,7 @@ public class ChannelImpl  implements Channel {
         Class<? extends EventObject> eventClass = (Class<? extends EventObject>) ((ParameterizedType) filter
                 .getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
         
-        Collection<EventConfig> events = eventRegister.getEvents();
+        Collection<EventConfig> events = getEventRegister().getEvents();
         boolean found = false;
         for(EventConfig eventConfig : events) {
             if(eventClass.isAssignableFrom(eventConfig.getEventClass())){

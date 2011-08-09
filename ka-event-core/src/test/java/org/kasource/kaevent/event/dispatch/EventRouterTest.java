@@ -13,6 +13,7 @@ import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.channel.Channel;
+import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
@@ -43,7 +44,7 @@ public class EventRouterTest {
     private EventMethodInvoker invoker;
     
     @Mock
-    private Channel channel;
+    private ListenerChannel channel;
     
     @Mock
     private Set<EventListenerRegistration> listenerSet;

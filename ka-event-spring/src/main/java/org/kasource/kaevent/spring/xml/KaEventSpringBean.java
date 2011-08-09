@@ -3,6 +3,7 @@ package org.kasource.kaevent.spring.xml;
 import org.kasource.kaevent.bean.SpringBeanResolver;
 import org.kasource.kaevent.channel.ChannelFactoryImpl;
 import org.kasource.kaevent.channel.ChannelRegisterImpl;
+import org.kasource.kaevent.channel.SpringChannelFactory;
 import org.kasource.kaevent.config.KaEventConfigurationImpl;
 import org.kasource.kaevent.event.config.EventFactoryImpl;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
@@ -55,7 +56,7 @@ public enum KaEventSpringBean {
 			new String[]{"kaEvent.channelRegister","kaEvent.sourceObjectListenerRegister", "kaEvent.eventMethodInvoker"},
 			new String[]{},
 			new String[]{}),
-	CHANNEL_FACTORY(ChannelFactoryImpl.class,
+	CHANNEL_FACTORY(SpringChannelFactory.class,
 			"kaEvent.channelFactory", 
 			"",
 			new String[]{"kaEvent.channelRegister","kaEvent.eventRegister","kaEvent.eventMethodInvoker","kaEvent.beanResolver"},

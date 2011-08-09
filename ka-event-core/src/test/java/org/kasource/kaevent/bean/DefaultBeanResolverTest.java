@@ -4,6 +4,7 @@
 package org.kasource.kaevent.bean;
 
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 import org.junit.runner.RunWith;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.inject.annotation.TestedObject;
@@ -21,6 +22,12 @@ public class DefaultBeanResolverTest {
     @Test(expected=CouldNotResolveBeanException.class)
     public void getBeanTest() {
         resolver.getBean("test", String.class);
+    }
+    
+    @Test
+    public void getBeanFromContextTest() {
+    	resolver.addBean("testBean", "Test");
+    	assertEquals("Test",resolver.getBean("testBean", String.class));
     }
     
 }

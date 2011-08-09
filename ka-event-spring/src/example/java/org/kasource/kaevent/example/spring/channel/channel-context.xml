@@ -2,13 +2,26 @@
     xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:kaevent="http://kasource.org/schema/kaevent-spring"
+    xmlns:context="http://www.springframework.org/schema/context"
     xsi:schemaLocation="
 http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-2.5.xsd
 http://kasource.org/schema/kaevent-spring
 spring/schema/kaevent-spring.xsd"
 >
-
+	<context:annotation-config/> 
+	<context:component-scan base-package="org.kasource.kaevent.example.spring"/>
+	<!--  
+	<bean name="myChannel" class="org.kasource.kaevent.example.spring.channel.MyChannel" scope="prototype">
+		<constructor-arg ref="kaEvent.channelRegister"/>
+		<constructor-arg ref="kaEvent.eventRegister"/>
+		<constructor-arg ref="kaEvent.beanResolver"/>
+	</bean>
+		-->
+	
+	
 	<kaevent:kaevent scanClassPath="org.kasource.kaevent.example.spring.channel"/>
 
 	<kaevent:channel id="temperatureChannel" class="org.kasource.kaevent.example.spring.channel.MyChannel">

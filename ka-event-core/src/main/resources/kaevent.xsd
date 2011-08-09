@@ -319,7 +319,7 @@
 									</xs:documentation>
 											</xs:annotation>
 											<xs:complexType>
-												<xs:attribute name="event" type="xs:IDREF" use="required">
+												<xs:attribute name="event" type="xs:string" use="required">
 													<xs:annotation>
 														<xs:documentation>
 															event should refer to the name of a declared
@@ -344,6 +344,13 @@
 										<xs:annotation>
 											<xs:documentation>
 												Implementation class to use. If not set the default channel class will be used.
+											</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="filter" type="xs:string" use="optional">
+									<xs:annotation>
+											<xs:documentation>
+												Comma separated list of filter (bean) names. Filters all incoming events using thesen filters.
 											</xs:documentation>
 										</xs:annotation>
 									</xs:attribute>

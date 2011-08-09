@@ -5,7 +5,9 @@ xsi:schemaLocation="http://kasource.org kaevent.xsd">
 
 <events scanClassPath="org.kasource.kaevent.example.channel"/> 
 <channels>
-	<channel name="temperatureChannel"/>
+	<channel name="temperatureChannel">
+		<handle event="org.kasource.kaevent.example.channel.event.TemperatureChangedEvent"/>
+	</channel>
 </channels>
 
 </kaEventConfig>

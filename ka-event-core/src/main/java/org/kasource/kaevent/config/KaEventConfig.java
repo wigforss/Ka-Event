@@ -509,7 +509,18 @@ public class KaEventConfig {
             @XmlAttribute(required = false, name="class")
             protected String className;
             
-            public String getClassName() {
+            @XmlAttribute(required = false, name="filter")
+            protected String filter;
+            
+            public String getFilter() {
+				return filter;
+			}
+
+			public void setFilter(String filter) {
+				this.filter = filter;
+			}
+
+			public String getClassName() {
 				return className;
 			}
 
@@ -593,9 +604,7 @@ public class KaEventConfig {
             public static class Handle {
 
                 @XmlAttribute(required = true)
-                @XmlIDREF
-                @XmlSchemaType(name = "IDREF")
-                protected Object event;
+                protected String event;
 
                 /**
                  * Gets the value of the event property.
@@ -605,7 +614,7 @@ public class KaEventConfig {
                  *     {@link Object }
                  *     
                  */
-                public Object getEvent() {
+                public String getEvent() {
                     return event;
                 }
 
@@ -617,7 +626,7 @@ public class KaEventConfig {
                  *     {@link Object }
                  *     
                  */
-                public void setEvent(Object value) {
+                public void setEvent(String value) {
                     this.event = value;
                 }
 

@@ -1,11 +1,8 @@
 package org.kasource.kaevent.example.channel;
 
-import org.kasource.kaevent.channel.Channel;
+
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
-
-
-
 
 /**
  * Example that demonstrate usage of Channels. 
@@ -23,13 +20,10 @@ public class ExampleRunner {
 			createThermometer(eventDispatcher,i);
 		}
 	}
-	
-	
-	
+		
 	private static EventDispatcher getEventDispatcher() {
 		EventDispatcher eventDispatcher = new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName().replace('.', '/')+"/channel-config.xml");
-		Channel temperatureChannel = eventDispatcher.getChannel("temperatureChannel");
-		temperatureChannel.registerListener(new CommandConsole());	
+		eventDispatcher.registerListenerAtChannel(new CommandConsole(), "temperatureChannel");	
 		return eventDispatcher;
 	}
 	

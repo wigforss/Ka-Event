@@ -17,6 +17,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 
 /**
  * @author Rikard Wigforss
@@ -30,9 +31,6 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
 
     private Class<? extends Channel> channelClass;
     
-    
-
-
 	private List<String> events;
     
     private ApplicationContext applicationContext;
@@ -50,13 +48,18 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
     	ChannelRegister channelRegister = (ChannelRegister) applicationContext.getBean(KaEventSpringBean.CHANNEL_REGISTER.getId());
     	channelRegister.registerChannel(channel);
     	if(listeners != null) {
-    		for(EventListener listener : listeners) {
-    			List<EventFilter<EventObject>> filters = getFilter(listener);
-    			if(filters != null) {
-    				channel.registerListener(listener, filters);
-    			} else {
-    				channel.registerListener(listener);
+    		if(channel instanceof ListenerChannel) {
+    			for(EventListener listener : listeners) {
+    				List<EventFilter<EventObject>> filters = getFilter(listener);
+    				if(filters != null) {
+    					((ListenerChannel) channel).registerListener(listener, filters);
+    				} else {
+    					((ListenerChannel) channel).registerListener(listener);
+    				}
     			}
+    		} else {
+    			throw new IllegalArgumentException("listener registered to the channel "+ channel.getName() 
+    					+ " which does not allow listeners to registered, does not implement ListenerChannel.");
     		}
     	}
     	return channel;

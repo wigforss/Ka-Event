@@ -21,7 +21,7 @@ import org.kasource.kaevent.listener.register.EventListenerRegistration;
  * @version $Id$
  */
 public class EventMethodInvokerImpl implements EventMethodInvoker {
-    private static final Logger LOG = Logger.getLogger(EventMethodInvokerImpl.class);
+    private static Logger logger = Logger.getLogger(EventMethodInvokerImpl.class);
     
    
     private EventRegister eventRegister;
@@ -62,7 +62,7 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
         try {
             method.invoke(listener.getListener(), event);
         } catch (Exception e) {
-            LOG.error("Failed to invoke " + method + " on " + listener, e instanceof InvocationTargetException ? e
+            logger.error("Failed to invoke " + method + " on " + listener, e instanceof InvocationTargetException ? e
                     .getCause() : e);
         }
     }

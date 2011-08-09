@@ -1,20 +1,17 @@
 package org.kasource.kaevent.example.guice.channel;
 
 
+import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.config.KaEventConfigBuilder;
 import org.kasource.kaevent.config.KaEventModule;
-import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.example.guice.channel.event.TemperatureChangedEvent;
-
-
-
 
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
 
-public class ExampleModule extends KaEventModule{
+public class ExampleModule extends KaEventModule {
 	
 	
 	

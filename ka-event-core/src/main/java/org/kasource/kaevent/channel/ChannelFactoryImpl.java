@@ -65,8 +65,8 @@ public class ChannelFactoryImpl implements ChannelFactory {
 	 * @return The newly created channel.
 	 **/
    public Channel createChannel(Class<? extends Channel> channelClass, String channelName) {
-	Channel channel = getNewChannel(channelClass, channelName);
-	channelRegister.registerChannel(channel);
+	   Channel channel = getNewChannel(channelClass, channelName);
+	   channelRegister.registerChannel(channel);
        return channel;
    }
    
@@ -81,7 +81,7 @@ public class ChannelFactoryImpl implements ChannelFactory {
 	 * @return The newly created channel.
 	 **/
    public Channel createChannel(Class<? extends Channel> channelClass, String channelName, Set<Class<? extends EventObject>> events) {
-	 Channel channel = getNewChannel(channelClass, channelName);
+	   Channel channel = getNewChannel(channelClass, channelName);
        channelRegister.registerChannel(channel);
        for(Class<? extends EventObject> eventClass : events) {
            channel.registerEvent(eventClass);
@@ -100,8 +100,8 @@ public class ChannelFactoryImpl implements ChannelFactory {
 	 * @param listeners		Listeners to register at the channel.
 	 * @return The newly created channel.
 	 **/
-   public Channel createChannel(Class<? extends Channel> channelClass, String channelName, Set<Class<? extends EventObject>> events, Set<EventListener> listeners) {
-       Channel channel = getNewChannel(channelClass, channelName);
+   public ListenerChannel createChannel(Class<? extends ListenerChannel> channelClass, String channelName, Set<Class<? extends EventObject>> events, Set<EventListener> listeners) {
+	   ListenerChannel channel = (ListenerChannel) getNewChannel(channelClass, channelName);
        for(Class<? extends EventObject> eventClass : events) {
            channel.registerEvent(eventClass);
        }
@@ -124,14 +124,14 @@ public class ChannelFactoryImpl implements ChannelFactory {
     * 
     * @throws IllegalStateException if a channel with name already created or channelClass could not be instancieated.
     **/
-	private  Channel getNewChannel(Class<? extends Channel> channelClass, String name) throws IllegalStateException{
+	protected Channel getNewChannel(Class<? extends Channel> channelClass, String name) throws IllegalStateException{
 		try {
 			channelRegister.getChannel(name);
 			throw new IllegalStateException("Channel with name "+name +" has already been created.");
 		} catch (NoSuchChannelException nsce) {
 			try {
 				if (ChannelImpl.class.isAssignableFrom(channelClass)) {
-			
+					
 					Constructor<? extends Channel> cons = 
 						channelClass.getConstructor(String.class, 
 											ChannelRegister.class, 

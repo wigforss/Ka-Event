@@ -110,7 +110,7 @@ public class KaEventConfigBuilder {
 			for (Class<? extends EventObject> eventClass : channelReg
 					.getEvents()) {
 				KaEventConfig.Channels.Channel.Handle handle = new KaEventConfig.Channels.Channel.Handle();
-				handle.event = eventMap.get(eventClass);
+				handle.event = eventMap.get(eventClass).getName();
 				channel.handle.add(handle);
 			}
 

@@ -9,6 +9,7 @@ import org.kasource.kaevent.annotations.listener.ChannelListener;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.CouldNotResolveBeanException;
 import org.kasource.kaevent.channel.Channel;
+import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.channel.NoSuchChannelException;
 import org.kasource.kaevent.config.KaEventConfiguration;
@@ -71,7 +72,11 @@ public class RegisterListenerByAnnotationImpl implements
 		for (String channelName : channels) {
 			try {
 				Channel channel = channelRegister.getChannel(channelName);
-				channel.registerListener((EventListener) listener);
+				if(channel instanceof ListenerChannel) {
+					((ListenerChannel) channel).registerListener((EventListener) listener);
+				} else {
+					throw new IllegalArgumentException("Can't register " + listener + " to channel "+channelName + " its not an ListenerChannel.");
+				}
 			} catch (NoSuchChannelException nse) {
 				throw new NoSuchChannelException("Channel: " + channelName
 						+ " in @ChannelListener on " + listener.getClass()
@@ -95,8 +100,12 @@ public class RegisterListenerByAnnotationImpl implements
 		if (channelListenerAnnotation != null) {
 			for (String channelName : channelListenerAnnotation.value()) {
 				Channel channel = channelRegister.getChannel(channelName);
-				if (channel != null) {
-					channel.unregisterListener((EventListener) listener);
+				if(channel != null) {
+					if(channel instanceof ListenerChannel) {
+						((ListenerChannel) channel).unregisterListener((EventListener) listener);
+					} else {
+						throw new IllegalArgumentException("Can't unregister " + listener + " to channel "+channelName + " its not an ListenerChannel.");
+					}
 				}
 			}
 		}

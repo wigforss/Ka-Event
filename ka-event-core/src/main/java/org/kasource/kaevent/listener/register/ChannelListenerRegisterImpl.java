@@ -14,7 +14,7 @@ import java.util.WeakHashMap;
 
 import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.bean.BeanResolver;
-import org.kasource.kaevent.channel.Channel;
+import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
@@ -30,10 +30,10 @@ import org.kasource.kaevent.event.register.EventRegister;
 public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister implements ChannelListenerRegister {
 
     private Map<Class<? extends EventObject>, Map<EventListener,EventListenerRegistration>> listenersByEvent = new HashMap<Class<? extends EventObject>, Map<EventListener,EventListenerRegistration>>();
-    private Channel channel;
+    private ListenerChannel channel;
    
     
-    public ChannelListenerRegisterImpl(Channel channel, EventRegister eventRegister, BeanResolver beanResolver) {
+    public ChannelListenerRegisterImpl(ListenerChannel channel, EventRegister eventRegister, BeanResolver beanResolver) {
         super(eventRegister, beanResolver);
         this.channel = channel;
        

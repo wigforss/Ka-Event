@@ -9,7 +9,7 @@ import javax.swing.event.ChangeListener;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kasource.kaevent.channel.Channel;
+import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.channel.ChannelRegister;
@@ -49,7 +49,7 @@ public class DefaultEventDispatcherTest {
     private DispatcherQueueThread eventQueue;
     
     @Mock
-    private Channel channel;
+    private ListenerChannel channel;
     
     @TestedObject
     private DefaultEventDispatcher dispatcher;
