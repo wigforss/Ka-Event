@@ -25,6 +25,9 @@ import java.util.Set;
 
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.bean.BeanResolver;
+import org.kasource.kaevent.channel.Channel;
+import org.kasource.kaevent.channel.ChannelFactory;
+import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.config.KaEventConfig.Channels;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 
@@ -32,6 +35,7 @@ public class KaEventConfigBuilder {
 
 	private String scanClassPath;
 	private Class<? extends BeanResolver> beanResolverClass;
+	private Class<? extends ChannelFactory> channelFactoryClass;
 	private Class<? extends ThreadPoolQueueExecutor> queueClass = ThreadPoolQueueExecutor.class;
 	private Byte maxPoolSize;
 	private Byte corePoolSize;
@@ -54,6 +58,10 @@ public class KaEventConfigBuilder {
 		if (beanResolverClass != null) {
 			xmlConfig.beanResolver = new KaEventConfig.BeanResolver();
 			xmlConfig.beanResolver.clazz = beanResolverClass.getName();
+		}
+		if(channelFactoryClass != null) {
+			xmlConfig.channelFactory = new KaEventConfig.ChannelFactory();
+			xmlConfig.channelFactory.clazz = channelFactoryClass.getName();
 		}
 		if(!events.isEmpty()) {
 			buildEvents(xmlConfig);
@@ -106,6 +114,7 @@ public class KaEventConfigBuilder {
 		for (ChannelReg channelReg : channelRegs) {
 			KaEventConfig.Channels.Channel channel = new KaEventConfig.Channels.Channel();
 			channel.name = channelReg.getChannelName();
+			channel.setClassName(channelReg.getChannelClass().getName());
 			channel.handle = new ArrayList<Channels.Channel.Handle>();
 			for (Class<? extends EventObject> eventClass : channelReg
 					.getEvents()) {
@@ -199,11 +208,25 @@ public class KaEventConfigBuilder {
 	 * 
 	 * @return the builder
 	 **/
-	public KaEventConfigBuilder beanResolverClass(
+	public KaEventConfigBuilder beanResolver(
 			Class<? extends BeanResolver> beanResolverClass) {
 		this.beanResolverClass = beanResolverClass;
 		return this;
 	}
+	
+	 /**
+	 * Set the ChannelFactory implementation to use
+	 * 
+	 * @param beanResolverClass BeanResolver implementation
+	 * 
+	 * @return the builder
+	 **/
+	public KaEventConfigBuilder channelFactory(
+			Class<? extends ChannelFactory> channelFactoryClass) {
+		this.channelFactoryClass = channelFactoryClass;
+		return this;
+	}
+	
 
 	/**
 	 * Sets the queue (worker thread) implementation to use. Overrides the
@@ -259,6 +282,12 @@ public class KaEventConfigBuilder {
 		return this;
 	}
 
+	 
+	public KaEventConfigBuilder addChannel(String channelName,
+				Class<? extends EventObject>... events) {
+		 return addChannel(channelName, ChannelImpl.class, events);
+	 }
+	
 	/**
 	 * Add a channel to the configuration.
 	 * 
@@ -267,14 +296,14 @@ public class KaEventConfigBuilder {
 	 * 
 	 * @return	the builder
 	 **/
-	public KaEventConfigBuilder addChannel(String channelName,
+	public KaEventConfigBuilder addChannel(String channelName,Class<? extends Channel> channelClass,
 			Class<? extends EventObject>... events) {
 		for(Class<? extends EventObject> eventClass : events) {
 			if(!eventClass.isAnnotationPresent(Event.class)) {
 				throw new IllegalArgumentException("Only events annotated with @Event can used in addChannel "+eventClass+" is not annotated with @Event");
 			}
 		}
-		channelRegs.add(new ChannelReg(channelName, events));
+		channelRegs.add(new ChannelReg(channelName, channelClass, events));
 		return this;
 	}
 
@@ -302,12 +331,15 @@ public class KaEventConfigBuilder {
 	 **/
 	private static class ChannelReg {
 		private String channelName;
+		private Class<? extends Channel> channelClass;
 		private Class<? extends EventObject>[] events;
 
 		public ChannelReg(String channelName,
+				Class<? extends Channel> channelClass,
 				Class<? extends EventObject>[] events) {
 
 			this.channelName = channelName;
+			this.channelClass = channelClass;
 			this.events = events;
 		}
 
@@ -317,6 +349,10 @@ public class KaEventConfigBuilder {
 
 		public Class<? extends EventObject>[] getEvents() {
 			return events;
+		}
+
+		public Class<? extends Channel> getChannelClass() {
+			return channelClass;
 		}
 
 	}

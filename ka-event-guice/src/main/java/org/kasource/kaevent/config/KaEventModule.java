@@ -3,18 +3,18 @@ package org.kasource.kaevent.config;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.GuiceBeanResolver;
 import org.kasource.kaevent.channel.ChannelFactory;
-import org.kasource.kaevent.channel.ChannelFactoryImpl;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.channel.ChannelRegisterImpl;
+import org.kasource.kaevent.channel.GuiceChannelFactory;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.config.EventFactoryImpl;
-import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
 import org.kasource.kaevent.event.dispatch.EventRouter;
 import org.kasource.kaevent.event.dispatch.EventRouterImpl;
+import org.kasource.kaevent.event.dispatch.GuiceEventDispatcher;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 import org.kasource.kaevent.event.register.DefaultEventRegister;
 import org.kasource.kaevent.event.register.EventRegister;
@@ -24,108 +24,100 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
-public class KaEventModule extends AbstractModule implements KaEventInitializedListener{
+public class KaEventModule extends AbstractModule {
 
+	private String scanClassPath;
 	
-
-	protected KaEventConfiguration configuration;
-
-	/**
-	 * Configure Ka Event with a Java Configuration object, use KaEventConfigBuilder.
-	 * 
-	 * @param config a configuration object
-	 */
-	public  KaEventModule(KaEventConfig config) {
-		if(config.beanResolver == null) {
-			config.beanResolver = new KaEventConfig.BeanResolver();
-			config.beanResolver.clazz = GuiceBeanResolver.class.getName();
-		}
-		KaEventInitializer.getInstance().addListener(this);
-		new DefaultEventDispatcher(config);
-		
+	public  KaEventModule() {	
 	}
 	
-	/**
-	 * Configure Ka Event with a XML configuration file.
-	 * 
-	 * @param configLocation	location of the configuration file, supports prefixes <i>file:</i> and <i>classpath:</i>. 
-	 **/
-	public  KaEventModule(String configLocation) {
-		KaEventInitializer.getInstance().addListener(this);
-		new DefaultEventDispatcher(configLocation);
-		
-	}
-	
-	
-	
-	
-	
-	
-	@Override
-	public void doInitialize(KaEventConfiguration configuration) {
-		this.configuration = configuration;
-		
-	}
 	
 	@Override
 	protected void configure() {
+		bind(ChannelFactory.class).to(GuiceChannelFactory.class);
+		bind(EventDispatcher.class).to(GuiceEventDispatcher.class);
+		bind(BeanResolver.class).to(GuiceBeanResolver.class);	
 		
 	}
 
-	@Provides
-	public EventDispatcher provideEventDispatcher() {
-		return configuration.getEventDispatcher();
+	
+	
+	@Provides @Named("kaEvent.scan.package")
+	String provideScanClassPath() {
+		return scanClassPath;
 	}
 
-	@Provides
-	BeanResolver provideBeanResolver() {
-		return configuration.getBeanResolver();
+	@Provides @Singleton
+	EventFactory provideEventFactory(BeanResolver beanResolver) {
+		return new EventFactoryImpl(beanResolver);
 	}
 
-	@Provides
-	EventFactory provideEventFactory() {
-		return configuration.getEventFactory();
+	@Provides @Singleton
+	EventRegister provideEventRegister(EventFactory eventFactory) {
+		return new DefaultEventRegister(eventFactory);
 	}
 
-	@Provides
-	EventRegister provideEventRegister() {
-		return configuration.getEventRegister();
+	@Provides @Singleton
+	EventMethodInvoker provideEventMethodInvoker(EventRegister eventRegister) {
+		return new EventMethodInvokerImpl(eventRegister);
 	}
 
-	@Provides
-	EventMethodInvoker provideEventMethodInvoker() {
-		return configuration.getEventMethodInvoker();
+	@Provides @Singleton
+	SourceObjectListenerRegister provideSourceObjectListenerRegister(EventRegister eventRegister, BeanResolver beanResolver) {
+		return new SourceObjectListenerRegisterImpl(eventRegister, beanResolver);
 	}
 
-	@Provides
-	SourceObjectListenerRegister provideSourceObjectListenerRegister() {
-		return configuration.getSourceObjectListenerRegister();
-	}
-
-	@Provides
+	@Provides @Singleton
 	ChannelRegister provideChannelRegister() {
-		return configuration.getChannelRegister();
+		return new ChannelRegisterImpl();
 	}
 
-	@Provides
-	EventRouter provideEventRouter() {
-		return configuration.getEventRouter();
+	@Provides @Singleton
+	EventRouter provideEventRouter(ChannelRegister channelRegister, SourceObjectListenerRegister sourceObjectListenerRegister, EventMethodInvoker eventMethodInvoker) {
+		return new EventRouterImpl(channelRegister, sourceObjectListenerRegister, eventMethodInvoker);
 	}
 
-	@Provides
-	ChannelFactory provideChannelFactory() {
-		return configuration.getChannelFactory();
+	
+	@Provides @Singleton
+	DispatcherQueueThread provideQueueThread(EventRouter eventRouter) {
+		return new ThreadPoolQueueExecutor(eventRouter);
 	}
 
-	@Provides
-	DispatcherQueueThread provideQueueThread() {
-		return configuration.getQueueThread();
-	}
 
-	@Provides
-	KaEventConfiguration provideKaEventConfiguration() {
+	@Provides @Singleton
+	KaEventConfiguration provideKaEventConfiguration(BeanResolver beanResolver, 
+													 ChannelFactory channelFactory, 
+													 ChannelRegister channelRegister,
+													 EventDispatcher eventDispatcher,
+													 EventFactory eventFactory,
+													 EventMethodInvoker eventMethodInvoker,
+													 EventRegister eventRegister,
+													 EventRouter eventRouter,
+													 DispatcherQueueThread queueThread,
+													 SourceObjectListenerRegister sourceObjectListenerRegister) {
+		KaEventConfigurationImpl configuration =  new KaEventConfigurationImpl();
+		configuration.setBeanResolver(beanResolver);
+		configuration.setChannelFactory(channelFactory);
+		configuration.setChannelRegister(channelRegister);
+		configuration.setEventDispatcher(eventDispatcher);
+		configuration.setEventFactory(eventFactory);
+		configuration.setEventMethodInvoker(eventMethodInvoker);
+		configuration.setEventRegister(eventRegister);
+		configuration.setEventRouter(eventRouter);
+		configuration.setQueueThread(queueThread);
+		configuration.setSourceObjectListenerRegister(sourceObjectListenerRegister);
+		KaEventInitializer.setConfiguration(configuration);
 		return configuration;
+	}
+
+
+	/**
+	 * @param scanClassPath the scanClassPath to set
+	 */
+	protected void setScanClassPath(String scanClassPath) {
+		this.scanClassPath = scanClassPath;
 	}
 	
 	

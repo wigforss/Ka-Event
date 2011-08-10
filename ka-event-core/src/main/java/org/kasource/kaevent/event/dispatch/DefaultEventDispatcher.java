@@ -60,8 +60,8 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     
    
     
-    public DefaultEventDispatcher() {
-        initialize((String)null);
+    protected DefaultEventDispatcher() {
+       
     }
    
     

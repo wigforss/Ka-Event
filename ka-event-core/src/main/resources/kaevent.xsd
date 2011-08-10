@@ -88,10 +88,26 @@
 							<xs:annotation>
 								<xs:documentation>
 									The fully qualified class name of the bean
-									resolver to use, if not set the default bean resolver will be
-									used
-									with no ability to lookup beans.
+									resolver to use, must implement org.kasource.kaevent.bean.BeanResolver.
 					</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="channelFactory" maxOccurs="1" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>
+							The channel factory implementation to use. If not
+							declared to default implementation will be used.
+						</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="class" type="javaClass" use="optional">
+							<xs:annotation>
+								<xs:documentation>
+									The fully qualified class name of the channel
+									factory to use, class must implement org.kasource.kaevent.channel.ChannelFactory.
+								</xs:documentation>
 							</xs:annotation>
 						</xs:attribute>
 					</xs:complexType>

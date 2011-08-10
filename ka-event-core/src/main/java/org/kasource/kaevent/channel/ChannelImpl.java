@@ -48,6 +48,7 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
      **/
     public ChannelImpl(String name, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker,BeanResolver beanResolver) {
     	super(name, channelRegister, eventRegister, beanResolver);
+    	this.eventMethodInvoker = eventMethodInvoker;
     }
 
     

@@ -4,9 +4,6 @@ package org.kasource.kaevent.example.guice.custom;
 
 
 
-import org.kasource.kaevent.example.guice.custom.ExampleModule;
-import org.kasource.kaevent.example.guice.custom.Thermometer;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 

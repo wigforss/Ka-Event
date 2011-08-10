@@ -199,8 +199,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class KaEventConfig {
 
     protected KaEventConfig.QueueThread queueThread;
-    protected KaEventConfig.ThreadPoolExecutor threadPoolExecutor;
+	protected KaEventConfig.ThreadPoolExecutor threadPoolExecutor;
     protected KaEventConfig.BeanResolver beanResolver;
+    protected KaEventConfig.ChannelFactory channelFactory;
     protected KaEventConfig.Events events;
     @XmlElement(required = true)
     protected KaEventConfig.Channels channels;
@@ -288,6 +289,24 @@ public class KaEventConfig {
     }
 
     /**
+     * Returns the channel factory.
+     * 
+     * @return Channel Factory.
+     **/
+    public KaEventConfig.ChannelFactory getChannelFactory() {
+		return channelFactory;
+	}
+
+    /**
+     * Set the channel factory.
+     * 
+     * @param channelFactory Set the Channel Factory to use.
+     **/
+	public void setChannelFactory(KaEventConfig.ChannelFactory channelFactory) {
+		this.channelFactory = channelFactory;
+	}
+    
+    /**
      * Gets the value of the events property.
      * 
      * @return
@@ -356,6 +375,39 @@ public class KaEventConfig {
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     public static class BeanResolver {
+
+        @XmlAttribute(name = "class")
+        protected String clazz;
+
+        /**
+         * Gets the value of the clazz property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link String }
+         *     
+         */
+        public String getClazz() {
+            return clazz;
+        }
+
+        /**
+         * Sets the value of the clazz property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link String }
+         *     
+         */
+        public void setClazz(String value) {
+            this.clazz = value;
+        }
+
+    }
+    
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
+    public static class ChannelFactory {
 
         @XmlAttribute(name = "class")
         protected String clazz;

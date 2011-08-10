@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.config.EventFactoryImpl;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
+import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
 import org.kasource.kaevent.event.dispatch.EventRouter;
 import org.kasource.kaevent.event.dispatch.EventRouterImpl;
@@ -189,7 +191,12 @@ public class KaEventConfigurer  {
         config.setEventRouter(new EventRouterImpl(config.getChannelRegister(), config.getSourceObjectListenerRegister(),config.getEventMethodInvoker()));
         
         // Channel Factory
-        config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodInvoker(), config.getBeanResolver()));
+        if(xmlConfig.getChannelFactory() != null && xmlConfig.getChannelFactory().getClazz() != null) {
+        	ChannelFactory channelFactory = createChannelFactory(xmlConfig.getChannelFactory().getClazz(), config.getChannelRegister(), config.getEventRegister(),config.getEventMethodInvoker(), config.getBeanResolver());
+        	config.setChannelFactory(channelFactory);
+        } else {
+        	config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),config.getEventMethodInvoker(), config.getBeanResolver()));
+        }
         
         // Queue Thread
         if(xmlConfig.getQueueThread() == null) {
@@ -236,6 +243,18 @@ public class KaEventConfigurer  {
         
     }
 
+    
+    protected ChannelFactory createChannelFactory(String clazz, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker, BeanResolver beanResolver) {
+    	try {
+    		@SuppressWarnings("unchecked")
+			Class<? extends ChannelFactory> channelFactoryClass = (Class<? extends ChannelFactory>) Class.forName(clazz);
+    		Constructor<? extends ChannelFactory> cons = channelFactoryClass.getConstructor(ChannelRegister.class, EventRegister.class, EventMethodInvoker.class, BeanResolver.class);
+    		return cons.newInstance(channelRegister, eventRegister, eventMethodInvoker, beanResolver);
+    	}catch(Exception e) {
+    		throw new IllegalStateException("Could not create ChannelFactory from " + clazz, e);
+    	}
+    }
+    
     /**
      *  Register @Event annotated events with the channels referenced in the channels attribute
      */

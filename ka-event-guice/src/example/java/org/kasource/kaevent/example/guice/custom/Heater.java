@@ -1,7 +1,7 @@
 package org.kasource.kaevent.example.guice.custom;
 
-import org.kasource.kaevent.example.custom.event.TemperatureChangeEvent;
-import org.kasource.kaevent.example.custom.event.TemperatureChangeEventListener;
+import org.kasource.kaevent.example.guice.custom.event.TemperatureChangeEvent;
+import org.kasource.kaevent.example.guice.custom.event.TemperatureChangeEventListener;
 
 
 

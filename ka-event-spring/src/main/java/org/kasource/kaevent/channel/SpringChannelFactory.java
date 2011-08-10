@@ -30,6 +30,9 @@ public class SpringChannelFactory extends ChannelFactoryImpl implements
 	 **/
 	protected Channel getNewChannel(Class<? extends Channel> channelClass,
 			String name) throws IllegalStateException {
+		if(channelClass.equals(ChannelImpl.class)) {
+			return super.getNewChannel(channelClass, name);
+		}
 		String[] channelBeans = applicationContext
 				.getBeanNamesForType(channelClass);
 		for (String beanName : channelBeans) {
@@ -37,6 +40,7 @@ public class SpringChannelFactory extends ChannelFactoryImpl implements
 				Channel channel = (Channel) applicationContext
 						.getBean(beanName);
 				if (channel != null) {
+					channel.setName(name);
 					return channel;
 				}
 				break;
