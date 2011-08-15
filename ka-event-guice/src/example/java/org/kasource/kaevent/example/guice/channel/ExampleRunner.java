@@ -1,8 +1,12 @@
 package org.kasource.kaevent.example.guice.channel;
 
 
+
+
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 
 /**
  * Example that demonstrate usage of Channels.
@@ -19,9 +23,9 @@ public class ExampleRunner  {
 
     public static void main(String[] args) {
     	Injector injector = Guice.createInjector(new ExampleModule());
-		Thermometer thermometer = injector.getInstance(Thermometer.class);
+    	Thermometer thermometer = injector.getInstance(Key.get(Thermometer.class, Names.named("thermometer")));
 		injector.getInstance(CommandConsole.class);
-		thermometer.registerListers();
+		
 		new Thread(thermometer).start();
     }
 

@@ -1,9 +1,12 @@
 package org.kasource.kaevent.config;
 
+import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.kasource.kaevent.event.register.EventRegister;
+
+
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -24,6 +27,8 @@ public class GuiceKaEventConfigurer extends KaEventConfigurer{
 	@Inject
 	private EventFactory eventFactory;
 	
+
+	
 	@Nullable
 	@Inject
 	@Named("kaEvent.scan.package")
@@ -34,6 +39,10 @@ public class GuiceKaEventConfigurer extends KaEventConfigurer{
 		if(scanClassPath != null && scanClassPath.length() > 0) {
             importAndRegisterEvents(new AnnotationEventExporter(scanClassPath), eventFactory, eventRegister);
         }
+		createChannels();
+		//creating the configuration will cause  
+		// notification to listeners that the environment is ready
+		injector.getInstance(KaEventConfiguration.class);
 	}
 	
 	private void registerEvents() {
@@ -41,6 +50,15 @@ public class GuiceKaEventConfigurer extends KaEventConfigurer{
 			if(bindingKey.getTypeLiteral().getRawType().equals(EventConfig.class)) {
 				EventConfig event = (EventConfig) injector.getInstance(bindingKey);
 				eventRegister.registerEvent(event);
+			}
+			
+		}
+	}
+	
+	private void createChannels() {
+		for(Key<?> bindingKey : injector.getBindings().keySet()) {
+			if(Channel.class.isAssignableFrom(bindingKey.getTypeLiteral().getRawType())) {
+				injector.getInstance(bindingKey);
 			}
 			
 		}

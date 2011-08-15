@@ -6,9 +6,11 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.example.guice.simple.event.TemperatureChangeEvent;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 
 ///CLOVER:OFF
+@Singleton
 public class Thermometer implements Runnable{
 	private double optimalTemperatur = 22.0d;
 	private double currentTemperatur = 0.0d;
@@ -19,13 +21,6 @@ public class Thermometer implements Runnable{
 	private Heater heater;
 	@Inject
 	private EventDispatcher eventDispatcher;
-	
-	
-	
-	public void registerListers() {
-		eventDispatcher.registerListener(cooler, this);
-		eventDispatcher.registerListener(heater, this);
-	}
 	
 
 	public double getOptimalTemperatur() {

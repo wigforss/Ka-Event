@@ -2,10 +2,10 @@ package org.kasource.kaevent.example.guice.custom;
 
 
 
-
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 
 /**
  * Example which uses a custom method resolver found by invoking a factory method, see TemperatureChangeEventListener for details. 
@@ -16,9 +16,9 @@ import com.google.inject.Injector;
 public class ExampleRunner {
 	public static void main(String[] args) {
 		Injector injector = Guice.createInjector(new ExampleModule());
-		Thermometer thermometer = injector.getInstance(Thermometer.class);
+		Thermometer thermometer = injector.getInstance(Key.get(Thermometer.class, Names.named("thermometer")));
 	
-		thermometer.registerListers();
+
 		new Thread(thermometer).start();
 		
 	}

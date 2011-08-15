@@ -23,16 +23,6 @@ public class Thermometer implements Runnable{
 		
 	}
 	
-	public void registerListers() {
-		eventDispatcher.registerListener(cooler, this);
-		eventDispatcher.registerListener(heater, this);
-	}
-	
-
-	
-	
-
-	
 	
 
 	public double getOptimalTemperatur() {

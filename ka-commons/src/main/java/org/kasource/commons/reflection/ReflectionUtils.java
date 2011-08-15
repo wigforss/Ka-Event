@@ -4,9 +4,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventObject;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -102,8 +104,16 @@ public class ReflectionUtils {
      */
     public static  Set<Class<?>> getInterfacesExtending(Object object, Class<?> interfaceClass) {
         Set<Class<?>> interfacesFound = new HashSet<Class<?>>();
+        List<Class<?>> interfaceList = new ArrayList<Class<?>>();
+        Class<?> clazz = object.getClass();
         Class<?>[] interfaces = object.getClass().getInterfaces();
-        for(Class<?> i : interfaces) {
+        interfaceList.addAll(Arrays.asList(interfaces));
+        while((clazz = clazz.getSuperclass()) != null) {
+        	interfaces = clazz.getInterfaces();
+        	interfaceList.addAll(Arrays.asList(interfaces));
+        }
+          
+        for(Class<?> i : interfaceList) {
             if(interfaceClass.isAssignableFrom(i)) {
                 interfacesFound.add(i);
             }

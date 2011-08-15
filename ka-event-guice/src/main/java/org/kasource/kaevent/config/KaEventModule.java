@@ -1,5 +1,12 @@
 package org.kasource.kaevent.config;
 
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.kasource.kaevent.annotations.listener.ChannelListener;
+import org.kasource.kaevent.annotations.listener.RegisterListener;
+import org.kasource.kaevent.annotations.listener.UnregisterListener;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.GuiceBeanResolver;
 import org.kasource.kaevent.channel.ChannelFactory;
@@ -18,17 +25,21 @@ import org.kasource.kaevent.event.dispatch.GuiceEventDispatcher;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 import org.kasource.kaevent.event.register.DefaultEventRegister;
 import org.kasource.kaevent.event.register.EventRegister;
+import org.kasource.kaevent.listener.register.RegisterListenerInterceptor;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Named;
 
 public class KaEventModule extends AbstractModule {
 
 	private String scanClassPath;
+	
+	
 	
 	public  KaEventModule() {	
 	}
@@ -39,7 +50,11 @@ public class KaEventModule extends AbstractModule {
 		bind(ChannelFactory.class).to(GuiceChannelFactory.class);
 		bind(EventDispatcher.class).to(GuiceEventDispatcher.class);
 		bind(BeanResolver.class).to(GuiceBeanResolver.class);	
-		
+		bindInterceptor(Matchers.any(), Matchers.annotatedWith(RegisterListener.class), 
+			        new RegisterListenerInterceptor(true));
+		bindInterceptor(Matchers.any(), Matchers.annotatedWith(UnregisterListener.class), 
+		        new RegisterListenerInterceptor(false));
+
 	}
 
 	
@@ -108,6 +123,7 @@ public class KaEventModule extends AbstractModule {
 		configuration.setEventRouter(eventRouter);
 		configuration.setQueueThread(queueThread);
 		configuration.setSourceObjectListenerRegister(sourceObjectListenerRegister);
+		System.out.println("Initialized");
 		KaEventInitializer.setConfiguration(configuration);
 		return configuration;
 	}
