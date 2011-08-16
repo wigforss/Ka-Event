@@ -14,7 +14,7 @@ import java.util.EventObject;
 public interface EventConfig {
 
     /**
-     * Return the listener class associated with the eventClass
+     * Return the listener class associated with the eventClass.
      * 
      * @return the listener interface class
      */
@@ -24,12 +24,14 @@ public interface EventConfig {
      * Returns the interface method to be invoked, may be null if runtime
      * strategy method for resolve method is used.
      * 
+     * @param event Event object.
+     * 
      * @return Returns the interface method to be invoked
      **/
-    public Method getEventMethod(EventObject  event);
+    public Method getEventMethod(EventObject event);
 
     /**
-     * Return the actual event class
+     * Return the actual event class.
      * 
      * @return the event class
      **/
@@ -37,7 +39,7 @@ public interface EventConfig {
 
  
     /**
-     * Returns the name of the event
+     * Returns the name of the event.
      * 
      * @return name of the event
      */

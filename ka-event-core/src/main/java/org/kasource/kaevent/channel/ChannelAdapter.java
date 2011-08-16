@@ -10,22 +10,41 @@ import java.util.Set;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.register.EventRegister;
 
+/**
+ * Channel Adapter.
+ * 
+ * Extend this class to inherit event registration capabilities.
+ * 
+ * @author rikardwi
+ **/
 public abstract class ChannelAdapter implements Channel {
 	
 	private Map<Class<? extends EventObject>, Class<? extends EventListener>> eventMap = 
 	    new HashMap<Class<? extends EventObject>, Class<? extends EventListener>>();
 	
-	// Name of the channel
+	/** Name of the channel. **/
     private String name;
     private ChannelRegister channelRegister;
     private EventRegister eventRegister;
     
-    
+    /**
+     * Constructor.
+     * 
+     * @param channelRegister Channel register
+     * @param eventRegister   Event Register.
+     **/
     public ChannelAdapter(ChannelRegister channelRegister, EventRegister eventRegister) {
     	this.channelRegister = channelRegister;
     	this.eventRegister = eventRegister;
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param name            Name of the channel.
+     * @param channelRegister Channel register
+     * @param eventRegister   Event Register.
+     **/
 	public ChannelAdapter(String name, ChannelRegister channelRegister, EventRegister eventRegister) {
     	this.name = name;
     	this.channelRegister = channelRegister;
@@ -60,8 +79,6 @@ public abstract class ChannelAdapter implements Channel {
      * 
      * @param eventClass
      *            New event type to handle
-     * @param refreshListeners
-     *            true to refresh listeners
      **/
     @Override
     public void registerEvent(Class<? extends EventObject> eventClass) {
@@ -106,6 +123,11 @@ public abstract class ChannelAdapter implements Channel {
         return eventMap.values();
     }
     
+    /**
+     * Returns the event register.
+     * 
+     * @return event register instance.
+     **/
     protected EventRegister getEventRegister() {
 		return eventRegister;
 	}

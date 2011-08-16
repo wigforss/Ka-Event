@@ -83,22 +83,23 @@ public class KaEventConfigurer {
      * The configLocation can be read from both classpath and file, use a prefix to indicate which kind of location to
      * use. Supported prefixes are classpath: and file:
      * 
+     * If configLocation is null the default location will be tried <i>classpath:kaevent-config.xml</i>.
+     * 
      * @param eventDispatcher
      *            The event dispatcher.
      * @param configLocation
      *            Location of the XML file.
+     * @throws IllegalArgumentException if the configuration could not be read.
      **/
-    public void configure(EventDispatcher eventDispatcher, String configLocation) {
+    public void configure(EventDispatcher eventDispatcher, String configLocation) throws IllegalArgumentException {
 
         KaEventConfig xmlConfig = null;
         if (configLocation != null) {
             xmlConfig = loadXmlFromPath(configLocation);
         } else {
-            // Try default location
-            try {
-                xmlConfig = loadXmlFromPath("classpath:kaevent-config.xml");
-            } catch (IllegalArgumentException iae) {
-            } // Ignore
+            // Try default location       
+            xmlConfig = loadXmlFromPath("classpath:kaevent-config.xml");
+            
         }
         configure(eventDispatcher, xmlConfig);
 
@@ -205,21 +206,37 @@ public class KaEventConfigurer {
         }
 
         // Queue Thread
+        configureEventQueue(xmlConfig, config);
+
+        // import events
+        importEvents(xmlConfig, config, beanResolver);
+
+        createChannels(xmlConfig, config);
+
+        registerEventsAtChannels(config);
+
+        return config;
+
+    }
+
+    private void importEvents(KaEventConfig xmlConfig, KaEventConfigurationImpl config, BeanResolver beanResolver) {
+        KaEventConfig.Events events = xmlConfig.getEvents();
+        if (events != null) {
+            String scanPath = events.getScanClassPath();
+            if (scanPath != null && scanPath.length() > 0) {
+                importAndRegisterEvents(new AnnotationEventExporter(scanPath), config.getEventFactory(),
+                            config.getEventRegister());
+            }
+            importAndRegisterEvents(new XmlConfigEventExporter(events.getEvent(), beanResolver),
+                        config.getEventFactory(), config.getEventRegister());
+        }
+    }
+
+    private void configureEventQueue(KaEventConfig xmlConfig, KaEventConfigurationImpl config) {
         if (xmlConfig.getQueueThread() == null) {
             config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventRouter()));
             ThreadPoolQueueExecutor threadPoolExecutor = new ThreadPoolQueueExecutor(config.getEventRouter());
-            if (xmlConfig.getThreadPoolExecutor() != null) {
-                if (xmlConfig.getThreadPoolExecutor().getMaximumPoolSize() != null) {
-                    threadPoolExecutor.setMaximumPoolSize(xmlConfig.getThreadPoolExecutor().getMaximumPoolSize());
-                }
-                if (xmlConfig.getThreadPoolExecutor().getCorePoolSize() != null) {
-                    threadPoolExecutor.setCorePoolSize(xmlConfig.getThreadPoolExecutor().getCorePoolSize());
-                }
-                if (xmlConfig.getThreadPoolExecutor().getKeepAliveTime() != null) {
-                    threadPoolExecutor.setKeepAliveTime(xmlConfig.getThreadPoolExecutor().getKeepAliveTime()
-                                .longValue(), TimeUnit.MILLISECONDS);
-                }
-            }
+            configureDefaultEventQueue(xmlConfig, threadPoolExecutor);
             config.setQueueThread(threadPoolExecutor);
         } else {
             try {
@@ -232,27 +249,34 @@ public class KaEventConfigurer {
             }
 
         }
-
-        // import events
-        KaEventConfig.Events events = xmlConfig.getEvents();
-        if (events != null) {
-            String scanPath = events.getScanClassPath();
-            if (scanPath != null && scanPath.length() > 0) {
-                importAndRegisterEvents(new AnnotationEventExporter(scanPath), config.getEventFactory(),
-                            config.getEventRegister());
-            }
-            importAndRegisterEvents(new XmlConfigEventExporter(events.getEvent(), beanResolver),
-                        config.getEventFactory(), config.getEventRegister());
-        }
-
-        createChannels(xmlConfig, config);
-
-        registerEventsAtChannels(config);
-
-        return config;
-
     }
 
+    private void configureDefaultEventQueue(KaEventConfig xmlConfig, ThreadPoolQueueExecutor threadPoolExecutor) {
+        if (xmlConfig.getThreadPoolExecutor() != null) {
+            if (xmlConfig.getThreadPoolExecutor().getMaximumPoolSize() != null) {
+                threadPoolExecutor.setMaximumPoolSize(xmlConfig.getThreadPoolExecutor().getMaximumPoolSize());
+            }
+            if (xmlConfig.getThreadPoolExecutor().getCorePoolSize() != null) {
+                threadPoolExecutor.setCorePoolSize(xmlConfig.getThreadPoolExecutor().getCorePoolSize());
+            }
+            if (xmlConfig.getThreadPoolExecutor().getKeepAliveTime() != null) {
+                threadPoolExecutor.setKeepAliveTime(xmlConfig.getThreadPoolExecutor().getKeepAliveTime()
+                            .longValue(), TimeUnit.MILLISECONDS);
+            }
+        }
+    }
+
+    /**
+     * Create the channel factory from clazz.
+     * 
+     * @param clazz              Channel implementation class to instanceiate.
+     * @param channelRegister    Channel register.
+     * @param eventRegister      Event Register.
+     * @param eventMethodInvoker Event method invoker.
+     * @param beanResolver       Bean resolver.
+     * 
+     * @return A new ChannelFactory.
+     */
     protected ChannelFactory createChannelFactory(String clazz, ChannelRegister channelRegister,
                 EventRegister eventRegister, EventMethodInvoker eventMethodInvoker, BeanResolver beanResolver) {
         try {
@@ -268,7 +292,9 @@ public class KaEventConfigurer {
     }
 
     /**
-     * Register @Event annotated events with the channels referenced in the channels attribute
+     * Register @Event annotated events with the channels referenced in the channels attribute.
+     * 
+     * @param config The configuration build this far.
      */
     protected void registerEventsAtChannels(KaEventConfiguration config) {
         EventRegister eventRegister = config.getEventRegister();
@@ -277,25 +303,32 @@ public class KaEventConfigurer {
         for (Class<? extends EventObject> eventClass : eventRegister.getEventClasses()) {
             Event eventAnno = eventClass.getAnnotation(Event.class);
             if (eventAnno != null && eventAnno.channels().length > 0) {
-                String[] channelsByEvent = eventAnno.channels();
-                for (String channelName : channelsByEvent) {
-                    Channel channel = null;
-                    try {
-                        channel = channelRegister.getChannel(channelName);
-                        channel.registerEvent(eventClass);
-                    } catch (NoSuchChannelException nsce) {
-                        if (eventAnno.createChannels()) {
-                            channel = channelFactory.createChannel(channelName);
-                        } else {
-                            throw new NoSuchChannelException(eventClass.getName()
-                                        + " @Event annotation referenced to a channel named " + channelName
-                                        + " which does not exist!");
-                        }
-                    }
-                    channel.registerEvent(eventClass);
-                }
+                registerEventAtChannelByAnnotation(channelFactory, channelRegister, eventClass, eventAnno);
             }
         }
+    }
+
+    private void registerEventAtChannelByAnnotation(ChannelFactory channelFactory, ChannelRegister channelRegister,
+                Class<? extends EventObject> eventClass, Event eventAnno) {
+        
+            String[] channelsByEvent = eventAnno.channels();
+            for (String channelName : channelsByEvent) {
+                Channel channel = null;
+                try {
+                    channel = channelRegister.getChannel(channelName);
+                    channel.registerEvent(eventClass);
+                } catch (NoSuchChannelException nsce) {
+                    if (eventAnno.createChannels()) {
+                        channel = channelFactory.createChannel(channelName);
+                    } else {
+                        throw new NoSuchChannelException(eventClass.getName()
+                                    + " @Event annotation referenced to a channel named " + channelName
+                                    + " which does not exist!");
+                    }
+                }
+                channel.registerEvent(eventClass);
+            }
+        
     }
 
     /**
@@ -306,7 +339,6 @@ public class KaEventConfigurer {
      * @param config
      *            Use this to lookup the environment configured this far.
      **/
-    @SuppressWarnings("unchecked")
     private void createChannels(KaEventConfig xmlConfig, KaEventConfiguration config) {
         EventRegister eventRegister = config.getEventRegister();
         ChannelFactory channelFactory = config.getChannelFactory();
@@ -316,45 +348,68 @@ public class KaEventConfigurer {
             for (KaEventConfig.Channels.Channel channel : channels.getChannel()) {
                 String name = channel.getName();
                 Set<Class<? extends EventObject>> eventSet = new HashSet<Class<? extends EventObject>>();
-                if (channel.getHandle() != null) {
-                    for (KaEventConfig.Channels.Channel.Handle handleEvent : channel.getHandle()) {
-                        String eventName = handleEvent.getEvent();
-                        
-                        EventConfig eventConfig = eventRegister.getEventByName(eventName);
-                        if (eventConfig != null) {
-                            eventSet.add(eventConfig.getEventClass());
-                        } else {
-                            throw new IllegalStateException("Event " + eventName + " could not be found!");
-                        }
-                    }
-                }
-                Class<? extends Channel> channelClass = ChannelImpl.class;
-                if (channel.getClassName() != null) {
-                    try {
-                        channelClass = (Class<? extends ListenerChannel>) Class.forName(channel.getClassName());
-                    } catch (ClassNotFoundException cnfe) {
-                        throw new IllegalStateException(channel.getClassName() + " Could not be found ", cnfe);
-                    } catch (ClassCastException cce) {
-                        throw new IllegalStateException(channel.getClassName() + " Must implement "
-                                    + ListenerChannel.class, cce);
-                    }
-                }
-                Channel newChannel = null;
-                if (eventSet.isEmpty()) {
+                registerEventsForChannel(eventRegister, channel, eventSet);
+                Class<? extends Channel> channelClass = getChannelClass(channel);
+                createChannelInstance(config, channelFactory, channel, name, eventSet, channelClass);
+            }
+        }
+    }
 
-                    newChannel = channelFactory.createChannel(channelClass, name);
+    private void createChannelInstance(KaEventConfiguration config, ChannelFactory channelFactory,
+                KaEventConfig.Channels.Channel channel, String name, Set<Class<? extends EventObject>> eventSet,
+                Class<? extends Channel> channelClass) {
+        Channel newChannel = null;
+        if (eventSet.isEmpty()) {
+
+            newChannel = channelFactory.createChannel(channelClass, name);
+        } else {
+            newChannel = channelFactory.createChannel(channelClass, name, eventSet);
+        }
+        setFiltersForChannel(config, channel, newChannel);
+    }
+
+    private void setFiltersForChannel(KaEventConfiguration config, KaEventConfig.Channels.Channel channel,
+                Channel newChannel) {
+        if (newChannel != null && newChannel instanceof FilterableChannel && channel.getFilter() != null) {
+            String[] filters = channel.getFilter().split(",");
+
+            for (String filter : filters) {
+                @SuppressWarnings("unchecked")
+                EventFilter<EventObject> eventFilter = config.getBeanResolver().getBean(filter.trim(),
+                            EventFilter.class);
+                ((FilterableChannel) newChannel).registerFilter(eventFilter);
+            }
+
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends Channel> getChannelClass(KaEventConfig.Channels.Channel channel) {
+        Class<? extends Channel> channelClass = ChannelImpl.class;
+        if (channel.getClassName() != null) {
+            try {
+                channelClass = (Class<? extends ListenerChannel>) Class.forName(channel.getClassName());
+            } catch (ClassNotFoundException cnfe) {
+                throw new IllegalStateException(channel.getClassName() + " Could not be found ", cnfe);
+            } catch (ClassCastException cce) {
+                throw new IllegalStateException(channel.getClassName() + " Must implement "
+                            + ListenerChannel.class, cce);
+            }
+        }
+        return channelClass;
+    }
+
+    private void registerEventsForChannel(EventRegister eventRegister, KaEventConfig.Channels.Channel channel,
+                Set<Class<? extends EventObject>> eventSet) {
+        if (channel.getHandle() != null) {
+            for (KaEventConfig.Channels.Channel.Handle handleEvent : channel.getHandle()) {
+                String eventName = handleEvent.getEvent();
+                
+                EventConfig eventConfig = eventRegister.getEventByName(eventName);
+                if (eventConfig != null) {
+                    eventSet.add(eventConfig.getEventClass());
                 } else {
-                    newChannel = channelFactory.createChannel(channelClass, name, eventSet);
-                }
-                if (newChannel != null && newChannel instanceof FilterableChannel && channel.getFilter() != null) {
-                    String[] filters = channel.getFilter().split(",");
-
-                    for (String filter : filters) {
-                        EventFilter<EventObject> eventFilter = config.getBeanResolver().getBean(filter.trim(),
-                                    EventFilter.class);
-                        ((FilterableChannel) newChannel).registerFilter(eventFilter);
-                    }
-
+                    throw new IllegalStateException("Event " + eventName + " could not be found!");
                 }
             }
         }

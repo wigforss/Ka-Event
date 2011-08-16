@@ -43,17 +43,32 @@ public class XmlConfigEventExporter implements EventExporter {
 	@Override
     public Set<EventConfig> exportEvents(EventFactory eventFactory) throws IOException {
         Set<EventConfig> eventsFound = new HashSet<EventConfig>();
-        if(eventList != null && !eventList.isEmpty()) {
-            for(KaEventConfig.Events.Event event : eventList) {
-                Class<? extends EventListener> interfaceClass = ReflectionUtils.getInterfaceClass(event.getListenerInterface(), EventListener.class);
-                Class<? extends EventObject> eventClass = ReflectionUtils.getClass(event.getEventClass(), EventObject.class);
-                if(!hasMethodResolver(event)){
+        if (eventList != null && !eventList.isEmpty()) {
+            for (KaEventConfig.Events.Event event : eventList) {
+                Class<? extends EventListener> interfaceClass = 
+                    ReflectionUtils.getInterfaceClass(event.getListenerInterface(), EventListener.class);
+                
+                Class<? extends EventObject> eventClass = 
+                    ReflectionUtils.getClass(event.getEventClass(), EventObject.class);
+                
+                if (!hasMethodResolver(event)) {
                     Method eventMethod = getEventMethod(eventClass, interfaceClass);
-                    eventsFound.add(eventFactory.newWithEventMethod(eventClass, interfaceClass, eventMethod, event.getName()));
-                } else if(event.getAnnotationMethodResolver() != null){
-                   eventsFound.add(eventFactory.newFromAnnotatedInterfaceClass(eventClass, interfaceClass, event.getName()));
+                    eventsFound.add(eventFactory.newWithEventMethod(eventClass, 
+                                                                    interfaceClass, 
+                                                                    eventMethod, 
+                                                                    event.getName()));
+                    
+                } else if (event.getAnnotationMethodResolver() != null) {
+                   eventsFound.add(eventFactory.newFromAnnotatedInterfaceClass(eventClass, 
+                                                                               interfaceClass, 
+                                                                               event.getName()));
                 } else {
-                    eventsFound.add(eventFactory.newWithMethodResolver(eventClass, interfaceClass, getMethodResolver(event, eventClass, interfaceClass), event.getName()));
+                    eventsFound.add(eventFactory.newWithMethodResolver(eventClass, 
+                                                                       interfaceClass, 
+                                                                       getMethodResolver(event, 
+                                                                                         eventClass, 
+                                                                                         interfaceClass), 
+                                                                                         event.getName()));
                 }
             }
         }
@@ -61,42 +76,60 @@ public class XmlConfigEventExporter implements EventExporter {
     }
     
     
-    private Method getEventMethod(Class<? extends EventObject> eventClass, Class<? extends EventListener> listenerInterface) {
-        Set<Method> methods = ReflectionUtils.getDeclaredMethodsMatchingReturnType(listenerInterface, Void.TYPE, eventClass);
-        if(methods.size() == 1) {
+    private Method getEventMethod(Class<? extends EventObject> eventClass, 
+                                  Class<? extends EventListener> listenerInterface) {
+        Set<Method> methods = 
+            ReflectionUtils.getDeclaredMethodsMatchingReturnType(listenerInterface, Void.TYPE, eventClass);
+        
+        if (methods.size() == 1) {
            return methods.iterator().next();
-        } else if(methods.size() == 0) {
-            throw new InvalidEventConfigurationException("No \"void\" method found in "+listenerInterface+" which handles "+eventClass+" events");
+        } else if (methods.size() == 0) {
+            throw new InvalidEventConfigurationException("No \"void\" method found in "
+                        + listenerInterface + " which handles " + eventClass + " events");
         } else {
-            throw new InvalidEventConfigurationException("More than one method found in "+listenerInterface+" which handles "+eventClass+" events, specify a method resolver");
+            throw new InvalidEventConfigurationException("More than one method found in "
+                        + listenerInterface + " which handles " + eventClass + " events, specify a method resolver");
         }
     }
     
     
     private boolean hasMethodResolver(KaEventConfig.Events.Event event) {
-        return (event.getAnnotationMethodResolver() != null || event.getFactoryMethodResolver() != null || event.getBeanMethodResolver() != null || event.getSwitchMethodResolver() != null);
+        return (event.getAnnotationMethodResolver() != null 
+                    || event.getFactoryMethodResolver() != null 
+                    || event.getBeanMethodResolver() != null 
+                    || event.getSwitchMethodResolver() != null);
     }
     
     @SuppressWarnings("rawtypes")
-    private MethodResolver getMethodResolver(KaEventConfig.Events.Event event,  Class<? extends EventObject> eventClass, Class<? extends EventListener> interfaceClass) {
-        if(event.getBeanMethodResolver() != null) {
+    private MethodResolver getMethodResolver(KaEventConfig.Events.Event event,  
+                                             Class<? extends EventObject> eventClass, 
+                                             Class<? extends EventListener> interfaceClass) {
+        
+        if (event.getBeanMethodResolver() != null) {
             KaEventConfig.Events.Event.BeanMethodResolver beanMethodResolver = event.getBeanMethodResolver();
             return MethodResolverFactory.getFromBean(beanResolver, beanMethodResolver.getBean());
-        }else if(event.getFactoryMethodResolver() != null){
+        } else if (event.getFactoryMethodResolver() != null) {
             KaEventConfig.Events.Event.FactoryMethodResolver factoryMethodResolver = event.getFactoryMethodResolver();
             Class<?> factoryClass;
             try {
                 factoryClass = Class.forName(factoryMethodResolver.getFactoryClass());
-                return MethodResolverFactory.getFromFactoryMethod(factoryClass, factoryMethodResolver.getFactoryMethod(), factoryMethodResolver.getFactoryMethodArgument());
+                return MethodResolverFactory.getFromFactoryMethod(factoryClass, 
+                                                                  factoryMethodResolver.getFactoryMethod(), 
+                                                                  factoryMethodResolver.getFactoryMethodArgument());
             } catch (ClassNotFoundException e) {
                 throw new InvalidEventConfigurationException("Could not find the factoryClass!", e);
             }
         } else {
             Map<String, String> methodMap = new HashMap<String, String>();
-            for(KaEventConfig.Events.Event.SwitchMethodResolver.Case keywordCase : event.getSwitchMethodResolver().getCase()) {
+            for (KaEventConfig.Events.Event.SwitchMethodResolver.Case keywordCase 
+                        : event.getSwitchMethodResolver().getCase()) {
                 methodMap.put(keywordCase.getValue(), keywordCase.getMethod());
             }
-           return MethodResolverFactory.newKeywordSwitch(eventClass, interfaceClass, event.getSwitchMethodResolver().getKeywordMethod(), methodMap, event.getSwitchMethodResolver().getDefault().getMethod());
+           return MethodResolverFactory.newKeywordSwitch(eventClass, 
+                                                         interfaceClass, 
+                                                         event.getSwitchMethodResolver().getKeywordMethod(), 
+                                                         methodMap, 
+                                                         event.getSwitchMethodResolver().getDefault().getMethod());
         }
     }
 

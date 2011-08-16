@@ -1,20 +1,6 @@
 package org.kasource.kaevent.config;
 
-/**
- * Builds the XML Configuration programmatically.
- * 
- * Create an instance and invoke method by method chaining and end with the
- * build method.
- * <p/>
- * <p/>
- * KaEventConfig config = new KaEventConfigBuilder().scan("org.abc.my").maxPoolSize(1).build()
- * <p/>
- * Which will create a new configuration the scans for @Event annotated classes under org.abc.my and
- * set the event queue max size to 1 (allowing only one thread making it strictly sequential).
- * 
- * @author Rikard Wigforss
- * @version $Id: $
- **/
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.EventObject;
@@ -31,6 +17,21 @@ import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.config.KaEventConfig.Channels;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 
+/**
+ * Builds the XML Configuration programmatically.
+ * 
+ * Create an instance and invoke method by method chaining and end with the
+ * build method.
+ * <p/>
+ * <p/>
+ * KaEventConfig config = new KaEventConfigBuilder().scan("org.abc.my").maxPoolSize(1).build()
+ * <p/>
+ * Which will create a new configuration the scans for @Event annotated classes under org.abc.my and
+ * set the event queue max size to 1 (allowing only one thread making it strictly sequential).
+ * 
+ * @author Rikard Wigforss
+ * @version $Id: $
+ **/
 public class KaEventConfigBuilder {
 
     private String scanClassPath;
@@ -45,24 +46,17 @@ public class KaEventConfigBuilder {
     private Map<Class<? extends EventObject>, KaEventConfig.Events.Event> eventMap = 
         new HashMap<Class<? extends EventObject>, KaEventConfig.Events.Event>();
 
-    public KaEventConfigBuilder() {
-
-    }
-
+    
+    /**
+     * Builds and returns the configuration object.
+     * 
+     * @return The configuration.
+     **/
     public KaEventConfig build() {
         KaEventConfig xmlConfig = new KaEventConfig();
-        if (scanClassPath != null && scanClassPath.trim().length() > 0) {
-            xmlConfig.events = new KaEventConfig.Events();
-            xmlConfig.events.scanClassPath = scanClassPath.trim();
-        }
-        if (beanResolverClass != null) {
-            xmlConfig.beanResolver = new KaEventConfig.BeanResolver();
-            xmlConfig.beanResolver.clazz = beanResolverClass.getName();
-        }
-        if (channelFactoryClass != null) {
-            xmlConfig.channelFactory = new KaEventConfig.ChannelFactory();
-            xmlConfig.channelFactory.clazz = channelFactoryClass.getName();
-        }
+        buildScanClassPath(xmlConfig);
+        buildBeanResolver(xmlConfig);
+        buildChannelFactory(xmlConfig);
         if (!events.isEmpty()) {
             buildEvents(xmlConfig);
         }
@@ -74,6 +68,42 @@ public class KaEventConfigBuilder {
     }
 
     /**
+     * Builds the scan class path.
+     * 
+     * @param xmlConfig the configuration.
+     **/
+    private void buildScanClassPath(KaEventConfig xmlConfig) {
+        if (scanClassPath != null && scanClassPath.trim().length() > 0) {
+            xmlConfig.events = new KaEventConfig.Events();
+            xmlConfig.events.scanClassPath = scanClassPath.trim();
+        }
+    }
+    
+    /**
+     * Builds the bean resolver.
+     * 
+     * @param xmlConfig the configuration.
+     **/
+    private void buildBeanResolver(KaEventConfig xmlConfig) {
+        if (beanResolverClass != null) {
+            xmlConfig.beanResolver = new KaEventConfig.BeanResolver();
+            xmlConfig.beanResolver.clazz = beanResolverClass.getName();
+        }
+    }
+    
+    /**
+     * Builds the channel factory.
+     * 
+     * @param xmlConfig the configuration.
+     **/
+    private void buildChannelFactory(KaEventConfig xmlConfig) {
+        if (channelFactoryClass != null) {
+            xmlConfig.channelFactory = new KaEventConfig.ChannelFactory();
+            xmlConfig.channelFactory.clazz = channelFactoryClass.getName();
+        }
+    }
+    
+    /**
      * Sets the queue class in the configuration.
      * 
      * @param xmlConfig
@@ -84,21 +114,57 @@ public class KaEventConfigBuilder {
             xmlConfig.queueThread = new KaEventConfig.QueueThread();
             xmlConfig.queueThread.clazz = queueClass.getName();
         } else {
-            if (maxPoolSize != null || corePoolSize != null || keepAliveTime != null) {
-                xmlConfig.threadPoolExecutor = new KaEventConfig.ThreadPoolExecutor();
-                if (maxPoolSize != null) {
-                    xmlConfig.threadPoolExecutor.maximumPoolSize = maxPoolSize;
-                }
-                if (corePoolSize != null) {
-                    xmlConfig.threadPoolExecutor.corePoolSize = corePoolSize;
-                }
-                if (keepAliveTime != null) {
-                    xmlConfig.threadPoolExecutor.keepAliveTime = new BigInteger(keepAliveTime.toString());
-                }
-            }
+            configureQueue(xmlConfig);
+        }
+    }
+    
+    /**
+     * Configure the default event queue implementation (thread pool executor).
+     * 
+     * @param xmlConfig the configuration
+     **/
+    private void configureQueue(KaEventConfig xmlConfig) {
+        if (maxPoolSize != null || corePoolSize != null || keepAliveTime != null) {
+            xmlConfig.threadPoolExecutor = new KaEventConfig.ThreadPoolExecutor();
+            configureMaxPoolSize(xmlConfig);
+            configureCorePoolSize(xmlConfig);
+            configureKeepAlive(xmlConfig);
+        }
+    }
+    
+    /**
+     * Configure the max pool size for the event queue.
+     * 
+     * @param xmlConfig the configuration.
+     **/
+    private void configureMaxPoolSize(KaEventConfig xmlConfig) {
+        if (maxPoolSize != null) {
+            xmlConfig.threadPoolExecutor.maximumPoolSize = maxPoolSize;
         }
     }
 
+    /**
+     * Configure the core pool size for the event queue.
+     * 
+     * @param xmlConfig the configuration.
+     **/
+    private void configureCorePoolSize(KaEventConfig xmlConfig) {
+        if (corePoolSize != null) {
+            xmlConfig.threadPoolExecutor.corePoolSize = corePoolSize;
+        }
+    }
+    
+    /**
+     * Configure the keep alive time for the event queue.
+     * @param xmlConfig the configuration.
+     */
+    private void configureKeepAlive(KaEventConfig xmlConfig) {
+        if (keepAliveTime != null) {
+            xmlConfig.threadPoolExecutor.keepAliveTime = new BigInteger(keepAliveTime.toString());
+        }
+    }
+    
+    
     /**
      * Builds the channels and register the events.
      * 
@@ -128,7 +194,7 @@ public class KaEventConfigBuilder {
     /**
      * Build all events from the events set into the configuration.
      * 
-     * @param xmlConfig
+     * @param xmlConfig The configuration.
      **/
     private void buildEvents(KaEventConfig xmlConfig) {
         if (xmlConfig.events == null) {
@@ -147,7 +213,7 @@ public class KaEventConfigBuilder {
     /**
      * Build all events from a channel registration to the configuration and add them to the eventMap.
      * 
-     * @param xmlConfig
+     * @param xmlConfig The configuration.
      **/
     private void buildEventsForChannels(KaEventConfig xmlConfig) {
 
@@ -158,6 +224,16 @@ public class KaEventConfigBuilder {
             xmlConfig.events.event = new ArrayList<KaEventConfig.Events.Event>();
         }
 
+        buildEventsForRegistredChannel(xmlConfig);
+
+    }
+
+    /**
+     * Build all events from a channel registration to the configuration and add them to the eventMap.
+     * 
+     * @param xmlConfig The configuration.
+     **/
+    private void buildEventsForRegistredChannel(KaEventConfig xmlConfig) {
         for (ChannelReg channelReg : channelRegs) {
             for (Class<? extends EventObject> eventClass : channelReg.getEvents()) {
                 if (!eventMap.containsKey(eventClass)) {
@@ -165,13 +241,13 @@ public class KaEventConfigBuilder {
                 }
             }
         }
-
     }
-
+    
     /**
-     * Build an Event into the configuration and add it to the eventMap.
+     * Build an Event into the eventMap.
      * 
-     * @param xmlConfig
+     * @param xmlConfig The configuration.
+     * @param eventClass Event to build configuration for.
      **/
     private void buildEvent(KaEventConfig xmlConfig, Class<? extends EventObject> eventClass) {
         KaEventConfig.Events.Event event = new KaEventConfig.Events.Event();
@@ -186,52 +262,52 @@ public class KaEventConfigBuilder {
     /**
      * Scan the supplied class path for event classes annotated with @Event.
      * 
-     * @param scanClassPath
-     *            class path to scan for events.
+     * @param scanClassPathPackage
+     *            class path (package and sub-packages) to scan for events.
      * 
      * @return the builder
      **/
-    public KaEventConfigBuilder scan(String scanClassPath) {
-        this.scanClassPath = scanClassPath;
+    public KaEventConfigBuilder scan(String scanClassPathPackage) {
+        this.scanClassPath = scanClassPathPackage;
         return this;
     }
 
     /**
      * Set the BeanResolver implementation to use.
      * 
-     * @param beanResolverClass
-     *            BeanResolver implementation
+     * @param beanResolver
+     *            BeanResolver implementation to use.
      * 
      * @return the builder
      **/
-    public KaEventConfigBuilder beanResolver(Class<? extends BeanResolver> beanResolverClass) {
-        this.beanResolverClass = beanResolverClass;
+    public KaEventConfigBuilder beanResolver(Class<? extends BeanResolver> beanResolver) {
+        this.beanResolverClass = beanResolver;
         return this;
     }
 
     /**
      * Set the ChannelFactory implementation to use.
      * 
-     * @param beanResolverClass
-     *            BeanResolver implementation
+     * @param channelFactory
+     *            ChannelFactory implementation to use.
      * 
      * @return the builder
      **/
-    public KaEventConfigBuilder channelFactory(Class<? extends ChannelFactory> channelFactoryClass) {
-        this.channelFactoryClass = channelFactoryClass;
+    public KaEventConfigBuilder channelFactory(Class<? extends ChannelFactory> channelFactory) {
+        this.channelFactoryClass = channelFactory;
         return this;
     }
 
     /**
      * Sets the queue (worker thread) implementation to use. Overrides the default implementation.
      * 
-     * @param queueClass
-     *            Queue Thread implementation class
+     * @param queue
+     *            Event Queue Thread implementation class to use.
      * 
      * @return the builder
      **/
-    public KaEventConfigBuilder queueClass(Class<? extends ThreadPoolQueueExecutor> queueClass) {
-        this.queueClass = queueClass;
+    public KaEventConfigBuilder queueClass(Class<? extends ThreadPoolQueueExecutor> queue) {
+        this.queueClass = queue;
         return this;
     }
 
@@ -240,13 +316,13 @@ public class KaEventConfigBuilder {
      * execution thread. Note this value will not have any effect if the default Queue Thread is overridden by
      * queueClass().
      * 
-     * @param maxPoolSize
-     *            The maximum number of threads to use.
+     * @param queueMaxPoolSize
+     *            The maximum number of threads to use by the event queue.
      * 
      * @return the builder
      **/
-    public KaEventConfigBuilder maxPoolSize(byte maxPoolSize) {
-        this.maxPoolSize = maxPoolSize;
+    public KaEventConfigBuilder maxPoolSize(byte queueMaxPoolSize) {
+        this.maxPoolSize = queueMaxPoolSize;
         return this;
     }
 
@@ -254,13 +330,13 @@ public class KaEventConfigBuilder {
      * Set the core pool size on the default Queue Thread implementation. Note this value will not have any effect if
      * the default Queue Thread is overridden by queueClass().
      * 
-     * @param corePoolSize
-     *            The number of threads to initialize the worker pool with.
+     * @param queueCorePoolSize
+     *            The number of threads to initialize the event queue worker pool with.
      * 
      * @return the builder
      **/
-    public KaEventConfigBuilder corePoolSize(byte corePoolSize) {
-        this.corePoolSize = corePoolSize;
+    public KaEventConfigBuilder corePoolSize(byte queueCorePoolSize) {
+        this.corePoolSize = queueCorePoolSize;
         return this;
     }
 
@@ -268,18 +344,26 @@ public class KaEventConfigBuilder {
      * Set the keep alive time on the default Queue Thread implementation. Note this value will not have any effect if
      * the default Queue Thread is overridden by queueClass().
      * 
-     * @param keepAliveTime
-     *            Keep alive time in milliseconds, idle threads will be stopped after this timeout.
+     * @param queueKeepAliveTime
+     *            Keep alive time in milliseconds, idle threads of the event queue will be stopped after this timeout.
      * 
      * @return the builder
      **/
-    public KaEventConfigBuilder keepAliveTime(long keepAliveTime) {
-        this.keepAliveTime = keepAliveTime;
+    public KaEventConfigBuilder keepAliveTime(long queueKeepAliveTime) {
+        this.keepAliveTime = queueKeepAliveTime;
         return this;
     }
 
-    public KaEventConfigBuilder addChannel(String channelName, Class<? extends EventObject>... events) {
-        return addChannel(channelName, ChannelImpl.class, events);
+    /**
+     * Add a channel to the configuration.
+     * 
+     * @param channelName       Name of the channel.
+     * @param eventsToChannel   Event to register at the channel.
+     * 
+     * @return the builder
+     **/
+    public KaEventConfigBuilder addChannel(String channelName, Class<? extends EventObject>... eventsToChannel) {
+        return addChannel(channelName, ChannelImpl.class, eventsToChannel);
     }
 
     /**
@@ -287,20 +371,22 @@ public class KaEventConfigBuilder {
      * 
      * @param channelName
      *            Name of the channel
-     * @param events
+     * @param channelClass
+     *            The Channel Implementation class to use.            
+     * @param eventsToChannel
      *            Events this channel should handle
      * 
      * @return the builder
      **/
     public KaEventConfigBuilder addChannel(String channelName, Class<? extends Channel> channelClass,
-                Class<? extends EventObject>... events) {
-        for (Class<? extends EventObject> eventClass : events) {
+                Class<? extends EventObject>... eventsToChannel) {
+        for (Class<? extends EventObject> eventClass : eventsToChannel) {
             if (!eventClass.isAnnotationPresent(Event.class)) {
                 throw new IllegalArgumentException("Only events annotated with @Event can used in addChannel "
                             + eventClass + " is not annotated with @Event");
             }
         }
-        channelRegs.add(new ChannelReg(channelName, channelClass, events));
+        channelRegs.add(new ChannelReg(channelName, channelClass, eventsToChannel));
         return this;
     }
 
@@ -333,6 +419,13 @@ public class KaEventConfigBuilder {
         private Class<? extends Channel> channelClass;
         private Class<? extends EventObject>[] events;
 
+        /**
+         * Constructor.
+         * 
+         * @param channelName   Name of channel.
+         * @param channelClass  Implementation class.
+         * @param events        Events to register.
+         **/
         public ChannelReg(String channelName, Class<? extends Channel> channelClass,
                     Class<? extends EventObject>[] events) {
 
@@ -341,14 +434,29 @@ public class KaEventConfigBuilder {
             this.events = events;
         }
 
+        /**
+         * Returns the name of the channel.
+         * 
+         * @return name of the channel.
+         **/
         public String getChannelName() {
             return channelName;
         }
 
+        /**
+         * Returns the events handled by this channel.
+         * 
+         * @return The events handled by this channel.
+         **/
         public Class<? extends EventObject>[] getEvents() {
             return events;
         }
 
+        /**
+         * Returns the implementation class.
+         * 
+         * @return the implementation class.
+         **/
         public Class<? extends Channel> getChannelClass() {
             return channelClass;
         }

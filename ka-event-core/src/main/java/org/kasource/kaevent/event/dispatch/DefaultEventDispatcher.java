@@ -29,11 +29,11 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
 	private final ThreadLocal<LinkedList<EventObject>> batchListByThread = 
 		new ThreadLocal<LinkedList<EventObject>>();
 	
-    protected EventRouter eventRouter;
-    protected ChannelRegister channelRegister;
-    protected ChannelFactory channelFactory;
-    protected SourceObjectListenerRegister sourceObjectListenerRegister;
-    protected DispatcherQueueThread eventQueue;
+	private EventRouter eventRouter;
+    private ChannelRegister channelRegister;
+    private ChannelFactory channelFactory;
+    private SourceObjectListenerRegister sourceObjectListenerRegister;
+    private DispatcherQueueThread eventQueue;
     
     
 
@@ -62,20 +62,32 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     
     
    
-    
-    protected DefaultEventDispatcher() {
-       
+    /**
+     * Protected Constructor.
+     * 
+     * This Constructor will not configure the Ka-Event environment.
+     **/
+    protected DefaultEventDispatcher() {      
     }
    
     
    
     
-    
+    /**
+     * Configures the Ka-Event environment from a configuration location.
+     * 
+     * @param configLocation    location of the configuration XML file. Use the classpath: or file: prefix:
+     **/
     protected void initialize(String configLocation) {
     	KaEventInitializer.getInstance().addListener(this);
     	configurer.configure(this, configLocation);
     }
     
+    /**
+     * Configures the Ka-Event environment from configuration object.
+     * 
+     * @param config    The configuration object, use KaEventConfigBuilder to create the configuration object.
+     **/
     protected void initialize(KaEventConfig config) {
     	KaEventInitializer.getInstance().addListener(this);
     	configurer.configure(this, config);
@@ -155,9 +167,9 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     }
 
    /**
-    * Add event to this threads batch
+    * Add event to this threads batch.
     * 
-    * @param event
+    * @param event Event object.
     **/
     @Override
     public void addToBatch(EventObject event) {
@@ -170,7 +182,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     }
     
     /**
-     * Clear this threads batch 
+     * Clear this threads batch. 
      **/
     @Override
     public void clearBatch() {
@@ -181,7 +193,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     }
 
     /**
-     * Fire all events in this threads batch
+     * Fire all events in this threads batch.
      **/
     @Override
     public void fireBatch() {

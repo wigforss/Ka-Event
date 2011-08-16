@@ -19,6 +19,7 @@ public class DefaultBeanResolver implements BeanResolver {
 	/**
 	 * Looks up and returns beans from the bean context.
 	 * 
+	 * @param <T>       Type of the bean to return.
 	 * @param beanName  Name of bean.
 	 * @param ofType	Type of the bean.
 	 * 
@@ -34,6 +35,12 @@ public class DefaultBeanResolver implements BeanResolver {
 	    throw new CouldNotResolveBeanException("No bean resolver set.");
 	}
 	
+	/**
+	 * Adds a bean to the bean context.
+	 * 
+	 * @param beanName Name of the bean.
+	 * @param bean     Object to add to the bean context.
+	 **/
 	public void addBean(String beanName, Object bean) {
 		beanContext.put(beanName, bean);
 	}

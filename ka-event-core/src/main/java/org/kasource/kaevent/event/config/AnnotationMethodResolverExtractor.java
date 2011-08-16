@@ -36,6 +36,8 @@ public class AnnotationMethodResolverExtractor {
      * @param event				Event class.	
      * @param listener		  	Listener to get method resolver from.
      * @param methodResolving 	Method resolver annotation from event interface class.
+     * 
+     * @return A MethodResolver.
      **/
     @SuppressWarnings("rawtypes")
     public MethodResolver getMethodResolver(Class<? extends EventObject> event,

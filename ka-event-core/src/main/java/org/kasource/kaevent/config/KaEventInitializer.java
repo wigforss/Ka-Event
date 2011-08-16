@@ -14,7 +14,12 @@ public final class KaEventInitializer {
 	private Set<KaEventInitializedListener> listeners = new HashSet<KaEventInitializedListener>();
 
 	private KaEventConfiguration configuration;
-	
+
+	/**
+	 * Private constructor.
+	 * 
+	 * This is a singleton, use getInstance().
+	 */
 	private KaEventInitializer() { }
 	
 	/**

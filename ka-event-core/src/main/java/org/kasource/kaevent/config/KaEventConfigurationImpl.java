@@ -86,7 +86,9 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
     }
 
     /**
-     * @param eventMethodinvoker
+     * Set the event method invoker.
+     * 
+     * @param eventMethodInvoker
      *            the eventMethodinvoker to set
      */
     public void setEventMethodInvoker(EventMethodInvoker eventMethodInvoker) {
@@ -99,7 +101,9 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
     }
 
     /**
-     * @param soListenerRegister
+     * Set the source object listener register.
+     * 
+     * @param sourceObjectListenerRegister
      *            the soListenerRegister to set
      */
     public void setSourceObjectListenerRegister(SourceObjectListenerRegister sourceObjectListenerRegister) {

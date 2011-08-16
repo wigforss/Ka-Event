@@ -7,5 +7,11 @@ package org.kasource.kaevent.config;
  * @version $Id$
  */
 public interface KaEventInitializedListener {
+    
+    /**
+     * Do any initialization needed.
+     * 
+     * @param configuration The configuration.
+     **/
     public void doInitialize(KaEventConfiguration configuration);
 }

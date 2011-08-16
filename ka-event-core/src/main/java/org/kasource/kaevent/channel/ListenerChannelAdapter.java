@@ -12,12 +12,27 @@ import org.kasource.kaevent.listener.register.ChannelListenerRegister;
 import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
 
+/**
+ * Channel Adapter for channels that handles listeners.
+ * 
+ * Extend this class to inherit capabilities to register listeners.
+ * 
+ * @author rikardwi
+ * @version $Id: $
+ **/
 public abstract class ListenerChannelAdapter extends ChannelAdapter implements ListenerChannel {
 
 	private ChannelListenerRegister listenerRegister; 
 	
 	
-	
+	/**
+	 * Constructor.
+	 * 
+	 * @param name             Name of the channel.
+	 * @param channelRegister  Channel Register.
+	 * @param eventRegister    Event Register.
+	 * @param beanResolver     Bean Resolver.
+	 **/
 	public ListenerChannelAdapter(String name, 
 	                              ChannelRegister channelRegister, 
 	                              EventRegister eventRegister, 
@@ -26,6 +41,13 @@ public abstract class ListenerChannelAdapter extends ChannelAdapter implements L
 		listenerRegister = new ChannelListenerRegisterImpl(this, eventRegister, beanResolver);
 	}
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param channelRegister  Channel Register.
+     * @param eventRegister    Event Register.
+     * @param beanResolver     Bean Resolver.
+	 **/
 	public ListenerChannelAdapter(ChannelRegister channelRegister, 
 	                              EventRegister eventRegister, 
 	                              BeanResolver beanResolver) {
@@ -34,10 +56,12 @@ public abstract class ListenerChannelAdapter extends ChannelAdapter implements L
 	}
 	
 	/**
-     * Register a new listener object to this channel
+     * Register a new listener object to this channel.
      * 
      * @param listener
      *            Listener object to register
+     * @param filters
+     *             The event filters to use for this listener.
      **/ 
     @Override
     public void registerListener(EventListener listener, List<EventFilter<EventObject>> filters) {
@@ -45,7 +69,7 @@ public abstract class ListenerChannelAdapter extends ChannelAdapter implements L
     }
     
     /**
-     * Register a new listener object to this channel
+     * Register a new listener object to this channel.
      * 
      * @param listener
      *            Listener object to register
@@ -56,7 +80,7 @@ public abstract class ListenerChannelAdapter extends ChannelAdapter implements L
     }
 
     /**
-     * Remove a registered listener from this channel
+     * Remove a registered listener from this channel.
      * 
      * @param listener
      *            Listener object to unregister
@@ -77,6 +101,11 @@ public abstract class ListenerChannelAdapter extends ChannelAdapter implements L
 		 }
     }
     
+    /**
+     * Returns the channel listener register.
+     * 
+     * @return the channel listener register.
+     **/
     protected ChannelListenerRegister getListenerRegister() {
 		return listenerRegister;
 	}

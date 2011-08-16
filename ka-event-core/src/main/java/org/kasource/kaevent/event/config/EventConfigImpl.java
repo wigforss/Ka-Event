@@ -18,9 +18,9 @@ public class EventConfigImpl implements EventConfig {
     private Class<? extends EventObject> eventClass;
     private Class<? extends EventListener> listener;
     private String name;
-    Method defaultMethod; // May be null  
+    private Method defaultMethod; // May be null  
     @SuppressWarnings({ "rawtypes" })
-    MethodResolver methodResolver;
+    private MethodResolver methodResolver;
  
     /**
      * Constructor.
@@ -40,7 +40,7 @@ public class EventConfigImpl implements EventConfig {
     
 
     /**
-     * Return the listener class associated with the eventClass
+     * Return the listener class associated with the eventClass.
      * 
      * @return the listener interface class
      */
@@ -54,6 +54,8 @@ public class EventConfigImpl implements EventConfig {
      * Returns the interface method to be invoked, may be null if runtime
      * strategy method for resolve method is used.
      * 
+     * @param event Event object.
+     * 
      * @return Returns the interface method to be invoked
      **/
     @SuppressWarnings("unchecked")
@@ -65,7 +67,7 @@ public class EventConfigImpl implements EventConfig {
     
 
     /**
-     * Return the actual event class
+     * Return the actual event class.
      * 
      * @return the event class
      **/
@@ -82,6 +84,24 @@ public class EventConfigImpl implements EventConfig {
     @Override
     public String getName() {
         return name;
+    }
+
+
+    /**
+     * @param methodResolver the methodResolver to set
+     */
+    @SuppressWarnings("rawtypes")
+    void setMethodResolver(MethodResolver methodResolver) {
+        this.methodResolver = methodResolver;
+    }
+
+   
+
+    /**
+     * @param defaultMethod the defaultMethod to set
+     */
+    void setDefaultMethod(Method defaultMethod) {
+        this.defaultMethod = defaultMethod;
     }
 
 }

@@ -1,3 +1,5 @@
+// CHECKSTYLE:OFF
+// Motivation: Generated class.
 package org.kasource.kaevent.config;
 
 import java.math.BigInteger;

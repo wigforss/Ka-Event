@@ -81,11 +81,13 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
         // Add one lister registration per registered interface of the listener
         Set<Class<? extends EventListener>> interfaces = getRegisteredInterfaces(listener);
         if (interfaces.isEmpty()) {
-        	throw new IllegalStateException(listener+" does not implement any registered event listener!");
+        	throw new IllegalStateException(listener + " does not implement any registered event listener!");
         } else {
         	for (Class<? extends EventListener> interfaceClass : interfaces) {
-        		addListener(listener, eventRegister.getEventByInterface(interfaceClass).getEventClass(), sourceObject,
-        				filters);
+        		addListener(listener, 
+        		            eventRegister.getEventByInterface(interfaceClass).getEventClass(), 
+        		            sourceObject,
+        				    filters);
         	}
         }
 

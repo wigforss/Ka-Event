@@ -16,15 +16,17 @@ import org.kasource.kaevent.event.method.MethodResolver;
  * The Event class provides a keyword method and the Listener Interface provides the cases (one method per case).
  * <p>
  * <b>Usage without annotation</b>
- * If the event and interface class is not annotated the second constructor can be used which contains the data normally extracted from 
- * the annotations.
+ * If the event and interface class is not annotated the second constructor 
+ * can be used which contains the data normally extracted from the annotations.
  * <p>
  * <b>Configuration by annotations</b>
  * 
  * The Event Class should have a no argument method annotated with @EventKeyword<p>
  * 
- * The Event Interface should have one (and only one) method annotated with @DefaultListenerMethod which will be invoked 
- * if nothing matches the keyword. Each method can then be annotated with @KeywordCase(String) which value will be matched against the
+ * The Event Interface should have one (and only one) method annotated 
+ * with @DefaultListenerMethod which will be invoked 
+ * if nothing matches the keyword. Each method can then be annotated 
+ * with @KeywordCase(String) which value will be matched against the
  * result of invoking the @EventKeyword method on the event itself.
  * <p>
  *  
@@ -107,13 +109,13 @@ import org.kasource.kaevent.event.method.MethodResolver;
  **/
 public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> {
 
-     Map<String, Method> methodMap = new HashMap<String, Method>();
-     Method defaultMethod;
-     Method eventKeywordMethod; // May be null
+    private Map<String, Method> methodMap = new HashMap<String, Method>();
+    private Method defaultMethod;
+    private Method eventKeywordMethod; // May be null
 
   
     /**
-     * Constructor used with annotated classes
+     * Constructor used with annotated classes.
      * 
      * @param eventClass                Event class
      * @param listenerClass             Listener Interface class
@@ -125,42 +127,55 @@ public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> 
     }
 
     /**
-     * Constructor used when no annotations is present
+     * Constructor used when no annotations is present.
      * 
-     * @param eventClass                Event class
-     * @param listenerClass             Listener Interface class
-     * @param defaultMethod             Default method to invoke
-     * @param methodMap                 Map<Keyword, Method> that is matched against the result of invoking the <i>eventKeywordMethod</i>
-     * @param eventKeywordMethod        Method on event class that provides the keyword
+     * @param eventClass                
+     *              Event class
+     * @param listenerClass             
+     *              Listener Interface class
+     * @param defaultMethodName             
+     *              Default method to invoke
+     * @param methodNameMap                 
+     *              Map<Keyword, Method> that is matched against the result of invoking the <i>eventKeywordMethod</i>
+     * @param eventKeywordMethodName        
+     *              Method on event class that provides the keyword
      **/
     public KeywordSwitchMethodResolver(Class<? extends EventObject> eventClass,
-            Class<? extends EventListener> listenerClass, String defaultMethodName, Map<String, String> methodNameMap,
+            Class<? extends EventListener> listenerClass, 
+            String defaultMethodName, 
+            Map<String, String> methodNameMap,
             String eventKeywordMethodName) {
-        this.defaultMethod = getListenerMethod(eventClass,listenerClass, defaultMethodName);
+        this.defaultMethod = getListenerMethod(eventClass, listenerClass, defaultMethodName);
         setMethodMap(eventClass, listenerClass, methodNameMap);
         this.eventKeywordMethod = getEventKeywordMethod(eventClass, eventKeywordMethodName);
         new KeywordSwitchVerifier().verify(this, eventClass, listenerClass);
     }
 
     
-    private Method getEventKeywordMethod(Class<? extends EventObject> eventClass,String eventKeywordMethodName) {
+    private Method getEventKeywordMethod(Class<? extends EventObject> eventClass, String eventKeywordMethodName) {
         Method method = ReflectionUtils.getDeclaredMethod(eventClass, eventKeywordMethodName);
-        if(method.getReturnType().equals(Void.TYPE)) {
-            throw new InvalidEventConfigurationException("The method "+eventKeywordMethodName+" in class "+eventClass+" must return value");
+        if (method.getReturnType().equals(Void.TYPE)) {
+            throw new InvalidEventConfigurationException("The method " + eventKeywordMethodName 
+                        + " in class " + eventClass + " must return value");
         }
         return method;
     }
     
-    private Method getListenerMethod(Class<? extends EventObject> eventClass, Class<? extends EventListener> listenerClass, String methodName) {
+    private Method getListenerMethod(Class<? extends EventObject> eventClass, 
+                                     Class<? extends EventListener> listenerClass, 
+                                     String methodName) {
         Method method = ReflectionUtils.getDeclaredMethod(listenerClass, methodName, eventClass);
-        if(!method.getReturnType().equals(Void.TYPE)) {
-            throw new InvalidEventConfigurationException("The method "+methodName+" in class "+listenerClass+" should not have a return value");
+        if (!method.getReturnType().equals(Void.TYPE)) {
+            throw new InvalidEventConfigurationException("The method " + methodName + " in class " 
+                        + listenerClass + " should not have a return value");
         }
        return method;
     }
     
-    private void setMethodMap(Class<? extends EventObject> eventClass, Class<? extends EventListener> listenerClass, Map<String,String> methodNameMap) {
-        for(Map.Entry<String, String> methodNameEntry : methodNameMap.entrySet()) {
+    private void setMethodMap(Class<? extends EventObject> eventClass, 
+                              Class<? extends EventListener> listenerClass, 
+                              Map<String, String> methodNameMap) {
+        for (Map.Entry<String, String> methodNameEntry : methodNameMap.entrySet()) {
             Method method = getListenerMethod(eventClass, listenerClass, methodNameEntry.getValue());
             methodMap.put(methodNameEntry.getKey(), method);
         }
@@ -186,6 +201,48 @@ public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> 
             return defaultMethod;
         }
         return method;
+    }
+
+    /**
+     * @return the methodMap
+     */
+    Map<String, Method> getMethodMap() {
+        return methodMap;
+    }
+
+    /**
+     * @param methodMap the methodMap to set
+     */
+    void setMethodMap(Map<String, Method> methodMap) {
+        this.methodMap = methodMap;
+    }
+
+    /**
+     * @return the defaultMethod
+     */
+    Method getDefaultMethod() {
+        return defaultMethod;
+    }
+
+    /**
+     * @param defaultMethod the defaultMethod to set
+     */
+    void setDefaultMethod(Method defaultMethod) {
+        this.defaultMethod = defaultMethod;
+    }
+
+    /**
+     * @return the eventKeywordMethod
+     */
+    Method getEventKeywordMethod() {
+        return eventKeywordMethod;
+    }
+
+    /**
+     * @param eventKeywordMethod the eventKeywordMethod to set
+     */
+    void setEventKeywordMethod(Method eventKeywordMethod) {
+        this.eventKeywordMethod = eventKeywordMethod;
     }
 
    

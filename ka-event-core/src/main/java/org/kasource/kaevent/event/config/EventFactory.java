@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.event.config;
 
 import java.lang.reflect.Method;

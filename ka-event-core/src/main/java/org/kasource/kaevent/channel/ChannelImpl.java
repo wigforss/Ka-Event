@@ -62,9 +62,10 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
 
     
     /**
-     * Fire event synchronously to all channel listeners
+     * Fire event synchronously to all channel listeners.
      * 
      * @param event     Event to dispatch
+     * @param blocked   true the event is fired synchronously, else false. 
      **/
     @Override
     public void fireEvent(EventObject event, boolean blocked) {

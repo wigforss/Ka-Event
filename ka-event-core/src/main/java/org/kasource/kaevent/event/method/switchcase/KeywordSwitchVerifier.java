@@ -18,10 +18,10 @@ public class KeywordSwitchVerifier {
 
     public void verify(KeywordSwitchMethodResolver resolver, Class<? extends EventObject> eventClass,
             Class<? extends EventListener> listenerClass) {
-        verifyListenerMethod(resolver.defaultMethod, eventClass, listenerClass);
-        verifyKeywordMethod(resolver.eventKeywordMethod, eventClass);
-        ReflectionUtils.verifyMethodSignature(resolver.defaultMethod, Void.TYPE, eventClass);
-        verifyMethodMap(resolver.methodMap, eventClass, listenerClass);
+        verifyListenerMethod(resolver.getDefaultMethod(), eventClass, listenerClass);
+        verifyKeywordMethod(resolver.getEventKeywordMethod(), eventClass);
+        ReflectionUtils.verifyMethodSignature(resolver.getDefaultMethod(), Void.TYPE, eventClass);
+        verifyMethodMap(resolver.getMethodMap(), eventClass, listenerClass);
     }
     
     private void verifyListenerMethod(Method method, Class<? extends EventObject> eventClass,

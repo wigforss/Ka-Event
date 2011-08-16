@@ -16,8 +16,9 @@ import java.util.Set;
  * @version $Id$
  **/
 public interface ChannelRegister {
+    
     /**
-     * Returns a channel by name
+     * Returns a channel by name.
      * 
      * @param channelName
      *            Name of channel to return
@@ -29,7 +30,7 @@ public interface ChannelRegister {
     public abstract Channel getChannel(String channelName) throws NoSuchChannelException;
 
     /**
-     * Return channel by event class
+     * Return channel by event class.
      * 
      * @param eventClass
      *            The event class channels should handle
@@ -61,7 +62,8 @@ public interface ChannelRegister {
      * 
      * @throws NoSuchChannelException if no channel can be found named <i>channelName</i>.
      **/
-    public abstract void registerEvent(String channelName, Class<? extends EventObject> eventClass);
+    public abstract void registerEvent(String channelName, 
+                                       Class<? extends EventObject> eventClass) throws NoSuchChannelException;
     
     
     /**

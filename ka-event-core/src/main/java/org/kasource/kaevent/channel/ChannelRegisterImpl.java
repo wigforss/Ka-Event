@@ -18,11 +18,6 @@ public class ChannelRegisterImpl implements ChannelRegister {
     private Map<Class<? extends EventObject>, Set<Channel>> channelsByEvent = 
         new HashMap<Class<? extends EventObject>, Set<Channel>>();
  
-    
-    
-    public ChannelRegisterImpl() {      
-    }
-    
 
     /**
      * Add the information that <i>channel</i> now handles event <i>eventClass</i> as well.
@@ -54,9 +49,9 @@ public class ChannelRegisterImpl implements ChannelRegister {
      **/
     @Override
     public void unregisterEventHandler(Channel channel, Class<? extends EventObject> eventClass) {
-    	Set<Channel> channels = channelsByEvent.get(eventClass);
-    	if (channels != null) {
-    		channels.remove(channel);
+    	Set<Channel> channelsForEvent = channelsByEvent.get(eventClass);
+    	if (channelsForEvent != null) {
+    	    channelsForEvent.remove(channel);
     	}
     }
    

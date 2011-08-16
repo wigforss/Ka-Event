@@ -28,6 +28,9 @@ public class ChannelFactoryImpl implements ChannelFactory {
   
    private BeanResolver beanResolver;
    
+   /**
+    * Constructor.
+    **/
    public ChannelFactoryImpl() { }
    
    /**

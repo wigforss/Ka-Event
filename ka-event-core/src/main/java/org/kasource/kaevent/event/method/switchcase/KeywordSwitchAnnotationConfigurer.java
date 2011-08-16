@@ -40,7 +40,7 @@ public class KeywordSwitchAnnotationConfigurer {
         Set<Method> defaultMethods = ReflectionUtils.getDeclaredAnnotatedMethods(listenerClass, DefaultListenerMethod.class);
         if (defaultMethods.size() == 1) {
             ReflectionUtils.verifyMethodSignature(defaultMethods.iterator().next(), Void.TYPE, eventClass);
-            resolver.defaultMethod = defaultMethods.iterator().next();
+            resolver.setDefaultMethod(defaultMethods.iterator().next());
             setCaseMethods();
             setCustomKeywordMethods();
         } else if (defaultMethods.size() == 0) {
@@ -61,20 +61,22 @@ public class KeywordSwitchAnnotationConfigurer {
             KeywordCase caseAnnotation = method.getAnnotation(KeywordCase.class);
             methodMap.put(caseAnnotation.value(), method);
         }
-        resolver.methodMap.putAll(methodMap);
+        resolver.getMethodMap().putAll(methodMap);
     }
 
     private void setKeywordMethod() {
         Method method = ReflectionUtils.getDeclaredAnnotatedMethod(eventClass, EventKeyword.class);
-        if(method == null) {
-            throw new IllegalStateException(eventClass+" must declare one method annotated with @EventKeyword!");
+        if (method == null) {
+            throw new IllegalStateException(eventClass + " must declare one method annotated with @EventKeyword!");
         }
-        resolver.eventKeywordMethod = method;
+        resolver.setEventKeywordMethod(method);
     }
 
     private void setCustomKeywordMethods() {
         Map<String, Method> methodMap = new HashMap<String, Method>();
-        Set<Method> customCaseMethods = ReflectionUtils.getDeclaredInheritlyAnnotatedMethods(listenerClass, CustomCase.class);
+        Set<Method> customCaseMethods = 
+            ReflectionUtils.getDeclaredInheritlyAnnotatedMethods(listenerClass, CustomCase.class);
+        
         for (Method method : customCaseMethods) {
             ReflectionUtils.verifyMethodSignature(method, Void.TYPE, eventClass);
             Annotation[] annotations = method.getAnnotations();
@@ -100,7 +102,7 @@ public class KeywordSwitchAnnotationConfigurer {
             KeywordCase caseAnnotation = method.getAnnotation(KeywordCase.class);
             methodMap.put(caseAnnotation.value(), method);
         }
-        resolver.methodMap.putAll(methodMap);
+        resolver.getMethodMap().putAll(methodMap);
     }
 }
 

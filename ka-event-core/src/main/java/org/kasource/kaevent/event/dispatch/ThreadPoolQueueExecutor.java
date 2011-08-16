@@ -1,7 +1,6 @@
 package org.kasource.kaevent.event.dispatch;
 
 import java.util.EventObject;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +19,7 @@ import javax.annotation.Resource;
 public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements DispatcherQueueThread {
     
     private static final int DEFAULT_CORE_POOL_SIZE = 5;
-    private static final int DEFAULT_MAXIMUM_POOL_SIZE=10;
+    private static final int DEFAULT_MAXIMUM_POOL_SIZE = 10;
     private static final long DEFAULT_KEEP_ALIVE_TIME = 5;
     private static final TimeUnit DEFAULT_KEEP_ALIVE_TIME_UNIT = TimeUnit.SECONDS;
     private static final int DEFAULT_QUEUE_CAPACITY = 1000;
@@ -88,7 +87,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     }
 
     
-    private static class EventRunner implements Runnable{
+    private static class EventRunner implements Runnable {
 
         private EventRouter eventRouter;
         private EventObject event;
@@ -125,7 +124,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
      * 
      * @return true if any events in or currently executing an event.
      */
-    public boolean hasUndispatchedEvents(){
+    public boolean hasUndispatchedEvents() {
         return hasQueuedEvents() || getActiveCount() > 0; 
     }
     
@@ -146,7 +145,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
 
 	@Override
 	public void setConcurrent(boolean concurrent) {
-		if(concurrent) {
+		if (concurrent) {
 			this.setMaximumPoolSize(DEFAULT_MAXIMUM_POOL_SIZE);
 		} else {
 			this.setMaximumPoolSize(1);
