@@ -13,9 +13,10 @@ import java.util.Set;
  * @author Rikard Wigforss
  * @version $Id$
  **/
-public class ChannelRegisterImpl implements ChannelRegister{
+public class ChannelRegisterImpl implements ChannelRegister {
     private Map<String, Channel> channels = new HashMap<String, Channel>();
-    private Map<Class<? extends EventObject>, Set<Channel>> channelsByEvent = new HashMap<Class<? extends EventObject>, Set<Channel>>();
+    private Map<Class<? extends EventObject>, Set<Channel>> channelsByEvent = 
+        new HashMap<Class<? extends EventObject>, Set<Channel>>();
  
     
     
@@ -31,15 +32,15 @@ public class ChannelRegisterImpl implements ChannelRegister{
      **/
     @Override
     public void registerEventHandler(Channel channel, Class<? extends EventObject> eventClass) {
-        if(channels.get(channel.getName()) == null) {
-            throw new NoSuchChannelException("No Channel named "+channel.getName()+" can be found");
+        if (channels.get(channel.getName()) == null) {
+            throw new NoSuchChannelException("No Channel named " + channel.getName() + " can be found");
         }
         Set<Channel> channelSet = channelsByEvent.get(eventClass);
-        if(channelSet == null) {
+        if (channelSet == null) {
             channelSet = new HashSet<Channel>();
             channelsByEvent.put(eventClass, channelSet);
         }
-        if(!channelSet.contains(channel)) {
+        if (!channelSet.contains(channel)) {
             channelSet.add(channel);
         }
       
@@ -54,7 +55,7 @@ public class ChannelRegisterImpl implements ChannelRegister{
     @Override
     public void unregisterEventHandler(Channel channel, Class<? extends EventObject> eventClass) {
     	Set<Channel> channels = channelsByEvent.get(eventClass);
-    	if(channels != null) {
+    	if (channels != null) {
     		channels.remove(channel);
     	}
     }
@@ -62,7 +63,7 @@ public class ChannelRegisterImpl implements ChannelRegister{
     
     
     /**
-     * Returns a channel by name
+     * Returns a channel by name.
      * 
      * @param channelName
      *            Name of channel to return
@@ -72,15 +73,15 @@ public class ChannelRegisterImpl implements ChannelRegister{
     @Override
     public Channel getChannel(String channelName) {
         Channel channel = channels.get(channelName);
-        if(channel == null) {
-            throw new NoSuchChannelException("No Channel named "+channelName+" can be found");
+        if (channel == null) {
+            throw new NoSuchChannelException("No Channel named " + channelName + " can be found");
         }
         return channel;
     }
 
   
     /**
-     * Return channel by event class
+     * Return channel by event class.
      * 
      * @param eventClass
      *            The event class channels should handle
@@ -129,12 +130,13 @@ public class ChannelRegisterImpl implements ChannelRegister{
      * @throws NoSuchChannelException if no channel can be found named <i>channelName</i>.
      **/
     @Override
-    public void registerEvent(String channelName, Class<? extends EventObject> eventClass) throws NoSuchChannelException {
+    public void registerEvent(String channelName, 
+                              Class<? extends EventObject> eventClass) throws NoSuchChannelException {
         Channel channel = channels.get(channelName);
-        if(channel != null) {
+        if (channel != null) {
             channel.registerEvent(eventClass);
         } else {
-            throw new NoSuchChannelException("No Channel named "+channelName+" can be found");
+            throw new NoSuchChannelException("No Channel named " + channelName + " can be found");
         }
         
     }

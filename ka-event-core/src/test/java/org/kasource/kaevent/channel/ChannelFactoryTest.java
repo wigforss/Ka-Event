@@ -33,6 +33,7 @@ import org.unitils.inject.annotation.TestedObject;
  * @author rikardwigforss
  *
  */
+//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class ChannelFactoryTest {
 
@@ -68,10 +69,10 @@ public class ChannelFactoryTest {
         EasyMockUnitils.replay();
         Channel channel = factory.createChannel("testChannel");
         assertEquals(channel, capturedChannel.getValue());
-        assertEquals("testChannel",channel.getName());
+        assertEquals("testChannel", channel.getName());
     }
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Test
     public void createChannelWithEventsTest() {
         Capture<ListenerChannel> capturedChannel = new Capture<ListenerChannel>();
@@ -79,18 +80,18 @@ public class ChannelFactoryTest {
         events.add(ChangeEvent.class);
         expect(channelRegister.getChannel("testChannel")).andThrow(new NoSuchChannelException("test"));
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        expect((Class)eventConfig.getListener()).andReturn(ChangeListener.class);
+        expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class);
         channelRegister.registerEventHandler(EasyMock.capture(capturedChannel), EasyMock.same(ChangeEvent.class));
         expectLastCall();
         channelRegister.registerChannel(EasyMock.capture(capturedChannel));
         EasyMock.expectLastCall();
         EasyMockUnitils.replay();
-        Channel channel = factory.createChannel(ChannelImpl.class,"testChannel",events);
+        Channel channel = factory.createChannel(ChannelImpl.class, "testChannel", events);
         assertEquals(channel, capturedChannel.getValue());
-        assertEquals("testChannel",channel.getName());
+        assertEquals("testChannel", channel.getName());
     }
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Test
     public void createChannelWithEventsAndListenersTest() {
         Capture<ListenerChannel> capturedChannel = new Capture<ListenerChannel>();
@@ -109,16 +110,16 @@ public class ChannelFactoryTest {
         listeners.add(listener);
         expect(channelRegister.getChannel("testChannel")).andThrow(new NoSuchChannelException("test"));
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        expect((Class)eventConfig.getListener()).andReturn(ChangeListener.class);
+        expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class);
         channelRegister.registerEventHandler(EasyMock.capture(capturedChannel), EasyMock.same(ChangeEvent.class));
         expectLastCall();
         channelRegister.registerChannel(EasyMock.capture(capturedChannel));
         expectLastCall();
         expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
-        expect((Class)eventConfig.getEventClass()).andReturn(ChangeEvent.class);
+        expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class);
         EasyMockUnitils.replay();
-        ListenerChannel channel = factory.createChannel(ChannelImpl.class,"testChannel",events,listeners);
+        ListenerChannel channel = factory.createChannel(ChannelImpl.class, "testChannel", events, listeners);
         assertEquals(channel, capturedChannel.getValue());
-        assertEquals("testChannel",channel.getName());
+        assertEquals("testChannel", channel.getName());
     }
 }

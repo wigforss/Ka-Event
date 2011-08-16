@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.event.dispatch;
 
 import java.util.Collection;

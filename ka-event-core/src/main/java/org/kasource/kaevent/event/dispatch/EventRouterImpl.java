@@ -8,7 +8,6 @@ import java.util.EventObject;
 import java.util.Set;
 
 import org.kasource.kaevent.channel.Channel;
-import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
@@ -28,9 +27,11 @@ public class EventRouterImpl implements EventRouter {
     
     private EventMethodInvoker invoker;
     
-    protected EventRouterImpl(){}
+    protected EventRouterImpl() { }
     
-    public EventRouterImpl(ChannelRegister channelRegister, SourceObjectListenerRegister sourceObjectListenerRegister, EventMethodInvoker invoker) {
+    public EventRouterImpl(ChannelRegister channelRegister, 
+    					   SourceObjectListenerRegister sourceObjectListenerRegister, 
+    					   EventMethodInvoker invoker) {
         this.channelRegister = channelRegister;
         this.sourceObjectListenerRegister = sourceObjectListenerRegister;
         this.invoker = invoker;
@@ -45,8 +46,8 @@ public class EventRouterImpl implements EventRouter {
     @Override
     public void routeEvent(EventObject event, boolean blocked) {
         Set<Channel> channels = channelRegister.getChannelsByEvent(event.getClass());
-        if(channels != null) {
-            for(Channel channel : channels) {
+        if (channels != null) {
+            for (Channel channel : channels) {
                 channel.fireEvent(event, blocked);
             }
         }

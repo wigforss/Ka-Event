@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.event.export;
 
 import java.io.IOException;

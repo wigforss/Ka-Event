@@ -57,10 +57,10 @@ public class EventFactoryImpl implements EventFactory {
      **/
     public EventConfig newFromAnnotatedEventClass(Class<? extends EventObject> event, String name) {
         Event eventAnnotation = event.getAnnotation(Event.class);
-        if(eventAnnotation == null) {
-            throw new IllegalArgumentException(event+" is not annotated with @Event!");
+        if (eventAnnotation == null) {
+            throw new IllegalArgumentException(event + " is not annotated with @Event!");
         }
-       return  newFromAnnotatedInterfaceClass(event, event.getAnnotation(Event.class).listener(),name);
+       return  newFromAnnotatedInterfaceClass(event, event.getAnnotation(Event.class).listener(), name);
     }
     
     /**
@@ -74,7 +74,9 @@ public class EventFactoryImpl implements EventFactory {
      * @param name		Name of the event.
      * @return a new EventConfig.
      **/
-    public EventConfig newFromAnnotatedInterfaceClass(Class<? extends EventObject> event, Class<? extends EventListener> listener, String name) {
+    public EventConfig newFromAnnotatedInterfaceClass(Class<? extends EventObject> event, 
+    												  Class<? extends EventListener> listener, 
+    												  String name) {
         EventConfigImpl eventConfig = new EventConfigImpl(event, listener, name);
         MethodResolving methodResolving = listener.getAnnotation(MethodResolving.class);
         if (methodResolving != null) {
@@ -97,10 +99,11 @@ public class EventFactoryImpl implements EventFactory {
     private void setDefaultMethod(EventConfigImpl eventConfig, Class<? extends EventObject> event,
             Class<? extends EventListener> listener) {
         if (ReflectionUtils.getDeclaredMethodCount(listener) == 1) {
-            Set<Method> methodSet = ReflectionUtils.getDeclaredMethodsMatchingReturnType(listener, Void.TYPE, event );
+            Set<Method> methodSet = ReflectionUtils.getDeclaredMethodsMatchingReturnType(listener, Void.TYPE, event);
             eventConfig.defaultMethod = methodSet.iterator().next();
         } else {
-        	throw new IllegalStateException("EventListener " + listener + " should only have one method declared if not annotated with @MethodResolving"); 
+        	throw new IllegalStateException("EventListener " + listener 
+        			+ " should only have one method declared if not annotated with @MethodResolving"); 
         }
     }
 

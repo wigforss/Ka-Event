@@ -44,10 +44,4 @@ public interface EventConfig {
     public String getName();
     
 
-
-    
-   
-    
-   
-
 }

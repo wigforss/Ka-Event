@@ -14,11 +14,16 @@ import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
  * 
  * @author wigforss
  **/
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 public class ExampleRunner {
 	public static void main(String[] args) {
+	    
 		Thermometer thermometer = new Thermometer();
-		EventDispatcher eventDispatcher = new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName().replace('.', '/')+"/methodresolving-config.xml");
+		EventDispatcher eventDispatcher = 
+		    new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName().replace('.', '/')
+		                + "/methodresolving-config.xml");
+		
 		Cooler cooler = new Cooler();
 		Heater heater = new Heater();
 		thermometer.setEventDispatcher(eventDispatcher);

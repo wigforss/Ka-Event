@@ -9,7 +9,7 @@ import org.kasource.kaevent.event.filter.EventFilter;
  * 
  * @author rikardwi
  **/
-public interface FilterableChannel extends Channel{
+public interface FilterableChannel extends Channel {
 
 	 /**
      * Register a filter which will invoked on all events routed

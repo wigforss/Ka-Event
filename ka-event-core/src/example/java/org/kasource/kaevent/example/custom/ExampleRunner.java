@@ -6,15 +6,20 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
 
 /**
- * Example which uses a custom method resolver found by invoking a factory method, see TemperatureChangeEventListener for details. 
+ * Example which uses a custom method resolver found by invoking 
+ * a factory method, see TemperatureChangeEventListener for details. 
  *  
  * @author wigforss
  **/
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 public class ExampleRunner {
 	public static void main(String[] args) {
 		Thermometer thermometer = new Thermometer();
-		EventDispatcher eventDispatcher = new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName().replace('.', '/')+"/custom-config.xml");	
+		EventDispatcher eventDispatcher = 
+		    new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName().replace('.', '/')
+		                + "/custom-config.xml");
+		
 		Cooler cooler = new Cooler();
 		Heater heater = new Heater();
 		thermometer.setEventDispatcher(eventDispatcher);

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.config;
 
 import org.kasource.kaevent.bean.BeanResolver;

@@ -13,13 +13,14 @@ import org.unitils.inject.annotation.TestedObject;
  * @author rikardwigforss
  *
  */
+//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class DefaultBeanResolverTest {
 
     @TestedObject
     private DefaultBeanResolver resolver;
     
-    @Test(expected=CouldNotResolveBeanException.class)
+    @Test(expected = CouldNotResolveBeanException.class)
     public void getBeanTest() {
         resolver.getBean("test", String.class);
     }
@@ -27,7 +28,7 @@ public class DefaultBeanResolverTest {
     @Test
     public void getBeanFromContextTest() {
     	resolver.addBean("testBean", "Test");
-    	assertEquals("Test",resolver.getBean("testBean", String.class));
+    	assertEquals("Test", resolver.getBean("testBean", String.class));
     }
     
 }

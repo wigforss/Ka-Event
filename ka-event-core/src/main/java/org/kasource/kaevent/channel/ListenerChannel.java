@@ -1,10 +1,8 @@
 package org.kasource.kaevent.channel;
 
-import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
-import java.util.Set;
 
 import org.kasource.kaevent.event.filter.EventFilter;
 
@@ -22,7 +20,7 @@ import org.kasource.kaevent.event.filter.EventFilter;
  * @author rikard
  * @version $Id$
  **/
-public interface ListenerChannel extends Channel{
+public interface ListenerChannel extends Channel {
    
    
     /**
@@ -47,8 +45,6 @@ public interface ListenerChannel extends Channel{
      * @param listener
      *            Listener object to unregister
      **/
-    public abstract void unregisterListener(EventListener listener);
-   
-   
+    public abstract void unregisterListener(EventListener listener);  
    
 }

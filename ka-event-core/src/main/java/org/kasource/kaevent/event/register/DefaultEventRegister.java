@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.event.register;
 
 import java.util.Collection;
@@ -18,10 +15,15 @@ import org.kasource.kaevent.event.config.EventFactory;
  * @author rikardwigforss
  *
  */
-public class DefaultEventRegister implements EventRegister{
+public class DefaultEventRegister implements EventRegister {
     private static final Logger LOG = Logger.getLogger(DefaultEventRegister.class);
-    private Map<Class<? extends EventObject>, EventConfig> eventsByClass = new HashMap<Class<? extends EventObject>, EventConfig>();
-    private Map<Class<? extends EventListener>, EventConfig> eventsByInterface = new HashMap<Class<? extends EventListener>, EventConfig>();
+    
+    private Map<Class<? extends EventObject>, EventConfig> eventsByClass = 
+    	new HashMap<Class<? extends EventObject>, EventConfig>();
+    
+    private Map<Class<? extends EventListener>, EventConfig> eventsByInterface = 
+    	new HashMap<Class<? extends EventListener>, EventConfig>();
+    
     private Map<String, EventConfig> eventsByName = new HashMap<String, EventConfig>();
     
   
@@ -38,8 +40,8 @@ public class DefaultEventRegister implements EventRegister{
     @Override
     public EventConfig getEventByInterface(Class<? extends EventListener> interfaceClass) {
     	EventConfig event =  eventsByInterface.get(interfaceClass);
-    	if(event == null) {
-    		throw new NoSuchEventException("Can not find any event for interface "+interfaceClass);
+    	if (event == null) {
+    		throw new NoSuchEventException("Can not find any event for interface " + interfaceClass);
     	}
     	return event;
     }
@@ -47,8 +49,8 @@ public class DefaultEventRegister implements EventRegister{
     @Override
     public EventConfig getEventByClass(Class<? extends EventObject> eventClass) {
     	EventConfig event =  eventsByClass.get(eventClass);
-    	if(event == null) {
-    		throw new NoSuchEventException("Can not find any event for event class "+eventClass);
+    	if (event == null) {
+    		throw new NoSuchEventException("Can not find any event for event class " + eventClass);
     	}
     	return event;
     }
@@ -56,8 +58,8 @@ public class DefaultEventRegister implements EventRegister{
     @Override
     public EventConfig getEventByName(String name) {
     	EventConfig event = eventsByName.get(name);
-    	if(event == null) {
-    		throw new NoSuchEventException("Can not find any event by name "+name);
+    	if (event == null) {
+    		throw new NoSuchEventException("Can not find any event by name " + name);
     	}
     	return event;
     }

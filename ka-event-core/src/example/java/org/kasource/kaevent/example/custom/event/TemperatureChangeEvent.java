@@ -5,6 +5,7 @@ import java.util.EventObject;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.example.custom.Thermometer;
 
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 @Event(listener = TemperatureChangeEventListener.class)
 public class TemperatureChangeEvent extends EventObject {

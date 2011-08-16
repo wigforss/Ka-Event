@@ -24,15 +24,11 @@ import org.unitils.inject.annotation.TestedObject;
  * @author rikardwigforss
  *
  */
+//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class AnnotationEventExporterTest {
     
 
-
-    
-    
-
-    
     @Mock
     private EventFactory eventFactory;
     
@@ -43,7 +39,9 @@ public class AnnotationEventExporterTest {
     private EventConfig eventConfig2;
     
     @TestedObject
-    private AnnotationEventExporter exporter = new AnnotationEventExporter("org.kasource.kaevent.event.export.test.event, org.kasource.kaevent.event.export.test.event2");
+    private AnnotationEventExporter exporter = 
+        new AnnotationEventExporter("org.kasource.kaevent.event.export.test.event, "
+                    + "org.kasource.kaevent.event.export.test.event2");
     
     
     @Test

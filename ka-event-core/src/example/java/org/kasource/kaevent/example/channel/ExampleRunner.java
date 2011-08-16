@@ -12,17 +12,22 @@ import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
  * 
  * @author wigforss
  **/
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 public class ExampleRunner {
+      
 	public static void main(String[] args) {
 		EventDispatcher eventDispatcher = getEventDispatcher();
-		for(int i=0; i < 10; ++i) {
-			createThermometer(eventDispatcher,i);
+		final int numThermometers = 10;
+		for (int i = 0; i < numThermometers; ++i) {
+			createThermometer(eventDispatcher, i);
 		}
 	}
 		
 	private static EventDispatcher getEventDispatcher() {
-		EventDispatcher eventDispatcher = new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName().replace('.', '/')+"/channel-config.xml");
+		EventDispatcher eventDispatcher = 
+		    new DefaultEventDispatcher(ExampleRunner.class.getPackage().getName().replace('.', '/')
+		                + "/channel-config.xml");
 		eventDispatcher.registerListenerAtChannel(new CommandConsole(), "temperatureChannel");	
 		return eventDispatcher;
 	}
@@ -35,7 +40,7 @@ public class ExampleRunner {
 		thermometer.setCooler(cooler);
 		thermometer.setHeater(heater);
 		thermometer.registerListers();
-		thermometer.setOptimalTemperatur(thermometer.getOptimalTemperatur()+tempDiff);
+		thermometer.setOptimalTemperatur(thermometer.getOptimalTemperatur() + tempDiff);
 		new Thread(thermometer).start();
 	}
 }

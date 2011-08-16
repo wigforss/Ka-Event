@@ -24,7 +24,8 @@ import org.kasource.kaevent.event.register.NoSuchEventException;
  * 
  */
 public abstract class AbstractEventListenerRegister implements EventListenerRegister {
-    protected static final Collection<EventListenerRegistration> EMPTY_LISTENER_COLLECTION = new HashSet<EventListenerRegistration>();
+    protected static final Collection<EventListenerRegistration> 
+    	EMPTY_LISTENER_COLLECTION = new HashSet<EventListenerRegistration>();
 
     protected EventRegister eventRegister;
     protected BeanResolver beanResolver;
@@ -47,7 +48,7 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
             try {
             	eventRegister.getEventByInterface((Class<? extends EventListener>) interfaceClass);
             	registeredEvents.add((Class<? extends EventListener>) interfaceClass);
-            }catch(NoSuchEventException nse){}
+            } catch (NoSuchEventException nse) { }
         }
             
         filterInterfaces(registeredEvents);
@@ -66,11 +67,11 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
     protected void register(EventListener listener, Object sourceObject, List<EventFilter<EventObject>> filters) {
         // find filters by annotation
         EventListenerFilter filterAnnotation = listener.getClass().getAnnotation(EventListenerFilter.class);
-        if(filterAnnotation != null && filterAnnotation.value().length > 0) {
-            if(filters == null) {
+        if (filterAnnotation != null && filterAnnotation.value().length > 0) {
+            if (filters == null) {
                 filters = new ArrayList<EventFilter<EventObject>>();
             }
-            for(String beanName : filterAnnotation.value()) {
+            for (String beanName : filterAnnotation.value()) {
            
                 EventFilter<EventObject> filter =  beanResolver.getBean(beanName, EventFilter.class);
                 filters.add(filter);
@@ -79,7 +80,7 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
         
         // Add one lister registration per registered interface of the listener
         Set<Class<? extends EventListener>> interfaces = getRegisteredInterfaces(listener);
-        if(interfaces.isEmpty()) {
+        if (interfaces.isEmpty()) {
         	throw new IllegalStateException(listener+" does not implement any registered event listener!");
         } else {
         	for (Class<? extends EventListener> interfaceClass : interfaces) {

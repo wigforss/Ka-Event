@@ -24,9 +24,10 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
  * @author wigforss
  * @version $Id$
  */
-public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializedListener{
+public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializedListener {
 
-	private final ThreadLocal<LinkedList<EventObject>> batchListByThread = new ThreadLocal<LinkedList<EventObject>>();
+	private final ThreadLocal<LinkedList<EventObject>> batchListByThread = 
+		new ThreadLocal<LinkedList<EventObject>>();
 	
     protected EventRouter eventRouter;
     protected ChannelRegister channelRegister;
@@ -41,14 +42,16 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     /**
      * Create an Event Dispatcher configured by file found af <i>configLocation</i>.
      * 
-     * @param configLocation	Location of configuration XML file. <i>classpath:</i> and <i>file:</i> prefixes are supported, default is classpath.
+     * @param configLocation	Location of configuration XML file. 
+     * <i>classpath:</i> and <i>file:</i> prefixes are supported, default is classpath.
      **/
     public DefaultEventDispatcher(String configLocation) {
         initialize(configLocation);
     }
     
     /**
-     * Create an Event Dispatcher configured by the configuration object, see org.kasource.kaevent.config.KaEventConfigBuilder to build
+     * Create an Event Dispatcher configured by the configuration object, 
+     * see org.kasource.kaevent.config.KaEventConfigBuilder to build
      * a configuration object programatically.
      *  
      * @param config	The configuration object
@@ -70,12 +73,12 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     
     protected void initialize(String configLocation) {
     	KaEventInitializer.getInstance().addListener(this);
-    	configurer.configure(this,configLocation);
+    	configurer.configure(this, configLocation);
     }
     
     protected void initialize(KaEventConfig config) {
     	KaEventInitializer.getInstance().addListener(this);
-    	configurer.configure(this,config);
+    	configurer.configure(this, config);
     }
     
     @Override
@@ -102,7 +105,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
   
     @Override
     public void fireOnCommit(EventObject event) {
-        throw new IllegalStateException("Not implemented in "+this.getClass());
+        throw new IllegalStateException("Not implemented in " + this.getClass());
         
     }
 
@@ -133,10 +136,10 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     public void registerListenerAtChannel(EventListener listener,
             String channelName) {
     	Channel channel = channelRegister.getChannel(channelName);
-    	if(channel instanceof ListenerChannel) {
+    	if (channel instanceof ListenerChannel) {
     		((ListenerChannel) channel).registerListener(listener);
     	} else {
-    		throw new IllegalArgumentException("Channel "+channelName + " is not an ListenerChannel.");
+    		throw new IllegalArgumentException("Channel " + channelName + " is not an ListenerChannel.");
     	}
     }
     
@@ -144,10 +147,10 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     public void registerListenerAtChannel(EventListener listener,
             String channelName, List<EventFilter<EventObject>> filters) {
     	Channel channel = channelRegister.getChannel(channelName);
-    	if(channel instanceof ListenerChannel) {
+    	if (channel instanceof ListenerChannel) {
     		((ListenerChannel) channel).registerListener(listener, filters);
     	} else {
-    		throw new IllegalArgumentException("Channel "+channelName + " is not an ListenerChannel.");
+    		throw new IllegalArgumentException("Channel " + channelName + " is not an ListenerChannel.");
     	}
     }
 

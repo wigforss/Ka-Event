@@ -10,6 +10,7 @@ import org.junit.Test;
  * @author rikardwigforss
  *
  */
+//CHECKSTYLE:OFF
 public class CouldNotResolveBeanExceptionTest {
 
     @Test
@@ -28,7 +29,7 @@ public class CouldNotResolveBeanExceptionTest {
     @Test
     public void createExceptionWithMessageAndException() {
         RuntimeException re = new RuntimeException();
-        CouldNotResolveBeanException e = new CouldNotResolveBeanException("test",re);
+        CouldNotResolveBeanException e = new CouldNotResolveBeanException("test", re);
         assertEquals(re, e.getCause());
         assertEquals("test", e.getMessage());
     }

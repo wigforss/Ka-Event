@@ -14,16 +14,9 @@ import org.kasource.kaevent.example.custom.event.TemperatureChangeEventListener;
  * @author rikardwigforss
  * 
  */
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 public class TempratureMethodResolver implements MethodResolver<TemperatureChangeEvent> {
-    
-    public static TempratureMethodResolver getInstance(){
-        return new TempratureMethodResolver(22.0);
-    }
-    
-    public static TempratureMethodResolver getInstance(String optimalTemp){
-        return new TempratureMethodResolver(Double.parseDouble(optimalTemp));
-    }
     
     private double optimalTemp;
 
@@ -31,6 +24,16 @@ public class TempratureMethodResolver implements MethodResolver<TemperatureChang
         this.optimalTemp = optimalTemp;
     }
 
+    public static TempratureMethodResolver getInstance() {
+        return new TempratureMethodResolver(22.0);
+    }
+    
+    public static TempratureMethodResolver getInstance(String optimalTemp) {
+        return new TempratureMethodResolver(Double.parseDouble(optimalTemp));
+    }
+    
+    
+    
     @Override
     public Method resolveMethod(TemperatureChangeEvent event) {
         if (event.getCurrentTemperature() > optimalTemp) {

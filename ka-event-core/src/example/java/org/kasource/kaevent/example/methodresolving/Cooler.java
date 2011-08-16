@@ -3,8 +3,9 @@ package org.kasource.kaevent.example.methodresolving;
 import org.kasource.kaevent.example.methodresolving.event.TemperatureChangeEvent;
 import org.kasource.kaevent.example.methodresolving.event.TemperatureChangeEventListener;
 
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
-public class Cooler implements TemperatureChangeEventListener{
+public class Cooler implements TemperatureChangeEventListener {
 
 	private boolean enabled = false;
 	
@@ -15,10 +16,10 @@ public class Cooler implements TemperatureChangeEventListener{
 	@Override
 	public void temperatureDown(TemperatureChangeEvent event) {
 		if (event.getCurrentTemperature() < event.getSource().getOptimalTemperatur()) {
-			if(enabled == true) {
+			if (enabled) {
 				System.out.println("Cooler turned off.");
 			}
-			enabled =false;		
+			enabled = false;		
 		}
 	}
 
@@ -26,7 +27,7 @@ public class Cooler implements TemperatureChangeEventListener{
 	public void temperatureUp(TemperatureChangeEvent event) {
 		if (event.getCurrentTemperature() > event.getSource().getOptimalTemperatur())
         {
-            if(enabled == false) {
+            if (!enabled) {
             	System.out.println("Cooler started.");
             }
             enabled = true;

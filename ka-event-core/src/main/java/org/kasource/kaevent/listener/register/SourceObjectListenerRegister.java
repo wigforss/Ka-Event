@@ -8,7 +8,7 @@ import org.kasource.kaevent.event.filter.EventFilter;
 
 
 
-public interface SourceObjectListenerRegister extends EventListenerRegister{
+public interface SourceObjectListenerRegister extends EventListenerRegister {
 
 	/**
 	 * Register a listener to listen on events from sourceObject

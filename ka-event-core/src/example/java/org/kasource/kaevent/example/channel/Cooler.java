@@ -5,35 +5,29 @@ import org.kasource.kaevent.example.channel.event.TemperatureChangedEventListene
 
 
 
-
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
-public class Cooler implements TemperatureChangedEventListener{
+public class Cooler implements TemperatureChangedEventListener {
 private boolean enabled = false;
 	
 	public boolean isEnabled() {
 		return enabled;
 	}
 
-	
-
-	
-
 
 	@Override
 	public void temperatureChanged(TemperatureChangedEvent event) {
 		if (event.getCurrentTemperature() > event.getSource().getOptimalTemperatur())
         {
-            if(enabled == false) {
-            	System.out.println("Cooler "+event.getSource().getId()+" started.");
+            if (!enabled) {
+            	System.out.println("Cooler " + event.getSource().getId() + " started.");
             }
             enabled = true;
-        }
-        else
-        {
-            if(enabled == true) {
-            	System.out.println("Cooler "+event.getSource().getId()+" turned off.");
+        } else {
+            if (enabled) {
+            	System.out.println("Cooler " + event.getSource().getId() + " turned off.");
             }
-            enabled =false;
+            enabled = false;
         }
 		
 	}

@@ -13,8 +13,9 @@ import org.kasource.kaevent.annotations.event.Event;
  */
 @SuppressWarnings("serial")
 ///CLOVER:OFF
-@Event(listener=SimpleEventListener2.class)
-public class SimpleEvent2 extends EventObject{
+//CHECKSTYLE:OFF
+@Event(listener = SimpleEventListener2.class)
+public class SimpleEvent2 extends EventObject {
     public SimpleEvent2() {
         super("Simple");
     }

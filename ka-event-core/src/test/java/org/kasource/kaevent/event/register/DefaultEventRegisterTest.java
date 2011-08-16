@@ -27,6 +27,7 @@ import org.unitils.inject.annotation.TestedObject;
  * @author rikardwigforss
  *
  */
+//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class DefaultEventRegisterTest {
 
@@ -42,7 +43,7 @@ public class DefaultEventRegisterTest {
     private DefaultEventRegister register = new DefaultEventRegister(eventFactory);
     
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Test
     public void registerEventTest() throws IOException {
         Set<EventConfig> importedEvents = new HashSet<EventConfig>();

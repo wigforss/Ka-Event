@@ -27,21 +27,23 @@ import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
  * @author rikardwigforss
  *
  */
-
+//CHECKSTYLE:OFF
 public class KeywordSwitchMethodResolverTest {
 
 	@Test
 	public void resolverMethodTest() throws SecurityException, NoSuchMethodException {
-		KeywordSwitchMethodResolver resolver = new KeywordSwitchMethodResolver(CrudEvent.class, CrudEventListener.class);
+		KeywordSwitchMethodResolver resolver = 
+		    new KeywordSwitchMethodResolver(CrudEvent.class, CrudEventListener.class);
+		
 		Method method = resolver.resolveMethod(new CrudEvent("Test", CrudAction.DELETE));
 		assertEquals(CrudEventListener.class.getDeclaredMethod("deleteEvent", CrudEvent.class), method);
 	}
 	
 	
-    enum CrudAction  {CREATE, READ, UPDATE, DELETE};
+    enum CrudAction  { CREATE, READ, UPDATE, DELETE };
     
     @SuppressWarnings("serial")
-    @Event(listener=CrudEventListener.class)
+    @Event(listener = CrudEventListener.class)
     public class CrudEvent extends EventObject {
         
         private CrudAction action;
@@ -58,7 +60,7 @@ public class KeywordSwitchMethodResolverTest {
     }
     
     @MethodResolving(MethodResolverType.KEYWORD_SWITCH)
-    public interface CrudEventListener extends EventListener{
+    public interface CrudEventListener extends EventListener {
         
         @KeywordCase("CREATE")
         public void createEvent(CrudEvent event);
@@ -82,7 +84,7 @@ public class KeywordSwitchMethodResolverTest {
     }
     
     @MethodResolving(MethodResolverType.KEYWORD_SWITCH)
-    public interface CrudEventListener2 extends EventListener{
+    public interface CrudEventListener2 extends EventListener {
         
         @CrudCase(CrudAction.CREATE)
         public void createEvent(CrudEvent event);

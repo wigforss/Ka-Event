@@ -24,6 +24,7 @@ import org.unitils.inject.annotation.TestedObject;
  * @author rikardwigforss
  *
  */
+//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class EventFactoryTest {
 
@@ -31,7 +32,7 @@ public class EventFactoryTest {
     
     private BeanResolver beanResolver = EasyMockUnitils.createMock(BeanResolver.class);
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Mock
     private MethodResolver methodResolver;
     
@@ -41,19 +42,19 @@ public class EventFactoryTest {
     
     @Test
     public void createEventConfig() {
-        EasyMock.expect(beanResolver.getBean("testBean",MethodResolver.class)).andReturn(methodResolver);
+        EasyMock.expect(beanResolver.getBean("testBean", MethodResolver.class)).andReturn(methodResolver);
         EasyMockUnitils.replay();
         factory.newFromAnnotatedEventClass(TemperatureBeanChangedEvent.class);
     }
     
-    @Event(listener=TemperatureBeanEventListener.class)
+    @Event(listener = TemperatureBeanEventListener.class)
     ///CLOVER:OFF
-    private static class TemperatureBeanChangedEvent extends BaseEvent{
+    private static class TemperatureBeanChangedEvent extends BaseEvent {
             private static final long serialVersionUID = 1L;
 
             private double currentTemperature;
             
-            public TemperatureBeanChangedEvent(Object source,double currentTemperature) {
+            public TemperatureBeanChangedEvent(Object source, double currentTemperature) {
                     super(source);
                     this.currentTemperature = currentTemperature;
             }
@@ -61,15 +62,14 @@ public class EventFactoryTest {
              
              
          @SuppressWarnings("unused")
-        public double getCurrentTemperature()
-         {
+        public double getCurrentTemperature() {
              return this.currentTemperature;
          }
     }
     
     @MethodResolving(MethodResolverType.BEAN)
     @BeanMethodResolver("testBean")
-    private static interface TemperatureBeanEventListener extends EventListener{
+    private static interface TemperatureBeanEventListener extends EventListener {
              public void highTemperature(TemperatureBeanChangedEvent event);
              
              public void mediumTemperature(TemperatureBeanChangedEvent event);

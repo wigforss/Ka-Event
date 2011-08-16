@@ -7,9 +7,11 @@ import org.kasource.kaevent.annotations.event.EventKeyword;
 import org.kasource.kaevent.example.methodresolving.Thermometer;
 
 
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
-@Event(listener=TemperatureChangeEventListener.class)
-public class TemperatureChangeEvent extends EventObject{
+@Event(listener = TemperatureChangeEventListener.class)
+public class TemperatureChangeEvent extends EventObject {
+    
 	private static final long serialVersionUID = 1L;
 	private double currentTemperature;
     private TemperatureDirection direction;
@@ -26,8 +28,7 @@ public class TemperatureChangeEvent extends EventObject{
 		 return (Thermometer) super.getSource();
 	 }
 	 
-     public double getCurrentTemperature()
-     {
+     public double getCurrentTemperature() {
          return this.currentTemperature;
      }
      

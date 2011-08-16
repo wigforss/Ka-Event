@@ -9,7 +9,8 @@ import java.util.EventListener;
  * @author rikardwigforss
  *
  */
-public interface SimpleEventListener extends EventListener{
+//CHECKSTYLE:OFF
+public interface SimpleEventListener extends EventListener {
 
     public void onSimpleEvent(SimpleEvent event);
 }

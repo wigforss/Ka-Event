@@ -14,12 +14,15 @@ import org.kasource.kaevent.event.method.switchcase.KeywordSwitchMethodResolver;
 
 /**
  * @author rikardwigforss
- *
+ * 
  */
-public class MethodResolverFactory {
+public final class MethodResolverFactory {
 
-    @SuppressWarnings("unchecked")
-    public static MethodResolver getFromFactoryMethod(Class<?> factoryClass,  String methodName, String parameter) {
+    private MethodResolverFactory() {
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static MethodResolver getFromFactoryMethod(Class<?> factoryClass, String methodName, String parameter) {
         try {
             if (parameter == null || parameter.length() == 0) {
                 Method method = ReflectionUtils.getDeclaredMethod(factoryClass, methodName);
@@ -30,24 +33,28 @@ public class MethodResolverFactory {
             }
         } catch (Exception e) {
             throw new IllegalStateException("Could not invoke factory method " + methodName + " on " + factoryClass);
-                   
+
         }
     }
-    
-    @SuppressWarnings("unchecked")
+
+  
+    @SuppressWarnings("rawtypes")
     public static MethodResolver getFromBean(BeanResolver beanResolver, String beanName) {
         return beanResolver.getBean(beanName, MethodResolver.class);
     }
-    
-    @SuppressWarnings("unchecked")
+
+    @SuppressWarnings("rawtypes")
     public static MethodResolver newKeywordSwitchByAnnotation(Class<? extends EventObject> eventClass,
-            Class<? extends EventListener> listenerClass) {
-       return new KeywordSwitchMethodResolver(eventClass, listenerClass);
+                Class<? extends EventListener> listenerClass) {
+        return new KeywordSwitchMethodResolver(eventClass, listenerClass);
     }
-    
-    @SuppressWarnings("unchecked")
+
+    @SuppressWarnings("rawtypes")
     public static MethodResolver newKeywordSwitch(Class<? extends EventObject> eventClass,
-            Class<? extends EventListener> listenerClass, String keywordMethodName, Map<String, String> methodNameMap, String defaultMethodName) {
-       return new KeywordSwitchMethodResolver(eventClass, listenerClass, defaultMethodName, methodNameMap,keywordMethodName);
+                Class<? extends EventListener> listenerClass, String keywordMethodName,
+                Map<String, String> methodNameMap, String defaultMethodName) {
+
+        return new KeywordSwitchMethodResolver(eventClass, listenerClass, defaultMethodName, methodNameMap,
+                    keywordMethodName);
     }
 }

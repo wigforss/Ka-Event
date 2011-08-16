@@ -9,10 +9,9 @@ import javax.swing.event.ChangeListener;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.ChannelFactory;
-import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.channel.ChannelRegister;
+import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
@@ -24,6 +23,7 @@ import org.unitils.inject.annotation.TestedObject;
  * @author rikardwigforss
  *
  */
+//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class DefaultEventDispatcherTest {
     
@@ -72,7 +72,7 @@ public class DefaultEventDispatcherTest {
         dispatcher.fireBlocked(event);
     }
     
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void fireOnCommitTest() {
         ChangeEvent event = new ChangeEvent("test");
         dispatcher.fireOnCommit(event);

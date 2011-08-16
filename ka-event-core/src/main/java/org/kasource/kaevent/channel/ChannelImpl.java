@@ -31,7 +31,8 @@ import org.kasource.kaevent.event.register.EventRegister;
 public class ChannelImpl extends ListenerChannelAdapter  implements FilterableChannel, ListenerChannel {
    
     
-    private Map<Class<? extends EventObject>, Collection<EventFilter<EventObject>>> filtersByEvent = new HashMap<Class<? extends EventObject>, Collection<EventFilter<EventObject>>>();
+    private Map<Class<? extends EventObject>, Collection<EventFilter<EventObject>>> filtersByEvent = 
+        new HashMap<Class<? extends EventObject>, Collection<EventFilter<EventObject>>>();
     
     
  
@@ -46,7 +47,12 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
      * @param eventMethodInvoker	Helper class to invoke event listener method.
      * @param beanResolver			Bean resolver to use.
      **/
-    public ChannelImpl(String name, ChannelRegister channelRegister, EventRegister eventRegister, EventMethodInvoker eventMethodInvoker,BeanResolver beanResolver) {
+    public ChannelImpl(String name, 
+                      ChannelRegister 
+                      channelRegister, 
+                      EventRegister eventRegister, 
+                      EventMethodInvoker eventMethodInvoker,
+                      BeanResolver beanResolver) {
     	super(name, channelRegister, eventRegister, beanResolver);
     	this.eventMethodInvoker = eventMethodInvoker;
     }
@@ -63,15 +69,15 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
     @Override
     public void fireEvent(EventObject event, boolean blocked) {
         Collection<EventFilter<EventObject>> filters = filtersByEvent.get(event.getClass());
-        if(filters != null) {
+        if (filters != null) {
             boolean passFilter = true;
-            for(EventFilter<EventObject> filter : filters) {
-                if(!filter.passFilter(event)) {
+            for (EventFilter<EventObject> filter : filters) {
+                if (!filter.passFilter(event)) {
                     passFilter = false;
                     break;
                 }
             }
-            if(passFilter) {
+            if (passFilter) {
                 eventMethodInvoker.invokeEventMethod(event, getListenerRegister().getListenersByEvent(event), blocked);
             }
         } else {
@@ -113,10 +119,10 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
         
         Collection<EventConfig> events = getEventRegister().getEvents();
         boolean found = false;
-        for(EventConfig eventConfig : events) {
-            if(eventClass.isAssignableFrom(eventConfig.getEventClass())){
+        for (EventConfig eventConfig : events) {
+            if (eventClass.isAssignableFrom(eventConfig.getEventClass())) {
                 Collection<EventFilter<EventObject>> filters = filtersByEvent.get(eventClass);
-                if(filters == null) {
+                if (filters == null) {
                     filters = new ArrayList<EventFilter<EventObject>>();
                     filtersByEvent.put(eventConfig.getEventClass(), filters);
                 }

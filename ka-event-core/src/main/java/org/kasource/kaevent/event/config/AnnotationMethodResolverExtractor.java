@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.event.config;
 
 import java.util.EventListener;
@@ -14,7 +11,7 @@ import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.event.method.MethodResolverFactory;
 
 /**
- * Extracts a method resolver from an event (and listener) by inspecting the annotations
+ * Extracts a method resolver from an event (and listener) by inspecting the annotations.
  * 
  * @author wigforss
  * @version $Id$
@@ -50,8 +47,10 @@ public class AnnotationMethodResolverExtractor {
             return getMethodResoverFromBeanContext(listener);
         case FACTORY:
             return getMethodResolverFromFactoryMethod(listener);
+        default:
+        	return null;
         }
-        return null;
+        
     }
 
     /**
@@ -68,7 +67,8 @@ public class AnnotationMethodResolverExtractor {
             throw new IllegalStateException(
                     "The listener "
                             + listener
-                            + " annotated with @MethodResolving(MethodResolvingType.BEAN) must be annotated with @BeanMethodResolver");
+                            + " annotated with @MethodResolving(MethodResolvingType.BEAN) "
+                            + "must be annotated with @BeanMethodResolver");
         }
         return MethodResolverFactory.getFromBean(beanResolver, beanMethodResolver.value());
     }
@@ -87,7 +87,8 @@ public class AnnotationMethodResolverExtractor {
             throw new IllegalStateException(
                     "The listener "
                             + listener
-                            + " annotated with @MethodResolving(MethodResolvingType.FACTORY) must be annotated with @FactoryMethodResolver");
+                            + " annotated with @MethodResolving(MethodResolvingType.FACTORY) "
+                            + "must be annotated with @FactoryMethodResolver");
         }
         Class<?> factoryClass = factoryMethodResolver.factoryClass();
         String methodName = factoryMethodResolver.factoryMethod();

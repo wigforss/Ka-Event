@@ -29,11 +29,15 @@ import org.kasource.kaevent.event.register.EventRegister;
  **/
 public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister implements ChannelListenerRegister {
 
-    private Map<Class<? extends EventObject>, Map<EventListener,EventListenerRegistration>> listenersByEvent = new HashMap<Class<? extends EventObject>, Map<EventListener,EventListenerRegistration>>();
+    private Map<Class<? extends EventObject>, Map<EventListener, EventListenerRegistration>> listenersByEvent = 
+    	new HashMap<Class<? extends EventObject>, Map<EventListener, EventListenerRegistration>>();
+    
     private ListenerChannel channel;
    
     
-    public ChannelListenerRegisterImpl(ListenerChannel channel, EventRegister eventRegister, BeanResolver beanResolver) {
+    public ChannelListenerRegisterImpl(ListenerChannel channel, 
+    								   EventRegister eventRegister, 
+    								   BeanResolver beanResolver) {
         super(eventRegister, beanResolver);
         this.channel = channel;
        
@@ -56,7 +60,7 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
     @Override
     public Collection<EventListenerRegistration> getListenersByEvent(Class<? extends EventObject> eventClass) {
         Map<EventListener, EventListenerRegistration> listeners =  listenersByEvent.get(eventClass);
-        if(listeners != null) {
+        if (listeners != null) {
             return listeners.values();
         }
         return EMPTY_LISTENER_COLLECTION;
@@ -73,9 +77,9 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
     @Override
     public void refreshListeners(Class<? extends EventObject> eventClass) {
        EventConfig eventConfig = eventRegister.getEventByClass(eventClass); 
-       for(Map<EventListener, EventListenerRegistration> listenerMap : listenersByEvent.values()) {
-           for(EventListener listener : listenerMap.keySet()) {
-               if(ReflectionUtils.implementsInterface(listener, eventConfig.getListener())) {
+       for (Map<EventListener, EventListenerRegistration> listenerMap : listenersByEvent.values()) {
+           for (EventListener listener : listenerMap.keySet()) {
+               if (ReflectionUtils.implementsInterface(listener, eventConfig.getListener())) {
                    addListener(listener, eventClass, channel, null);
                }
            }
@@ -111,17 +115,20 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
        super.register(listener, channel, filters);
     }
 
-    protected void addListener(EventListener listener, Class<? extends EventObject> eventClass, Object channel, List<EventFilter<EventObject>> filters) {
-        Map<EventListener,EventListenerRegistration> listenerMap = listenersByEvent.get(eventClass);
-        if(listenerMap == null) {
+    protected void addListener(EventListener listener, 
+    						   Class<? extends EventObject> eventClass, 
+    						   Object channel, 
+    						   List<EventFilter<EventObject>> filters) {
+        Map<EventListener, EventListenerRegistration> listenerMap = listenersByEvent.get(eventClass);
+        if (listenerMap == null) {
             listenerMap = new WeakHashMap<EventListener, EventListenerRegistration>();
             listenersByEvent.put(eventClass, listenerMap);
         }
        
-        if(filters != null) {
+        if (filters != null) {
             filters = getApplicableFilters(eventClass, filters);
         }
-        listenerMap.put(listener,new EventListenerRegistration(listener, filters));
+        listenerMap.put(listener, new EventListenerRegistration(listener, filters));
     }
    
     /**
@@ -132,8 +139,8 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
      **/
     @Override
     public void unregisterListener(EventListener listener) {
-       for(Map<EventListener, EventListenerRegistration> listenerMap : listenersByEvent.values()) {
-           if(listenerMap != null){
+       for (Map<EventListener, EventListenerRegistration> listenerMap : listenersByEvent.values()) {
+           if (listenerMap != null) {
                listenerMap.remove(listener);
            }
        }

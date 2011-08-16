@@ -13,9 +13,8 @@ import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.channel.Channel;
-import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.ChannelRegister;
-import org.kasource.kaevent.listener.register.EventListenerRegister;
+import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.unitils.UnitilsJUnit4TestClassRunner;
@@ -28,6 +27,7 @@ import org.unitils.inject.annotation.TestedObject;
  * @author rikardwigforss
  *
  */
+//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class EventRouterTest {
     

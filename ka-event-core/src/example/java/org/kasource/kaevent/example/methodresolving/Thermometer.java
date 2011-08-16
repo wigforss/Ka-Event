@@ -4,6 +4,7 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.example.methodresolving.event.TemperatureChangeEvent;
 import org.kasource.kaevent.example.methodresolving.event.TemperatureDirection;
 
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 public class Thermometer implements Runnable {
 	
@@ -34,18 +35,18 @@ public class Thermometer implements Runnable {
 	
 	
 	public void run() {
-		for(int i= 0; i < 100; ++i) {
+		for (int i = 0; i < 100; ++i) {
 			TemperatureDirection direction = TemperatureDirection.UP;
-			if(cooler.isEnabled()) {
-				currentTemperatur -= Math.random()*3.0d;
+			if (cooler.isEnabled()) {
+				currentTemperatur -= Math.random() * 3.0d;
 				direction = TemperatureDirection.DOWN;
-			}else if(heater.isEnabled()) {
-				currentTemperatur += Math.random()*3.0d;
+			} else if (heater.isEnabled()) {
+				currentTemperatur += Math.random() * 3.0d;
 			} else {
 				currentTemperatur += 1.0d;
 			}
-			System.out.println("Temp is now: "+currentTemperatur+" "+direction);
-			eventDispatcher.fireBlocked(new TemperatureChangeEvent(this, currentTemperatur,direction));
+			System.out.println("Temp is now: " + currentTemperatur + " " + direction);
+			eventDispatcher.fireBlocked(new TemperatureChangeEvent(this, currentTemperatur, direction));
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {

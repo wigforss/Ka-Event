@@ -7,23 +7,28 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Default implementation of BeanResolver.
  * 
+ * Extend this class and populate the bean context.
  * 
  * @author rikardwi
  * @version $Id$
  **/
-public class DefaultBeanResolver implements BeanResolver{
+public class DefaultBeanResolver implements BeanResolver {
 
 	private Map<String, Object> beanContext = new ConcurrentHashMap<String, Object>();
 	
 	/**
-	 * Throws an exception since, plain Java SE does not have access
-	 * to any managed beans.
+	 * Looks up and returns beans from the bean context.
+	 * 
+	 * @param beanName  Name of bean.
+	 * @param ofType	Type of the bean.
+	 * 
+	 * @return bean from the bean context with matching name and type.
 	 **/
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getBean(String beanName, Class<T> ofType) {
 		Object bean = beanContext.get(beanName);
-		if(bean != null) {
+		if (bean != null) {
 			return (T) bean;
 		}
 	    throw new CouldNotResolveBeanException("No bean resolver set.");

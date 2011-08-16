@@ -21,7 +21,7 @@ public class KeywordSwitchVerifier {
         verifyListenerMethod(resolver.defaultMethod, eventClass, listenerClass);
         verifyKeywordMethod(resolver.eventKeywordMethod, eventClass);
         ReflectionUtils.verifyMethodSignature(resolver.defaultMethod, Void.TYPE, eventClass);
-        verifyMethodMap(resolver.methodMap,eventClass, listenerClass);
+        verifyMethodMap(resolver.methodMap, eventClass, listenerClass);
     }
     
     private void verifyListenerMethod(Method method, Class<? extends EventObject> eventClass,
@@ -45,7 +45,10 @@ public class KeywordSwitchVerifier {
         }
     }
 
-    private void verifyMethodMap(Map<String, Method> methodMap, Class<? extends EventObject> eventClass, Class<? extends EventListener> listenerClass) {
+    private void verifyMethodMap(Map<String, 
+                                Method> methodMap, 
+                                Class<? extends EventObject> eventClass, 
+                                Class<? extends EventListener> listenerClass) {
         for (Map.Entry<String, Method> entry : methodMap.entrySet()) {
             verifyListenerMethod(entry.getValue(), eventClass, listenerClass);
         }

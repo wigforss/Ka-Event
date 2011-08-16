@@ -12,7 +12,9 @@ import org.kasource.kaevent.event.register.EventRegister;
 
 public abstract class ChannelAdapter implements Channel {
 	
-	private Map<Class<? extends EventObject>,Class<? extends EventListener>> eventMap = new HashMap<Class<? extends EventObject>,Class<? extends EventListener>>();
+	private Map<Class<? extends EventObject>, Class<? extends EventListener>> eventMap = 
+	    new HashMap<Class<? extends EventObject>, Class<? extends EventListener>>();
+	
 	// Name of the channel
     private String name;
     private ChannelRegister channelRegister;

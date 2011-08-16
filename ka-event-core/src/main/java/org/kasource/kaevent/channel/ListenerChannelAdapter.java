@@ -12,18 +12,23 @@ import org.kasource.kaevent.listener.register.ChannelListenerRegister;
 import org.kasource.kaevent.listener.register.ChannelListenerRegisterImpl;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
 
-public abstract class ListenerChannelAdapter extends ChannelAdapter implements ListenerChannel{
+public abstract class ListenerChannelAdapter extends ChannelAdapter implements ListenerChannel {
 
 	private ChannelListenerRegister listenerRegister; 
 	
 	
 	
-	public ListenerChannelAdapter(String name, ChannelRegister channelRegister, EventRegister eventRegister, BeanResolver beanResolver) {
+	public ListenerChannelAdapter(String name, 
+	                              ChannelRegister channelRegister, 
+	                              EventRegister eventRegister, 
+	                              BeanResolver beanResolver) {
 		super(name, channelRegister, eventRegister);
 		listenerRegister = new ChannelListenerRegisterImpl(this, eventRegister, beanResolver);
 	}
 	
-	public ListenerChannelAdapter(ChannelRegister channelRegister, EventRegister eventRegister, BeanResolver beanResolver) {
+	public ListenerChannelAdapter(ChannelRegister channelRegister, 
+	                              EventRegister eventRegister, 
+	                              BeanResolver beanResolver) {
 		super(channelRegister, eventRegister);
 		listenerRegister = new ChannelListenerRegisterImpl(this, eventRegister, beanResolver);
 	}
@@ -35,7 +40,7 @@ public abstract class ListenerChannelAdapter extends ChannelAdapter implements L
      *            Listener object to register
      **/ 
     @Override
-    public void registerListener(EventListener listener,List<EventFilter<EventObject>> filters) {
+    public void registerListener(EventListener listener, List<EventFilter<EventObject>> filters) {
         listenerRegister.registerListener(listener, filters);
     }
     
@@ -67,7 +72,7 @@ public abstract class ListenerChannelAdapter extends ChannelAdapter implements L
     	super.unregisterEvent(eventClass);
     	
     	Collection<EventListenerRegistration> listeners = listenerRegister.getListenersByEvent(eventClass);
-		 for(EventListenerRegistration listenerReg : listeners) {
+		 for (EventListenerRegistration listenerReg : listeners) {
 			 listenerRegister.unregisterListener(listenerReg.getListener());
 		 }
     }

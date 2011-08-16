@@ -18,6 +18,7 @@ import org.unitils.inject.annotation.TestedObject;
  * @author Rikard Wigforss
  *
  */
+//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class KaEventConfigurerTest {
 
@@ -47,7 +48,7 @@ public class KaEventConfigurerTest {
                 
             }
         });
-        configurer.configure(eventDispatcher,(String)null);
+        configurer.configure(eventDispatcher, (String) null);
         
     }
     
@@ -69,7 +70,7 @@ public class KaEventConfigurerTest {
                 
             }
         });
-        configurer.configure(eventDispatcher,"classpath:org/kasource/kaevent/config/simple-config.xml");
+        configurer.configure(eventDispatcher, "classpath:org/kasource/kaevent/config/simple-config.xml");
        
     }
     
@@ -90,7 +91,7 @@ public class KaEventConfigurerTest {
                 
             }
         });
-        configurer.configure(eventDispatcher,"classpath:org/kasource/kaevent/config/advanced-config.xml");
+        configurer.configure(eventDispatcher, "classpath:org/kasource/kaevent/config/advanced-config.xml");
         
     }
     

@@ -8,10 +8,10 @@ import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
 
 
-
-
+//CHECKSTYLE:OFF
+///CLOVER:OFF
 @MethodResolving(MethodResolverType.KEYWORD_SWITCH)
-public interface TemperatureChangeEventListener extends EventListener{
+public interface TemperatureChangeEventListener extends EventListener {
 	
 	@DefaultListenerMethod
 	@KeywordCase("UP")

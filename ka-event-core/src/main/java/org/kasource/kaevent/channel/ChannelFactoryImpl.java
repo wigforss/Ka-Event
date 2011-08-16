@@ -28,7 +28,7 @@ public class ChannelFactoryImpl implements ChannelFactory {
   
    private BeanResolver beanResolver;
    
-   public ChannelFactoryImpl() {}
+   public ChannelFactoryImpl() { }
    
    /**
     * Constructor.
@@ -38,7 +38,10 @@ public class ChannelFactoryImpl implements ChannelFactory {
     * @param eventMethodInvoker		Helper class to invoke event methods on listeners.
     * @param beanResolver			Bean Resolver to use.
     **/
-   public ChannelFactoryImpl(ChannelRegister channelRegister,EventRegister eventRegister,EventMethodInvoker eventMethodInvoker, BeanResolver beanResolver) {
+   public ChannelFactoryImpl(ChannelRegister channelRegister,
+                             EventRegister eventRegister,
+                             EventMethodInvoker eventMethodInvoker, 
+                             BeanResolver beanResolver) {
        this.channelRegister = channelRegister;
        this.eventRegister = eventRegister;
        this.eventMethodInvoker = eventMethodInvoker;
@@ -80,10 +83,12 @@ public class ChannelFactoryImpl implements ChannelFactory {
 	 * 
 	 * @return The newly created channel.
 	 **/
-   public Channel createChannel(Class<? extends Channel> channelClass, String channelName, Set<Class<? extends EventObject>> events) {
+   public Channel createChannel(Class<? extends Channel> channelClass, 
+                                String channelName, 
+                                Set<Class<? extends EventObject>> events) {
 	   Channel channel = getNewChannel(channelClass, channelName);
        channelRegister.registerChannel(channel);
-       for(Class<? extends EventObject> eventClass : events) {
+       for (Class<? extends EventObject> eventClass : events) {
            channel.registerEvent(eventClass);
        }
       
@@ -100,12 +105,15 @@ public class ChannelFactoryImpl implements ChannelFactory {
 	 * @param listeners		Listeners to register at the channel.
 	 * @return The newly created channel.
 	 **/
-   public ListenerChannel createChannel(Class<? extends ListenerChannel> channelClass, String channelName, Set<Class<? extends EventObject>> events, Set<EventListener> listeners) {
+   public ListenerChannel createChannel(Class<? extends ListenerChannel> channelClass, 
+                                        String channelName, 
+                                        Set<Class<? extends EventObject>> events, 
+                                        Set<EventListener> listeners) {
 	   ListenerChannel channel = (ListenerChannel) getNewChannel(channelClass, channelName);
-       for(Class<? extends EventObject> eventClass : events) {
+       for (Class<? extends EventObject> eventClass : events) {
            channel.registerEvent(eventClass);
        }
-       for(EventListener listener : listeners) {
+       for (EventListener listener : listeners) {
            channel.registerListener(listener);
        }
        channelRegister.registerChannel(channel);
@@ -124,10 +132,11 @@ public class ChannelFactoryImpl implements ChannelFactory {
     * 
     * @throws IllegalStateException if a channel with name already created or channelClass could not be instancieated.
     **/
-	protected Channel getNewChannel(Class<? extends Channel> channelClass, String name) throws IllegalStateException{
+	protected Channel getNewChannel(Class<? extends Channel> channelClass, 
+	                                String name) throws IllegalStateException {
 		try {
 			channelRegister.getChannel(name);
-			throw new IllegalStateException("Channel with name "+name +" has already been created.");
+			throw new IllegalStateException("Channel with name " + name + " has already been created.");
 		} catch (NoSuchChannelException nsce) {
 			try {
 				if (ChannelImpl.class.isAssignableFrom(channelClass)) {
@@ -138,14 +147,19 @@ public class ChannelFactoryImpl implements ChannelFactory {
 											EventRegister.class, 
 											EventMethodInvoker.class,
 											BeanResolver.class);
-					return cons.newInstance(name,channelRegister, eventRegister, eventMethodInvoker, beanResolver);
+					return cons.newInstance(name, 
+					                        channelRegister, 
+					                        eventRegister, 
+					                        eventMethodInvoker, 
+					                        beanResolver);
 				} else {
 					Channel channel =  channelClass.newInstance();
 					channel.setName(name);
 					return channel;
 				}
-			}catch(Exception e) {
-				throw new IllegalStateException("Could not find or instanciate channel class " + channelClass, e);
+			} catch (Exception e) {
+				throw new IllegalStateException("Could not find or instanciate channel class " 
+				            + channelClass, e);
 			}
 		}
 	}

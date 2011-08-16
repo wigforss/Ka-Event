@@ -43,7 +43,9 @@ public interface ChannelFactory {
 	 * 
 	 * @return The newly created channel.
 	 **/
-    public abstract Channel createChannel(Class<? extends Channel> channelClass, String channelName, Set<Class<? extends EventObject>> events);
+    public abstract Channel createChannel(Class<? extends Channel> channelClass, 
+                                          String channelName, 
+                                          Set<Class<? extends EventObject>> events);
 
     /**
 	 * Creates and registers a new channel of the supplied channel class, registers 
@@ -55,7 +57,9 @@ public interface ChannelFactory {
 	 * @param listeners		Listeners to register at the channel.
 	 * @return The newly created channel.
 	 **/
-    public abstract ListenerChannel createChannel(Class<? extends ListenerChannel> channelClass, String channelName, Set<Class<? extends EventObject>> events,
+    public abstract ListenerChannel createChannel(Class<? extends ListenerChannel> channelClass, 
+                                                  String channelName, 
+                                                  Set<Class<? extends EventObject>> events,
             Set<EventListener> listeners);
 
 }

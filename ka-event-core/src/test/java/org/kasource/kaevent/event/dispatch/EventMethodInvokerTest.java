@@ -32,10 +32,11 @@ import org.unitils.inject.util.PropertyAccess;
  * @author rikardwigforss
  *
  */
+//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class EventMethodInvokerTest {
 
-    @InjectIntoStaticByType(propertyAccess=PropertyAccess.FIELD, target=EventMethodInvokerImpl.class)
+    @InjectIntoStaticByType(propertyAccess = PropertyAccess.FIELD, target = EventMethodInvokerImpl.class)
     @Mock
     private Logger logger;
     
@@ -66,11 +67,13 @@ public class EventMethodInvokerTest {
         }
         ChangeListener listener = new MyChangeListener(methodInvoked); 
         Set<EventListenerRegistration> listeners = new HashSet<EventListenerRegistration>();
-        listeners.add(new EventListenerRegistration(listener,null));
+        listeners.add(new EventListenerRegistration(listener, null));
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        EasyMock.expect(eventConfig.getEventMethod(event)).andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
+        EasyMock.expect(eventConfig.getEventMethod(event))
+            .andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
+        
         EasyMockUnitils.replay();
         eventMethodInvoker.invokeEventMethod(event, listeners, false);
         assertEquals(Boolean.TRUE, methodInvoked.getValue());
@@ -85,11 +88,13 @@ public class EventMethodInvokerTest {
             }
         };
         Set<EventListenerRegistration> listeners = new HashSet<EventListenerRegistration>();
-        listeners.add(new EventListenerRegistration(listener,null));
+        listeners.add(new EventListenerRegistration(listener, null));
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        EasyMock.expect(eventConfig.getEventMethod(event)).andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
+        EasyMock.expect(eventConfig.getEventMethod(event))
+            .andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
+        
         logger.error(EasyMock.isA(String.class), EasyMock.isA(RuntimeException.class));
         EasyMockUnitils.replay();
         eventMethodInvoker.invokeEventMethod(event, listeners, false);
@@ -115,13 +120,15 @@ public class EventMethodInvokerTest {
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        EasyMock.expect(eventConfig.getEventMethod(event)).andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
+        EasyMock.expect(eventConfig.getEventMethod(event))
+            .andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
+        
         EasyMockUnitils.replay();
         eventMethodInvoker.invokeEventMethod(event, listeners, true);
         assertEquals(Boolean.TRUE, methodInvoked.getValue());
     }
     
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void invokeMethodBlockedExceptionTest() throws SecurityException, NoSuchMethodException {
        
         ChangeListener listener = new ChangeListener() {        
@@ -135,7 +142,9 @@ public class EventMethodInvokerTest {
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        EasyMock.expect(eventConfig.getEventMethod(event)).andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
+        EasyMock.expect(eventConfig.getEventMethod(event))
+            .andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
+        
         EasyMockUnitils.replay();
         eventMethodInvoker.invokeEventMethod(event, listeners, true);
         

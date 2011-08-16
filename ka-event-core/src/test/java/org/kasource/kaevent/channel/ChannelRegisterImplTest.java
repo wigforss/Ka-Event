@@ -24,6 +24,7 @@ import org.unitils.inject.annotation.TestedObject;
  * @author rikardwigforss
  *
  */
+//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class ChannelRegisterImplTest {
     
@@ -57,7 +58,7 @@ public class ChannelRegisterImplTest {
         register.registerEvent("testChannel", ChangeEvent.class);
     }
     
-    @Test(expected=NoSuchChannelException.class)
+    @Test(expected = NoSuchChannelException.class)
     public void registerEventToUnknownChannelTest() {
         register.registerEvent("testChannel", ChangeEvent.class);
     }
@@ -86,7 +87,7 @@ public class ChannelRegisterImplTest {
     }
     
     
-    @Test(expected=NoSuchChannelException.class)
+    @Test(expected = NoSuchChannelException.class)
     public void handleEventUnknownChannelTest() {
         EasyMock.expect(channel.getName()).andReturn("testChannel").times(2);
         EasyMockUnitils.replay();
@@ -116,7 +117,7 @@ public class ChannelRegisterImplTest {
       
     }
     
-    @Test(expected=NoSuchChannelException.class)
+    @Test(expected = NoSuchChannelException.class)
     public void getUnknownChannelTest() {
         register.getChannel("testChannel");
       

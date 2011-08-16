@@ -33,7 +33,7 @@ public class EventListenerRegistration {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof EventListenerRegistration) {
+        if (obj instanceof EventListenerRegistration) {
             return listener.equals(((EventListenerRegistration) obj).getListener());
         } else {
             return false;

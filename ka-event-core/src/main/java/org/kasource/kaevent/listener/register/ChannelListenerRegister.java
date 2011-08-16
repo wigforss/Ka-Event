@@ -8,7 +8,7 @@ import java.util.List;
 import org.kasource.kaevent.event.filter.EventFilter;
 
 
-public interface ChannelListenerRegister extends EventListenerRegister{
+public interface ChannelListenerRegister extends EventListenerRegister {
     /**
      * Register a new listener object to this channel
      * 

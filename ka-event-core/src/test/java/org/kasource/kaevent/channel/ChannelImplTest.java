@@ -31,6 +31,7 @@ import org.unitils.inject.annotation.TestedObject;
  * @author wigforss
  *
  */
+//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 public class ChannelImplTest {
     
@@ -67,34 +68,34 @@ public class ChannelImplTest {
     @TestedObject
     private ChannelImpl channel = new ChannelImpl(name, channelRegister, eventRegister, eventMethodInvoker, beanResolver);
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Test
     public void registerEventTest() {
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        expect((Class)eventConfig.getListener()).andReturn(ChangeListener.class);
+        expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class);
         channelRegister.registerEventHandler(channel, ChangeEvent.class);
         expectLastCall();
         EasyMockUnitils.replay();
         channel.registerEvent(ChangeEvent.class);
-        assertEquals( ChangeEvent.class, channel.getEvents().iterator().next() );
-        assertEquals( ChangeListener.class, channel.getSupportedInterfaces().iterator().next() );
+        assertEquals(ChangeEvent.class, channel.getEvents().iterator().next());
+        assertEquals(ChangeListener.class, channel.getSupportedInterfaces().iterator().next());
     }
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Test
     public void registerEventTwiceTest() {
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig).times(2);
-        expect((Class)eventConfig.getListener()).andReturn(ChangeListener.class);
+        expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class);
         channelRegister.registerEventHandler(channel, ChangeEvent.class);
         expectLastCall();
         EasyMockUnitils.replay();
         channel.registerEvent(ChangeEvent.class);
         channel.registerEvent(ChangeEvent.class);
-        assertEquals( ChangeEvent.class, channel.getEvents().iterator().next() );
-        assertEquals( ChangeListener.class, channel.getSupportedInterfaces().iterator().next() );
+        assertEquals(ChangeEvent.class, channel.getEvents().iterator().next());
+        assertEquals(ChangeListener.class, channel.getSupportedInterfaces().iterator().next());
     }
     
-    @Test(expected=NoSuchEventException.class)
+    @Test(expected = NoSuchEventException.class)
     public void registerUnsupportedEventTest() {
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andThrow(new NoSuchEventException("Test"));
         EasyMockUnitils.replay();
@@ -106,7 +107,7 @@ public class ChannelImplTest {
     public void fireEventTest() {
         ChangeEvent event = new ChangeEvent("source");
         expect(listenerRegister.getListenersByEvent(event)).andReturn(listeners);
-        eventMethodInvoker.invokeEventMethod(event,listeners,false);
+        eventMethodInvoker.invokeEventMethod(event, listeners, false);
         expectLastCall();
         EasyMockUnitils.replay();
         channel.fireEvent(event, false);

@@ -20,13 +20,13 @@ import org.scannotation.AnnotationDB;
 import org.scannotation.ClasspathUrlFinder;
 
 /**
- * Finds any class in scanPath that is annotated with @Event and exports them
+ * Finds any class in scanPath that is annotated with @Event and exports them.
  * 
  * @author rikardwigforss
  * @version $Id$ 
  **/
 public class AnnotationEventExporter implements EventExporter {
-    public static final Logger logger = Logger.getLogger(AnnotationEventExporter.class);
+    private static final Logger LOG = Logger.getLogger(AnnotationEventExporter.class);
 
    
     private AnnotationDB db = new AnnotationDB();
@@ -40,7 +40,7 @@ public class AnnotationEventExporter implements EventExporter {
     @SuppressWarnings("unchecked")
     public Set<EventConfig> exportEvents(EventFactory eventFactory) throws IOException {
         Set<EventConfig> eventsFound = new HashSet<EventConfig>();
-        if(scanPath.contains(".")) {
+        if (scanPath.contains(".")) {
             scanPath = scanPath.replace('.', '/');
         }
         
@@ -48,12 +48,12 @@ public class AnnotationEventExporter implements EventExporter {
         
         String[] scanPaths = scanPath.split(",");
         Set<URL> urls = new HashSet<URL>();
-        for(String path : scanPaths) {
+        for (String path : scanPaths) {
         	URL[] urlsFromPath = ClasspathUrlFinder.findResourceBases(path.trim());
         	urls.addAll(Arrays.asList(urlsFromPath));
-        	includeRegExp += path.trim().replace("/", "\\.")+".*|";
+        	includeRegExp += path.trim().replace("/", "\\.") + ".*|";
         }
-        if(scanPaths.length > 0) {
+        if (scanPaths.length > 0) {
         	// Remove last |
         	includeRegExp = includeRegExp.substring(0, includeRegExp.length() - 1);
         }
@@ -68,7 +68,7 @@ public class AnnotationEventExporter implements EventExporter {
         Set<String> eventClassNames = annotationIndex.get(Event.class.getName());
         if (eventClassNames != null) {
             for (String eventClassName : eventClassNames) {
-                if(eventClassName.matches(includeRegExp)) {
+                if (eventClassName.matches(includeRegExp)) {
                 try {
                     Class<?> eventClass = Class.forName(eventClassName);
                     eventClass.asSubclass(EventObject.class);
@@ -76,7 +76,7 @@ public class AnnotationEventExporter implements EventExporter {
                             (Class<? extends EventObject>) eventClass);
                     eventsFound.add(eventConfig);
                 } catch (ClassNotFoundException cnfe) {
-                    logger.error("Scannotation found a class that does not exist " + eventClassName + " !", cnfe);
+                    LOG.error("Scannotation found a class that does not exist " + eventClassName + " !", cnfe);
                 } catch (ClassCastException cce) {
                     throw new InvalidEventConfigurationException("Class " + eventClassName
                             + " is annoted with @Event but does not extend java.util.EventObject!");
