@@ -8,12 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.kasource.kaevent.channel.Channel;
-import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
-import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,7 +24,7 @@ import org.springframework.context.ApplicationContextAware;
  * 
  * @author rikardwi
  **/
-public class SpringKaEventConfigurer extends KaEventConfigurer implements ApplicationContextAware{
+public class SpringKaEventConfigurer extends KaEventConfigurer implements ApplicationContextAware {
 
 	private KaEventConfiguration configuration;
 	
@@ -39,14 +37,16 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 
 	private Map<EventListener, List<EventFilter<EventObject>>> filterMap;
 	 
-	protected  SpringKaEventConfigurer(KaEventConfiguration configuration){
+	protected  SpringKaEventConfigurer(KaEventConfiguration configuration) {
 		this.configuration = configuration;	
 	}
 	
 	
 	public void configure() {
-		if(scanClassPath != null && scanClassPath.length() > 0) {
-            importAndRegisterEvents(new AnnotationEventExporter(scanClassPath),configuration.getEventFactory(), configuration.getEventRegister());
+		if (scanClassPath != null && scanClassPath.length() > 0) {
+            importAndRegisterEvents(new AnnotationEventExporter(scanClassPath),
+            					    configuration.getEventFactory(), 
+            					    configuration.getEventRegister());
         }
 		// Initialize Events
 		applicationContext.getBeansOfType(EventConfig.class);
@@ -61,13 +61,17 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 	 * Register all source bean listeners.
 	 **/
 	private void registerListeners() {
-		SourceObjectListenerRegister sourceObjectListenerRegister = configuration.getSourceObjectListenerRegister();
-    	if(listeners != null) {
-    		for(Map.Entry<Object, List<EventListener>>  listenerEntry : listeners.entrySet()) {
-    			for(EventListener listener : listenerEntry.getValue()) {
+		SourceObjectListenerRegister sourceObjectListenerRegister = 
+			configuration.getSourceObjectListenerRegister();
+    	if (listeners != null) {
+    		for (Map.Entry<Object, List<EventListener>>  listenerEntry : listeners.entrySet()) {
+    			for (EventListener listener : listenerEntry.getValue()) {
     				List<EventFilter<EventObject>> filters = getFilter(listener);
-        			if(filters != null) {
-        				sourceObjectListenerRegister.registerListener(listener, listenerEntry.getKey(), filters);
+        			if (filters != null) {
+        				sourceObjectListenerRegister
+        					.registerListener(listener, 
+        									  listenerEntry.getKey(), 
+        									  filters);
         			} else {
         				sourceObjectListenerRegister.registerListener(listener, listenerEntry.getKey());
         			}
@@ -85,7 +89,7 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 	 * @return Filters for listener of  null if no filters found.
 	 **/
 	private List<EventFilter<EventObject>> getFilter(Object listener) {
-		if(filterMap != null) {
+		if (filterMap != null) {
 			return filterMap.get(listener);
 		}
 		return null;

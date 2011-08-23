@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.channel;
 
 import java.util.EventListener;
@@ -17,13 +14,12 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 
 /**
  * @author Rikard Wigforss
  *
  */
-public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
+public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware {
 
   
     
@@ -45,43 +41,47 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
 	@Override
     public Object getObject() throws Exception {
     	Channel channel = getChannel();
-    	ChannelRegister channelRegister = (ChannelRegister) applicationContext.getBean(KaEventSpringBean.CHANNEL_REGISTER.getId());
+    	ChannelRegister channelRegister = 
+    		(ChannelRegister) applicationContext.getBean(KaEventSpringBean.CHANNEL_REGISTER.getId());
     	channelRegister.registerChannel(channel);
-    	if(listeners != null) {
-    		if(channel instanceof ListenerChannel) {
-    			for(EventListener listener : listeners) {
+    	if (listeners != null) {
+    		if (channel instanceof ListenerChannel) {
+    			for (EventListener listener : listeners) {
     				List<EventFilter<EventObject>> filters = getFilter(listener);
-    				if(filters != null) {
+    				if (filters != null) {
     					((ListenerChannel) channel).registerListener(listener, filters);
     				} else {
     					((ListenerChannel) channel).registerListener(listener);
     				}
     			}
     		} else {
-    			throw new IllegalArgumentException("listener registered to the channel "+ channel.getName() 
-    					+ " which does not allow listeners to registered, does not implement ListenerChannel.");
+    			throw new IllegalArgumentException("listener registered to the channel "
+    					+ channel.getName() + " which does not allow listeners to registered, "
+    					+ "does not implement ListenerChannel.");
     		}
     	}
     	return channel;
     }
 
 	private List<EventFilter<EventObject>> getFilter(Object listener) {
-		if(filterMap != null) {
+		if (filterMap != null) {
 			return filterMap.get(listener);
 		}
 		return null;
 	}
     
     private Channel getChannel() {
-    	ChannelFactory channelFactory = (ChannelFactory) applicationContext.getBean(KaEventSpringBean.CHANNEL_FACTORY.getId());
-    	EventRegister eventRegister = (EventRegister) applicationContext.getBean(KaEventSpringBean.EVENT_REGISTER.getId());
+    	ChannelFactory channelFactory = 
+    		(ChannelFactory) applicationContext.getBean(KaEventSpringBean.CHANNEL_FACTORY.getId());
+    	EventRegister eventRegister = 
+    		(EventRegister) applicationContext.getBean(KaEventSpringBean.EVENT_REGISTER.getId());
         Set<Class<? extends EventObject>> eventSet = new HashSet<Class<? extends EventObject>>();
-        if(events != null) {
-        	for(String eventName : events) {
+        if (events != null) {
+        	for (String eventName : events) {
         		eventSet.add(eventRegister.getEventByName(eventName).getEventClass());
         	}
         }
-        if(eventSet.isEmpty()) {
+        if (eventSet.isEmpty()) {
         	return channelFactory.createChannel(channelClass, name);
         } else {
         	return channelFactory.createChannel(channelClass, name, eventSet);
@@ -125,7 +125,7 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware{
 	}
 
 	public void setChannelClass(Class<? extends Channel> channelClass) {
-		if(channelClass == null) {
+		if (channelClass == null) {
 			this.channelClass = ChannelImpl.class;
 		} else {
 			this.channelClass = channelClass;

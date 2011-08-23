@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<kaEventConfig xmlns="http://kasource.org"
+<kaEventConfig xmlns="http://kasource.org/schema/kaevent"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://kasource.org kaevent.xsd">
+xsi:schemaLocation="http://kasource.org/schema/kaevent kaevent.xsd">
 <queueThread class="org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor"/>
 <beanResolver class="org.kasource.kaevent.bean.DefaultBeanResolver"/>
 <events>

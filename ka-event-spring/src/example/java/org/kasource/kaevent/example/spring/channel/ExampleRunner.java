@@ -1,7 +1,6 @@
 package org.kasource.kaevent.example.spring.channel;
 
 
-import org.kasource.kaevent.example.spring.channel.Thermometer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -15,13 +14,13 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 
  * @author Rikard Wigforss
  **/
-// /CLOVER:OFF
+///CLOVER:OFF
+//CHECKSTYLE:OFF
 public class ExampleRunner  {
 
-    
-
     public static void main(String[] args) {
-    	  ApplicationContext context = new ClassPathXmlApplicationContext("org/kasource/kaevent/example/spring/channel/channel-context.xml");
+    	  ApplicationContext context = 
+    	      new ClassPathXmlApplicationContext("org/kasource/kaevent/example/spring/channel/channel-context.xml");
   	    Thermometer thermometer = (Thermometer) context.getBean("thermometer");
   	    thermometer.run();
     }

@@ -27,8 +27,14 @@ public class EventRouterImpl implements EventRouter {
     
     private EventMethodInvoker invoker;
     
-    protected EventRouterImpl() { }
-    
+   
+   /**
+    * Constructor.
+    *  
+    * @param channelRegister                Channel Register.
+    * @param sourceObjectListenerRegister   Source Object Listener Register.
+    * @param invoker                        Event Method Invoker.
+    **/
     public EventRouterImpl(ChannelRegister channelRegister, 
     					   SourceObjectListenerRegister sourceObjectListenerRegister, 
     					   EventMethodInvoker invoker) {

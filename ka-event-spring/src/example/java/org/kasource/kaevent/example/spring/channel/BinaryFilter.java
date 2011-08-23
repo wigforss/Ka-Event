@@ -4,7 +4,7 @@ import java.util.EventObject;
 
 import org.kasource.kaevent.event.filter.EventFilter;
 
-public class BinaryFilter implements EventFilter<EventObject>{
+public class BinaryFilter implements EventFilter<EventObject> {
 
 	private boolean allow;
 	

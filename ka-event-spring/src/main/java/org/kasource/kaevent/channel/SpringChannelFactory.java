@@ -6,8 +6,6 @@ import org.kasource.kaevent.event.register.EventRegister;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 /**
  * Allows prototype beans to be created as channel objects.
@@ -30,7 +28,7 @@ public class SpringChannelFactory extends ChannelFactoryImpl implements
 	 **/
 	protected Channel getNewChannel(Class<? extends Channel> channelClass,
 			String name) throws IllegalStateException {
-		if(channelClass.equals(ChannelImpl.class)) {
+		if (channelClass.equals(ChannelImpl.class)) {
 			return super.getNewChannel(channelClass, name);
 		}
 		String[] channelBeans = applicationContext

@@ -49,18 +49,21 @@ public class KaEventConfigurerBeanDefinitionParser extends
 	}
 
 	protected void createBeans(ParserContext pc, Set<KaEventSpringBean> excludeSet) {
-		for(KaEventSpringBean bean : KaEventSpringBean.values()) {
-			if(!excludeSet.contains(bean)) {
-				BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(bean.getBeanClass());
-				if(bean.getInitMethod().length() > 0) {
+		for (KaEventSpringBean bean : KaEventSpringBean.values()) {
+			if (!excludeSet.contains(bean)) {
+				BeanDefinitionBuilder builder = BeanDefinitionBuilder
+					.rootBeanDefinition(bean.getBeanClass());
+				if (bean.getInitMethod().length() > 0) {
 					builder.setInitMethodName(bean.getInitMethod());
 				}
-				for(String beanRef : bean.getConstructorRefs()) {
+				for (String beanRef : bean.getConstructorRefs()) {
 					builder.addConstructorArgReference(beanRef);
 				}
 				
-				for(int i = 0; i < bean.getRefProperties().length; ++i) {
-					builder.addPropertyReference(bean.getRefProperties()[i], bean.getPropertyRefValues()[i]);
+				for (int i = 0; i < bean.getRefProperties().length; ++i) {
+					builder.
+						addPropertyReference(bean.getRefProperties()[i], 
+											 bean.getPropertyRefValues()[i]);
 				}
 				builder.setLazyInit(false);
 				pc.registerBeanComponent(new BeanComponentDefinition(builder
@@ -72,7 +75,7 @@ public class KaEventConfigurerBeanDefinitionParser extends
 	protected void createQueueBean(Class<?> clazz, ParserContext pc, boolean setEventRouter, String concurrent) {
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder
 				.rootBeanDefinition(clazz);
-		if(setEventRouter) {
+		if (setEventRouter) {
 			builder.addConstructorArgReference(KaEventSpringBean.EVENT_ROUTER.getId());
 		}
 		builder.addPropertyValue("concurrent", concurrent);

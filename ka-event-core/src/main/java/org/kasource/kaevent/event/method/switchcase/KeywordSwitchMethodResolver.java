@@ -151,7 +151,14 @@ public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> 
         new KeywordSwitchVerifier().verify(this, eventClass, listenerClass);
     }
 
-    
+    /**
+     * Returns the event keyword method from the eventClass.
+     * 
+     * @param eventClass                Event Class.
+     * @param eventKeywordMethodName    Name of the Event keyword method.
+     * 
+     * @return the event keyword method.
+     **/
     private Method getEventKeywordMethod(Class<? extends EventObject> eventClass, String eventKeywordMethodName) {
         Method method = ReflectionUtils.getDeclaredMethod(eventClass, eventKeywordMethodName);
         if (method.getReturnType().equals(Void.TYPE)) {
@@ -161,9 +168,20 @@ public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> 
         return method;
     }
     
+    /**
+     * Returns the named listener method from the listenerClass.
+     * 
+     * @param eventClass     Event Class.
+     * @param listenerClass  Listener Interface Class.
+     * @param methodName     Name of the method.
+     * 
+     * @return The named listener method.
+     * 
+     * @throws InvalidEventConfigurationException if the method with methodName is not a void method.
+     **/
     private Method getListenerMethod(Class<? extends EventObject> eventClass, 
                                      Class<? extends EventListener> listenerClass, 
-                                     String methodName) {
+                                     String methodName) throws InvalidEventConfigurationException {
         Method method = ReflectionUtils.getDeclaredMethod(listenerClass, methodName, eventClass);
         if (!method.getReturnType().equals(Void.TYPE)) {
             throw new InvalidEventConfigurationException("The method " + methodName + " in class " 
@@ -172,6 +190,13 @@ public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> 
        return method;
     }
     
+    /**
+     * Set method map from string and lookup the actual Methods. 
+     * 
+     * @param eventClass     Event Class.
+     * @param listenerClass  Event Listener Interface. 
+     * @param methodNameMap  Method map to set.
+     **/
     private void setMethodMap(Class<? extends EventObject> eventClass, 
                               Class<? extends EventListener> listenerClass, 
                               Map<String, String> methodNameMap) {

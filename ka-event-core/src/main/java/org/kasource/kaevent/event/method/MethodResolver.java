@@ -14,6 +14,8 @@ import java.util.EventObject;
  * annotation which allows you to use specific a MethodResolver for a specific {@Link java.util.EventListener}
  * implementation.
  * 
+ * @param <T> Any Event class.
+ * 
  * @author rikard
  * @version $Id$
  **/

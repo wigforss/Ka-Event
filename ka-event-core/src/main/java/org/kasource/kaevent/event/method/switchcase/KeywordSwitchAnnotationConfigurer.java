@@ -18,9 +18,10 @@ import org.kasource.kaevent.annotations.event.methodresolving.DefaultListenerMet
 import org.kasource.kaevent.annotations.event.methodresolving.KeywordCase;
 
 /**
+ * Configures KeywordSwitchMethodResolver instances.
+ * 
  * @author rikardwigforss
- *
- */
+ **/
 public class KeywordSwitchAnnotationConfigurer {
     
    
@@ -28,6 +29,13 @@ public class KeywordSwitchAnnotationConfigurer {
     private Class<? extends EventListener> listenerClass;
     private KeywordSwitchMethodResolver resolver;
     
+    /**
+     * Constructor.
+     * 
+     * @param resolver      The resolver instance to configure.
+     * @param eventClass    The Event class.
+     * @param listenerClass The Event Listener Interface class.
+     **/
     public KeywordSwitchAnnotationConfigurer(KeywordSwitchMethodResolver resolver,
                                             Class<? extends EventObject> eventClass,
                                             Class<? extends EventListener> listenerClass) {
@@ -36,8 +44,17 @@ public class KeywordSwitchAnnotationConfigurer {
         this.listenerClass = listenerClass;
     }
     
-    public void configure() {
-        Set<Method> defaultMethods = ReflectionUtils.getDeclaredAnnotatedMethods(listenerClass, DefaultListenerMethod.class);
+    /**
+     * Configures the resolver instance.
+     * 
+     * @throws IllegalStateException if the listener class does not have a method annotated with 
+     * @DefaultListenerMethod or more than one method annotated with @DefaultListenerMethod.
+     * @throws IllegalArgumentException if the default method found is not a void method taking
+     * the eventClass as the only parameter.
+     **/
+    public void configure() throws IllegalStateException, IllegalArgumentException {
+        Set<Method> defaultMethods = 
+            ReflectionUtils.getDeclaredAnnotatedMethods(listenerClass, DefaultListenerMethod.class);
         if (defaultMethods.size() == 1) {
             ReflectionUtils.verifyMethodSignature(defaultMethods.iterator().next(), Void.TYPE, eventClass);
             resolver.setDefaultMethod(defaultMethods.iterator().next());
@@ -53,7 +70,13 @@ public class KeywordSwitchAnnotationConfigurer {
         setKeywordMethod();
     }
 
-    private void setCaseMethods() {
+    /**
+     * Adds methods annotated with @KeywordCase to the methodMap.
+     * 
+     * @throws IllegalArgumentException if methods annotated with @KeywordCase is not a void method taking
+     * the eventClass as the only parameter.
+     **/
+    private void setCaseMethods() throws IllegalArgumentException {
         Map<String, Method> methodMap = new HashMap<String, Method>();
         Set<Method> caseMethods = ReflectionUtils.getDeclaredAnnotatedMethods(listenerClass, KeywordCase.class);
         for (Method method : caseMethods) {
@@ -64,7 +87,14 @@ public class KeywordSwitchAnnotationConfigurer {
         resolver.getMethodMap().putAll(methodMap);
     }
 
-    private void setKeywordMethod() {
+    /**
+     * Set the event keyword method, by finding the method on the eventClass
+     * which is annotated with @EventKeyword.
+     * 
+     * @throws IllegalStateException if the eventClass does not have any method annotated
+     * with @KeywordMethod.
+     **/
+    private void setKeywordMethod() throws IllegalStateException {
         Method method = ReflectionUtils.getDeclaredAnnotatedMethod(eventClass, EventKeyword.class);
         if (method == null) {
             throw new IllegalStateException(eventClass + " must declare one method annotated with @EventKeyword!");
@@ -72,7 +102,15 @@ public class KeywordSwitchAnnotationConfigurer {
         resolver.setEventKeywordMethod(method);
     }
 
-    private void setCustomKeywordMethods() {
+    /**
+     * Finds methods annotated with an annotation that is annotated with @CustomCase 
+     * and add those to the method map.
+     * 
+     * @throws IllegalArgumentException if methods annotated with an annotation which is 
+     * annotated with @CustomCase is not a void method taking
+     * the eventClass as the only parameter.
+     **/
+    private void setCustomKeywordMethods() throws IllegalArgumentException {
         Map<String, Method> methodMap = new HashMap<String, Method>();
         Set<Method> customCaseMethods = 
             ReflectionUtils.getDeclaredInheritlyAnnotatedMethods(listenerClass, CustomCase.class);
@@ -80,29 +118,47 @@ public class KeywordSwitchAnnotationConfigurer {
         for (Method method : customCaseMethods) {
             ReflectionUtils.verifyMethodSignature(method, Void.TYPE, eventClass);
             Annotation[] annotations = method.getAnnotations();
-            for (Annotation annotation : annotations) {
-                if (annotation.annotationType().getAnnotation(CustomCase.class) != null) {
-                    Method valueMethod;
-                    Object keyword;
-                    try {
-                        valueMethod = annotation.annotationType().getMethod("value");
-                        keyword = valueMethod.invoke(annotation);
-                    } catch (Exception e) {
-                        throw new IllegalStateException(annotation.annotationType()
-                                + " needs to have a value attribute", e);
-                    }
-
-                    if (keyword == null) {
-                        throw new IllegalStateException(annotation.annotationType()
-                                + " the value attribute must be set");
-                    }
-                    methodMap.put(keyword.toString(), method);
-                }
-            }
-            KeywordCase caseAnnotation = method.getAnnotation(KeywordCase.class);
-            methodMap.put(caseAnnotation.value(), method);
+            setCustomAnnotatedKeywordMethod(methodMap, method, annotations);
+           // KeywordCase caseAnnotation = method.getAnnotation(KeywordCase.class);
+           // methodMap.put(caseAnnotation.value(), method);
         }
         resolver.getMethodMap().putAll(methodMap);
+    }
+
+    /**
+     * Adds the method to the method map, by resolving the value
+     * of the the method annotation annotated with @CustomCase.
+     *   
+     * @param methodMap     Method map 
+     * @param method        Method
+     * @param annotations   Annotations for method.
+     * 
+     * @throws IllegalStateException if the annotation that is 
+     * annotated with @CustomCase does not have a value.
+     **/
+    private void setCustomAnnotatedKeywordMethod(Map<String, 
+                                                 Method> methodMap, 
+                                                 Method method, 
+                                                 Annotation[] annotations) throws IllegalStateException {
+        for (Annotation annotation : annotations) {
+            if (annotation.annotationType().isAnnotationPresent(CustomCase.class)) {
+              
+                Object keyword;
+                try {
+                   Method valueMethod = annotation.annotationType().getMethod("value");
+                   keyword = valueMethod.invoke(annotation);
+                } catch (Exception e) {
+                    throw new IllegalStateException(annotation.annotationType()
+                            + " needs to have a value attribute", e);
+                }
+
+                if (keyword == null) {
+                    throw new IllegalStateException(annotation.annotationType()
+                            + " the value attribute must be set");
+                }
+                methodMap.put(keyword.toString(), method);
+            }
+        }
     }
 }
 

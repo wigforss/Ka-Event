@@ -3,8 +3,11 @@
  */
 package org.kasource.commons.util;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,11 +16,8 @@ import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.Set;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kasource.commons.reflection.ReflectionUtils;
-
-import static org.junit.Assert.*;
 
 /**
  * @author rikardwigforss
@@ -29,12 +29,12 @@ public class ReflectionUtilsTest {
     
     @Test
     public void hasRuntimeAnnotationTest() {
-        assertEquals(true, ReflectionUtils.hasAnnotation(Foo.class, RuntimeTypeAnnotation.class));     
+        assertEquals(true, ReflectionUtils.isAnnotationPresent(Foo.class, RuntimeTypeAnnotation.class));     
     }
     
     @Test
     public void hasClassAnnotationTest() {
-        assertEquals(false, ReflectionUtils.hasAnnotation(Bar.class, CompileTypeAnnotation.class));      
+        assertEquals(false, ReflectionUtils.isAnnotationPresent(Bar.class, CompileTypeAnnotation.class));      
     }
     
    

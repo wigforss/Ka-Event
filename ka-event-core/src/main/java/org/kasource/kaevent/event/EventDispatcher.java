@@ -19,7 +19,7 @@ import org.kasource.kaevent.event.filter.EventFilter;
  */
 public interface EventDispatcher {
     /**
-     * Fire event and queue it for later delivery and return
+     * Fire event and queue it for later delivery and return.
      * 
      * @param event
      *            Event to fire
@@ -45,26 +45,86 @@ public interface EventDispatcher {
      */
     public void fireOnCommit(EventObject event);
     
+    /**
+     * Creates and new channel.
+     * 
+     * @param channelName Name of the channel to create.
+     * 
+     * @return Channel created.
+     **/
     public Channel createChannel(String channelName);
     
+    /**
+     * Returns a named channel.
+     * 
+     * @param channelName Name of channel.
+     * 
+     * @return named channel.
+     **/
     public Channel getChannel(String channelName);
      
+    /**
+     * Register listener as a listener to events with sourceObject as
+     * the event source.
+     * 
+     * @param listener      Listener to register.
+     * @param sourceObject  Object to listen on.
+     **/
     public void registerListener(EventListener listener,
             Object sourceObject);
     
-    public void registerListenerAtChannel(EventListener listener,
-            String channelName);
-    
-    public void registerListenerAtChannel(EventListener listener,
-            String channelName, List<EventFilter<EventObject>> filters);
-    
+    /**
+     * Register listener as a listener to events with sourceObject as
+     * the event source.
+     * 
+     * @param listener      Listener to register.
+     * @param sourceObject  Object to listen on.
+     * @param filters       List of filters to apply on events dispatched to the listener.
+     **/
     public void registerListener(EventListener listener,
-            Object sourceObject, List<EventFilter<EventObject>> filters);
+                Object sourceObject, List<EventFilter<EventObject>> filters);
     
+    /**
+     * Register listener as a Channel listener of the named channel.
+     * 
+     * @param listener      Listener to register.
+     * @param channelName   Name of the channel to listen on.
+     * 
+     * @throws IllegalArgumentException if the named Channel is not
+     * a ListenerChannel. 
+     **/
+    public void registerListenerAtChannel(EventListener listener,
+            String channelName) throws IllegalArgumentException;
+    
+    /**
+     * Register listener as a Channel listener of the named channel.
+     * 
+     * @param listener      Listener to register.
+     * @param channelName   Name of the channel to listen on.
+     * @param filters       List of filters to apply on events dispatched to the listener.
+     * 
+     * @throws IllegalArgumentException if the named Channel is not
+     * a ListenerChannel. 
+     **/
+    public void registerListenerAtChannel(EventListener listener,
+            String channelName, List<EventFilter<EventObject>> filters) throws IllegalArgumentException;
+    
+    
+    /**
+     * Add event to this threads batch.
+     * 
+     * @param event Event to add.
+     **/
     public void addToBatch(EventObject event);
     
+    /**
+     * Clear this threads batch.
+     **/
     public void clearBatch();
     
+    /**
+     * Fire all events in this threads batch.
+     **/
     public void fireBatch();
    
     

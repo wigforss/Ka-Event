@@ -30,11 +30,11 @@ public abstract class AbstractDecorator {
 		AbstractBeanDefinition definition = ((AbstractBeanDefinition) bean.getBeanDefinition());
 		  String[] dependsOn = definition.getDependsOn();
 		  
-		  if(dependsOn == null || dependsOn.length == 0) {
+		  if (dependsOn == null || dependsOn.length == 0) {
 			  definition.setDependsOn(new String[]{beanName});
 		  } else {
-			  String[] newDepends = Arrays.copyOf(dependsOn, dependsOn.length+1);
-			  newDepends[newDepends.length-1] = beanName;
+			  String[] newDepends = Arrays.copyOf(dependsOn, dependsOn.length + 1);
+			  newDepends[newDepends.length - 1] = beanName;
 			  definition.setDependsOn(new String[]{beanName});
 		  }
 	}
@@ -65,12 +65,12 @@ public abstract class AbstractDecorator {
 		NamedNodeMap attributes = element.getAttributes();
 		String prefix = getNamespacePrefix(element);
 		Node node = null;
-		if(prefix == null) {
+		if (prefix == null) {
 			node = attributes.getNamedItem(attributeName);
 		} else {
-			node = attributes.getNamedItem(prefix+":"+attributeName);
+			node = attributes.getNamedItem(prefix + ":" + attributeName);
 		}
-		if(node != null) {
+		if (node != null) {
 			return node.getNodeValue();
 		}
 		return null;

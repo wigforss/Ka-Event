@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.listener.register;
 
 import java.util.Collection;
@@ -34,7 +31,13 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
     
     private ListenerChannel channel;
    
-    
+   /***
+    * Constructor.
+    *  
+    * @param channel        Channel.
+    * @param eventRegister  Event Register.
+    * @param beanResolver   Bean Resolver.
+    **/
     public ChannelListenerRegisterImpl(ListenerChannel channel, 
     								   EventRegister eventRegister, 
     								   BeanResolver beanResolver) {
@@ -47,8 +50,8 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
      * Returns the set of listener objects that listens to the event class
      * <i>eventClass</i>.
      * 
-     * @param eventClass
-     *            The event class to find listener object for.
+     * @param event
+     *            The event object to find listener object for.
      * 
      * @return all listener object of eventClass
      **/
@@ -72,11 +75,11 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
      * eventClass but is currently not registered as listener on that class, due
      * to the fact that the listeners has been registered before the eventClass.
      * 
-     * @param eventClass
+     * @param eventClass Event class.
      **/
     @Override
     public void refreshListeners(Class<? extends EventObject> eventClass) {
-       EventConfig eventConfig = eventRegister.getEventByClass(eventClass); 
+       EventConfig eventConfig = getEventRegister().getEventByClass(eventClass); 
        for (Map<EventListener, EventListenerRegistration> listenerMap : listenersByEvent.values()) {
            for (EventListener listener : listenerMap.keySet()) {
                if (ReflectionUtils.implementsInterface(listener, eventConfig.getListener())) {
@@ -87,24 +90,28 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
 
     }
 
+    /**
+     * Removes interfaces not supported by the channel.
+     * 
+     * @param interfaces interface set to remove unsupported interfaces from.
+     **/
     protected void filterInterfaces(Set<Class<? extends EventListener>> interfaces) {
         interfaces.retainAll(channel.getSupportedInterfaces());
     }
 
     
     /**
-     * Register a new listener object to this channel
+     * Register a new listener object to this channel.
      * 
      * @param listener
      *            Listener  object to register
-     * @param filters List<EventFilter<? extends EventObject>> filters
      **/
     public void registerListener(EventListener listener) {
        super.register(listener, channel);
     }
     
     /**
-     * Register a new listener object to this channel
+     * Register a new listener object to this channel.
      * 
      * @param listener
      *            Listener  object to register
@@ -115,9 +122,17 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
        super.register(listener, channel, filters);
     }
 
+    /**
+     * Add listener.
+     * 
+     * @param listener         Listener to add.
+     * @param eventClass       Event class.
+     * @param dummy            Object not used.
+     * @param filters          Filters for listener
+     **/
     protected void addListener(EventListener listener, 
     						   Class<? extends EventObject> eventClass, 
-    						   Object channel, 
+    						   Object dummy,
     						   List<EventFilter<EventObject>> filters) {
         Map<EventListener, EventListenerRegistration> listenerMap = listenersByEvent.get(eventClass);
         if (listenerMap == null) {
@@ -132,10 +147,10 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
     }
    
     /**
-     * Remove a registered listener from this channel
+     * Remove a registered listener from this channel.
      * 
-     * @param listenersToRemove
-     *            Listener(s) object to unregister
+     * @param listener
+     *            Listener object to unregister
      **/
     @Override
     public void unregisterListener(EventListener listener) {

@@ -6,13 +6,13 @@ import org.kasource.kaevent.event.BaseEvent;
 import org.kasource.kaevent.example.spring.channel.Thermometer;
 
 ///CLOVER:OFF
-@Event(listener=TemperatureChangedEventListener.class)
-public class TemperatureChangedEvent extends BaseEvent{
+@Event(listener = TemperatureChangedEventListener.class)
+public class TemperatureChangedEvent extends BaseEvent {
 	private static final long serialVersionUID = 1L;
 
 	private double currentTemperature;
 	
-	public TemperatureChangedEvent(Thermometer source,double currentTemperature) {
+	public TemperatureChangedEvent(Thermometer source, double currentTemperature) {
 		super(source);
 		this.currentTemperature = currentTemperature;
 	}
@@ -22,8 +22,7 @@ public class TemperatureChangedEvent extends BaseEvent{
 		 return (Thermometer) super.getSource();
 	 }
 	 
-     public double getCurrentTemperature()
-     {
+     public double getCurrentTemperature() {
          return this.currentTemperature;
      }
 }

@@ -27,6 +27,9 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     @Resource
     private EventRouter eventRouter;
   
+    /**
+     * Constructor, using the default values.
+     **/
     protected ThreadPoolQueueExecutor() {
         super(DEFAULT_CORE_POOL_SIZE, 
                 DEFAULT_MAXIMUM_POOL_SIZE, 
@@ -34,6 +37,11 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
                 DEFAULT_KEEP_ALIVE_TIME_UNIT, new LinkedBlockingDeque<Runnable>(DEFAULT_QUEUE_CAPACITY));   
     }
     
+    /**
+     * Constructor, using the default values.
+     * 
+     * @param eventRouter Event Router to use.
+     **/
     public ThreadPoolQueueExecutor(EventRouter eventRouter) {
         super(DEFAULT_CORE_POOL_SIZE, 
                 DEFAULT_MAXIMUM_POOL_SIZE, 
@@ -43,7 +51,11 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     }
     
     
-    
+    /**
+     * Enqueue the event to the event queue.
+     * 
+     * @param event Event to enqueue.
+     **/
     public void enqueue(EventObject event) {
         super.execute(new EventRunner(eventRouter, event));
     }
@@ -86,12 +98,22 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
        
     }
 
-    
+    /**
+     * Executes the event dispatching.
+     * 
+     * @author rikardwi
+     **/
     private static class EventRunner implements Runnable {
 
         private EventRouter eventRouter;
         private EventObject event;
         
+        /**
+         * Constructor.
+         *  
+         * @param eventRouter Event Router.
+         * @param event       Event.
+         */
         EventRunner(EventRouter eventRouter, EventObject event) {
             this.eventRouter = eventRouter;
             this.event = event;
@@ -111,7 +133,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
   
     
     /**
-     * Returns true if any events is in queue
+     * Returns true if any events is in queue.
      * 
      * @return true if any events is in queue
      **/
@@ -120,7 +142,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     }
     
     /**
-     * Return true if any events are in queue or currently executing an event
+     * Return true if any events are in queue or currently executing an event.
      * 
      * @return true if any events in or currently executing an event.
      */
@@ -132,7 +154,7 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     
     
     /**
-     * Close and shutdown the queue
+     * Close and shutdown the queue.
      **/
     public  void close() {
         super.shutdown();

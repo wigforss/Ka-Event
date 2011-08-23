@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.event.dispatch;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,30 +23,65 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
    
     private EventRegister eventRegister;
 
-    public EventMethodInvokerImpl() {}
-    
+  
+    /**
+     * Constructor.
+     *   
+     * @param eventRegister Event Register.
+     **/
     public EventMethodInvokerImpl(EventRegister eventRegister) {
         this.eventRegister = eventRegister;
     }
 
-    
+    /**
+     * Invokes event on all listeners.
+     * 
+     *  If blocked is true exceptions are thrown else exceptions are logged and suppressed. 
+     * 
+     * @param event     Event to invoke.
+     * @param listeners Collection if listener to invoke the event method on.
+     * @param blocked   Exception handling type, true throws exception and false suppresses exceptions.
+     **/
+    @Override
     public void invokeEventMethod(EventObject event, Collection<EventListenerRegistration> listeners, boolean blocked) {
         if (listeners != null && listeners.size() > 0) {
             EventConfig eventConfig = eventRegister.getEventByClass(event.getClass());
             Method method = eventConfig.getEventMethod(event);
             for (EventListenerRegistration listener : listeners) {
-                if (passFilters(listener, event)) {
-                    if (blocked) {
-                        invokeBlocked(method, listener, event);
-                    } else {
-                        invoke(method, listener, event);
-                    }
-                }
+                invokeEvent(event, blocked, method, listener);
             }
         }
     }
 
-    private void invokeBlocked(Method method, EventListenerRegistration listener, EventObject event) {
+    /**
+     * Invoke event on listener.
+     * 
+     * @param event     Event to send.
+     * @param blocked   exception handling
+     * @param method    Method to invoke.
+     * @param listener  Listener.
+     */
+    private void invokeEvent(EventObject event, boolean blocked, Method method, EventListenerRegistration listener) {
+        if (passFilters(listener, event)) {
+            if (blocked) {
+                invokeBlocked(method, listener, event);
+            } else {
+                invoke(method, listener, event);
+            }
+        }
+    }
+
+    /**
+     * Invoke event on listener, handle exceptions as blocked call.
+     * 
+     * @param method   Method to invoke.
+     * @param listener Listener
+     * @param event    Event to send.
+     * @throws RuntimeException if any exception occurs when invoking the method.
+     */
+    private void invokeBlocked(Method method, 
+                               EventListenerRegistration listener, 
+                               EventObject event) throws RuntimeException {
         try {
             method.invoke(listener.getListener(), event);
         } catch (Exception e) {
@@ -58,6 +90,13 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
         }
     }
 
+    /**
+     * Invoke event on listener, handle exceptions by just logging.
+     * 
+     * @param method        Method to invoke.
+     * @param listener      Listener.
+     * @param event         Event to send.
+     */
     private void invoke(Method method, EventListenerRegistration listener, EventObject event) {
         try {
             method.invoke(listener.getListener(), event);
@@ -67,6 +106,14 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
         }
     }
 
+    /**
+     * Return true if event passed the filters from eventRegistration.
+     * 
+     * @param eventRegistration Event Registration, holds the filters.
+     * @param event             Event Object to test.
+     * 
+     * @return true if event passes filters, else false.
+     */
     @SuppressWarnings("unchecked")
     private boolean passFilters(EventListenerRegistration eventRegistration, EventObject event) {
         if (eventRegistration.getFilters() != null) {

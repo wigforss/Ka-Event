@@ -26,22 +26,23 @@ public class EventBeanDefinitionParser extends
 		bean.addPropertyValue("name", element.getAttribute(ID_ATTRIBUTE));
 		bean.addPropertyValue("eventClass", element.getAttribute("eventClass"));
 		String listenerInterface = element.getAttribute("listenerInterface");
-		if(listenerInterface != null && listenerInterface.length() > 0) {
+		if (listenerInterface != null && listenerInterface.length() > 0) {
 			bean.addPropertyValue("listenerClass", element.getAttribute("listenerInterface"));
 		}
 		bean.addDependsOn(KaEventSpringBean.EVENT_REGISTER.getId());
 		bean.addDependsOn(KaEventSpringBean.EVENT_FACTORY.getId());
 		
 		Element switchMethodResolver = DomUtils.getChildElementByTagName(element, "switchMethodResolver");
-		if(switchMethodResolver != null) {
-			addSwitchMethodResolver(switchMethodResolver,bean);
+		if (switchMethodResolver != null) {
+			addSwitchMethodResolver(switchMethodResolver, bean);
 		} else {
 			Element beanMethodResolver = DomUtils.getChildElementByTagName(element, "beanMethodResolver");
-			if(beanMethodResolver != null) {
+			if (beanMethodResolver != null) {
 				addBeanMethodResolver(beanMethodResolver, bean);
 			} else {
-				Element factoryMethodResolver = DomUtils.getChildElementByTagName(element, "factoryMethodResolver");
-				if(factoryMethodResolver != null) {
+				Element factoryMethodResolver = DomUtils
+					.getChildElementByTagName(element, "factoryMethodResolver");
+				if (factoryMethodResolver != null) {
 					addFactoryMethodResolver(factoryMethodResolver, bean);
 				}
 			}
@@ -53,7 +54,7 @@ public class EventBeanDefinitionParser extends
 		bean.addPropertyValue("factoryClass", element.getAttribute("factoryClass"));
 		bean.addPropertyValue("factoryMethod", element.getAttribute("factoryMethod"));
 		String methodArgument = element.getAttribute("factoryMethodArgument");
-		if(methodArgument != null && methodArgument.length() > 0) {
+		if (methodArgument != null && methodArgument.length() > 0) {
 			bean.addPropertyValue("factoryMethodArgument", methodArgument);
 		}
 	}
@@ -69,10 +70,10 @@ public class EventBeanDefinitionParser extends
 		bean.addPropertyValue("methodResolverType", MethodResolverType.KEYWORD_SWITCH);
 		bean.addPropertyValue("keywordMethodName", element.getAttribute("keywordMethod"));
 		
-		List<Element> caseElements = DomUtils.getChildElementsByTagName(element,"case");
+		List<Element> caseElements = DomUtils.getChildElementsByTagName(element, "case");
 		Map<String, String> methodMap = getMethods(caseElements);
 		bean.addPropertyValue("methodMap", methodMap);
-		Element defaultElement = DomUtils.getChildElementByTagName(element,"default");
+		Element defaultElement = DomUtils.getChildElementByTagName(element, "default");
 		bean.addPropertyValue("defaultMethodName", defaultElement.getAttribute("method"));
 		
 		
@@ -82,7 +83,7 @@ public class EventBeanDefinitionParser extends
 	
 	protected Map<String, String> getMethods(List<Element> caseElements) {
 		Map<String, String> methodMap = new HashMap<String, String>();
-		for(Element caseElement : caseElements) {
+		for (Element caseElement : caseElements) {
 			methodMap.put(caseElement.getAttribute("value"), caseElement.getAttribute("method"));
 		}
 		return methodMap;

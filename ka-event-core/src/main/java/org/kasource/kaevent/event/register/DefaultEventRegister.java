@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventFactory;
 
@@ -16,7 +15,7 @@ import org.kasource.kaevent.event.config.EventFactory;
  *
  */
 public class DefaultEventRegister implements EventRegister {
-    private static final Logger LOG = Logger.getLogger(DefaultEventRegister.class);
+   // private static final Logger LOG = Logger.getLogger(DefaultEventRegister.class);
     
     private Map<Class<? extends EventObject>, EventConfig> eventsByClass = 
     	new HashMap<Class<? extends EventObject>, EventConfig>();
@@ -29,9 +28,12 @@ public class DefaultEventRegister implements EventRegister {
   
     private EventFactory eventFactory;
     
-    public DefaultEventRegister() {
-    }
     
+    /**
+     * Constructor.
+     * 
+     * @param eventFactory Event Factory to use.
+     **/
     public DefaultEventRegister(EventFactory eventFactory) {
         this.eventFactory = eventFactory;
     }

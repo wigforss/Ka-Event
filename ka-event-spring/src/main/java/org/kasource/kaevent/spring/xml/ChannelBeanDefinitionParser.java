@@ -10,7 +10,7 @@ import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
-public class ChannelBeanDefinitionParser  extends AbstractSingleBeanDefinitionParser{
+public class ChannelBeanDefinitionParser  extends AbstractSingleBeanDefinitionParser {
 	protected Class<?> getBeanClass(Element element) {
        return ChannelFactoryBean.class;
      }
@@ -22,21 +22,21 @@ public class ChannelBeanDefinitionParser  extends AbstractSingleBeanDefinitionPa
          bean.addDependsOn(KaEventSpringBean.CHANNEL_FACTORY.getId());
          bean.addDependsOn(KaEventSpringBean.EVENT_REGISTER.getId());
          element.setAttribute("lazy-init", "false");
-         List<Element> handles = DomUtils.getChildElementsByTagName(element,"handle");
+         List<Element> handles = DomUtils.getChildElementsByTagName(element, "handle");
          List<String> events = getEventsHandled(handles);
-         if(!events.isEmpty()) {
+         if (!events.isEmpty()) {
         	 bean.addPropertyValue("events", events);
          }
          String channelClass = element.getAttribute("class");
-         if(channelClass != null) {
+         if (channelClass != null) {
         	 bean.addPropertyValue("channelClass", channelClass);
          }
      }
      
      protected List<String> getEventsHandled(List<Element> handles) {
     	 List<String> events = new ArrayList<String>();
-    	 if(handles != null) {
-    		 for(Element handle : handles) {
+    	 if (handles != null) {
+    		 for (Element handle : handles) {
     			 events.add(handle.getAttribute("event"));
     		 }
     	 }

@@ -1,11 +1,10 @@
 package org.kasource.kaevent.bean;
 
+import static org.junit.Assert.assertEquals;
+
 import org.easymock.EasyMock;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
-import org.kasource.kaevent.bean.CouldNotResolveBeanException;
-import org.kasource.kaevent.bean.SpringBeanResolver;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.unitils.UnitilsJUnit4TestClassRunner;
@@ -38,7 +37,7 @@ public class SpringBeanResolverTest {
         assertEquals(bean,  springBeanResolver.getBean("test", Object.class));
     }
     
-    @Test(expected=CouldNotResolveBeanException.class)
+    @Test(expected = CouldNotResolveBeanException.class)
     public void getBeanExceptionTest() {
         EasyMock.expect(applicationContext.getBean("test")).andThrow(new NoSuchBeanDefinitionException(""));
         EasyMockUnitils.replay();

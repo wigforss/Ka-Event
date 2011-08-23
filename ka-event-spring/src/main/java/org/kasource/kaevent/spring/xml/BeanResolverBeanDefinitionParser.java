@@ -16,15 +16,16 @@ public class BeanResolverBeanDefinitionParser extends AbstractSingleBeanDefiniti
    
     protected Class<?> getBeanClass(Element element) {
         String className = element.getAttribute("class");
-        if(className != null && className.length() > 0) {
+        if (className != null && className.length() > 0) {
         try {
             Class<?> clazz = Class.forName(className);
-            if(!BeanResolver.class.isAssignableFrom(clazz)) {
-                throw new IllegalStateException("Class "+className+" must implement "+BeanResolver.class.getName());
+            if (!BeanResolver.class.isAssignableFrom(clazz)) {
+                throw new IllegalStateException("Class " + className 
+                		+ " must implement " + BeanResolver.class.getName());
             }
             return clazz;
         } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Could not find class "+className, e);
+            throw new IllegalStateException("Could not find class " + className, e);
         }
         } else {
             return SpringBeanResolver.class;

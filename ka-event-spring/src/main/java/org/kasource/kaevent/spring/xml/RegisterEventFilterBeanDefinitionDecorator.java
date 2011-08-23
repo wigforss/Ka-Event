@@ -33,6 +33,8 @@ public class RegisterEventFilterBeanDefinitionDecorator extends AbstractDecorato
 	 * @param node			The attribute event-filter.
 	 * @param definition	The bean definition of the bean with the attribute
 	 * @param parserContext The spring context parsed.
+	 * 
+	 * @return decorated bean definition.
 	 **/
 	@Override
 	public BeanDefinitionHolder decorate(Node node,
@@ -56,7 +58,8 @@ public class RegisterEventFilterBeanDefinitionDecorator extends AbstractDecorato
 			if (channels == null && beans == null) {
 				throw new BeanCreationException(
 						definition.getBeanName(),
-						"event-filter is used without being a listener, this bean needs to have either listen-on-channel "
+						"event-filter is used without being a listener, "
+						+ "this bean needs to have either listen-on-channel "
 								+ "or listen-on-bean attribute set.");
 			}
 		}

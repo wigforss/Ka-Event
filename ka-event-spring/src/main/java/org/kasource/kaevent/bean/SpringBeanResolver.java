@@ -1,7 +1,6 @@
 package org.kasource.kaevent.bean;
 
-import org.kasource.kaevent.bean.BeanResolver;
-import org.kasource.kaevent.bean.CouldNotResolveBeanException;
+
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

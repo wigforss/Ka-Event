@@ -4,7 +4,8 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.example.spring.channel.event.TemperatureChangedEvent;
 
 ///CLOVER:OFF
-public class Thermometer implements Runnable{
+//CHECKSTYLE:OFF
+public class Thermometer implements Runnable {
 	
 	
 	private double optimalTemperatur = 22.0d;
@@ -13,18 +14,13 @@ public class Thermometer implements Runnable{
 	private Cooler cooler;
 	private Heater heater;
 	private EventDispatcher eventDispatcher;
-	
-	
-	
-	
+		
 
 	public Thermometer() {
 		
 	}
 	
 
-	
-	
 
 	public double getOptimalTemperatur() {
 		return optimalTemperatur;
@@ -38,15 +34,15 @@ public class Thermometer implements Runnable{
 	
 	
 	public void run() {
-		for(int i= 0; i < 100; ++i) {
-			if(cooler.isEnabled()) {
-				currentTemperatur -= Math.random()*3.0d;
-			}else if(heater.isEnabled()) {
-				currentTemperatur += Math.random()*3.0d;
+		for (int i = 0; i < 100; ++i) {
+			if (cooler.isEnabled()) {
+				currentTemperatur -= Math.random() * 3.0d;
+			} else if (heater.isEnabled()) {
+				currentTemperatur += Math.random() * 3.0d;
 			} else {
 				currentTemperatur += 1.0d;
 			}
-			System.out.println("Thermometer  temp is now: "+currentTemperatur);
+			System.out.println("Thermometer  temp is now: " + currentTemperatur);
 			eventDispatcher.fireBlocked(new TemperatureChangedEvent(this, currentTemperatur));
 			try {
 				Thread.sleep(200);

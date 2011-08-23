@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fileset-config file-format-version="1.2.0" simple-config="true" sync-formatter="false">
+  <local-check-config name="NERW" location="/Users/rikardwi/dev/hiq/workspace/trunk/build-tools/src/main/resources/nerw/nerw-check.xml" type="external" description="">
+    <property name="checkstyle.suppressions.dir" value="${samedir}"/>
+    <property name="checkstyle.cache.file" value="/target/checkstyle-cache"/>
+    <additional-data name="protect-config-file" value="false"/>
+  </local-check-config>
+  <fileset name="all" enabled="true" check-config-name="NERW" local="true">
+    <file-match-pattern match-pattern="." include-pattern="true"/>
+  </fileset>
+</fileset-config>

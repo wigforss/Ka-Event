@@ -8,6 +8,11 @@ package org.kasource.kaevent.event.register;
 public class NoSuchEventException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param message Error message.
+	 **/
 	public NoSuchEventException(String message) {
 		super(message);
 	}

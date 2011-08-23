@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "queueThread",
     "threadPoolExecutor",
     "beanResolver",
+    "channelFactory",
     "events",
     "channels"
 })

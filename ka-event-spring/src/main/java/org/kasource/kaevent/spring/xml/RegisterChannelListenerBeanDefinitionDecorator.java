@@ -18,7 +18,8 @@ import org.w3c.dom.Node;
  * 
  * @author rikardwi
  **/
-public class RegisterChannelListenerBeanDefinitionDecorator extends AbstractDecorator implements BeanDefinitionDecorator{
+public class RegisterChannelListenerBeanDefinitionDecorator 
+    extends AbstractDecorator implements BeanDefinitionDecorator {
 
 	/**
 	 * Decorates the object from definition with the node (listen-on-channel) so that the object
@@ -27,6 +28,8 @@ public class RegisterChannelListenerBeanDefinitionDecorator extends AbstractDeco
 	 * @param node			The attribute listen-on-bean.
 	 * @param definition	The bean definition of the bean with the attribute
 	 * @param parserContext The spring context parsed.
+	 * 
+	 * @return The decorated bean definition.
 	 **/
 	@Override
 	public BeanDefinitionHolder decorate(Node node,
@@ -34,7 +37,7 @@ public class RegisterChannelListenerBeanDefinitionDecorator extends AbstractDeco
 		 String channels = ((Attr) node).getValue();
 	
 		 String[] channelNames = channels.split(",");
-		 for(String channelName : channelNames) {
+		 for (String channelName : channelNames) {
 			 setListener(channelName, definition, parserContext);
 			// addFilters(channelName, definition, parserContext, filters);
 		 }
@@ -55,7 +58,7 @@ public class RegisterChannelListenerBeanDefinitionDecorator extends AbstractDeco
 		BeanDefinition channel = parserContext.getRegistry().getBeanDefinition(channelName);
 		 MutablePropertyValues props = channel.getPropertyValues();
 		PropertyValue value = props.getPropertyValue("listeners");
-		 if(value == null) {
+		 if (value == null) {
 			 ManagedList list = new ManagedList();
 			 list.add(new RuntimeBeanReference(definition.getBeanName()));
 			 props.addPropertyValue("listeners", list);

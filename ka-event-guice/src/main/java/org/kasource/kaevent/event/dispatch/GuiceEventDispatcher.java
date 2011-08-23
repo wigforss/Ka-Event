@@ -8,6 +8,11 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+/**
+ * Guice Event Dispatcher.
+ * 
+ * @author rikardwi
+ **/
 @Singleton
 public class GuiceEventDispatcher extends DefaultEventDispatcher {
 
@@ -15,13 +20,14 @@ public class GuiceEventDispatcher extends DefaultEventDispatcher {
 	 
 	
 	/**
-     * Used when configured with Guice
+     * Used when configured with Guice.
      * 
-     * @param channelRegister
-     * @param channelFactory
-     * @param sourceObjectListenerRegister
-     * @param eventQueue
-     * @param eventRouter
+     * @param channelRegister Channel Register
+     * @param channelFactory  Channel Factory
+     * @param sourceObjectListenerRegister Source Object Listener Register
+     * @param eventQueue    Event Queue
+     * @param eventRouter   Event Router
+     * @param configurer    Configurer for the Guice environment.
      */
 	@Inject
     private GuiceEventDispatcher(ChannelRegister channelRegister, 
@@ -30,11 +36,11 @@ public class GuiceEventDispatcher extends DefaultEventDispatcher {
     							  DispatcherQueueThread eventQueue,
     							  EventRouter eventRouter,
     							  GuiceKaEventConfigurer configurer) {
-        this.channelFactory = channelFactory;
-        this.channelRegister = channelRegister;
-        this.sourceObjectListenerRegister = sourceObjectListenerRegister;
-        this.eventQueue = eventQueue;
-        this.eventRouter = eventRouter;
+        setChannelFactory(channelFactory);
+        setChannelRegister(channelRegister);
+        setSourceObjectListenerRegister(sourceObjectListenerRegister);
+        setEventQueue(eventQueue);
+        setEventRouter(eventRouter);
         configurer.configure();
     }
 	

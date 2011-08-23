@@ -14,7 +14,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class EventFactoryBean implements FactoryBean, ApplicationContextAware{
+public class EventFactoryBean implements FactoryBean, ApplicationContextAware {
 
 	private Class<? extends EventObject> eventClass;
 	
@@ -53,35 +53,56 @@ public class EventFactoryBean implements FactoryBean, ApplicationContextAware{
 	@Override
 	public Object getObject() throws Exception {
 		EventConfig eventConfig = getEventConfig();
-		 EventRegister eventRegister = (EventRegister) applicationContext.getBean(KaEventSpringBean.EVENT_REGISTER.getId());
+		 EventRegister eventRegister = 
+			 (EventRegister) applicationContext.getBean(KaEventSpringBean.EVENT_REGISTER.getId());
 		 eventRegister.registerEvent(eventConfig);
 		return eventConfig;
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	private EventConfig getEventConfig() {
-		 EventFactory eventFactory = (EventFactory) applicationContext.getBean(KaEventSpringBean.EVENT_FACTORY.getId());
-			if(methodResolverType == null) {
-				if(listenerClass == null) {
+		 EventFactory eventFactory = 
+			 (EventFactory) applicationContext.getBean(KaEventSpringBean.EVENT_FACTORY.getId());
+			if (methodResolverType == null) {
+				if (listenerClass == null) {
 					return eventFactory.newFromAnnotatedEventClass(eventClass, name);
 				} else {
-					return eventFactory.newFromAnnotatedInterfaceClass(eventClass, listenerClass, name);
+					return eventFactory
+					   .newFromAnnotatedInterfaceClass(eventClass, 
+							                           listenerClass, 
+							                           name);
 				}
 			} else {
-				switch(methodResolverType) {
+				switch (methodResolverType) {
 				case BEAN:
-					if(methodResolver == null) {
+					if (methodResolver == null) {
 						throw new IllegalStateException("No method resolver found!!");
 					}
 					break;
 				case FACTORY:
-					methodResolver = MethodResolverFactory.getFromFactoryMethod(factoryClass, factoryMethod, factoryMethodArgument);
+					methodResolver = MethodResolverFactory
+					.getFromFactoryMethod(factoryClass, 
+										  factoryMethod, 
+										  factoryMethodArgument);
 					break;
 				case KEYWORD_SWITCH:
-					methodResolver = MethodResolverFactory.newKeywordSwitch(eventClass, listenerClass, keywordMethodName, methodMap, defaultMethodName);
+					methodResolver = MethodResolverFactory
+					   .newKeywordSwitch(eventClass, 
+							             listenerClass, 
+							             keywordMethodName, 
+							             methodMap, 
+							             defaultMethodName);
 					break;
+				default:
+					
 				}
-				return eventFactory.newWithMethodResolver(eventClass, listenerClass, methodResolver, name);
+				return eventFactory
+				   .newWithMethodResolver(eventClass, 
+						                  listenerClass, 
+						                  methodResolver, 
+						                  name);
+				
 			}
 	}
 

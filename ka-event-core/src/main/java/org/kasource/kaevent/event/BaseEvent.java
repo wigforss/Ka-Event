@@ -19,6 +19,11 @@ public abstract class BaseEvent extends EventObject {
     private final String creatorThreadName;
     private final long id;
 
+    /**
+     * Constructor.
+     * 
+     * @param source Source object.
+     **/
     public BaseEvent(Object source) {
         super(source);
         this.creationTimestamp = System.currentTimeMillis();

@@ -32,7 +32,7 @@ public class ReflectionUtils {
     // /////////////////////////////////////
 
     /**
-     * Returns true if the class <i>clazz</i> is annotated with any annotation
+     * Returns true if the class <i>clazz</i> or any of its super classes is annotated with an annotation
      * 
      * @param clazz
      *            The class to inspect
@@ -41,12 +41,43 @@ public class ReflectionUtils {
      * 
      * @return
      */
-    public static boolean hasAnnotation(Class<?> clazz, Class<? extends Annotation> annotation) {
-        if (clazz.getAnnotation(annotation) != null) {
+    public static boolean isAnnotationPresent(Class<?> clazz, Class<? extends Annotation> annotation) {
+        if (clazz.isAnnotationPresent(annotation)) {
             return true;
+        }
+        while((clazz = clazz.getSuperclass()) != null) {
+            if (clazz.isAnnotationPresent(annotation)) {
+                return true;
+            }
         }
         return false;
     }
+    
+    /**
+     * Returns the annotation of the annotationClass of the clazz or any of it super classes.
+     * 
+     * @param clazz
+     *           The class to inspect.
+     * @param annotationClass
+     *           Class of the annotation to return
+     *           
+     * @return The annotation of annnotationClass if found else null.
+     */
+    public static <T extends Annotation> T getAnnotation(Class<?> clazz, Class<T> annotationClass) {
+        
+        T annotation = clazz.getAnnotation(annotationClass);
+        if(annotation != null) {
+            return annotation;
+        }
+        while((clazz = clazz.getSuperclass()) != null) {
+            annotation = clazz.getAnnotation(annotationClass);
+            if(annotation != null) {
+                return annotation;
+            }
+        }
+        return null;
+    }
+    
 
     /**
      * Returns true if the supplied class <i>clazz</i> has any declared method annotated
@@ -391,7 +422,7 @@ public class ReflectionUtils {
         for (Method method : methods) {
             Annotation[] annotations = method.getDeclaredAnnotations();
             for (Annotation annotation : annotations) {
-                if (annotation.annotationType().getAnnotation(inheritedAnnotation) != null) {
+                if (annotation.annotationType().isAnnotationPresent(inheritedAnnotation)) {
                     matches.add(method);
                 }
             }

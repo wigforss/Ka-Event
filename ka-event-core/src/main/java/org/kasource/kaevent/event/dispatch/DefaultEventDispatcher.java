@@ -204,4 +204,88 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
             }
         }
     }
+
+    /**
+     * @return the eventRouter
+     */
+    protected EventRouter getEventRouter() {
+        return eventRouter;
+    }
+
+    /**
+     * @param eventRouter the eventRouter to set
+     */
+    protected void setEventRouter(EventRouter eventRouter) {
+        this.eventRouter = eventRouter;
+    }
+
+    /**
+     * @return the channelRegister
+     */
+    protected ChannelRegister getChannelRegister() {
+        return channelRegister;
+    }
+
+    /**
+     * @param channelRegister the channelRegister to set
+     */
+    protected void setChannelRegister(ChannelRegister channelRegister) {
+        this.channelRegister = channelRegister;
+    }
+
+    /**
+     * @return the channelFactory
+     */
+    protected ChannelFactory getChannelFactory() {
+        return channelFactory;
+    }
+
+    /**
+     * @param channelFactory the channelFactory to set
+     */
+    protected void setChannelFactory(ChannelFactory channelFactory) {
+        this.channelFactory = channelFactory;
+    }
+
+    /**
+     * @return the sourceObjectListenerRegister
+     */
+    protected SourceObjectListenerRegister getSourceObjectListenerRegister() {
+        return sourceObjectListenerRegister;
+    }
+
+    /**
+     * @param sourceObjectListenerRegister the sourceObjectListenerRegister to set
+     */
+    protected void setSourceObjectListenerRegister(SourceObjectListenerRegister sourceObjectListenerRegister) {
+        this.sourceObjectListenerRegister = sourceObjectListenerRegister;
+    }
+
+    /**
+     * @return the eventQueue
+     */
+    protected DispatcherQueueThread getEventQueue() {
+        return eventQueue;
+    }
+
+    /**
+     * @param eventQueue the eventQueue to set
+     */
+    protected void setEventQueue(DispatcherQueueThread eventQueue) {
+        this.eventQueue = eventQueue;
+    }
+
+    /**
+     * @return the configurer
+     */
+    protected KaEventConfigurer getConfigurer() {
+        return configurer;
+    }
+
+    /**
+     * @param configurer the configurer to set
+     */
+    protected void setConfigurer(KaEventConfigurer configurer) {
+        this.configurer = configurer;
+    }
 }

@@ -23,7 +23,7 @@ import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.event.method.MethodResolverFactory;
 
 /**
- * Exports event configurations from a XML configuration object
+ * Exports event configurations from a XML configuration object.
  * 
  * 
  * @author Rikard Wigforss
@@ -34,50 +34,87 @@ public class XmlConfigEventExporter implements EventExporter {
    private List<KaEventConfig.Events.Event> eventList;
    private BeanResolver beanResolver;
    
+   /**
+    * Constructor.
+    * 
+    * @param eventList     List of XML Configuration Elements.
+    * @param beanResolver  Bean Resolver.
+    */
    public XmlConfigEventExporter(List<KaEventConfig.Events.Event> eventList, BeanResolver beanResolver) {
        this.eventList = eventList;
        this.beanResolver = beanResolver;
    }
     
-    @SuppressWarnings("unchecked")
+   /**
+    * Returns all events found in the eventList.
+    * 
+    * @param eventFactory    Factory used to create EventConfig instances with.
+    * 
+    * @return Events found.
+    * @throws IOException if exception occurs.
+    */
 	@Override
     public Set<EventConfig> exportEvents(EventFactory eventFactory) throws IOException {
         Set<EventConfig> eventsFound = new HashSet<EventConfig>();
         if (eventList != null && !eventList.isEmpty()) {
             for (KaEventConfig.Events.Event event : eventList) {
-                Class<? extends EventListener> interfaceClass = 
-                    ReflectionUtils.getInterfaceClass(event.getListenerInterface(), EventListener.class);
-                
-                Class<? extends EventObject> eventClass = 
-                    ReflectionUtils.getClass(event.getEventClass(), EventObject.class);
-                
-                if (!hasMethodResolver(event)) {
-                    Method eventMethod = getEventMethod(eventClass, interfaceClass);
-                    eventsFound.add(eventFactory.newWithEventMethod(eventClass, 
-                                                                    interfaceClass, 
-                                                                    eventMethod, 
-                                                                    event.getName()));
-                    
-                } else if (event.getAnnotationMethodResolver() != null) {
-                   eventsFound.add(eventFactory.newFromAnnotatedInterfaceClass(eventClass, 
-                                                                               interfaceClass, 
-                                                                               event.getName()));
-                } else {
-                    eventsFound.add(eventFactory.newWithMethodResolver(eventClass, 
-                                                                       interfaceClass, 
-                                                                       getMethodResolver(event, 
-                                                                                         eventClass, 
-                                                                                         interfaceClass), 
-                                                                                         event.getName()));
-                }
+                addEvent(eventFactory, eventsFound, event);
             }
         }
         return eventsFound;
     }
+
+	/**
+	 * Creates and adds the event to the events found set.
+	 * 
+	 * @param eventFactory Factory to use when creating the EventConfig instance.
+	 * @param eventsFound  Set of events to add the newly created event to.
+	 * @param event        XML Configuration element.
+	 **/
+	@SuppressWarnings("unchecked")
+    private void addEvent(EventFactory eventFactory, Set<EventConfig> eventsFound, KaEventConfig.Events.Event event) {
+        Class<? extends EventListener> interfaceClass = 
+            ReflectionUtils.getInterfaceClass(event.getListenerInterface(), EventListener.class);
+        
+        Class<? extends EventObject> eventClass = 
+            ReflectionUtils.getClass(event.getEventClass(), EventObject.class);
+        
+        if (!hasMethodResolver(event)) {
+            Method eventMethod = getEventMethod(eventClass, interfaceClass);
+            eventsFound.add(eventFactory.newWithEventMethod(eventClass, 
+                                                            interfaceClass, 
+                                                            eventMethod, 
+                                                            event.getName()));
+            
+        } else if (event.getAnnotationMethodResolver() != null) {
+           eventsFound.add(eventFactory.newFromAnnotatedInterfaceClass(eventClass, 
+                                                                       interfaceClass, 
+                                                                       event.getName()));
+        } else {
+            eventsFound.add(eventFactory.newWithMethodResolver(eventClass, 
+                                                               interfaceClass, 
+                                                               getMethodResolver(event, 
+                                                                                 eventClass, 
+                                                                                 interfaceClass), 
+                                                                                 event.getName()));
+        }
+    }
     
-    
+    /**
+     * Returns the event method to use.
+     * 
+     * The listenerInterface should have one void method taking the the eventClass
+     * as the only parameter. That method will be returned.
+     * 
+     * @param eventClass        Event Class
+     * @param listenerInterface Event Listener Interface Class.
+     * 
+     * @return Returns the event method to invoke.
+     * @throws InvalidEventConfigurationException if no applicable method was found or more than one exists.
+     **/
     private Method getEventMethod(Class<? extends EventObject> eventClass, 
-                                  Class<? extends EventListener> listenerInterface) {
+                                  Class<? extends EventListener> listenerInterface) 
+        throws InvalidEventConfigurationException {
         Set<Method> methods = 
             ReflectionUtils.getDeclaredMethodsMatchingReturnType(listenerInterface, Void.TYPE, eventClass);
         
@@ -92,7 +129,14 @@ public class XmlConfigEventExporter implements EventExporter {
         }
     }
     
-    
+    /**
+     * Returns true if The XML Configuration element event has a
+     * configured Method Resolver, else false.
+     * 
+     * @param event XML Configuration element to inspect.
+     * 
+     * @return true if method resolver is configured.
+     **/
     private boolean hasMethodResolver(KaEventConfig.Events.Event event) {
         return (event.getAnnotationMethodResolver() != null 
                     || event.getFactoryMethodResolver() != null 
@@ -100,6 +144,15 @@ public class XmlConfigEventExporter implements EventExporter {
                     || event.getSwitchMethodResolver() != null);
     }
     
+    /**
+     * Returns the method resolver for the XML Configuration element event.
+     * 
+     * @param event           The XML Configuration Element to use.
+     * @param eventClass      The actual Event Class.
+     * @param interfaceClass  The Event Listener Interface.
+     * 
+     * @return Method resolver found.
+     */
     @SuppressWarnings("rawtypes")
     private MethodResolver getMethodResolver(KaEventConfig.Events.Event event,  
                                              Class<? extends EventObject> eventClass, 
