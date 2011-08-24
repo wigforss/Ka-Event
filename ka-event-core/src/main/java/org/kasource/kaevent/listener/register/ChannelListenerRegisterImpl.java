@@ -60,6 +60,14 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
     	return getListenersByEvent(event.getClass());
     }
     
+    
+    /**
+     * Returns all event listener registration by an event.
+     * 
+     * @param eventClass Event to get listeners for.
+     * 
+     * @return All Listeners for an event.
+     **/
     @Override
     public Collection<EventListenerRegistration> getListenersByEvent(Class<? extends EventObject> eventClass) {
         Map<EventListener, EventListenerRegistration> listeners =  listenersByEvent.get(eventClass);

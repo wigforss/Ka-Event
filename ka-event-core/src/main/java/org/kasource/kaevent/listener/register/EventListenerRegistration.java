@@ -10,12 +10,20 @@ import java.util.List;
 import org.kasource.kaevent.event.filter.EventFilter;
 
 /**
+ * Event Listener Registration.
+ * 
  * @author Rikard Wigforss
  */
 public class EventListenerRegistration {
     private EventListener listener;
     private List<EventFilter<EventObject>> filters;
     
+    /**
+     * Constructor.
+     * 
+     * @param listener  Listener
+     * @param filters   Filter list
+     **/
     public EventListenerRegistration(EventListener listener, List<EventFilter<EventObject>> filters) {
         this.listener = listener;
         this.filters = filters;

@@ -50,7 +50,7 @@ public class EventRouterTest {
     private Set<EventListenerRegistration> listenerSet;
     
     @TestedObject
-    private EventRouterImpl eventRouter;
+    private EventRouterImpl eventRouter = new EventRouterImpl(channelRegister, sourceObjectListenerRegister, invoker);
     
     @Test
     public void dispatchEventTest() {

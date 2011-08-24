@@ -13,9 +13,10 @@ import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 
 /**
- * @author Rikard Wigforss
+ * Register of all source object listeners.
  * 
- */
+ * @author rikardwi
+ **/
 public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegister implements
             SourceObjectListenerRegister {
 
@@ -27,6 +28,12 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
             > objectListenersByEvent = 
                 new HashMap<Class<? extends EventObject>, Map<Object, Map<EventListener, EventListenerRegistration>>>();
 
+    /**
+     * Constructor.
+     * 
+     * @param eventRegister Event Register
+     * @param beanResolver  Bean Resolver
+     **/
     public SourceObjectListenerRegisterImpl(EventRegister eventRegister, BeanResolver beanResolver) {
         super(eventRegister, beanResolver);
     }

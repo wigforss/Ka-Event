@@ -1,22 +1,14 @@
 package org.kasource.kaevent.config;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import org.apache.log4j.Logger;
 import org.kasource.commons.reflection.ReflectionUtils;
-import org.kasource.commons.util.StringUtils;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.DefaultBeanResolver;
@@ -57,7 +49,9 @@ public class KaEventConfigurer {
     private static final Logger LOG = Logger.getLogger(KaEventConfigurer.class);
 
     private KaEventConfigurationImpl configuration = null;
-
+    private ConfigurationXmlFileLoader xmlLoader = new ConfigurationXmlFileLoader();
+    
+    
     /**
      * Configure the environment based on the configuration provided.
      * 
@@ -95,10 +89,10 @@ public class KaEventConfigurer {
 
         KaEventConfig xmlConfig = null;
         if (configLocation != null) {
-            xmlConfig = loadXmlFromPath(configLocation);
+            xmlConfig = xmlLoader.loadXmlFromPath(configLocation);
         } else {
             // Try default location       
-            xmlConfig = loadXmlFromPath("classpath:kaevent-config.xml");
+            xmlConfig = xmlLoader.loadXmlFromPath("classpath:kaevent-config.xml");
             
         }
         configure(eventDispatcher, xmlConfig);
@@ -130,10 +124,8 @@ public class KaEventConfigurer {
         KaEventConfigurationImpl config = new KaEventConfigurationImpl();
         // Bean resolver
         config.setBeanResolver(new DefaultBeanResolver());
-
         // Events
         config.setEventFactory(new EventFactoryImpl(config.getBeanResolver()));
-
         config.setEventRegister(new DefaultEventRegister(config.getEventFactory()));
 
         // Channel Register
@@ -142,7 +134,6 @@ public class KaEventConfigurer {
         // Source Object Listener Register
         config.setSourceObjectListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config
                     .getBeanResolver()));
-
         config.setEventMethodInvoker(new EventMethodInvokerImpl(config.getEventRegister()));
 
         config.setEventRouter(new EventRouterImpl(config.getChannelRegister(),
@@ -179,17 +170,13 @@ public class KaEventConfigurer {
 
         // Events
         config.setEventFactory(new EventFactoryImpl(config.getBeanResolver()));
-
         config.setEventRegister(new DefaultEventRegister(config.getEventFactory()));
-
         config.setEventMethodInvoker(new EventMethodInvokerImpl(config.getEventRegister()));
-
         config.setSourceObjectListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config
                     .getBeanResolver()));
 
         // Channel Register
         config.setChannelRegister(new ChannelRegisterImpl());
-
         // Sender
         config.setEventRouter(new EventRouterImpl(config.getChannelRegister(),
                     config.getSourceObjectListenerRegister(), config.getEventMethodInvoker()));
@@ -204,21 +191,23 @@ public class KaEventConfigurer {
             config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),
                         config.getEventMethodInvoker(), config.getBeanResolver()));
         }
-
         // Queue Thread
         configureEventQueue(xmlConfig, config);
-
         // import events
         importEvents(xmlConfig, config, beanResolver);
-
         createChannels(xmlConfig, config);
-
         registerEventsAtChannels(config);
-
         return config;
 
     }
 
+    /**
+     * Import events from XML Configuration.
+     * 
+     * @param xmlConfig     XML Configuration.
+     * @param config        Configuration result.
+     * @param beanResolver  Bean Resolver.
+     **/
     private void importEvents(KaEventConfig xmlConfig, KaEventConfigurationImpl config, BeanResolver beanResolver) {
         KaEventConfig.Events events = xmlConfig.getEvents();
         if (events != null) {
@@ -232,6 +221,12 @@ public class KaEventConfigurer {
         }
     }
 
+    /**
+     * Configure the Event Queue.
+     * 
+     * @param xmlConfig XML Configuration.
+     * @param config    Configuration result.
+     **/
     private void configureEventQueue(KaEventConfig xmlConfig, KaEventConfigurationImpl config) {
         if (xmlConfig.getQueueThread() == null) {
             config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventRouter()));
@@ -251,6 +246,12 @@ public class KaEventConfigurer {
         }
     }
 
+    /**
+     * Configure the default Event Queue Implementation (ThreadPoolExecutor).
+     * 
+     * @param xmlConfig           XML Configuration.
+     * @param threadPoolExecutor  Configuration result.
+     **/
     private void configureDefaultEventQueue(KaEventConfig xmlConfig, ThreadPoolQueueExecutor threadPoolExecutor) {
         if (xmlConfig.getThreadPoolExecutor() != null) {
             if (xmlConfig.getThreadPoolExecutor().getMaximumPoolSize() != null) {
@@ -308,6 +309,14 @@ public class KaEventConfigurer {
         }
     }
 
+    /**
+     * Registers Events at Channels by the @Event annotation.
+     * 
+     * @param channelFactory   Channel Factory.
+     * @param channelRegister  Channel Register.
+     * @param eventClass       Event Class.
+     * @param eventAnno        Event annotation.
+     **/
     private void registerEventAtChannelByAnnotation(ChannelFactory channelFactory, ChannelRegister channelRegister,
                 Class<? extends EventObject> eventClass, Event eventAnno) {
         
@@ -355,8 +364,19 @@ public class KaEventConfigurer {
         }
     }
 
+    /**
+     * Creates a channel instance .
+     * 
+     * @param config            Configuration result.
+     * @param channelFactory    Channel Factory to use  when creating the channel.
+     * @param channel           Channel XML Configuration Element.
+     * @param name              Name of the channel.
+     * @param eventSet          Set of events to register at the channel.
+     * @param channelClass      Channel class to create instance for.
+     */
     private void createChannelInstance(KaEventConfiguration config, ChannelFactory channelFactory,
-                KaEventConfig.Channels.Channel channel, String name, Set<Class<? extends EventObject>> eventSet,
+                KaEventConfig.Channels.Channel channel, String name, 
+                Set<Class<? extends EventObject>> eventSet,
                 Class<? extends Channel> channelClass) {
         Channel newChannel = null;
         if (eventSet.isEmpty()) {
@@ -368,6 +388,13 @@ public class KaEventConfigurer {
         setFiltersForChannel(config, channel, newChannel);
     }
 
+    /**
+     * Set filters for a channel.
+     * 
+     * @param config        Configuration result.
+     * @param channel       Channel XML Configuration Element.
+     * @param newChannel    Channel instance.
+     **/
     private void setFiltersForChannel(KaEventConfiguration config, KaEventConfig.Channels.Channel channel,
                 Channel newChannel) {
         if (newChannel != null && newChannel instanceof FilterableChannel && channel.getFilter() != null) {
@@ -383,6 +410,13 @@ public class KaEventConfigurer {
         }
     }
 
+    /**
+     * Returns channel class from a Channel XML Configuration Element.
+     * 
+     * @param channel Channel XML Configuration Element.
+     * 
+     * @return Channel class.
+     **/
     @SuppressWarnings("unchecked")
     private Class<? extends Channel> getChannelClass(KaEventConfig.Channels.Channel channel) {
         Class<? extends Channel> channelClass = ChannelImpl.class;
@@ -399,6 +433,13 @@ public class KaEventConfigurer {
         return channelClass;
     }
 
+    /**
+     * Register events for a channel.
+     * 
+     * @param eventRegister Event Register.
+     * @param channel       Channel XML Configuration Element.
+     * @param eventSet      Set of events to register at the channel.
+     **/
     private void registerEventsForChannel(EventRegister eventRegister, KaEventConfig.Channels.Channel channel,
                 Set<Class<? extends EventObject>> eventSet) {
         if (channel.getHandle() != null) {
@@ -442,78 +483,5 @@ public class KaEventConfigurer {
 
     }
 
-    /**
-     * Loads a configuration from file or classpath location and returns it.
-     * 
-     * @param inPath
-     *            Location of the XML Configuration file.
-     * 
-     * @return The Configuration created from the XML file.
-     * @throws IllegalArgumentException
-     *             if no XML file could be found or the XML could not be unmarshalled.
-     **/
-    private KaEventConfig loadXmlFromPath(String inPath) throws IllegalArgumentException {
-        boolean fromFile = false;
-        String path = inPath;
-        if (path.startsWith("classpath:")) {
-            path = path.substring("classpath:".length());
-        } else if (path.startsWith("file:")) {
-            path = path.substring("file:".length());
-            fromFile = true;
-        }
-        path = StringUtils.replaceVariables(path, null, true);
-        InputStream xmlStream = null;
-
-        try {
-            if (!fromFile) {
-                xmlStream = KaEventConfigurer.class.getClassLoader().getResourceAsStream(path);
-                if (xmlStream == null) {
-                    throw new IllegalArgumentException("Could not load xml configuration file " + inPath
-                                + " from class path");
-                }
-            } else {
-                xmlStream = new FileInputStream(path);
-            }
-            KaEventConfig xmlConfig = loadXmlConfig(xmlStream);
-            if (xmlConfig == null) {
-                throw new IllegalArgumentException("Could not unmarshal xml configuration file " 
-                            + inPath);
-            }
-            return xmlConfig;
-        } catch (JAXBException e) {
-            throw new IllegalArgumentException("Could not parse xml configuration file " + inPath, e);
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Could not load xml configuration file " + inPath, e);
-        } finally {
-            if (xmlStream != null) {
-                try {
-                    xmlStream.close();
-                } catch (IOException e) {
-                } // Ignore
-            }
-        }
-
-    }
-
-    /**
-     * Helper to loadXmlFromPath, loads the configuration from an InputStream.
-     * 
-     * @param istrm
-     *            InputStream to load configuration from.
-     * 
-     * @return The configuration.
-     * 
-     * @throws JAXBException
-     *             If the XML file (instrn) could not be unmarshalled.
-     **/
-    private KaEventConfig loadXmlConfig(InputStream istrm) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(KaEventConfig.class.getPackage().getName());
-
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        Object object = unmarshaller.unmarshal(istrm);
-
-        return (KaEventConfig) object;
-
-    }
-
+   
 }

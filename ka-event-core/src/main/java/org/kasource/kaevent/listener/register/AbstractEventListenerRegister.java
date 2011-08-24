@@ -51,22 +51,19 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
     }
 
     /**
-     * Return registered interfaces.
+     * Returns all lister interfaces form the listener object that is a Ka-Event registered event.
      * 
-     * @param listener  Listener.
+     * @param listener  Listener object to inspect.
      * 
-     * @return 
+     * @return All interfaces from listener object that is registered with Ka-Event.
      **/
     @SuppressWarnings("unchecked")
     private Set<Class<? extends EventListener>> getRegisteredInterfaces(EventListener listener) {
         Set<Class<?>> interfaces = ReflectionUtils.getInterfacesExtending(listener, EventListener.class);
         Set<Class<? extends EventListener>> registeredEvents = new HashSet<Class<? extends EventListener>>();
         for (Class<?> interfaceClass : interfaces) {
-            try {
-            	eventRegister.getEventByInterface((Class<? extends EventListener>) interfaceClass);
-            	registeredEvents.add((Class<? extends EventListener>) interfaceClass);
-            } catch (NoSuchEventException nse) { 
-                
+            if (isRegisteredInterface(interfaceClass)) {
+                registeredEvents.add((Class<? extends EventListener>) interfaceClass);
             }
         }
             
@@ -74,6 +71,23 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
         return registeredEvents;
     }
 
+    /**
+     * Returns true of interfaceClass is registered with Ka-Event, else false.
+     * 
+     * @param interfaceClass   Interface class to inspect.
+     * 
+     * @return true of interfaceClass is registered with Ka-Event, else false.
+     **/
+    @SuppressWarnings("unchecked")
+    private boolean isRegisteredInterface(Class<?> interfaceClass) {
+        try {
+            eventRegister.getEventByInterface((Class<? extends EventListener>) interfaceClass);
+            return true;
+        } catch (NoSuchEventException nse) { 
+          return false;
+        }
+    }
+    
     
     /**
      * Register listener to listening on sourceObject.
