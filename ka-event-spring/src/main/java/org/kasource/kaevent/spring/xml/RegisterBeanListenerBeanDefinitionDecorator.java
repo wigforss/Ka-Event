@@ -29,6 +29,8 @@ public class RegisterBeanListenerBeanDefinitionDecorator extends
 	 * @param node			The attribute listen-on-bean.
 	 * @param definition	The bean definition of the bean with the attribute
 	 * @param parserContext The spring context parsed.
+	 * 
+	 * @return the enhanced definition.
 	 **/
 	@Override
 	public BeanDefinitionHolder decorate(Node node,

@@ -6,6 +6,7 @@ import org.kasource.kaevent.event.BaseEvent;
 import org.kasource.kaevent.example.spring.channel.Thermometer;
 
 ///CLOVER:OFF
+//CHECKSTYLE:OFF
 @Event(listener = TemperatureChangedEventListener.class)
 public class TemperatureChangedEvent extends BaseEvent {
 	private static final long serialVersionUID = 1L;

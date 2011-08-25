@@ -13,10 +13,12 @@ import org.kasource.spring.transaction.TransactionSupport;
 import org.kasource.spring.transaction.TransactionSupportImpl;
 
 /**
- * @author Rikard Wigforss
+ * Spring Event Dispatcher.
  * 
+ * Adds support for fireOnCommit.
+ * 
+ * @author Rikard Wigforss
  */
-
 public final class SpringEventDispatcher extends DefaultEventDispatcher implements TransactionListener {
 
 	private ThreadLocal<Queue<EventObject>> commitEventQueue = new ThreadLocal<Queue<EventObject>>();

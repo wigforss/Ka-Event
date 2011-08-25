@@ -1,12 +1,11 @@
 package org.kasource.kaevent.example.spring.simple.event;
 
 import java.util.EventObject;
-
-
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.example.spring.simple.Thermometer;
 
 ///CLOVER:OFF
+//CHECKSTYLE:OFF
 @Event(listener = TemperatureChangeEventListener.class)
 public class TemperatureChangeEvent extends EventObject {
 	private static final long serialVersionUID = 1L;

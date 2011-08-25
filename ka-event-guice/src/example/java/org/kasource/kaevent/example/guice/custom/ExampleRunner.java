@@ -1,17 +1,18 @@
 package org.kasource.kaevent.example.guice.custom;
 
 
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 
 /**
- * Example which uses a custom method resolver found by invoking a factory method, see TemperatureChangeEventListener for details. 
+ * Example which uses a custom method resolver found by invoking a 
+ * factory method, see TemperatureChangeEventListener for details. 
  *  
  * @author wigforss
  **/
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 public class ExampleRunner {
 	public static void main(String[] args) {

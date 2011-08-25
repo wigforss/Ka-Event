@@ -7,6 +7,7 @@ import org.kasource.kaevent.example.guice.custom.event.TemperatureChangeEventLis
 
 import com.google.inject.Singleton;
 
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 @Singleton
 @BeanListener("thermometer")
@@ -29,7 +30,7 @@ public class Cooler implements TemperatureChangeEventListener {
 
     @Override
     public void highTemperature(TemperatureChangeEvent event) {
-        if (enabled == false) {
+        if (!enabled) {
             System.out.println("Cooler started.");
         }
         enabled = true;
@@ -38,7 +39,7 @@ public class Cooler implements TemperatureChangeEventListener {
 
     @Override
     public void lowTemperature(TemperatureChangeEvent event) {
-        if (enabled == true) {
+        if (enabled) {
             System.out.println("Cooler turned off.");
         }
         enabled = false;
@@ -47,11 +48,10 @@ public class Cooler implements TemperatureChangeEventListener {
 
     @Override
     public void mediumTemperature(TemperatureChangeEvent event) {
-        if (enabled == true) {
+        if (enabled) {
             System.out.println("Cooler turned off.");
         }
         enabled = false;
 
     }
-
 }

@@ -14,10 +14,9 @@ import org.kasource.kaevent.example.guice.custom.event.TemperatureChangeEventLis
  * @author rikardwigforss
  * 
  */
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 public class TempratureMethodResolver implements MethodResolver<TemperatureChangeEvent> {
-    
-    
     
     private double optimalTemp;
 

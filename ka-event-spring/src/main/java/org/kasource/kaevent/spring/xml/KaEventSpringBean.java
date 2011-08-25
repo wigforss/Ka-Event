@@ -13,6 +13,11 @@ import org.kasource.kaevent.event.register.DefaultEventRegister;
 import org.kasource.kaevent.listener.register.RegisterListenerBeanPostProcessor;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 
+/**
+ * Enumeration of bean to create.
+ * 
+ * @author rikardwi
+ **/
 public enum KaEventSpringBean {
 
 	BEAN_RESOLVER(SpringBeanResolver.class, "kaEvent.beanResolver",
@@ -122,6 +127,16 @@ public enum KaEventSpringBean {
 	private String[] refProperties;
 	private String[] propertyRefValues;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param beanClass        Class of bean
+	 * @param id               Id of bean
+	 * @param initMethod       Init method name of bean.
+	 * @param constructorRefs  Constructor ref beans.
+	 * @param refProperties     Properties with reference values.
+	 * @param propertyRefValues Name of bean references to properties.
+	 **/
 	KaEventSpringBean(Class<?> beanClass, 
 					  String id, 
 			          String initMethod,
@@ -136,28 +151,57 @@ public enum KaEventSpringBean {
 		this.propertyRefValues = propertyRefValues;
 	}
 
+	/**
+	 * Returns bean ID.
+	 * 
+	 * @return bean ID.
+	 **/
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Returns bean class.
+	 * 
+	 * @return bean class.
+	 **/
 	public Class<?> getBeanClass() {
 		return beanClass;
 	}
 	
 	
-
+   /**
+    * Returns Constructor bean references.
+    * 
+    * @return Constructor bean references.
+    */
 	public String[] getConstructorRefs() {
 		return constructorRefs;
 	}
 
+	/** 
+	 * Name of bean references to properties.
+	 * 
+	 * @return Name of bean references to properties.
+	 **/
 	public String[] getPropertyRefValues() {
 		return propertyRefValues;
 	}
 
+	/**
+	 * Returns Properties with reference values.
+     * 
+     * @return Properties with reference values.
+	 **/
 	public String[] getRefProperties() {
 		return refProperties;
 	}
 
+	/**
+	 * Init method name of bean.
+	 * 
+	 * @return Init method name of bean.
+	 **/
 	public String getInitMethod() {
 		return initMethod;
 	}

@@ -1,6 +1,5 @@
 package org.kasource.kaevent.bean;
 
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

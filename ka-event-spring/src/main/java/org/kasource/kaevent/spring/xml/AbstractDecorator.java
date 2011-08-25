@@ -21,7 +21,7 @@ public abstract class AbstractDecorator {
 	private static final String KA_EVENT_NS = "http://kasource.org/schema/kaevent-spring";
 
 	/**
-	 * Adds the bean with the beanName as a dependency to the bean 
+	 * Adds the bean with the beanName as a dependency to the bean .
 	 * 
 	 * @param bean		The bean that is changed
 	 * @param beanName	Name of the bean that bean should depend on

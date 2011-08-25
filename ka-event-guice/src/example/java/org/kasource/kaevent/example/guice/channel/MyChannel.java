@@ -9,9 +9,9 @@ import org.kasource.kaevent.event.register.EventRegister;
 
 import com.google.inject.Inject;
 
-
+//CHECKSTYLE:OFF
+///CLOVER:OFF
 public class MyChannel extends ListenerChannelAdapter {
-
 	
 	@Inject
 	public MyChannel(ChannelRegister channelRegister, EventRegister eventRegister, BeanResolver beanResolver) {

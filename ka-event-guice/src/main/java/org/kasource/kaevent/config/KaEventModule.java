@@ -1,10 +1,5 @@
 package org.kasource.kaevent.config;
 
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.kasource.kaevent.annotations.listener.ChannelListener;
 import org.kasource.kaevent.annotations.listener.RegisterListener;
 import org.kasource.kaevent.annotations.listener.UnregisterListener;
 import org.kasource.kaevent.bean.BeanResolver;
@@ -35,16 +30,20 @@ import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Named;
 
+/**
+ * Ka-Event Configuration Module.
+ * 
+ * Extend this module to configure the Ka-Event Environment.
+ * 
+ * @author rikardwi
+ **/
 public class KaEventModule extends AbstractModule {
 
 	private String scanClassPath;
 	
-	
-	
-	public  KaEventModule() {	
-	}
-	
-	
+	/**
+	 * Configure.
+	 **/
 	@Override
 	protected void configure() {
 		bind(ChannelFactory.class).to(GuiceChannelFactory.class);
@@ -58,60 +57,133 @@ public class KaEventModule extends AbstractModule {
 	}
 
 	
-	
+	/**
+	 * Provides the classpath (package name) to scan for @Event annotated classes.
+	 *  
+	 * @return The path to scan for events.
+	 **/
 	@Provides @Named("kaEvent.scan.package")
 	String provideScanClassPath() {
 		return scanClassPath;
 	}
 
+	/**
+	 * Provides the Event Factory.
+	 * 
+	 * @param beanResolver Bean Resolver to use.
+	 * 
+	 * @return Event Factory to use.
+	 **/
 	@Provides @Singleton
 	EventFactory provideEventFactory(BeanResolver beanResolver) {
 		return new EventFactoryImpl(beanResolver);
 	}
 
+	/**
+	 * Provides Event Register.
+	 * 
+	 * @param eventFactory Event Factory.
+	 * 
+	 * @return Event Register to use.
+	 **/
 	@Provides @Singleton
 	EventRegister provideEventRegister(EventFactory eventFactory) {
 		return new DefaultEventRegister(eventFactory);
 	}
 
+	/**
+	 * Provides Event Method Invoker.
+	 * 
+	 * @param eventRegister Event Register.
+	 * 
+	 * @return  Event Method Invoker to use.
+	 **/
 	@Provides @Singleton
 	EventMethodInvoker provideEventMethodInvoker(EventRegister eventRegister) {
 		return new EventMethodInvokerImpl(eventRegister);
 	}
 
+	/**
+	 * Provides Source Object Listener Register.
+	 * 
+	 * @param eventRegister Event Register.
+	 * @param beanResolver  Bean Resolver.
+	 * 
+	 * @return Source Object Listener Register to use.
+	 **/
 	@Provides @Singleton
-	SourceObjectListenerRegister provideSourceObjectListenerRegister(EventRegister eventRegister, BeanResolver beanResolver) {
+	SourceObjectListenerRegister provideSourceObjectListenerRegister(EventRegister eventRegister, 
+	                                                                 BeanResolver beanResolver) {
 		return new SourceObjectListenerRegisterImpl(eventRegister, beanResolver);
 	}
 
+	/**
+	 * Provides Channel Register.
+	 * 
+	 * @return Channel Register to use.
+	 **/
 	@Provides @Singleton
 	ChannelRegister provideChannelRegister() {
 		return new ChannelRegisterImpl();
 	}
 
+	/**
+	 * Provides Event Router.
+	 * 
+	 * @param channelRegister               Channel Register.
+	 * @param sourceObjectListenerRegister  Source Object Listener Register.
+	 * @param eventMethodInvoker            Event Method Invoker.
+	 * 
+	 * @return Event Router to use.
+	 **/
 	@Provides @Singleton
-	EventRouter provideEventRouter(ChannelRegister channelRegister, SourceObjectListenerRegister sourceObjectListenerRegister, EventMethodInvoker eventMethodInvoker) {
+	EventRouter provideEventRouter(ChannelRegister channelRegister, 
+	                               SourceObjectListenerRegister sourceObjectListenerRegister, 
+	                               EventMethodInvoker eventMethodInvoker) {
 		return new EventRouterImpl(channelRegister, sourceObjectListenerRegister, eventMethodInvoker);
 	}
 
-	
+	/**
+	 * Provides the Event Queue.
+	 * 
+	 * @param eventRouter Event Router.
+	 * 
+	 * @return Event Queue to use.
+	 */
 	@Provides @Singleton
 	DispatcherQueueThread provideQueueThread(EventRouter eventRouter) {
 		return new ThreadPoolQueueExecutor(eventRouter);
 	}
 
-
+	/**
+	 * Provides the Configuration object.
+	 * 
+	 * @param beanResolver     Bean Resolver
+	 * @param channelFactory   Channel Factory
+	 * @param channelRegister  Channel Register.
+	 * @param eventDispatcher  Event Dispatcher.
+	 * @param eventFactory     Event Factory
+	 * @param eventMethodInvoker Event Method Invoker.
+	 * @param eventRegister    Event Register.
+	 * @param eventRouter      Event Router.
+	 * @param queueThread      Event Queue.
+	 * @param sourceObjectListenerRegister Source Object Listener Register
+	 * 
+	 * @return The result of configuring Ka-Event.
+	 **/
+	//CHECKSTYLE:OFF
+	// Motivation: Number of parameters
 	@Provides @Singleton
 	KaEventConfiguration provideKaEventConfiguration(BeanResolver beanResolver, 
-													 ChannelFactory channelFactory, 
-													 ChannelRegister channelRegister,
-													 EventDispatcher eventDispatcher,
-													 EventFactory eventFactory,
-													 EventMethodInvoker eventMethodInvoker,
-													 EventRegister eventRegister,
-													 EventRouter eventRouter,
-													 DispatcherQueueThread queueThread,
-													 SourceObjectListenerRegister sourceObjectListenerRegister) {
+	                                ChannelFactory channelFactory, 
+									ChannelRegister channelRegister,
+									EventDispatcher eventDispatcher,
+									EventFactory eventFactory,
+									EventMethodInvoker eventMethodInvoker,
+									EventRegister eventRegister,
+									EventRouter eventRouter,
+									DispatcherQueueThread queueThread,
+									SourceObjectListenerRegister sourceObjectListenerRegister) {
 		KaEventConfigurationImpl configuration =  new KaEventConfigurationImpl();
 		configuration.setBeanResolver(beanResolver);
 		configuration.setChannelFactory(channelFactory);
@@ -127,10 +199,17 @@ public class KaEventModule extends AbstractModule {
 		KaEventInitializer.setConfiguration(configuration);
 		return configuration;
 	}
-
+	//CHECKSTYLE:ON
 
 	/**
-	 * @param scanClassPath the scanClassPath to set
+	 * Set the classpath (package name) to scan for @Event annotated classes.
+	 * <p/>
+	 * scanClassPath may be a comma separated list of package names.
+	 * 
+	 * Note: All sub packages for the provied packages will also be scanned.
+	 * 
+	 * 
+	 * @param scanClassPath package to scan for @Event annotated classes.
 	 */
 	protected void setScanClassPath(String scanClassPath) {
 		this.scanClassPath = scanClassPath;

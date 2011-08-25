@@ -1,7 +1,6 @@
 package org.kasource.kaevent.config;
 
 
-
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
@@ -15,8 +14,6 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
-
 
 
 /**
@@ -37,11 +34,18 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 
 	private Map<EventListener, List<EventFilter<EventObject>>> filterMap;
 	 
+	/**
+	 * Constructor.
+	 * 
+	 * @param configuration Configuration object.
+	 **/
 	protected  SpringKaEventConfigurer(KaEventConfiguration configuration) {
 		this.configuration = configuration;	
 	}
 	
-	
+	/**
+	 * Configure the Ka-Event environment.
+	 **/
 	public void configure() {
 		if (scanClassPath != null && scanClassPath.length() > 0) {
             importAndRegisterEvents(new AnnotationEventExporter(scanClassPath),
@@ -95,10 +99,24 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 		return null;
 	}
 	
+	/**
+	 * Set package name(s) to scan for classes in.
+	 * 
+	 * The scanClassPath can be a comma separated list
+	 * of package names. Note that all sub packages will also
+	 * be scanned.
+	 * 
+	 * @param scanClassPath Package name to scan for @Event annotated classes.
+	 **/
 	public void setScanClassPath(String scanClassPath) {
 		this.scanClassPath = scanClassPath;
 	}
 
+	/**
+	 * Set filters to use for listeners that listens to source objects.
+	 * 
+	 * @param filterMap Map of filters.
+	 **/
 	public void setFilterMap(Map<EventListener, List<EventFilter<EventObject>>> filterMap) {
 		this.filterMap = filterMap;
 	}
@@ -110,6 +128,11 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 		this.applicationContext = applicationContext;
 	}
 	
+	/**
+	 * Set the listener to register as source object listeners.
+	 * 
+	 * @param listeners Listeners to add.
+	 **/
 	public void setListeners(Map<Object, List<EventListener>>  listeners) {
 		this.listeners = listeners;		
 	}

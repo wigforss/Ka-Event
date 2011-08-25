@@ -1,7 +1,6 @@
 package org.kasource.kaevent.example.guice.custom;
 
 
-
 import org.kasource.kaevent.config.KaEventModule;
 import org.kasource.kaevent.event.method.MethodResolver;
 
@@ -9,13 +8,11 @@ import com.google.inject.Provides;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
-
-public class ExampleModule extends KaEventModule{
+//CHECKSTYLE:OFF
+///CLOVER:OFF
+public class ExampleModule extends KaEventModule {
 	
-	
-	
-	
-	public ExampleModule(){
+	public ExampleModule() {
 		
 	}
 	

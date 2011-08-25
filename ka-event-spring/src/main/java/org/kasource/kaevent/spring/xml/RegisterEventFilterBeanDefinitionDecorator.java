@@ -42,19 +42,13 @@ public class RegisterEventFilterBeanDefinitionDecorator extends AbstractDecorato
 		String filterNames = ((Attr) node).getValue();
 		if (filterNames != null) {
 			String channels = getAttributeValue("listen-on-channel", ((Attr) node).getOwnerElement());
-			if (channels != null) {
-				String[] channelNames = channels.split(",");
-				for (String channelName : channelNames) {
-					registerChannelListenerFilter(filterNames,
-							channelName.trim(), definition, parserContext);
-				}
-			}
+			registerChannelListenerFilter(channels, filterNames, definition, parserContext);
 
 			String beans = getAttributeValue("listen-on-bean", ((Attr) node).getOwnerElement());
-			if (beans != null) {
-				registerBeanListenerFilter(filterNames, definition,
+			
+			registerBeanListenerFilter(beans, filterNames, definition,
 						parserContext);
-			}
+			
 			if (channels == null && beans == null) {
 				throw new BeanCreationException(
 						definition.getBeanName(),
@@ -66,26 +60,58 @@ public class RegisterEventFilterBeanDefinitionDecorator extends AbstractDecorato
 		return definition;
 	}
 
-	
-	private void registerChannelListenerFilter(String filters,
-			String channelName, BeanDefinitionHolder definition,
-			ParserContext parserContext) {
-		BeanDefinition channel = parserContext.getRegistry().getBeanDefinition(
-				channelName);
-		MutablePropertyValues props = channel.getPropertyValues();
-		PropertyValue value = props.getPropertyValue("filterMap");
-		addFilters(filters, definition, props, value);
+	/**
+	 * Register event filters for channels.
+	 * 
+	 * @param channels      Channels to register filters for.
+	 * @param filters       Filter to register.
+	 * @param definition    Bean definition.
+	 * @param parserContext Parser Context.
+	 **/
+	private void registerChannelListenerFilter(String channels, 
+	                                           String filters,
+	                                           BeanDefinitionHolder definition,
+	                                           ParserContext parserContext) {
+	    if (channels != null) {
+	        String[] channelNames = channels.split(",");
+	        for (String channelName : channelNames) {
+	            BeanDefinition channel = parserContext.getRegistry().getBeanDefinition(channelName);
+	            MutablePropertyValues props = channel.getPropertyValues();
+	            PropertyValue value = props.getPropertyValue("filterMap");
+	            addFilters(filters, definition, props, value);
+	        }
+	    }
 	}
 
 	
-	
-	private void registerBeanListenerFilter(String filters, BeanDefinitionHolder definition, ParserContext parserContext) {
-		BeanDefinition sol = parserContext.getRegistry().getBeanDefinition("kaEvent.configurer");
-		MutablePropertyValues props = sol.getPropertyValues();
-		PropertyValue value = props.getPropertyValue("listeners");
-		addFilters(filters, definition, props, value);
+	/**
+	 * Register Event filter for beans (source objects).
+	 * 
+	 * @param beans         Source objects to listen to.
+	 * @param filters       Filters to add.
+	 * @param definition    Bean Definition.
+	 * @param parserContext Parser Context.
+	 **/
+	private void registerBeanListenerFilter(String beans,
+	                                        String filters, 
+	                                        BeanDefinitionHolder definition, 
+	                                        ParserContext parserContext) {
+	    if (beans != null) {
+	        BeanDefinition sol = parserContext.getRegistry().getBeanDefinition("kaEvent.configurer");
+	        MutablePropertyValues props = sol.getPropertyValues();
+	        PropertyValue value = props.getPropertyValue("listeners");
+	        addFilters(filters, definition, props, value);
+	    }
 	}
 	
+	/**
+	 * Add filters. 
+	 * 
+	 * @param filters    Filters.
+	 * @param definition bean
+	 * @param props      Properties for bean.
+	 * @param value      listeners property value.
+	 **/
 	@SuppressWarnings("unchecked")
 	private void addFilters(String filters, BeanDefinitionHolder definition,
 			MutablePropertyValues props, PropertyValue value) {

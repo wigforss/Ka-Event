@@ -15,8 +15,13 @@ import com.google.inject.Singleton;
 import com.google.inject.internal.Nullable;
 import com.google.inject.name.Named;
 
+/**
+ * Configures the Ka-Event environment with Guice.
+ * 
+ * @author rikardwi
+ **/
 @Singleton
-public class GuiceKaEventConfigurer extends KaEventConfigurer{
+public class GuiceKaEventConfigurer extends KaEventConfigurer {
 	
 	@Inject
 	private Injector injector;
@@ -27,16 +32,17 @@ public class GuiceKaEventConfigurer extends KaEventConfigurer{
 	@Inject
 	private EventFactory eventFactory;
 	
-
-	
 	@Nullable
 	@Inject
 	@Named("kaEvent.scan.package")
 	private String scanClassPath;
 	
+	/**
+	 * Configure the Ka-Event environment.
+	 **/
 	public void configure() {
 		registerEvents();
-		if(scanClassPath != null && scanClassPath.length() > 0) {
+		if (scanClassPath != null && scanClassPath.length() > 0) {
             importAndRegisterEvents(new AnnotationEventExporter(scanClassPath), eventFactory, eventRegister);
         }
 		createChannels();
@@ -45,9 +51,12 @@ public class GuiceKaEventConfigurer extends KaEventConfigurer{
 		injector.getInstance(KaEventConfiguration.class);
 	}
 	
+	/**
+	 * Register provided events.
+	 **/
 	private void registerEvents() {
-		for(Key<?> bindingKey : injector.getBindings().keySet()) {
-			if(bindingKey.getTypeLiteral().getRawType().equals(EventConfig.class)) {
+		for (Key<?> bindingKey : injector.getBindings().keySet()) {
+			if (bindingKey.getTypeLiteral().getRawType().equals(EventConfig.class)) {
 				EventConfig event = (EventConfig) injector.getInstance(bindingKey);
 				eventRegister.registerEvent(event);
 			}
@@ -55,9 +64,12 @@ public class GuiceKaEventConfigurer extends KaEventConfigurer{
 		}
 	}
 	
+	/**
+	 * Create instances of provided channels.
+	 **/
 	private void createChannels() {
-		for(Key<?> bindingKey : injector.getBindings().keySet()) {
-			if(Channel.class.isAssignableFrom(bindingKey.getTypeLiteral().getRawType())) {
+		for (Key<?> bindingKey : injector.getBindings().keySet()) {
+			if (Channel.class.isAssignableFrom(bindingKey.getTypeLiteral().getRawType())) {
 				injector.getInstance(bindingKey);
 			}
 			

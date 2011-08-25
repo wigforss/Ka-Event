@@ -5,11 +5,10 @@ import org.kasource.kaevent.example.spring.channel.event.TemperatureChangedEvent
 
 
 ///CLOVER:OFF
-
+//CHECKSTYLE:OFF
 public class CommandConsole implements TemperatureChangedEventListener {
 
-  
-
+ 
     @Override
     public void temperatureChanged(TemperatureChangedEvent event) {
         if (event.getCurrentTemperature() > event.getSource().getOptimalTemperatur()) {

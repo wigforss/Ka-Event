@@ -4,7 +4,6 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.example.spring.simple.event.TemperatureChangeEvent;
 
 
-
 ///CLOVER:OFF
 //CHECKSTYLE:OFF
 public class Thermometer implements Runnable {
@@ -14,10 +13,6 @@ public class Thermometer implements Runnable {
 	private Cooler cooler;
 	private Heater heater;
 	private EventDispatcher eventDispatcher;
-	
-	
-
-	
 	
 
 	public double getOptimalTemperatur() {

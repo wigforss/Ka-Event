@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+///CLOVER:OFF
+//CHECKSTYLE:OFF
 @Component
 @Scope("prototype")
 public class MyChannel extends ListenerChannelAdapter {

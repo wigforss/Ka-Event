@@ -16,13 +16,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
+ * Spring Channel Factory Bean.
+ * 
  * @author Rikard Wigforss
- *
- */
+ **/
 public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware {
 
-  
-    
     private String name;
 
     private Class<? extends Channel> channelClass;
@@ -35,8 +34,7 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
     
     private Map<EventListener, List<EventFilter<EventObject>>> filterMap;
     
-   
-
+  
 
 	@Override
     public Object getObject() throws Exception {
@@ -47,12 +45,7 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
     	if (listeners != null) {
     		if (channel instanceof ListenerChannel) {
     			for (EventListener listener : listeners) {
-    				List<EventFilter<EventObject>> filters = getFilter(listener);
-    				if (filters != null) {
-    					((ListenerChannel) channel).registerListener(listener, filters);
-    				} else {
-    					((ListenerChannel) channel).registerListener(listener);
-    				}
+    			    registerListener(listener, channel);
     			}
     		} else {
     			throw new IllegalArgumentException("listener registered to the channel "
@@ -63,6 +56,28 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
     	return channel;
     }
 
+	/**
+	 * Register Listener to channel.
+	 * 
+	 * @param listener Listener to register.
+	 * @param channel  Channel to register at.
+	 **/
+	private void registerListener(EventListener listener, Channel channel) {
+	    List<EventFilter<EventObject>> filters = getFilter(listener);
+        if (filters != null) {
+            ((ListenerChannel) channel).registerListener(listener, filters);
+        } else {
+            ((ListenerChannel) channel).registerListener(listener);
+        }
+	}
+	
+	/**
+	 * Returns the filters for listener.
+	 * 
+	 * @param listener Listener to look-up filters for.
+	 * 
+	 * @return List of filter for listener.
+	 **/
 	private List<EventFilter<EventObject>> getFilter(Object listener) {
 		if (filterMap != null) {
 			return filterMap.get(listener);
@@ -70,6 +85,11 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
 		return null;
 	}
     
+	/**
+	 * Creates and returns a channel instance.
+	 * 
+	 * @return new Channel instance.
+	 **/
     private Channel getChannel() {
     	ChannelFactory channelFactory = 
     		(ChannelFactory) applicationContext.getBean(KaEventSpringBean.CHANNEL_FACTORY.getId());
@@ -108,6 +128,11 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
         this.name = name;
     }
 
+    /**
+     * Events to be handles by this Channel.
+     * 
+     * @param events Events to handle.
+     **/
 	public void setEvents(List<String> events) {
 		this.events = events;
 	}
@@ -119,11 +144,20 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
 		
 	}
 
-
+	/**
+	 * Listener to register to this Channel.
+	 * 
+	 * @param listeners Listeners to add.
+	 **/
 	public void setListeners(List<EventListener> listeners) {
 		this.listeners = listeners;
 	}
 
+	/**
+	 * Channel Class to create instance of.
+	 * 
+	 * @param channelClass Class of channel.
+	 **/
 	public void setChannelClass(Class<? extends Channel> channelClass) {
 		if (channelClass == null) {
 			this.channelClass = ChannelImpl.class;
@@ -132,6 +166,11 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
 		}
 	}
 	
+	/**
+	 * Filters for listeners.
+	 * 
+	 * @param filterMap Map of all listener filters.
+	 **/
 	public void setFilterMap(Map<EventListener, List<EventFilter<EventObject>>> filterMap) {
 		this.filterMap = filterMap;
 	}

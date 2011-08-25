@@ -7,10 +7,12 @@ import org.kasource.kaevent.example.guice.simple.event.TemperatureChangeEventLis
 
 import com.google.inject.Singleton;
 
+
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 @Singleton
 @BeanListener("thermometer")
-public class Cooler implements TemperatureChangeEventListener{
+public class Cooler implements TemperatureChangeEventListener {
 
 	
 	private boolean enabled = false;
@@ -30,19 +32,16 @@ public class Cooler implements TemperatureChangeEventListener{
 
 	@Override
 	public void temperatureChanged(TemperatureChangeEvent event) {
-		if (event.getCurrentTemperature() > event.getSource().getOptimalTemperatur())
-        {
-            if(enabled == false) {
+		if (event.getCurrentTemperature() > event.getSource().getOptimalTemperatur()) {
+            if (!enabled) {
             	System.out.println("Cooler started.");
             }
             enabled = true;
-        }
-        else
-        {
-            if(enabled == true) {
+        } else {
+            if (enabled) {
             	System.out.println("Cooler turned off.");
             }
-            enabled =false;
+            enabled = false;
         }
 
 	}

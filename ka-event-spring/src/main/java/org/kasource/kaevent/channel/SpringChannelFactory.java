@@ -17,6 +17,14 @@ public class SpringChannelFactory extends ChannelFactoryImpl implements
 
 	private ApplicationContext applicationContext;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param channelRegister     Channel Register.
+	 * @param eventRegister       Event Register.
+	 * @param eventMethodInvoker  Event Method Invoker.
+	 * @param beanResolver        Bean Resolver.
+	 **/
 	public SpringChannelFactory(ChannelRegister channelRegister,
 			EventRegister eventRegister, EventMethodInvoker eventMethodInvoker,
 			BeanResolver beanResolver) {
@@ -25,6 +33,13 @@ public class SpringChannelFactory extends ChannelFactoryImpl implements
 
 	/**
 	 * Allow prototype scoped beans to be created as channels.
+	 * 
+	 * @param channelClass Channel implementation class to instanciate.
+     * @param name           Name of the channel.
+     * 
+     * @return a new Channel instance.
+     * 
+     * @throws IllegalStateException if a channel with name already created or channelClass could not be instancieated.
 	 **/
 	protected Channel getNewChannel(Class<? extends Channel> channelClass,
 			String name) throws IllegalStateException {

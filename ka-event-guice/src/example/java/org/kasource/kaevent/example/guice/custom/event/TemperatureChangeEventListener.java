@@ -7,11 +7,11 @@ import org.kasource.kaevent.annotations.event.methodresolving.BeanMethodResolver
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType;
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
 
-
-
+//CHECKSTYLE:OFF
+///CLOVER:OFF
 @MethodResolving(MethodResolverType.BEAN)
 @BeanMethodResolver("tempratureMethodResolver")
-public interface TemperatureChangeEventListener extends EventListener{
+public interface TemperatureChangeEventListener extends EventListener {
 	 public void highTemperature(TemperatureChangeEvent event);
 	 
 	 public void mediumTemperature(TemperatureChangeEvent event);

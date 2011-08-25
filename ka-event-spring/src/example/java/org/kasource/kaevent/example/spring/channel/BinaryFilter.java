@@ -4,6 +4,8 @@ import java.util.EventObject;
 
 import org.kasource.kaevent.event.filter.EventFilter;
 
+///CLOVER:OFF
+//CHECKSTYLE:OFF
 public class BinaryFilter implements EventFilter<EventObject> {
 
 	private boolean allow;

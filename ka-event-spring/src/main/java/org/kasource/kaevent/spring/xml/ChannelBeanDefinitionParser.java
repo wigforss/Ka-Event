@@ -10,12 +10,31 @@ import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
+/**
+ * Parses the Channel XML Element. 
+ * 
+ * @author rikardwi
+ **/
 public class ChannelBeanDefinitionParser  extends AbstractSingleBeanDefinitionParser {
+    
+    /**
+     * Returns the bean class to use.
+     * 
+     * @param element The channel XML element.
+     * 
+     * @return The ChannelFactoryBean class.
+     **/
 	protected Class<?> getBeanClass(Element element) {
        return ChannelFactoryBean.class;
      }
 
-     @SuppressWarnings("unchecked")
+	/**
+	 * Parses the channel XML element.
+	 * 
+     *  @param element The channel XML element.
+     *  @param bean    The bean definition.
+	 **/
+    @SuppressWarnings("unchecked")
 	protected void doParse(Element element, BeanDefinitionBuilder bean) {
          bean.addPropertyValue("name", element.getAttribute(ID_ATTRIBUTE));
          bean.addDependsOn(KaEventSpringBean.CHANNEL_REGISTER.getId());
@@ -33,7 +52,14 @@ public class ChannelBeanDefinitionParser  extends AbstractSingleBeanDefinitionPa
          }
      }
      
-     protected List<String> getEventsHandled(List<Element> handles) {
+    /**
+     * Returns list of events handled by the channel.
+     * 
+     * @param handles The handles XML Configuration element.
+     * 
+     * @return List of events.
+     **/
+     private List<String> getEventsHandled(List<Element> handles) {
     	 List<String> events = new ArrayList<String>();
     	 if (handles != null) {
     		 for (Element handle : handles) {

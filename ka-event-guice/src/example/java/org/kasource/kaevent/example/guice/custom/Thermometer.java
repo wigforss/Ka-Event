@@ -5,7 +5,7 @@ import org.kasource.kaevent.example.guice.custom.event.TemperatureChangeEvent;
 
 import com.google.inject.Inject;
 
-
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 public class Thermometer implements Runnable {
 	private double optimalTemperatur = 22.0d;
@@ -31,15 +31,15 @@ public class Thermometer implements Runnable {
 	
 	
 	public void run() {
-		for(int i= 0; i < 100; ++i) {
-			if(cooler.isEnabled()) {
-				currentTemperatur -= Math.random()*3.0d;
-			}else if(heater.isEnabled()) {
-				currentTemperatur += Math.random()*3.0d;
+		for (int i = 0; i < 100; ++i) {
+			if (cooler.isEnabled()) {
+				currentTemperatur -= Math.random() * 3.0d;
+			} else if (heater.isEnabled()) {
+				currentTemperatur += Math.random() * 3.0d;
 			} else {
 				currentTemperatur += 1.0d;
 			}
-			System.out.println("Temp is now: "+currentTemperatur);
+			System.out.println("Temp is now: " + currentTemperatur);
 			eventDispatcher.fireBlocked(new TemperatureChangeEvent(this, currentTemperatur));
 			try {
 				Thread.sleep(200);

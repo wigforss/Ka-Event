@@ -6,6 +6,12 @@ import org.kasource.kaevent.annotations.listener.ChannelListener;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
+/**
+ * Bean Post Processor that registers @ChannelListener or @BeanListener annotated
+ * objects as listeners.
+ * 
+ * @author rikardwi
+ **/
 public class RegisterListenerBeanPostProcessor implements BeanPostProcessor {
 
     private RegisterListenerByAnnotation register = RegisterListenerByAnnotationImpl.getInstance();

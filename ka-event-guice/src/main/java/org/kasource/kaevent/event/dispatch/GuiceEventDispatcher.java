@@ -16,7 +16,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class GuiceEventDispatcher extends DefaultEventDispatcher {
 
-	
 	 
 	
 	/**
@@ -30,7 +29,7 @@ public class GuiceEventDispatcher extends DefaultEventDispatcher {
      * @param configurer    Configurer for the Guice environment.
      */
 	@Inject
-    private GuiceEventDispatcher(ChannelRegister channelRegister, 
+    GuiceEventDispatcher(ChannelRegister channelRegister, 
     							  ChannelFactory channelFactory,
     							  SourceObjectListenerRegister sourceObjectListenerRegister, 
     							  DispatcherQueueThread eventQueue,

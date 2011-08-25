@@ -1,8 +1,5 @@
 package org.kasource.kaevent.example.guice.channel;
 
-
-
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -16,8 +13,9 @@ import com.google.inject.name.Names;
  * 
  * @author Rikard Wigforss
  **/
-// /CLOVER:OFF
-public class ExampleRunner  {
+//CHECKSTYLE:OFF
+///CLOVER:OFF
+public class ExampleRunner {
 
     
 

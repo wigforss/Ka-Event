@@ -7,7 +7,7 @@ import org.kasource.kaevent.example.guice.channel.event.TemperatureChangedEventL
 
 import com.google.inject.Singleton;
 
-
+//CHECKSTYLE:OFF
 ///CLOVER:OFF
 @Singleton
 @ChannelListener("temperatureChannel")
