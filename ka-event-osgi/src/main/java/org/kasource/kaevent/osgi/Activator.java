@@ -9,7 +9,7 @@ import java.util.Set;
 import org.kasource.commons.reflection.AnnotationClassFilter;
 import org.kasource.commons.reflection.AssignableFromClassFilter;
 import org.kasource.commons.reflection.FilterList;
-
+import org.kasource.kaevent.config.KaEventConfig;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.annotations.listener.ChannelListener;
 import org.kasource.kaevent.channel.Channel;
@@ -50,7 +50,8 @@ public class Activator implements BundleActivator, BundleListener, KaEventInitia
 
 	private void initialize() {
 		 KaEventInitializer.getInstance().addListener(this);
-		 eventDispatcher = new DefaultEventDispatcher();
+		 KaEventConfig config = null;
+		 eventDispatcher = new DefaultEventDispatcher(config);
 		 bundleContext.addBundleListener(this);
 		 Bundle[] bundles = bundleContext.getBundles();
 	        for (Bundle bundle : bundles) {
@@ -132,13 +133,9 @@ public class Activator implements BundleActivator, BundleListener, KaEventInitia
 			ChannelListener channelListener = listener.getClass().getAnnotation(ChannelListener.class);
 			if(channelListener != null) {
 				String[] channels = channelListener.value();
+				
 				for(String channelName : channels) {
-					try {
-						Channel channel = channelRegister.getChannel(channelName);
-						channel.registerListener(listener);
-					} catch(NoSuchChannelException nse) {
-						// Log
-					}
+				    eventDispatcher.registerListenerAtChannel(listener, channelName);
 				}
 			} else {
 				// Log no annotation
