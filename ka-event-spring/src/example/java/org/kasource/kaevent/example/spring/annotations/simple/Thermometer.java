@@ -34,7 +34,6 @@ public class Thermometer implements Runnable {
 	
 	
 	
-	
 	public void run() {
 		for (int i = 0; i < 100; ++i) {
 			if (cooler.isEnabled()) {
@@ -55,16 +54,5 @@ public class Thermometer implements Runnable {
 		}
 	}
 	
-	public void setCooler(Cooler cooler) {
-		this.cooler = cooler;
-	}
-
-	public void setHeater(Heater heater) {
-		this.heater = heater;
-	}
-
-	public void setEventDispatcher(EventDispatcher eventDispatcher) {
-		this.eventDispatcher = eventDispatcher;
-	}
 
 }
