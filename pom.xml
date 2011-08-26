@@ -9,7 +9,7 @@
 	<artifactId>ka-event-base</artifactId>
 	<packaging>pom</packaging>
 	<name>Ka-Event Base Project</name>
-	<version>0.6</version>
+	<version>0.7-SNAPSHOT</version>
 	<description>
 		Ka-Event base project, which builds all modules.
 	</description>
@@ -22,9 +22,9 @@
     	</license>
   	</licenses>
 	<scm>
-		<url>scm:svn:https://svn.kenai.com/svn/ka-event~src/tags/ka-event-base-0.6</url>
-    	<developerConnection>scm:svn:https://svn.kenai.com/svn/ka-event~src/tags/ka-event-base-0.6</developerConnection>
-    	<connection>scm:svn:https://svn.kenai.com/svn/ka-event~src/tags/ka-event-base-0.6</connection>
+		<url>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</url>
+    	<developerConnection>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</developerConnection>
+    	<connection>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</connection>
   	</scm>
 	<issueManagement>
 		<system>JIRA</system>
