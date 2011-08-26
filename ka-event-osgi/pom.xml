@@ -2,7 +2,7 @@
 	<parent>
 		<artifactId>ka-event-base</artifactId>
 		<groupId>org.kasource</groupId>
-		<version>0.6-SNAPSHOT</version>
+		<version>0.6</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -10,7 +10,7 @@
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-event-osgi</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.6-SNAPSHOT</version>
+	<version>0.6</version>
 	<name>Ka Event OSGi Bundle</name>
 	<url>http://kasource.org</url>
 
