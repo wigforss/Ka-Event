@@ -1,3 +1,32 @@
-== Ka-Event ==
+= Ka-Event = 
+'''ka-event''' is a simple annotation-driven event-listener Framework for Java 1.5+, with Spring and Guice Support. Ka-Event is based on the concepts of [https://elf.dev.java.net/ elf]  but modernized to fit in a Java 1.5+ / Spring environment. Annotations and Generics is used to configure events minimizing the configuration effort for Java Developer. 
 
-A lightweight event bus and event listener framework based on the ideas from [https://elf.dev.java.net/ elf]. This framework relies on java 1.5 annotations and generics to make it as easy as possible to configure events, channels etc. also it's Spring friendly easy to integrate. 
+Both XML and programmatically configuration are supported.
+
+But most of all it is easy to use.
+
+== Modules ==
+* Commons
+* Core
+* AspectJ
+* Spring
+* Guice
+* OSGi
+
+== Motivation ==
+Using the standard listener pattern which comes with many of the core Java API classes, where every class handles its own listener registers and are responsible for invoking the listener method on the listeners might not be the best solution in many situations.
+
+Some cons with this approach may be:
+* Listener registry code duplicated
+* Listener invocation code duplicated
+* Object will be tightly coupled.
+* The over all object graph might be hard to manage when hundred or thousands of objects is interconnected in a gigantic web.
+* Invocation is usually synchronous.
+
+By centralizing this into one Event Dispatcher singleton object and introducing channels, most of these issues can be handled. 
+
+Some pros with this approach
+* Centralized registries and invocation code.
+* Run-time choice of synchronous or asynchronous invocation.
+* Loose coupling possible through channels.
+* Easy to manage, one object to inspect ''the Event Dispatcher''.
