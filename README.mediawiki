@@ -1,0 +1,1 @@
+A lightweight event bus and event listener framework based on the ideas from https://elf.dev.java.net/. This framework relies on java 1.5 annotations and generics to make it as easy as possible to configure events, channels etc. also it's Spring friendly easy to integrate. 
