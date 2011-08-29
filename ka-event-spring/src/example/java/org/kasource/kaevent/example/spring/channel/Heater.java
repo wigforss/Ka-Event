@@ -14,7 +14,7 @@ public class Heater implements TemperatureChangedEventListener {
 
     @Override
     public void temperatureChanged(TemperatureChangedEvent event) {
-        if (event.getCurrentTemperature() < event.getSource().getOptimalTemperatur()) {
+        if (event.getCurrentTemperature() < event.getSource().getOptimalTemperature()) {
             if (!enabled) {
                 System.out.println("Heater started.");
             }

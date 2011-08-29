@@ -7,16 +7,12 @@
     </parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.kasource</groupId>
-	<artifactId>ka-event-guice</artifactId>
+	<artifactId>ka-event-cdi</artifactId>
 	<packaging>jar</packaging>
 	<version>0.7-SNAPSHOT</version>
-	<name>Ka Event Guice</name>
+	<name>Ka Event CDI</name>
 	<url>http://maven.apache.org</url>
-	<!-- Build properties -->
-	<properties>
-		<clover.version>2.6.3</clover.version>
-		<aspectj.version>1.6.9</aspectj.version>
-	</properties>
+
 	<build>
 		<plugins>
 		<plugin>
@@ -51,18 +47,6 @@
 				<artifactId>maven-eclipse-plugin</artifactId>
 			</plugin>
 		
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<Import-Package> 
-					  com_*;resolution:=optional
-					</Import-Package>
-					<Embed-Dependency>artifactId=!clover</Embed-Dependency>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 	<reporting>
@@ -96,15 +80,21 @@
 			<artifactId>ka-event-core</artifactId>
 			<version>${project.version}</version> 
 		</dependency>	
+		
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>	
 		<dependency>
-  			<groupId>com.google.inject</groupId>
-  			<artifactId>guice</artifactId>
-  			<version>2.0</version>
+    		<groupId>org.jboss.weld</groupId>
+    		<artifactId>weld-se</artifactId>
+    		<version>1.0.1-Final</version>
 		</dependency>
+		<!--  <dependency>
+    		<groupId>javax.enterprise</groupId>
+    		<artifactId>cdi-api</artifactId>
+    		<version>1.0-SP4</version>
+		</dependency>-->
 		
 		<!-- Test Dependencies -->
 		<dependency>

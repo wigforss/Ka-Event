@@ -11,7 +11,7 @@ public class CommandConsole implements TemperatureChangedEventListener {
  
     @Override
     public void temperatureChanged(TemperatureChangedEvent event) {
-        if (event.getCurrentTemperature() > event.getSource().getOptimalTemperatur()) {
+        if (event.getCurrentTemperature() > event.getSource().getOptimalTemperature()) {
             System.out.println("Warning " + event.getSource() + " overheating!");
         }
     }
