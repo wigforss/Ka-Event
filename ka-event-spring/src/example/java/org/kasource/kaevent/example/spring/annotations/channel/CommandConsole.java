@@ -2,7 +2,9 @@ package org.kasource.kaevent.example.spring.annotations.channel;
 
 import org.kasource.kaevent.annotations.listener.ChannelListener;
 import org.kasource.kaevent.example.spring.annotations.channel.event.TemperatureChangedEvent;
-import org.kasource.kaevent.example.spring.annotations.channel.event.TemperatureChangedEventListener;
+import org.kasource.kaevent.example.spring.annotations.channel.event.TemperatureChangedListener;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Component;
 //CHECKSTYLE:OFF
 @ChannelListener("temperatureChannel")
 @Component
-public class CommandConsole implements TemperatureChangedEventListener {
+public class CommandConsole implements TemperatureChangedListener {
 
  
     @Override
@@ -19,5 +21,7 @@ public class CommandConsole implements TemperatureChangedEventListener {
             System.out.println("Warning " + event.getSource() + " overheating!");
         }
     }
+
+  
 
 }

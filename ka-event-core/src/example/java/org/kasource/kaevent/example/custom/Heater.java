@@ -1,13 +1,13 @@
 package org.kasource.kaevent.example.custom;
 
 import org.kasource.kaevent.example.custom.event.TemperatureChangeEvent;
-import org.kasource.kaevent.example.custom.event.TemperatureChangeEventListener;
+import org.kasource.kaevent.example.custom.event.TemperatureChangeListener;
 
 
 
 //CHECKSTYLE:OFF
 ///CLOVER:OFF
-public class Heater implements TemperatureChangeEventListener {
+public class Heater implements TemperatureChangeListener {
 
 	private boolean enabled = false;
 	

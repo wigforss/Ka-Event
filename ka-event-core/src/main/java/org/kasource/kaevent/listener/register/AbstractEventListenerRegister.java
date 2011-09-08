@@ -62,7 +62,7 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
         Set<Class<?>> interfaces = ReflectionUtils.getInterfacesExtending(listener, EventListener.class);
         Set<Class<? extends EventListener>> registeredEvents = new HashSet<Class<? extends EventListener>>();
         for (Class<?> interfaceClass : interfaces) {
-            if (isRegisteredInterface(interfaceClass)) {
+            if (eventRegister.hasEventByInterface((Class<? extends EventListener>) interfaceClass)) {
                 registeredEvents.add((Class<? extends EventListener>) interfaceClass);
             }
         }
@@ -71,22 +71,7 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
         return registeredEvents;
     }
 
-    /**
-     * Returns true of interfaceClass is registered with Ka-Event, else false.
-     * 
-     * @param interfaceClass   Interface class to inspect.
-     * 
-     * @return true of interfaceClass is registered with Ka-Event, else false.
-     **/
-    @SuppressWarnings("unchecked")
-    private boolean isRegisteredInterface(Class<?> interfaceClass) {
-        try {
-            eventRegister.getEventByInterface((Class<? extends EventListener>) interfaceClass);
-            return true;
-        } catch (NoSuchEventException nse) { 
-          return false;
-        }
-    }
+    
     
     
     /**

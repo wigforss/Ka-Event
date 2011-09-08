@@ -3,7 +3,7 @@ package org.kasource.kaevent.example.guice.custom;
 import org.kasource.kaevent.annotations.listener.BeanListener;
 import org.kasource.kaevent.annotations.listener.RegisterListener;
 import org.kasource.kaevent.example.guice.custom.event.TemperatureChangeEvent;
-import org.kasource.kaevent.example.guice.custom.event.TemperatureChangeEventListener;
+import org.kasource.kaevent.example.guice.custom.event.TemperatureChangeListener;
 
 import com.google.inject.Singleton;
 
@@ -11,7 +11,7 @@ import com.google.inject.Singleton;
 ///CLOVER:OFF
 @Singleton
 @BeanListener("thermometer")
-public class Cooler implements TemperatureChangeEventListener {
+public class Cooler implements TemperatureChangeListener {
 
     private boolean enabled = false;
 

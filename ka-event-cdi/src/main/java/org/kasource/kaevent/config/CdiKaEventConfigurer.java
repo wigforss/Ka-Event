@@ -1,17 +1,31 @@
 package org.kasource.kaevent.config;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.jboss.weld.exceptions.DeploymentException;
 import org.kasource.kaevent.bean.BeanResolver;
+import org.kasource.kaevent.cdi.EventScanPackage;
+import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.channel.ChannelRegisterImpl;
+import org.kasource.kaevent.channel.NoSuchChannelException;
 import org.kasource.kaevent.config.KaEventConfiguration;
 import org.kasource.kaevent.config.KaEventConfigurationImpl;
 import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.event.EventDispatcher;
+import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.config.EventFactoryImpl;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
@@ -20,6 +34,7 @@ import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
 import org.kasource.kaevent.event.dispatch.EventRouter;
 import org.kasource.kaevent.event.dispatch.EventRouterImpl;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
+import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.kasource.kaevent.event.register.DefaultEventRegister;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
@@ -28,15 +43,82 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
 
 
 @ApplicationScoped
-public class CdiKaEventConfigurer {
+public class CdiKaEventConfigurer  extends KaEventConfigurer {
 
 	@Inject
 	private KaEventConfiguration configuration;
 	
+	@Inject
+	private EventFactory eventFactory;
+	
+	@Inject
+	private EventRegister eventRegister;
+	
+	@Inject
+    private ChannelFactory channelFactory;
+	
+	@Inject 
+	private ChannelRegister channelRegister;
+	
+	@Inject
+	private BeanManager beanManager;
+	
+	
+	@Inject @EventScanPackage
+	private Instance<String> scanPackeName;
+	
+	
 	public void configure() {
-		configuration.getEventDispatcher();
+	    String scanClasspath = getScanClasspath();
+	    if(scanClasspath != null) {
+	        importAndRegisterEvents(new AnnotationEventExporter(scanClasspath), eventFactory, eventRegister);
+	    }
+	    Set<EventConfig> events = findEvents();
+	    for(EventConfig event : events) {
+	        eventRegister.registerEvent(event);
+	    }
+	    createChannels();
+	  
+	    registerEventsAtChannels(eventRegister, channelFactory, channelRegister);
+	   
+	    configuration.toString();
 	}
 	
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+    private Set<EventConfig> findEvents() {
+	    Set<EventConfig> events = new HashSet<EventConfig>();
+	    Set<Bean<?>> beans = beanManager.getBeans(EventConfig.class);
+	    for(Bean bean : beans) {
+	       Object instance = beanManager.getContext(bean.getScope()).get(bean, beanManager.createCreationalContext(bean));
+	       events.add((EventConfig) instance);
+	    }
+	    return events;
+	}
+	
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+    private void createChannels() {
+        Set<Bean<?>> beans = beanManager.getBeans(Channel.class);
+        for(Bean bean : beans) {
+            Object object = beanManager.getContext(bean.getScope()).get(bean, beanManager.createCreationalContext(bean));
+            object.toString();
+            
+         }
+	}
+	
+	
+	private String getScanClasspath() {
+	    if(!scanPackeName.isUnsatisfied()) {
+            if(scanPackeName.isAmbiguous()) {
+                throw new IllegalStateException("Injection point has ambiguous dependencies @EventScanPath CdiKaEventConfigurer.scanPackeName");
+            } else {
+                return scanPackeName.get();
+            }
+        } else {
+            return null;
+        }
+	}
 	
 	
 	/**

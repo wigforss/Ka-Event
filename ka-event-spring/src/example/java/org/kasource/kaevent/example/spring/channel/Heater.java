@@ -1,11 +1,11 @@
 package org.kasource.kaevent.example.spring.channel;
 
 import org.kasource.kaevent.example.spring.channel.event.TemperatureChangedEvent;
-import org.kasource.kaevent.example.spring.channel.event.TemperatureChangedEventListener;
+import org.kasource.kaevent.example.spring.channel.event.TemperatureChangedListener;
 
 ///CLOVER:OFF
 //CHECKSTYLE:OFF
-public class Heater implements TemperatureChangedEventListener {
+public class Heater implements TemperatureChangedListener {
     private boolean enabled = false;
 
     public boolean isEnabled() {

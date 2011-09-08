@@ -66,8 +66,8 @@ public class ChannelListenerRegisterImplTest {
             }
         };
         EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
-      
-        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
+        EasyMock.expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
+        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
         EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
         EasyMock.expect((Collection) channel.getSupportedInterfaces()).andReturn(events);
         EasyMock.expect(events.contains(ChangeListener.class)).andReturn(true);
@@ -88,8 +88,8 @@ public class ChannelListenerRegisterImplTest {
             }
         };
         EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
-      
-        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
+        EasyMock.expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
+        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
         EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
         EasyMock.expect((Collection) channel.getSupportedInterfaces()).andReturn(events);
         EasyMock.expect(events.contains(ChangeListener.class)).andReturn(true);

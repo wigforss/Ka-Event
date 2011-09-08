@@ -11,15 +11,19 @@ import org.kasource.spring.transaction.TransactionListener;
 import org.kasource.spring.transaction.TransactionResult;
 import org.kasource.spring.transaction.TransactionSupport;
 import org.kasource.spring.transaction.TransactionSupportImpl;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 
 /**
  * Spring Event Dispatcher.
+ * 
+ * Fires Spring Application Events.
  * 
  * Adds support for fireOnCommit.
  * 
  * @author Rikard Wigforss
  */
-public final class SpringEventDispatcher extends DefaultEventDispatcher implements TransactionListener {
+public final class SpringEventDispatcher extends DefaultEventDispatcher implements TransactionListener, ApplicationListener {
 
 	private ThreadLocal<Queue<EventObject>> commitEventQueue = new ThreadLocal<Queue<EventObject>>();
 	
@@ -92,6 +96,16 @@ public final class SpringEventDispatcher extends DefaultEventDispatcher implemen
 	@Override
 	public void beforeCompletion() {	
 	}
+
+
+
+
+
+    @Override
+    public void onApplicationEvent(ApplicationEvent springEvent) {
+        fire(springEvent);
+        
+    }
 
 	
 

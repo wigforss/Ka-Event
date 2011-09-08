@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.example.custom.event.TemperatureChangeEvent;
-import org.kasource.kaevent.example.custom.event.TemperatureChangeEventListener;
+import org.kasource.kaevent.example.custom.event.TemperatureChangeListener;
 
 /**
  * @author rikardwigforss
@@ -37,13 +37,13 @@ public class TempratureMethodResolver implements MethodResolver<TemperatureChang
     @Override
     public Method resolveMethod(TemperatureChangeEvent event) {
         if (event.getCurrentTemperature() > optimalTemp) {
-            return ReflectionUtils.getDeclaredMethod(TemperatureChangeEventListener.class, "highTemperature",
+            return ReflectionUtils.getDeclaredMethod(TemperatureChangeListener.class, "highTemperature",
                     TemperatureChangeEvent.class);
         } else if (event.getCurrentTemperature() > 10) {
-            return ReflectionUtils.getDeclaredMethod(TemperatureChangeEventListener.class, "mediumTemperature",
+            return ReflectionUtils.getDeclaredMethod(TemperatureChangeListener.class, "mediumTemperature",
                     TemperatureChangeEvent.class);
         } else {
-            return ReflectionUtils.getDeclaredMethod(TemperatureChangeEventListener.class, "lowTemperature",
+            return ReflectionUtils.getDeclaredMethod(TemperatureChangeListener.class, "lowTemperature",
                     TemperatureChangeEvent.class);
         }
     }

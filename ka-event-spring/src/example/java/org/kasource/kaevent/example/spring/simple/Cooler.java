@@ -1,11 +1,11 @@
 package org.kasource.kaevent.example.spring.simple;
 
 import org.kasource.kaevent.example.spring.simple.event.TemperatureChangeEvent;
-import org.kasource.kaevent.example.spring.simple.event.TemperatureChangeEventListener;
+import org.kasource.kaevent.example.spring.simple.event.TemperatureChangeListener;
      
 ///CLOVER:OFF
 //CHECKSTYLE:OFF
-public class Cooler implements TemperatureChangeEventListener {
+public class Cooler implements TemperatureChangeListener {
 
 	private boolean enabled = false;
 	

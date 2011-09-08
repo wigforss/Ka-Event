@@ -11,23 +11,30 @@ http://www.springframework.org/schema/context/spring-context-2.5.xsd
 http://kasource.org/schema/kaevent-spring
 spring/schema/kaevent-spring.xsd"
 >
-	<context:annotation-config/> 
-	<context:component-scan base-package="org.kasource.kaevent.example.spring"/>
-	<!--  
+	
+   
+	
+	 
 	<bean name="myChannel" class="org.kasource.kaevent.example.spring.channel.MyChannel" scope="prototype">
-		<constructor-arg ref="kaEvent.channelRegister"/>
+	  	<constructor-arg ref="kaEvent.channelRegister"/>
 		<constructor-arg ref="kaEvent.eventRegister"/>
 		<constructor-arg ref="kaEvent.beanResolver"/>
-	</bean>
-		-->
+	</bean> 
 	
 	
 	<kaevent:kaevent scanClassPath="org.kasource.kaevent.example.spring.channel"/>
 
+	
+
 	<kaevent:channel id="temperatureChannel" class="org.kasource.kaevent.example.spring.channel.MyChannel">
 		<kaevent:handle event="org.kasource.kaevent.example.spring.channel.event.TemperatureChangedEvent"/>
 	</kaevent:channel>
-	
+
+	<kaevent:channel id="applicationChannel">
+		<kaevent:handle event="org.springframework.context.event.ContextStartedEvent"/>
+		<kaevent:handle event="org.springframework.context.event.ContextRefreshedEvent"/>
+	</kaevent:channel>
+
 
 	<bean name="thermometer" class="org.kasource.kaevent.example.spring.channel.Thermometer">
 		<property name="eventDispatcher" ref="kaEvent.eventDispatcher"/>
@@ -47,7 +54,8 @@ spring/schema/kaevent-spring.xsd"
 	<bean name="cooler" class="org.kasource.kaevent.example.spring.channel.Cooler" kaevent:listen-on-bean="thermometer" kaevent:filter="allowFilter"/>
 	
 	<bean name="heater" class="org.kasource.kaevent.example.spring.channel.Heater" kaevent:listen-on-bean="thermometer"/>
-	
-	<bean name="commandConsole" class="org.kasource.kaevent.example.spring.channel.CommandConsole" kaevent:listen-on-channel="temperatureChannel" kaevent:filter="allowFilter"/>
+
+	<bean name="commandConsole" class="org.kasource.kaevent.example.spring.channel.CommandConsole" kaevent:listen-on-channel="temperatureChannel,applicationChannel" kaevent:filter="allowFilter"/>
+
 
 </beans>

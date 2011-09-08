@@ -29,13 +29,8 @@ import org.kasource.kaevent.event.register.EventRegister;
  * @version $Id$
  **/
 public class ChannelImpl extends ListenerChannelAdapter  implements FilterableChannel, ListenerChannel {
-   
     
-    private Map<Class<? extends EventObject>, Collection<EventFilter<EventObject>>> filtersByEvent = 
-        new HashMap<Class<? extends EventObject>, Collection<EventFilter<EventObject>>>();
-    
-    
- 
+    private ChannelFilterHandler filterHandler;
     private EventMethodInvoker eventMethodInvoker;
     
     /**
@@ -55,6 +50,7 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
                       BeanResolver beanResolver) {
     	super(name, channelRegister, eventRegister, beanResolver);
     	this.eventMethodInvoker = eventMethodInvoker;
+    	filterHandler = new ChannelFilterHandler(eventRegister);
     }
 
     
@@ -69,21 +65,11 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
      **/
     @Override
     public void fireEvent(EventObject event, boolean blocked) {
-        Collection<EventFilter<EventObject>> filters = filtersByEvent.get(event.getClass());
-        if (filters != null) {
-            boolean passFilter = true;
-            for (EventFilter<EventObject> filter : filters) {
-                if (!filter.passFilter(event)) {
-                    passFilter = false;
-                    break;
-                }
-            }
-            if (passFilter) {
-                eventMethodInvoker.invokeEventMethod(event, getListenerRegister().getListenersByEvent(event), blocked);
-            }
-        } else {
+        
+        if(filterHandler.filterEvent(event)) {
             eventMethodInvoker.invokeEventMethod(event, getListenerRegister().getListenersByEvent(event), blocked);
         }
+        
     }
     
    
@@ -91,13 +77,9 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
     @Override
 	public void unregisterEvent(Class<? extends EventObject> eventClass) {
     	super.unregisterEvent(eventClass);
-    	filtersByEvent.remove(eventClass);
+    	filterHandler.unregisterFilterFor(eventClass);
     }
   
-    
-    
-    
-
     
     
     /**
@@ -112,27 +94,8 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
      * @return Returns true if filter added else false.
      **/
     @Override
-    @SuppressWarnings("unchecked")
     public boolean registerFilter(EventFilter<EventObject> filter) {
-        
-        Class<? extends EventObject> eventClass = (Class<? extends EventObject>) ((ParameterizedType) filter
-                .getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
-        
-        Collection<EventConfig> events = getEventRegister().getEvents();
-        boolean found = false;
-        for (EventConfig eventConfig : events) {
-            if (eventClass.isAssignableFrom(eventConfig.getEventClass())) {
-                Collection<EventFilter<EventObject>> filters = filtersByEvent.get(eventClass);
-                if (filters == null) {
-                    filters = new ArrayList<EventFilter<EventObject>>();
-                    filtersByEvent.put(eventConfig.getEventClass(), filters);
-                }
-                filters.add(filter);
-                found = true;
-            }
-        }
-        return found;
-       
+        return filterHandler.registerFilter(filter);
     }
 
 

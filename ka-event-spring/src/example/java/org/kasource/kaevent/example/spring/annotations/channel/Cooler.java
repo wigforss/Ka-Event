@@ -2,14 +2,14 @@ package org.kasource.kaevent.example.spring.annotations.channel;
 
 import org.kasource.kaevent.annotations.listener.BeanListener;
 import org.kasource.kaevent.example.spring.annotations.channel.event.TemperatureChangedEvent;
-import org.kasource.kaevent.example.spring.annotations.channel.event.TemperatureChangedEventListener;
+import org.kasource.kaevent.example.spring.annotations.channel.event.TemperatureChangedListener;
 import org.springframework.stereotype.Component;
 
 ///CLOVER:OFF
 //CHECKSTYLE:OFF
 @BeanListener("thermometer")
 @Component
-public class Cooler implements TemperatureChangedEventListener {
+public class Cooler implements TemperatureChangedListener {
     private boolean enabled = false;
 
     public boolean isEnabled() {

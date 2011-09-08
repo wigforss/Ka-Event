@@ -59,7 +59,8 @@ public class SourceObjectListenerRegisterImplTest {
             }
         };
         EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
-        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
+        EasyMock.expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
+        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
         EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
         EasyMockUnitils.replay();
         
@@ -81,7 +82,8 @@ public class SourceObjectListenerRegisterImplTest {
             }
         };
         EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
-        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig).times(2);
+        EasyMock.expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
+        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
         EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
         EasyMockUnitils.replay();
         

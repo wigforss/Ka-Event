@@ -1,11 +1,11 @@
 package org.kasource.kaevent.example.methodresolving;
 
 import org.kasource.kaevent.example.methodresolving.event.TemperatureChangeEvent;
-import org.kasource.kaevent.example.methodresolving.event.TemperatureChangeEventListener;
+import org.kasource.kaevent.example.methodresolving.event.TemperatureChangeListener;
 
 //CHECKSTYLE:OFF
 ///CLOVER:OFF
-public class Cooler implements TemperatureChangeEventListener {
+public class Cooler implements TemperatureChangeListener {
 
 	private boolean enabled = false;
 	

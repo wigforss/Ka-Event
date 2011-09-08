@@ -4,30 +4,48 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
+import org.kasource.kaevent.channel.ChannelFactory;
+import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.config.CdiKaEventConfigurer;
-import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
+import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 @ApplicationScoped @Named("kaEvent.eventDispatcher")
 public class CdiEventDispatcher extends DefaultEventDispatcher {
 
-	/*@Inject
+	@Inject
 	private CdiKaEventConfigurer configurer;
-	*/
 	
 	@Inject
-	public CdiEventDispatcher(CdiKaEventConfigurer configurer) { 
+	private ChannelFactory channelFactory;
+	
+	@Inject
+	private ChannelRegister channelRegister;
+	
+	@Inject
+	private SourceObjectListenerRegister sourceObjectListenerRegister;
+	
+	@Inject
+	private DispatcherQueueThread eventQueue;
+	
+	@Inject
+	private EventRouter eventRouter;
+	
+	public CdiEventDispatcher() { 
+		
+	}
+	
+	
+	@PostConstruct
+	public void initialize() {
+	    setChannelFactory(channelFactory);
+        setChannelRegister(channelRegister);
+        setSourceObjectListenerRegister(sourceObjectListenerRegister);
+        setEventQueue(eventQueue);
+        setEventRouter(eventRouter);
 		configurer.configure();
 	}
 	
-	/*
-	@PostConstruct	
-	public void initialize() {
-		System.out.println("Config");
-		configurer.configure();
-	}
-	*/
-	public void test() {}
+
 	
 }

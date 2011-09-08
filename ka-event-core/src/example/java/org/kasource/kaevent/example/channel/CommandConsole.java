@@ -1,11 +1,11 @@
 package org.kasource.kaevent.example.channel;
 
 import org.kasource.kaevent.example.channel.event.TemperatureChangedEvent;
-import org.kasource.kaevent.example.channel.event.TemperatureChangedEventListener;
+import org.kasource.kaevent.example.channel.event.TemperatureChangedListener;
 
 //CHECKSTYLE:OFF
 ///CLOVER:OFF
-public class CommandConsole implements TemperatureChangedEventListener {
+public class CommandConsole implements TemperatureChangedListener {
 
 	@Override
 	public void temperatureChanged(TemperatureChangedEvent event) {

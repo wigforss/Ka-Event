@@ -13,6 +13,10 @@ spring/schema/kaevent-spring.xsd"
 >
 	
 	<context:component-scan base-package="org.kasource.kaevent.example.spring.annotations.channel"/>
+	<!-- Make sure to find the SpringEventChannel -->
+	<!--  <context:component-scan base-package="org.kasource.kaevent.channel"/> -->
 	<kaevent:kaevent scanClassPath="org.kasource.kaevent.example.spring.annotations.channel"/>
+	<!--  To be able to specify channel implementation class add channel element-->
+	<!--  <kaevent:channel id="temperatureChannel" class="org.kasource.kaevent.channel.SpringEventChannel"/> -->
 
 </beans>

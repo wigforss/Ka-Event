@@ -20,7 +20,8 @@ public interface FilterableChannel extends Channel {
      * 
      * @param filter	Filter to add to the channel filters list.
      * 
-     * @return Returns true if filter added else false.
+     * @return Returns true if filter added else false if no 
+     * applicable event is registered at the channel.
      **/
     public boolean registerFilter(EventFilter<EventObject> filter);
 }

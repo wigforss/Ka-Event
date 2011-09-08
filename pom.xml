@@ -21,10 +21,17 @@
       		<distribution>repo</distribution>
     	</license>
   	</licenses>
+  	<!--  
 	<scm>
 		<url>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</url>
     	<developerConnection>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</developerConnection>
     	<connection>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</connection>
+  	</scm>
+  	-->
+  	<scm>
+		<url>scm:git:git://github.com/wigforss/Ka-Event.git</url>
+    	<developerConnection>scm:git:git://github.com/wigforss/Ka-Event.git</developerConnection>
+    	<connection>scm:git:git://github.com/wigforss/Ka-Event.git</connection>
   	</scm>
 	<issueManagement>
 		<system>JIRA</system>
@@ -54,6 +61,7 @@
 			<module>ka-event-spring</module>
 			<module>ka-event-osgi</module>
 			<module>ka-event-guice</module>
+			<module>ka-event-cdi</module>
 	</modules>
 	
 	<build>
@@ -164,12 +172,12 @@
 				<version>${unitils.version}</version>
 				<scope>test</scope>
 			</dependency>
-			<dependency>
+			<!--  <dependency>
 				<groupId>com.cenqua.clover</groupId>
 				<artifactId>clover</artifactId>
 				<version>${clover.version}</version>
-				<scope>provided</scope>
-			</dependency>
+				<scope>provided</scope> 
+			</dependency>-->
 		</dependencies>
 	</dependencyManagement>
 	<profiles>

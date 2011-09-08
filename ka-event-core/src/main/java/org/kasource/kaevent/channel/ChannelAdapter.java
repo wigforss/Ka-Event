@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.register.EventRegister;
+import org.kasource.kaevent.event.register.NoSuchEventException;
 
 /**
  * Channel Adapter.
@@ -79,9 +80,11 @@ public abstract class ChannelAdapter implements Channel {
      * 
      * @param eventClass
      *            New event type to handle
+     *            
+     * @throws NoSuchEventException if no event can be found of type eventClass.
      **/
     @Override
-    public void registerEvent(Class<? extends EventObject> eventClass) {
+    public void registerEvent(Class<? extends EventObject> eventClass) throws NoSuchEventException {
         EventConfig eventConfig = eventRegister.getEventByClass(eventClass);
        
         if (!eventMap.containsKey(eventClass)) { 

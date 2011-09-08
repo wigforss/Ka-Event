@@ -48,13 +48,45 @@ public class DefaultEventRegister implements EventRegister {
     	return event;
     }
     
+    
+    /**
+     * Returns true if there's an Event registered to the interfaceCLass 
+     * 
+     * @param interfaceClass Event Listener Interface class.
+     * 
+     * @return true if there's an Event registered to the interfaceCLass
+     **/
+    public boolean hasEventByInterface(Class<? extends EventListener> interfaceClass) {
+        return eventsByInterface.containsKey(interfaceClass);
+    }
+    
+    /**
+     * Returns Event Configuration by event class.
+     * 
+     * @param eventClass Event Class.
+     * 
+     * @return Event Configuration associated with eventClass.
+     * @throws NoSuchEventException if no event can be found of type eventClass.
+     **/
     @Override
-    public EventConfig getEventByClass(Class<? extends EventObject> eventClass) {
+    public EventConfig getEventByClass(Class<? extends EventObject> eventClass) throws NoSuchEventException{
     	EventConfig event =  eventsByClass.get(eventClass);
     	if (event == null) {
     		throw new NoSuchEventException("Can not find any event for event class " + eventClass);
     	}
     	return event;
+    }
+    
+    
+    /**
+     * Returns true if there's an Event registered to the eventClass 
+     * 
+     * @param eventClass Event Class.
+     * 
+     * @return true if there's an Event registered to the eventClass 
+     **/
+    public boolean hasEventByClass(Class<? extends EventObject> eventClass) {
+        return eventsByClass.containsKey(eventClass);
     }
     
     @Override

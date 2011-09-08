@@ -6,7 +6,7 @@ import org.kasource.kaevent.example.guice.channel.Thermometer;
 
 //CHECKSTYLE:OFF
 ///CLOVER:OFF
-@Event(listener = TemperatureChangedEventListener.class)
+@Event(listener = TemperatureChangedListener.class)
 public class TemperatureChangedEvent extends BaseEvent {
 	private static final long serialVersionUID = 1L;
 

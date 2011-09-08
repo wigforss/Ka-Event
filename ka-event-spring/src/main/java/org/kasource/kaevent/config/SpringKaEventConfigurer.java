@@ -8,8 +8,10 @@ import java.util.Map;
 
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.event.config.EventConfig;
+import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.kasource.kaevent.event.filter.EventFilter;
+import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -54,10 +56,11 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
         }
 		// Initialize Events
 		applicationContext.getBeansOfType(EventConfig.class);
+		registerSpringEvents(configuration.getEventFactory(), configuration.getEventRegister());
 		// Initialize Channels
 		applicationContext.getBeansOfType(Channel.class);
 		registerListeners();
-		registerEventsAtChannels(configuration);
+		registerEventsAtChannels(configuration.getEventRegister(), configuration.getChannelFactory(), configuration.getChannelRegister());
 		KaEventInitializer.setConfiguration(configuration);
 	}
 
@@ -84,6 +87,12 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
     		}
     	}
     }
+	
+	private void registerSpringEvents(EventFactory eventFactory, EventRegister eventRegister) {
+	    for(SpringEvent springEvent : SpringEvent.values()) {
+	        eventRegister.registerEvent(eventFactory.newFromAnnotatedInterfaceClass(springEvent.getEvent(), springEvent.getListener(), springEvent.getEvent().getName()));
+	    }
+	}
 	
 	/**
 	 * Returns list of EventFilters for a listener.

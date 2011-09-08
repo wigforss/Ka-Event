@@ -196,7 +196,7 @@ public class KaEventConfigurer {
         // import events
         importEvents(xmlConfig, config, beanResolver);
         createChannels(xmlConfig, config);
-        registerEventsAtChannels(config);
+        registerEventsAtChannels(config.getEventRegister(), config.getChannelFactory(), config.getChannelRegister());
         return config;
 
     }
@@ -297,10 +297,8 @@ public class KaEventConfigurer {
      * 
      * @param config The configuration build this far.
      */
-    protected void registerEventsAtChannels(KaEventConfiguration config) {
-        EventRegister eventRegister = config.getEventRegister();
-        ChannelFactory channelFactory = config.getChannelFactory();
-        ChannelRegister channelRegister = config.getChannelRegister();
+    protected void registerEventsAtChannels(EventRegister eventRegister, ChannelFactory channelFactory, ChannelRegister channelRegister) {
+     
         for (Class<? extends EventObject> eventClass : eventRegister.getEventClasses()) {
             Event eventAnno = eventClass.getAnnotation(Event.class);
             if (eventAnno != null && eventAnno.channels().length > 0) {
@@ -318,7 +316,7 @@ public class KaEventConfigurer {
      * @param eventAnno        Event annotation.
      **/
     private void registerEventAtChannelByAnnotation(ChannelFactory channelFactory, ChannelRegister channelRegister,
-                Class<? extends EventObject> eventClass, Event eventAnno) {
+                Class<? extends EventObject> eventClass, Event eventAnno) throws NoSuchChannelException {
         
             String[] channelsByEvent = eventAnno.channels();
             for (String channelName : channelsByEvent) {

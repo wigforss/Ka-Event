@@ -27,8 +27,19 @@ public interface EventRegister {
      * @param interfaceClass Event Listener Interface class.
      * 
      * @return Event Configuration associated with interfaceCLass.
+     *    * @throws NoSuchEventException if no event can be found by interfaceClass.
      **/
-    public EventConfig getEventByInterface(Class<? extends EventListener> interfaceClass);
+    public EventConfig getEventByInterface(Class<? extends EventListener> interfaceClass) throws NoSuchEventException;
+    
+    
+    /**
+     * Returns true if there's an Event registered to the interfaceCLass 
+     * 
+     * @param interfaceClass Event Listener Interface class.
+     * 
+     * @return true if there's an Event registered to the interfaceCLass
+     **/
+    public boolean hasEventByInterface(Class<? extends EventListener> interfaceClass);
 
     /**
      * Returns Event Configuration by event class.
@@ -36,8 +47,19 @@ public interface EventRegister {
      * @param eventClass Event Class.
      * 
      * @return Event Configuration associated with eventClass.
+     * @throws NoSuchEventException if no event can be found of type eventClass.
      **/
-    public EventConfig getEventByClass(Class<? extends EventObject> eventClass);
+    public EventConfig getEventByClass(Class<? extends EventObject> eventClass) throws NoSuchEventException;
+    
+    
+    /**
+     * Returns true if there's an Event registered to the eventClass 
+     * 
+     * @param eventClass Event Class.
+     * 
+     * @return true if there's an Event registered to the eventClass 
+     **/
+    public boolean hasEventByClass(Class<? extends EventObject> eventClass);
     
     /**
      * Returns Event Configuration by name.
