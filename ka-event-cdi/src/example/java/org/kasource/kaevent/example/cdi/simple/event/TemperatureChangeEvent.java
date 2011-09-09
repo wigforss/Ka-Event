@@ -7,7 +7,7 @@ import org.kasource.kaevent.example.cdi.simple.Thermometer;
 
 //CHECKSTYLE:OFF
 ///CLOVER:OFF
-@Event(listener = TemperatureChangeListener.class, channels="temperatureChannel", createChannels=true)
+@Event(listener = TemperatureChangeListener.class, channels="temperatureChannel")
 public class TemperatureChangeEvent extends EventObject {
 	private static final long serialVersionUID = 1L;
 	private double currentTemperature;

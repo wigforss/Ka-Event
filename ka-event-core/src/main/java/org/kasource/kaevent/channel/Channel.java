@@ -5,6 +5,8 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
 
+import org.kasource.kaevent.event.ForwardedEvent;
+
 /**
  * The channel is a "Publish / Subscribe Channel" which sends events to all its listeners.
  * 
@@ -76,5 +78,16 @@ public interface Channel {
      * @param eventClass	Class of the event to unregister.
      **/
     public abstract void unregisterEvent(Class<? extends EventObject> eventClass);
+    
+    /**
+     * Does this channel accept the forwarded event, from another other event system.
+     * 
+     * For Channels that bridge events to another event solution, which 
+     * ka-event might listen to, those forwarded events should not be accepted
+     * in order to prevent an infinite loop
+     * 
+     * @return true to accept the forwarded event, else false.
+     **/
+    public boolean acceptForwardedEvent(ForwardedEvent event);
     
 }

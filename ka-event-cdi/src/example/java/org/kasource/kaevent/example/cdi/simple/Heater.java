@@ -1,11 +1,8 @@
 package org.kasource.kaevent.example.cdi.simple;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
 
 import org.kasource.kaevent.annotations.listener.BeanListener;
-
 import org.kasource.kaevent.example.cdi.simple.event.TemperatureChangeEvent;
 import org.kasource.kaevent.example.cdi.simple.event.TemperatureChangeListener;
 

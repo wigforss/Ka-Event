@@ -4,7 +4,6 @@ import java.util.EventListener;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
@@ -12,7 +11,6 @@ import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.annotations.listener.BeanListener;
 import org.kasource.kaevent.annotations.listener.ChannelListener;
 import org.kasource.kaevent.event.EventDispatcher;
-import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 /**
  * Can observe
@@ -37,14 +35,12 @@ public class CdiKaEventExtension implements Extension {
      * @param pit ProcessInjectionTarget to inspect.
      **/
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void processInjectorTarger(@Observes ProcessInjectionTarget<EventListener> pit, 
-                                      BeanManager beanManager,
-                                      SourceObjectListenerRegister sourceObjectListenerRegister) {
+    public void processInjectorTarger(@Observes ProcessInjectionTarget<EventListener> pit) {
         Class<?> clazz = pit.getAnnotatedType().getJavaClass();
        
         if(ReflectionUtils.isAnnotationPresent(clazz, BeanListener.class)
                     || ReflectionUtils.isAnnotationPresent(clazz, ChannelListener.class)) {
-            pit.setInjectionTarget(new RegisterEventListenerInjectionTarget(pit.getInjectionTarget(), beanManager, sourceObjectListenerRegister));         
+            pit.setInjectionTarget(new RegisterEventListenerInjectionTarget(pit.getInjectionTarget()));         
         }
        
     }

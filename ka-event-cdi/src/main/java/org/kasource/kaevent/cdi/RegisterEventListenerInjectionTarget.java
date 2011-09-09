@@ -1,39 +1,26 @@
 package org.kasource.kaevent.cdi;
 
-import java.lang.annotation.Annotation;
-import java.util.EventListener;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.annotations.listener.BeanListener;
 import org.kasource.kaevent.annotations.listener.ChannelListener;
-import org.kasource.kaevent.channel.Channel;
-import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.listener.register.RegisterListenerByAnnotation;
 import org.kasource.kaevent.listener.register.RegisterListenerByAnnotationImpl;
-import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 
 public  class RegisterEventListenerInjectionTarget<T> implements InjectionTarget<T> {
    private RegisterListenerByAnnotation register = RegisterListenerByAnnotationImpl.getInstance();
    
    private InjectionTarget<T> injectionTarget;
-   private BeanManager beanManager; 
-   private SourceObjectListenerRegister sourceObjectListenerRegister;
+
    
-    public RegisterEventListenerInjectionTarget(InjectionTarget<T> injectionTarget, 
-                                                BeanManager beanManager,
-                                                SourceObjectListenerRegister sourceObjectListenerRegister) {
+    public RegisterEventListenerInjectionTarget(InjectionTarget<T> injectionTarget) {
         this.injectionTarget = injectionTarget;
-        this.beanManager = beanManager;
-        this.sourceObjectListenerRegister = sourceObjectListenerRegister;
     }
 
 

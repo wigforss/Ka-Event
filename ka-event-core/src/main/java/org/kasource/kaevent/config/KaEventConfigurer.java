@@ -323,7 +323,7 @@ public class KaEventConfigurer {
                 Channel channel = null;
                 try {
                     channel = channelRegister.getChannel(channelName);
-                    channel.registerEvent(eventClass);
+                  
                 } catch (NoSuchChannelException nsce) {
                     if (eventAnno.createChannels()) {
                         channel = channelFactory.createChannel(channelName);

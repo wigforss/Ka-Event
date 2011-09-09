@@ -1,13 +1,19 @@
 package org.kasource.kaevent.event.dispatch;
 
+import java.util.EventObject;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.config.CdiKaEventConfigurer;
+import org.kasource.kaevent.event.ForwardedCdiEvent;
+import org.kasource.kaevent.event.ForwardedEvent;
+import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 @ApplicationScoped @Named("kaEvent.eventDispatcher")
@@ -31,6 +37,9 @@ public class CdiEventDispatcher extends DefaultEventDispatcher {
 	@Inject
 	private EventRouter eventRouter;
 	
+	@Inject
+	private EventRegister eventRegister;
+	
 	public CdiEventDispatcher() { 
 		
 	}
@@ -46,6 +55,11 @@ public class CdiEventDispatcher extends DefaultEventDispatcher {
 		configurer.configure();
 	}
 	
+	public void eventListener(@Observes EventObject event) {
+	    if(eventRegister.hasEventByClass(event.getClass())) {
+	        fire(new ForwardedCdiEvent(event));
+	    }
+	}
 
 	
 }

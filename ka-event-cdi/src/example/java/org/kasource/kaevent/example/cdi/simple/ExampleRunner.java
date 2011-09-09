@@ -2,7 +2,7 @@ package org.kasource.kaevent.example.cdi.simple;
 
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.exceptions.DeploymentException;
+
 
 public class ExampleRunner {
 	 public static void main(String[] args) {
