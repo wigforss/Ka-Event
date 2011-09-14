@@ -20,9 +20,9 @@ public interface EventMethodInvoker {
      * 
      * @param event     Event to invoke.
      * @param listeners Collection if listener to invoke the event method on.
-     * @param blocked   Exception handling type, true throws exception and false suppresses exceptions.
+     * @param throwException   Exception handling type, true throws exception and false suppresses exceptions.
      **/
     public abstract void invokeEventMethod(EventObject event, Collection<EventListenerRegistration> listeners,
-            boolean blocked);
+            boolean throwException);
 
 }

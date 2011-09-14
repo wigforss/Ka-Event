@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+	 					 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+	 					 http://www.springframework.org/schema/context  
+	 					 http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	 					 http://www.springframework.org/schema/jms 
+	 					 http://www.springframework.org/schema/jms/spring-jms-3.0.xsd
+	 					 http://activemq.apache.org/schema/core 
+	 					 http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+
+
+   <amq:broker id="broker" useJmx="false" persistent="false">
+    <amq:transportConnectors>
+      <amq:transportConnector uri="tcp://localhost:61616" />
+    </amq:transportConnectors>
+   </amq:broker>
+ 
+   <!-- Connection Factory -->
+    <bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61616"/>
+    </bean>
+
+    <!-- A cached connection  -->
+    <bean id="cachedConnectionFactory"
+        class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="jmsConnectionFactory"/>
+        <property name="sessionCacheSize" value="10"/>
+    </bean>
+    
+    <!-- Message Listener -->
+    <bean id="messageListener" class="org.kasource.kaevent.inttest.spring.jms.EventMessageListener"/>
+     
+      <!-- The Spring message listener container configuration -->
+      <jms:listener-container
+          container-type="default"
+          connection-factory="cachedConnectionFactory" 
+          message-converter="messageConverter"
+          acknowledge="auto">
+        <jms:listener destination="TEST_QUEUE" ref="messageListener" method="onMessage"/>
+      </jms:listener-container>
+ 
+ 
+   <!-- FactSet destination in ActiveMQ -->
+	<bean id="jmsDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="TEST_QUEUE" />
+	</bean>
+
+	<!-- A JmsTemplate instance that uses the cached connection and destination -->
+	<bean id="producerTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="cachedConnectionFactory"/>
+		<property name="defaultDestination" ref="jmsDestination" />
+		<property name="messageConverter" ref="messageConverter"/>
+	</bean>
+	
+	<bean id="messageConverter" class="org.kasource.spring.jms.support.converter.hessian.HessianMessageConverter"/>
+		
+	
+ 
+ </beans>

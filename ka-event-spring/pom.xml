@@ -15,6 +15,7 @@
 	<!-- Build properties -->
 	<properties>
 		<spring.version>[2.5,2.5.6],[2.5.6.SEC01,2.5.6.SEC02]</spring.version>
+		<activemq.version>5.4.2</activemq.version>
 	</properties>
 	<build>
 	<resources>
@@ -31,6 +32,12 @@
 			</resource>
 			<resource>
 				<directory>src/example/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/inttest/java</directory>
 				<includes>
 					<include>**/*.xml</include>
 				</includes>
@@ -81,7 +88,8 @@
 						<configuration>
 							<sources>
 								<source>src/example/java</source>
-							</sources>
+								<source>src/inttest/java</source>
+							</sources>							
 						</configuration>
 					</execution>
 				</executions>
@@ -123,6 +131,23 @@
 			<version>1.0.3.RELEASE</version>
 		</dependency>
 		<dependency>
+    		<groupId>javax.jms</groupId>
+    		<artifactId>jms</artifactId>
+    		<version>1.1</version>
+		</dependency>
+		<dependency>
+  			<groupId>org.apache.activemq</groupId>
+  			<artifactId>activemq-core</artifactId>
+  			<version>${activemq.version}</version>
+  			<scope>test</scope>
+		</dependency>	
+		 <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-spring</artifactId>
+            <version>3.5</version>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
 			<groupId>net.sf.scannotation</groupId>
 			<artifactId>scannotation</artifactId>
 			<version>1.0.2</version>
@@ -131,7 +156,12 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
-		
+		<dependency>
+    		<groupId>org.codehaus.jackson</groupId>
+    		<artifactId>jackson-mapper-asl</artifactId>
+    		<version>1.8.5</version>
+    		<scope>test</scope>
+		</dependency>
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>junit</groupId>

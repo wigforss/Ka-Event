@@ -40,15 +40,15 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
      * 
      * @param event     Event to invoke.
      * @param listeners Collection if listener to invoke the event method on.
-     * @param blocked   Exception handling type, true throws exception and false suppresses exceptions.
+     * @param throwException   Exception handling type, true throws exception and false suppresses exceptions.
      **/
     @Override
-    public void invokeEventMethod(EventObject event, Collection<EventListenerRegistration> listeners, boolean blocked) {
+    public void invokeEventMethod(EventObject event, Collection<EventListenerRegistration> listeners, boolean throwException) {
         if (listeners != null && listeners.size() > 0) {
             EventConfig eventConfig = eventRegister.getEventByClass(event.getClass());
             Method method = eventConfig.getEventMethod(event);
             for (EventListenerRegistration listener : listeners) {
-                invokeEvent(event, blocked, method, listener);
+                invokeEvent(event, throwException, method, listener);
             }
         }
     }
@@ -57,13 +57,13 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
      * Invoke event on listener.
      * 
      * @param event     Event to send.
-     * @param blocked   exception handling
+     * @param throwException   exception handling
      * @param method    Method to invoke.
      * @param listener  Listener.
      */
-    private void invokeEvent(EventObject event, boolean blocked, Method method, EventListenerRegistration listener) {
+    private void invokeEvent(EventObject event, boolean throwException, Method method, EventListenerRegistration listener) {
         if (passFilters(listener, event)) {
-            if (blocked) {
+            if (throwException) {
                 invokeBlocked(method, listener, event);
             } else {
                 invoke(method, listener, event);

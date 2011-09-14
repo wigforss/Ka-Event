@@ -46,9 +46,14 @@ public class ChannelBeanDefinitionParser  extends AbstractSingleBeanDefinitionPa
          if (!events.isEmpty()) {
         	 bean.addPropertyValue("events", events);
          }
-         String channelClass = element.getAttribute("class");
-         if (channelClass != null) {
-        	 bean.addPropertyValue("channelClass", channelClass);
+         String channelRef = element.getAttribute("ref");
+         if(channelRef != null) {
+             bean.addPropertyReference("channelRef", channelRef);
+         } else {
+             String channelClass = element.getAttribute("class");
+             if (channelClass != null) {
+                 bean.addPropertyValue("channelClass", channelClass);
+             }
          }
      }
      

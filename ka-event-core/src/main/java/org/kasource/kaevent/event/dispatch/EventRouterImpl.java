@@ -51,10 +51,10 @@ public class EventRouterImpl implements EventRouter {
 	 * to a channel if the channel accepts forwarded events.
 	 * 
 	 * @param event		Event to route.
-	 * @param blocked	true to invoke the method in a blocked fashion, else false.
+	 * @param throwException	true to invoke the method in a blocked fashion, else false.
 	 **/
     @Override
-    public void routeEvent(EventObject eventObject, boolean blocked) {
+    public void routeEvent(EventObject eventObject, boolean throwException) {
         boolean isForwarded = false;
         EventObject event = eventObject;
         if(event instanceof ForwardedEvent) {
@@ -66,12 +66,12 @@ public class EventRouterImpl implements EventRouter {
             for (Channel channel : channels) {
                 if(!isForwarded || 
                             (isForwarded && channel.acceptForwardedEvent((ForwardedEvent) eventObject))) {
-                    channel.fireEvent(event, blocked);
+                    channel.fireEvent(event, throwException);
                 }
             }
         }
         Collection<EventListenerRegistration> listeners = sourceObjectListenerRegister.getListenersByEvent(event);
         
-        invoker.invokeEventMethod(event, listeners, blocked);
+        invoker.invokeEventMethod(event, listeners, throwException);
     }
 }

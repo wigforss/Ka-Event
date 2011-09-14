@@ -1,0 +1,27 @@
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:kaevent="http://kasource.org/schema/kaevent-spring"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://kasource.org/schema/kaevent-spring
+spring/schema/kaevent-spring.xsd"
+>
+    <kaevent:kaevent scanClassPath="org.kasource.kaevent.inttest.spring.jms"/>
+    
+	<bean name="jmsChannel" class="org.kasource.kaevent.channel.SpringJmsChannel">
+		<constructor-arg ref="kaEvent.channelRegister"/>
+		<constructor-arg ref="kaEvent.eventRegister"/>
+		<property name="jmsTemplate" ref="producerTemplate"/>
+     </bean>
+	
+	<kaevent:channel id="myChannel" ref="jmsChannel">
+		<kaevent:handle event="org.kasource.kaevent.inttest.spring.jms.MyEvent"/>
+	</kaevent:channel>
+
+
+</beans>

@@ -73,7 +73,7 @@ public class SpringEventChannel extends ChannelAdapter implements ApplicationEve
     }
     
     @Override
-    public void fireEvent(EventObject event, boolean blocked) {
+    public void fireEvent(EventObject event, boolean throwException) {
        if(filterHandler.filterEvent(event)) {
            eventPublisher.publishEvent((ApplicationEvent) event);
        }

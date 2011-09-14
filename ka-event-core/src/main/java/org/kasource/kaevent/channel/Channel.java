@@ -26,9 +26,9 @@ public interface Channel {
      * Fire event synchronously to all channel listeners.
      * 
      * @param event     Event to dispatch
-     * @param blocked   true the event is fired synchronously, else false. 
+     * @param throwException   true the event is fired synchronously, else false. 
      **/
-    public  abstract void fireEvent(EventObject event, boolean blocked);
+    public  abstract void fireEvent(EventObject event, boolean throwException);
 
 
     /**

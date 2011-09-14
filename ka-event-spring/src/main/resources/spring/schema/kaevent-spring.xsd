@@ -127,6 +127,14 @@
 								</xsd:documentation>
 							</xsd:annotation>
 						</xsd:attribute>
+						<xsd:attribute name="ref" type="xsd:string" use="optional">
+							<xsd:annotation>
+								<xsd:documentation>
+									Reference to a channel bean to use. The bean referenced must implement
+									the org.kasource.kaevent.channel.Channel interface.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
 					</xsd:complexType>
 				</xsd:element>
 	

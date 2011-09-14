@@ -61,13 +61,13 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
      * Fire event synchronously to all channel listeners.
      * 
      * @param event     Event to dispatch
-     * @param blocked   true the event is fired synchronously, else false. 
+     * @param throwException   true the event is fired synchronously, else false. 
      **/
     @Override
-    public void fireEvent(EventObject event, boolean blocked) {
+    public void fireEvent(EventObject event, boolean throwException) {
         
         if(filterHandler.filterEvent(event)) {
-            eventMethodInvoker.invokeEventMethod(event, getListenerRegister().getListenersByEvent(event), blocked);
+            eventMethodInvoker.invokeEventMethod(event, getListenerRegister().getListenersByEvent(event), throwException);
         }
         
     }

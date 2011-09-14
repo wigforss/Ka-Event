@@ -34,7 +34,7 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
     
     private Map<EventListener, List<EventFilter<EventObject>>> filterMap;
     
-  
+    private Channel channelRef;
 
 	@Override
     public Object getObject() throws Exception {
@@ -91,22 +91,51 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
 	 * @return new Channel instance.
 	 **/
     private Channel getChannel() {
+        
     	ChannelFactory channelFactory = 
     		(ChannelFactory) applicationContext.getBean(KaEventSpringBean.CHANNEL_FACTORY.getId());
     	EventRegister eventRegister = 
     		(EventRegister) applicationContext.getBean(KaEventSpringBean.EVENT_REGISTER.getId());
         Set<Class<? extends EventObject>> eventSet = new HashSet<Class<? extends EventObject>>();
+        
+        ChannelRegister channelRegister = (ChannelRegister) applicationContext.getBean(KaEventSpringBean.CHANNEL_REGISTER.getId());
+        
         if (events != null) {
         	for (String eventName : events) {
         		eventSet.add(eventRegister.getEventByName(eventName).getEventClass());
         	}
         }
         if (eventSet.isEmpty()) {
-        	return channelFactory.createChannel(channelClass, name);
+            return createChannel(channelFactory, channelRegister, name);
         } else {
-        	return channelFactory.createChannel(channelClass, name, eventSet);
+        	return createChannel(channelFactory, channelRegister, name, eventSet);
         }
     }
+    
+    private Channel createChannel(ChannelFactory channelFactory, ChannelRegister channelRegister, String name) {
+        if(channelRef == null) {
+            return channelFactory.createChannel(channelClass, name);
+        } else {
+            channelRef.setName(name);
+            channelRegister.registerChannel(channelRef);
+            return channelRef;
+        }
+    }
+    
+    private Channel createChannel(ChannelFactory channelFactory, ChannelRegister channelRegister, String name, Set<Class<? extends EventObject>> eventSet) {
+        if(channelRef == null) {
+            return channelFactory.createChannel(channelClass, name, eventSet);
+        } else {         
+            channelRef.setName(name);
+            channelRegister.registerChannel(channelRef);
+            for(Class<? extends EventObject> eventClass : eventSet) {
+                channelRef.registerEvent(eventClass);
+            }
+            
+            return channelRef;
+        }
+    }
+    
     
     @Override
     public Class<?> getObjectType() {
@@ -174,5 +203,12 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
 	public void setFilterMap(Map<EventListener, List<EventFilter<EventObject>>> filterMap) {
 		this.filterMap = filterMap;
 	}
+
+    /**
+     * @param channelRef the channelRef to set
+     */
+    public void setChannelRef(Channel channelRef) {
+        this.channelRef = channelRef;
+    }
    
 }
