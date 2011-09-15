@@ -21,18 +21,14 @@
       		<distribution>repo</distribution>
     	</license>
   	</licenses>
-  	<!--  
-	<scm>
-		<url>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</url>
-    	<developerConnection>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</developerConnection>
-    	<connection>scm:svn:https://svn.kenai.com/svn/ka-event~src/trunk</connection>
-  	</scm>
-  	-->
+  	
+  	
   	<scm>
-		<url>scm:git:git://github.com/wigforss/Ka-Event.git</url>
-    	<developerConnection>scm:git:git://github.com/wigforss/Ka-Event.git</developerConnection>
-    	<connection>scm:git:git://github.com/wigforss/Ka-Event.git</connection>
+  		<connection>scm:git:git@github.com:wigforss/Ka-Event.git</connection>
+		<url>scm:git:git@github.com:wigforss/Ka-Event.git</url>
+		<developerConnection>scm:git:git@github.com:wigforss/Ka-Event.git</developerConnection>
   	</scm>
+  	
 	<issueManagement>
 		<system>JIRA</system>
 		<url>http://kenai.com/jira/browse/KA_EVENT</url>
