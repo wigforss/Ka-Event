@@ -46,7 +46,7 @@
 	</developers>
 	<properties>
 		<spring.version>2.5.6</spring.version>
-		<junit.version>4.4</junit.version>
+		<junit.version>4.9</junit.version>
 		<easymock.version>2.5.1</easymock.version>
 		<unitils.version>3.1</unitils.version>
 		<log4j.version>1.2.16</log4j.version>

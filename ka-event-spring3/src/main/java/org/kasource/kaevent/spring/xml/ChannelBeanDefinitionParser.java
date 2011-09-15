@@ -34,7 +34,6 @@ public class ChannelBeanDefinitionParser  extends AbstractSingleBeanDefinitionPa
      *  @param element The channel XML element.
      *  @param bean    The bean definition.
 	 **/
-    @SuppressWarnings("unchecked")
 	protected void doParse(Element element, BeanDefinitionBuilder bean) {
          bean.addPropertyValue("name", element.getAttribute(ID_ATTRIBUTE));
          bean.addDependsOn(KaEventSpringBean.CHANNEL_REGISTER.getId());
