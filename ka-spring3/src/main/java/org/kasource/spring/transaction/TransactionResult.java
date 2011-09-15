@@ -6,8 +6,8 @@ package org.kasource.spring.transaction;
  * @author rikard
  **/
 public enum TransactionResult {
-	 /** Completion status in case of commit */
-    STATUS_COMMITTED,
+   /** Completion status in case of commit */
+   STATUS_COMMITTED,
 
    /** Completion status in case of roll back */
    STATUS_ROLLED_BACK,

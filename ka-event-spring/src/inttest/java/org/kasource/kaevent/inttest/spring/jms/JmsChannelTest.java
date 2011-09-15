@@ -25,7 +25,7 @@ public class JmsChannelTest implements Runnable {
         Thread waitForListener = new Thread(this);
         waitForListener.start();
         waitForListener.join();
-        assertEquals("test", listener.getSource());
+        assertEquals("test", listener.getPayload());
     }
     
     public void run() {

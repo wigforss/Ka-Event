@@ -91,6 +91,7 @@ public class HessianMessageConverterTest {
         
     }
     
+    @SuppressWarnings("serial")
     private static class Person implements Serializable {
         private String name;
         private int age;
@@ -108,6 +109,7 @@ public class HessianMessageConverterTest {
         /**
          * @param name the name to set
          */
+        @SuppressWarnings("unused")
         public void setName(String name) {
             this.name = name;
         }
@@ -120,6 +122,7 @@ public class HessianMessageConverterTest {
         /**
          * @param age the age to set
          */
+        @SuppressWarnings("unused")
         public void setAge(int age) {
             this.age = age;
         }

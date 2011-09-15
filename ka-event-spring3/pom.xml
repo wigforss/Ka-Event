@@ -75,7 +75,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>src/int-test/java</source>
+								<source>src/inttest/java</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -87,8 +87,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>src/example/java</source>
-								<source>src/inttest/java</source>
+								<source>src/example/java</source>						
 							</sources>							
 						</configuration>
 					</execution>
@@ -178,6 +177,12 @@
 			<scope>test</scope>
 		</dependency>	
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
 		</dependency>
@@ -236,14 +241,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.6</version>
-
-				<configuration>
-					<excludePackageNames>com.kenai.elf4soi.example.*</excludePackageNames>
-					<detectLinks>true</detectLinks>
-					<links>
-						<link>http://java.sun.com/javase/6/docs/api/</link>
-					</links>
-				</configuration>
 
 			</plugin>
 		</plugins>

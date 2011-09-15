@@ -58,7 +58,9 @@
 			<module>ka-event-core</module> 
 			<module>ka-event-aspects</module>
 			<module>ka-spring</module>
+			<module>ka-spring3</module>
 			<module>ka-event-spring</module>
+			<module>ka-event-spring3</module>
 			<module>ka-event-osgi</module>
 			<module>ka-event-guice</module>
 			<module>ka-event-cdi</module>

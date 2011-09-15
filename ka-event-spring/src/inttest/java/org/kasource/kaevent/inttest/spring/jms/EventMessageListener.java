@@ -13,10 +13,10 @@ import org.springframework.jms.support.converter.MessageConverter;
 public class EventMessageListener  {
 
     public boolean messageReceived;
-    public String source;
+    public String payload;
    
     public void onMessage(MyEvent event) {
-        source = (String) event.getSource();
+        payload = event.getPayload();
         messageReceived = true; 
         
     }
@@ -38,15 +38,15 @@ public class EventMessageListener  {
     /**
      * @return the source
      */
-    public String getSource() {
-        return source;
+    public String getPayload() {
+        return payload;
     }
 
     /**
      * @param source the source to set
      */
-    public void setSource(String source) {
-        this.source = source;
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 
 }

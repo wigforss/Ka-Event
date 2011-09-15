@@ -32,14 +32,14 @@ public class SpringBeanResolverTest {
     @Test
     public void getBeanTest() {
     	Object bean = new Object();
-        EasyMock.expect(applicationContext.getBean("test")).andReturn(bean);
+        EasyMock.expect(applicationContext.getBean("test", Object.class)).andReturn(bean);
         EasyMockUnitils.replay();
         assertEquals(bean,  springBeanResolver.getBean("test", Object.class));
     }
     
     @Test(expected = CouldNotResolveBeanException.class)
     public void getBeanExceptionTest() {
-        EasyMock.expect(applicationContext.getBean("test")).andThrow(new NoSuchBeanDefinitionException(""));
+        EasyMock.expect(applicationContext.getBean("test", Object.class)).andThrow(new NoSuchBeanDefinitionException(""));
         EasyMockUnitils.replay();
         springBeanResolver.getBean("test", Object.class);
     }

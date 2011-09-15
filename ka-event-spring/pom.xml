@@ -9,7 +9,7 @@
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-event-spring</artifactId>
 	<packaging>jar</packaging>
-	<name>Ka Event Spring</name>
+	<name>Ka Event Spring 2.5.x</name>
 	<version>0.7-SNAPSHOT</version>
 	<url>http://kasource.org</url>
 	<!-- Build properties -->
@@ -75,7 +75,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>src/int-test/java</source>
+								<source>src/inttest/java</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -88,7 +88,7 @@
 						<configuration>
 							<sources>
 								<source>src/example/java</source>
-								<source>src/inttest/java</source>
+								
 							</sources>							
 						</configuration>
 					</execution>
@@ -166,6 +166,8 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

@@ -3,9 +3,6 @@ package org.kasource.spring.transaction;
 public interface TransactionSupport {
 
 
-
-	
-	
 	/**
 	 * Registers listener so that it can get notification of current transaction
 	 * 

@@ -78,6 +78,7 @@ public class JsonMessageConverterTest {
         /**
          * @param vendor the vendor to set
          */
+        @SuppressWarnings("unused")
         public void setVendor(String vendor) {
             this.vendor = vendor;
         }
@@ -90,6 +91,7 @@ public class JsonMessageConverterTest {
         /**
          * @param version the version to set
          */
+        @SuppressWarnings("unused")
         public void setVersion(String version) {
             this.version = version;
         }

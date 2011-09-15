@@ -1,8 +1,6 @@
 package org.kasource.spring.transaction;
 
 
-
-
 /**
  * Used to get notification of transaction commit / completion. 
  * See org.springframework.transaction.support.TransactionSynchronization.
