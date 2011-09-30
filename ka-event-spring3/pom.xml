@@ -27,7 +27,7 @@
 					<include>**/*.xsd</include>
 					<include>**/*.dtd</include>
 					<include>**/spring.handlers</include>
-					<include>**/spring.schema</include>
+					<include>**/spring.schemas</include>
 				</includes>
 			</resource>
 			<resource>
