@@ -208,7 +208,7 @@
 				<version>2.6</version>
 
 				<configuration>
-					<excludePackageNames>com.kenai.elf4soi.example.*</excludePackageNames>
+					<excludePackageNames>org.kasource.kaevent.example.*</excludePackageNames>
 					<detectLinks>true</detectLinks>
 					<links>
 						<link>http://java.sun.com/javase/6/docs/api/</link>

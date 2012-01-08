@@ -74,6 +74,16 @@ public interface EventDispatcher {
             Object sourceObject);
     
     /**
+     * Unregister listener from sourceObject as
+     * the event source.
+     * 
+     * @param listener      Listener to unregister.
+     * @param sourceObject  Object to stop listen to.
+     **/
+    public void unregisterListener(EventListener listener,
+            Object sourceObject);
+    
+    /**
      * Register listener as a listener to events with sourceObject as
      * the event source.
      * 
@@ -94,6 +104,19 @@ public interface EventDispatcher {
      * a ListenerChannel. 
      **/
     public void registerListenerAtChannel(EventListener listener,
+            String channelName) throws IllegalArgumentException;
+    
+    
+    /**
+     * Unregister listener listener from the named channel.
+     * 
+     * @param listener      Listener to unregister.
+     * @param channelName   Name of the channel to stop listen to.
+     * 
+     * @throws IllegalArgumentException if the named Channel is not
+     * a ListenerChannel. 
+     **/
+    public void unregisterListenerFromChannel(EventListener listener,
             String channelName) throws IllegalArgumentException;
     
     /**

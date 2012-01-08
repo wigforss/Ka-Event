@@ -32,7 +32,7 @@ public class RegisterListenerInterceptor implements MethodInterceptor {
 	
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
-		System.out.println("Interceptor: " + invocation.getThis());
+		//System.out.println("Interceptor: " + invocation.getThis());
 		Object listener = invocation.getThis();
 		@SuppressWarnings("unchecked")
 		Class<? extends EventListener> listenerClass = 

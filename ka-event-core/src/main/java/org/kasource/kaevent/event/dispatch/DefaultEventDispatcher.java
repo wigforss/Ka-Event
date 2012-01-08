@@ -288,4 +288,21 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     protected void setConfigurer(KaEventConfigurer configurer) {
         this.configurer = configurer;
     }
+
+    @Override
+    public void unregisterListener(EventListener listener, Object sourceObject) {
+       sourceObjectListenerRegister.unregisterListener(listener, sourceObject);
+        
+    }
+
+    @Override
+    public void unregisterListenerFromChannel(EventListener listener, String channelName)
+                throws IllegalArgumentException {
+        Channel channel = channelRegister.getChannel(channelName);
+        if(channel instanceof ListenerChannel) {
+            ListenerChannel listenerChannel = (ListenerChannel) channel;
+            listenerChannel.unregisterListener(listener);
+        }
+        
+    }
 }
