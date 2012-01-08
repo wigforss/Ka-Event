@@ -2,14 +2,14 @@
 	<parent>
   	<artifactId>ka-event-base</artifactId>
   	<groupId>org.kasource</groupId>
-  	<version>0.7-SNAPSHOT</version>
+  	<version>0.8-SNAPSHOT</version>
   	<relativePath>../pom.xml</relativePath>
     </parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-event-cdi</artifactId>
 	<packaging>jar</packaging>
-	<version>0.7-SNAPSHOT</version>
+	<version>0.8-SNAPSHOT</version>
 	<name>Ka Event CDI</name>
 	<url>http://maven.apache.org</url>
 

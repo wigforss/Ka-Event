@@ -2,7 +2,7 @@
 	<parent>
 		<artifactId>ka-event-base</artifactId>
 		<groupId>org.kasource</groupId>
-		<version>0.7-SNAPSHOT</version>
+		<version>0.8-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -10,7 +10,7 @@
 	<artifactId>ka-event-spring3</artifactId>
 	<packaging>jar</packaging>
 	<name>Ka Event Spring 3.x</name>
-	<version>0.7-SNAPSHOT</version>
+	<version>0.8-SNAPSHOT</version>
 	<url>http://kasource.org</url>
 	<!-- Build properties -->
 	<properties>

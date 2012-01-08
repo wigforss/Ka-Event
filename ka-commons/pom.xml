@@ -2,13 +2,13 @@
 	<parent>
   	<artifactId>ka-event-base</artifactId>
   	<groupId>org.kasource</groupId>
-  	<version>0.7-SNAPSHOT</version>
+  	<version>0.8-SNAPSHOT</version>
   	<relativePath>../pom.xml</relativePath>
     </parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-commons</artifactId>
-	<version>0.7-SNAPSHOT</version>
+	<version>0.8-SNAPSHOT</version>
 	<name>Ka Commons</name>
 	<url>http://kasource.org</url>
 	<properties>
