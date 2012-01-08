@@ -2,13 +2,13 @@
 	<parent>
   	<artifactId>ka-event-base</artifactId>
   	<groupId>org.kasource</groupId>
-  	<version>0.8-SNAPSHOT</version>
+  	<version>0.7.1</version>
   	<relativePath>../pom.xml</relativePath>
     </parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-spring3</artifactId>
-	<version>0.8-SNAPSHOT</version>
+	<version>0.7.1</version>
 	<name>Ka Spring 3</name>
 	<description>Spring utilities for version 3.x</description>
 	<url>http://kasource.org</url>
