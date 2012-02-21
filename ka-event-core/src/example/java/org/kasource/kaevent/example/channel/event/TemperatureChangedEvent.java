@@ -8,6 +8,7 @@ import org.kasource.kaevent.example.channel.Thermometer;
 ///CLOVER:OFF
 //@Event(listener=TemperatureChangedEventListener.class, channels={"temperatureChannel"})
 @Event(listener = TemperatureChangedListener.class)
+//@Event(annotation = OnTemperatureChange.class)
 public class TemperatureChangedEvent extends BaseEvent {
 	private static final long serialVersionUID = 1L;
 

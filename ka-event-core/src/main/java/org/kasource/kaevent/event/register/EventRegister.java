@@ -3,6 +3,7 @@
  */
 package org.kasource.kaevent.event.register;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -27,10 +28,26 @@ public interface EventRegister {
      * @param interfaceClass Event Listener Interface class.
      * 
      * @return Event Configuration associated with interfaceCLass.
-     *    * @throws NoSuchEventException if no event can be found by interfaceClass.
+     * @throws NoSuchEventException if no event can be found by interfaceClass.
      **/
     public EventConfig getEventByInterface(Class<? extends EventListener> interfaceClass) throws NoSuchEventException;
     
+    /**
+     * Returns a set of all event method annotations registered.
+     * 
+     * @return all event method annotations registered.
+     **/
+    public Set<Class<? extends Annotation>> getRegisteredEventAnnotations(); 
+    
+    /**
+     * Returns Event Configuration by event annotation.
+     * 
+     * @param eventAnnotation Event Annotation class.
+     * 
+     * @return Event Configuration associated with eventAnnotation.
+     * @throws NoSuchEventException if no event can be found by eventAnnotation.
+     **/
+    public EventConfig getEventByAnnotation(Class<? extends Annotation> eventAnnotation);
     
     /**
      * Returns true if there's an Event registered to the interfaceCLass 

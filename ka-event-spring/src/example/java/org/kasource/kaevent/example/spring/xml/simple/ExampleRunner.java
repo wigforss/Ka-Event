@@ -14,7 +14,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ExampleRunner {
 	public static void main(String[] args) {
 	    ApplicationContext context = 
-	        new ClassPathXmlApplicationContext("org/kasource/kaevent/example/spring/simple/simple-context.xml");
+	        new ClassPathXmlApplicationContext("org/kasource/kaevent/example/spring/xml/simple/simple-context.xml");
 	    Thermometer thermometer = (Thermometer) context.getBean("thermometer");
 	    thermometer.run();
 	  

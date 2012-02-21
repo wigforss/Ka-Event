@@ -1,9 +1,11 @@
 package org.kasource.kaevent.event.config;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
 
+import org.kasource.kaevent.event.method.AnnotatedMethodMethodResolver;
 import org.kasource.kaevent.event.method.MethodResolver;
 
 
@@ -17,6 +19,7 @@ import org.kasource.kaevent.event.method.MethodResolver;
 public class EventConfigImpl implements EventConfig {
     private Class<? extends EventObject> eventClass;
     private Class<? extends EventListener> listener;
+    private Class<? extends Annotation> eventAnnotation;
     private String name;
     private Method defaultMethod; // May be null  
     @SuppressWarnings({ "rawtypes" })
@@ -35,6 +38,22 @@ public class EventConfigImpl implements EventConfig {
         this.eventClass = eventClass;
         this.listener = listener;
         this.name = name;
+    }
+    
+    /**
+     * Constructor.
+     * 
+     * @param eventClass    Event class.
+     * @param listener      Event Listener interface class.
+     * @param name          Name of the event.
+     **/
+    EventConfigImpl(Class<? extends EventObject> eventClass, 
+                           AnnotatedMethodMethodResolver methodResolver,
+                           String name) {
+        this.eventClass = eventClass;
+        this.methodResolver = methodResolver;
+        this.name = name;
+        this.eventAnnotation = methodResolver.getTargetAnnotation();
     }
 
     
@@ -60,8 +79,16 @@ public class EventConfigImpl implements EventConfig {
      **/
     @SuppressWarnings("unchecked")
     @Override
-    public  Method getEventMethod(EventObject event) {
-        return (defaultMethod != null ? defaultMethod : methodResolver.resolveMethod(event));
+    public  Method getEventMethod(EventObject event, Object target) {
+        Method method = null;
+        if(methodResolver != null) {
+            method = methodResolver.resolveMethod(event, target);
+        }
+        if(method == null) {
+            method = defaultMethod;
+        }
+        return method;
+        
     }
 
     
@@ -102,6 +129,19 @@ public class EventConfigImpl implements EventConfig {
      */
     void setDefaultMethod(Method defaultMethod) {
         this.defaultMethod = defaultMethod;
+    }
+    
+    void setEventAnnotation(Class<? extends Annotation> eventAnnotation) {
+        this.eventAnnotation = eventAnnotation;
+    }
+
+    /**
+     * Returns the event method annotation in use.
+     * 
+     * @return the event method annotation in use, null if no annotation is used for this Event.
+     **/
+    public Class<? extends Annotation> getEventAnnotation() {
+        return eventAnnotation;
     }
 
 }

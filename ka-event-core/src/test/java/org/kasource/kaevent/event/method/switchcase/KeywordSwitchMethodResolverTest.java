@@ -14,6 +14,7 @@ import java.util.EventListener;
 import java.util.EventObject;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.annotations.event.EventKeyword;
 import org.kasource.kaevent.annotations.event.methodresolving.CustomCase;
@@ -21,6 +22,8 @@ import org.kasource.kaevent.annotations.event.methodresolving.DefaultListenerMet
 import org.kasource.kaevent.annotations.event.methodresolving.KeywordCase;
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType;
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
+import org.unitils.UnitilsJUnit4TestClassRunner;
+import org.unitils.mock.annotation.Dummy;
 
 
 /**
@@ -28,14 +31,19 @@ import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
  *
  */
 //CHECKSTYLE:OFF
+@RunWith(UnitilsJUnit4TestClassRunner.class)
 public class KeywordSwitchMethodResolverTest {
 
+    @Dummy
+    private Object target;
+    
+    
 	@Test
 	public void resolverMethodTest() throws SecurityException, NoSuchMethodException {
 		KeywordSwitchMethodResolver resolver = 
 		    new KeywordSwitchMethodResolver(CrudEvent.class, CrudEventListener.class);
 		
-		Method method = resolver.resolveMethod(new CrudEvent("Test", CrudAction.DELETE));
+		Method method = resolver.resolveMethod(new CrudEvent("Test", CrudAction.DELETE), target);
 		assertEquals(CrudEventListener.class.getDeclaredMethod("deleteEvent", CrudEvent.class), method);
 	}
 	

@@ -35,7 +35,7 @@ public class TempratureMethodResolver implements MethodResolver<TemperatureChang
     
     
     @Override
-    public Method resolveMethod(TemperatureChangeEvent event) {
+    public Method resolveMethod(TemperatureChangeEvent event, Object target) {
         if (event.getCurrentTemperature() > optimalTemp) {
             return ReflectionUtils.getDeclaredMethod(TemperatureChangeListener.class, "highTemperature",
                     TemperatureChangeEvent.class);

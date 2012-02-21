@@ -46,8 +46,9 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
     public void invokeEventMethod(EventObject event, Collection<EventListenerRegistration> listeners, boolean throwException) {
         if (listeners != null && listeners.size() > 0) {
             EventConfig eventConfig = eventRegister.getEventByClass(event.getClass());
-            Method method = eventConfig.getEventMethod(event);
+            
             for (EventListenerRegistration listener : listeners) {
+                Method method = eventConfig.getEventMethod(event, listener.getListener());
                 invokeEvent(event, throwException, method, listener);
             }
         }
@@ -78,12 +79,17 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
      * @param listener Listener
      * @param event    Event to send.
      * @throws RuntimeException if any exception occurs when invoking the method.
+     * @throws IllegalStateException if no event method to invoke could be resolved.
      */
     private void invokeBlocked(Method method, 
                                EventListenerRegistration listener, 
                                EventObject event) throws RuntimeException {
         try {
-            method.invoke(listener.getListener(), event);
+            if(method != null) {
+                method.invoke(listener.getListener(), event);
+            } else {
+                throw new IllegalStateException("Could not resolve an event method for " + event.getClass() + ".");
+            }
         } catch (Exception e) {
             throw new RuntimeException("Failed to invoke " + method + " on " + listener,
                     e instanceof InvocationTargetException ? e.getCause() : e);
@@ -98,8 +104,13 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
      * @param event         Event to send.
      */
     private void invoke(Method method, EventListenerRegistration listener, EventObject event) {
+        
         try {
-            method.invoke(listener.getListener(), event);
+            if(method != null) {
+                method.invoke(listener.getListener(), event);
+            } else {
+                logger.error("Could not resolve an event method for " + event.getClass() + ".");
+            }
         } catch (Exception e) {
             logger.error("Failed to invoke " + method + " on " + listener, e instanceof InvocationTargetException ? e
                     .getCause() : e);

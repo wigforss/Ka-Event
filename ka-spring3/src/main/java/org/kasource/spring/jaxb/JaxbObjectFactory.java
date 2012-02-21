@@ -18,7 +18,7 @@ import org.springframework.core.io.Resource;
  * 
  * This class can be used directly in spring XML configuration like:
  * <pre>
- * <bean id="jaxbFactory" class="com.nordea.equity.research.spring.jaxb.JaxbObjectFactory"/>
+ * <bean id="jaxbFactory" class="org.kasource.spring.jaxb.JaxbObjectFactory"/>
  *   
  *   <bean id="config" factory-bean="jaxbFactory" factory-method="unmarshalObject">
  *       <constructor-arg name="resource" value="file:${APP_HOME}/conf/config.xml"/>

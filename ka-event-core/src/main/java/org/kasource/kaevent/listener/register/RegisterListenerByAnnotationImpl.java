@@ -1,6 +1,5 @@
 package org.kasource.kaevent.listener.register;
 
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,11 +8,10 @@ import org.kasource.kaevent.annotations.listener.ChannelListener;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.CouldNotResolveBeanException;
 import org.kasource.kaevent.channel.Channel;
-import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.ChannelRegister;
+import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.NoSuchChannelException;
 import org.kasource.kaevent.config.KaEventConfiguration;
-import org.kasource.kaevent.config.KaEventConfigurer;
 import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.config.KaEventInitializer;
 
@@ -32,8 +30,8 @@ public class RegisterListenerByAnnotationImpl implements
 	private ChannelRegister channelRegister;
 	private SourceObjectListenerRegister sourceObjectListenerRegister;
 	private BeanResolver beanResolver;
-	private Map<EventListener, String[]> channelListeners = new HashMap<EventListener, String[]>();
-	private Map<EventListener, String[]> beanListeners = new HashMap<EventListener, String[]>();
+	private Map<Object, String[]> channelListeners = new HashMap<Object, String[]>();
+	private Map<Object, String[]> beanListeners = new HashMap<Object, String[]>();
 
 	
 	private RegisterListenerByAnnotationImpl(){
@@ -58,22 +56,22 @@ public class RegisterListenerByAnnotationImpl implements
 	public void registerChannelListener(
 			ChannelListener channelListenerAnnotation, Object listener) {
 		if (channelRegister == null) {
-			channelListeners.put((EventListener) listener,
+			channelListeners.put(listener,
 					channelListenerAnnotation.value());
 		} else {
-			registerChannelListener((EventListener) listener,
+			registerChannelListener(listener,
 					channelListenerAnnotation.value());
 		}
 
 	}
 
-	private void registerChannelListener(EventListener listener,
+	private void registerChannelListener(Object listener,
 			String[] channels) {
 		for (String channelName : channels) {
 			try {
 				Channel channel = channelRegister.getChannel(channelName);
 				if(channel instanceof ListenerChannel) {
-					((ListenerChannel) channel).registerListener((EventListener) listener);
+					((ListenerChannel) channel).registerListener(listener);
 				} else {
 					throw new IllegalArgumentException("Can't register " + listener + " to channel "+channelName + " its not an ListenerChannel.");
 				}
@@ -102,7 +100,7 @@ public class RegisterListenerByAnnotationImpl implements
 				Channel channel = channelRegister.getChannel(channelName);
 				if(channel != null) {
 					if(channel instanceof ListenerChannel) {
-						((ListenerChannel) channel).unregisterListener((EventListener) listener);
+						((ListenerChannel) channel).unregisterListener(listener);
 					} else {
 						throw new IllegalArgumentException("Can't unregister " + listener + " to channel "+channelName + " its not an ListenerChannel.");
 					}
@@ -118,28 +116,28 @@ public class RegisterListenerByAnnotationImpl implements
 	 * @param beanListenerAnnotation
 	 *            The annotation with configuration
 	 * @param listener
-	 *            The {@link java.util.EventListener} implementation
+	 *            The listener object.
 	 **/
 	@Override
 	public void registerBeanListener(BeanListener beanListenerAnnotation,
 			Object listener) {
 
 		if (sourceObjectListenerRegister == null) {
-			beanListeners.put((EventListener) listener, beanListenerAnnotation
+			beanListeners.put((Object) listener, beanListenerAnnotation
 					.value());
 		} else {
-			registerBeanListener((EventListener) listener,
+			registerBeanListener(listener,
 					beanListenerAnnotation.value());
 		}
 
 	}
 
-	private void registerBeanListener(EventListener listener, String[] beanNames) {
+	private void registerBeanListener(Object listener, String[] beanNames) {
 		for (String beanName : beanNames) {
 			try {
 				Object eventSource = beanResolver.getBean(beanName, Object.class);
 				sourceObjectListenerRegister.registerListener(
-						(EventListener) listener, eventSource);
+						(Object) listener, eventSource);
 			} catch (CouldNotResolveBeanException nrsb) {
 				throw new CouldNotResolveBeanException("Bean: " + beanName
 						+ " in @BeanListener on " + listener.getClass()
@@ -164,7 +162,7 @@ public class RegisterListenerByAnnotationImpl implements
 		for (String beanName : beanListenerAnnotation.value()) {
 			Object eventSource = beanResolver.getBean(beanName, Object.class);
 			sourceObjectListenerRegister.unregisterListener(
-					(EventListener) listener, eventSource);
+					listener, eventSource);
 		}
 
 	}
@@ -181,12 +179,12 @@ public class RegisterListenerByAnnotationImpl implements
 		this.channelRegister = channelRegister;
 		this.sourceObjectListenerRegister = sourceObjectListenerRegister;
 		this.beanResolver = beanResolver;
-		for (Map.Entry<EventListener, String[]> entry : channelListeners
+		for (Map.Entry<Object, String[]> entry : channelListeners
 				.entrySet()) {
 			registerChannelListener(entry.getKey(), entry.getValue());
 		}
 		channelListeners.clear();
-		for (Map.Entry<EventListener, String[]> entry : beanListeners
+		for (Map.Entry<Object, String[]> entry : beanListeners
 				.entrySet()) {
 			registerBeanListener(entry.getKey(), entry.getValue());
 		}

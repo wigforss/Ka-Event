@@ -13,11 +13,10 @@ spring/schema/kaevent-spring.xsd"
 >
 	
 	<context:component-scan base-package="org.kasource.kaevent.example.spring.annotations.channel"/>
-	<context:component-scan base-package="org.kasource.kaevent.channel"/> 
 	
 	<kaevent:kaevent scanClassPath="org.kasource.kaevent.example.spring.annotations.channel"/>
 	
-	<kaevent:channel id="springChannel" class="org.kasource.kaevent.channel.SpringEventChannel">
+	<kaevent:channel id="springChannel">
 		<kaevent:handle event="org.springframework.context.event.ContextRefreshedEvent"/>
 	</kaevent:channel> 
 

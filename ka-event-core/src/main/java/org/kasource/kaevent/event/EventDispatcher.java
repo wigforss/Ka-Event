@@ -3,7 +3,6 @@
  */
 package org.kasource.kaevent.event;
 
-import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
 
@@ -70,7 +69,7 @@ public interface EventDispatcher {
      * @param listener      Listener to register.
      * @param sourceObject  Object to listen on.
      **/
-    public void registerListener(EventListener listener,
+    public void registerListener(Object listener,
             Object sourceObject);
     
     /**
@@ -80,7 +79,7 @@ public interface EventDispatcher {
      * @param listener      Listener to unregister.
      * @param sourceObject  Object to stop listen to.
      **/
-    public void unregisterListener(EventListener listener,
+    public void unregisterListener(Object listener,
             Object sourceObject);
     
     /**
@@ -91,7 +90,7 @@ public interface EventDispatcher {
      * @param sourceObject  Object to listen on.
      * @param filters       List of filters to apply on events dispatched to the listener.
      **/
-    public void registerListener(EventListener listener,
+    public void registerListener(Object listener,
                 Object sourceObject, List<EventFilter<EventObject>> filters);
     
     /**
@@ -103,7 +102,7 @@ public interface EventDispatcher {
      * @throws IllegalArgumentException if the named Channel is not
      * a ListenerChannel. 
      **/
-    public void registerListenerAtChannel(EventListener listener,
+    public void registerListenerAtChannel(Object listener,
             String channelName) throws IllegalArgumentException;
     
     
@@ -116,7 +115,7 @@ public interface EventDispatcher {
      * @throws IllegalArgumentException if the named Channel is not
      * a ListenerChannel. 
      **/
-    public void unregisterListenerFromChannel(EventListener listener,
+    public void unregisterListenerFromChannel(Object listener,
             String channelName) throws IllegalArgumentException;
     
     /**
@@ -129,7 +128,7 @@ public interface EventDispatcher {
      * @throws IllegalArgumentException if the named Channel is not
      * a ListenerChannel. 
      **/
-    public void registerListenerAtChannel(EventListener listener,
+    public void registerListenerAtChannel(Object listener,
             String channelName, List<EventFilter<EventObject>> filters) throws IllegalArgumentException;
     
     

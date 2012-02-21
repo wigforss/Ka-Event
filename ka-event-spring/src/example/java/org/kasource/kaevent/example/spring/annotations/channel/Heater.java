@@ -1,22 +1,22 @@
 package org.kasource.kaevent.example.spring.annotations.channel;
 
 import org.kasource.kaevent.annotations.listener.BeanListener;
+import org.kasource.kaevent.example.spring.annotations.channel.event.OnTemperatureChanged;
 import org.kasource.kaevent.example.spring.annotations.channel.event.TemperatureChangedEvent;
-import org.kasource.kaevent.example.spring.annotations.channel.event.TemperatureChangedListener;
 import org.springframework.stereotype.Component;
 
 ///CLOVER:OFF
 //CHECKSTYLE:OFF
 @BeanListener("thermometer")
 @Component
-public class Heater implements TemperatureChangedListener {
+public class Heater {
     private boolean enabled = false;
 
     public boolean isEnabled() {
         return enabled;
     }
 
-    @Override
+    @OnTemperatureChanged
     public void temperatureChanged(TemperatureChangedEvent event) {
         if (event.getCurrentTemperature() < event.getSource().getOptimalTemperatur()) {
             if (!enabled) {

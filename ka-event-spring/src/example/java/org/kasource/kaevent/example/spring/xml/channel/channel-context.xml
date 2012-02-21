@@ -15,19 +15,19 @@ spring/schema/kaevent-spring.xsd"
    
 	
 	 
-	<bean name="myChannel" class="org.kasource.kaevent.example.spring.channel.MyChannel" scope="prototype">
+	<bean name="myChannel" class="org.kasource.kaevent.example.spring.xml.channel.MyChannel" scope="prototype">
 	  	<constructor-arg ref="kaEvent.channelRegister"/>
 		<constructor-arg ref="kaEvent.eventRegister"/>
 		<constructor-arg ref="kaEvent.beanResolver"/>
 	</bean> 
 	
 	
-	<kaevent:kaevent scanClassPath="org.kasource.kaevent.example.spring.channel"/>
+	<kaevent:kaevent scanClassPath="org.kasource.kaevent.example.spring.xml.channel"/>
 
 	
 
-	<kaevent:channel id="temperatureChannel" class="org.kasource.kaevent.example.spring.channel.MyChannel">
-		<kaevent:handle event="org.kasource.kaevent.example.spring.channel.event.TemperatureChangedEvent"/>
+	<kaevent:channel id="temperatureChannel" class="org.kasource.kaevent.example.spring.xml.channel.MyChannel">
+		<kaevent:handle event="org.kasource.kaevent.example.spring.xml.channel.event.TemperatureChangedEvent"/>
 	</kaevent:channel>
 
 	<kaevent:channel id="applicationChannel">
@@ -36,26 +36,26 @@ spring/schema/kaevent-spring.xsd"
 	</kaevent:channel>
 
 
-	<bean name="thermometer" class="org.kasource.kaevent.example.spring.channel.Thermometer">
+	<bean name="thermometer" class="org.kasource.kaevent.example.spring.xml.channel.Thermometer">
 		<property name="eventDispatcher" ref="kaEvent.eventDispatcher"/>
 		<property name="heater" ref="heater"/>
 		<property name="cooler" ref="cooler"/>
 		<property name="optimalTemperatur" value="20.0"/>
 	</bean>
 	
-	<bean name="blockFilter" class="org.kasource.kaevent.example.spring.channel.BinaryFilter">
+	<bean name="blockFilter" class="org.kasource.kaevent.example.spring.xml.channel.BinaryFilter">
 		<constructor-arg value="false"/>
 	</bean>
 	
-	<bean name="allowFilter" class="org.kasource.kaevent.example.spring.channel.BinaryFilter">
+	<bean name="allowFilter" class="org.kasource.kaevent.example.spring.xml.channel.BinaryFilter">
 		<constructor-arg value="true"/>
 	</bean>
 	
-	<bean name="cooler" class="org.kasource.kaevent.example.spring.channel.Cooler" kaevent:listen-on-bean="thermometer" kaevent:filter="allowFilter"/>
+	<bean name="cooler" class="org.kasource.kaevent.example.spring.xml.channel.Cooler" kaevent:listen-on-bean="thermometer" kaevent:filter="allowFilter"/>
 	
-	<bean name="heater" class="org.kasource.kaevent.example.spring.channel.Heater" kaevent:listen-on-bean="thermometer"/>
+	<bean name="heater" class="org.kasource.kaevent.example.spring.xml.channel.Heater" kaevent:listen-on-bean="thermometer"/>
 
-	<bean name="commandConsole" class="org.kasource.kaevent.example.spring.channel.CommandConsole" kaevent:listen-on-channel="temperatureChannel,applicationChannel" kaevent:filter="allowFilter"/>
+	<bean name="commandConsole" class="org.kasource.kaevent.example.spring.xml.channel.CommandConsole" kaevent:listen-on-channel="temperatureChannel,applicationChannel" kaevent:filter="allowFilter"/>
 
 
 </beans>

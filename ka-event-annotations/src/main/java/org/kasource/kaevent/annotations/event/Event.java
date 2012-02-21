@@ -1,5 +1,6 @@
 package org.kasource.kaevent.annotations.event;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -19,7 +20,8 @@ import java.util.EventListener;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Event {
-    Class<? extends EventListener> listener();
+    Class<? extends EventListener> listener() default EventListener.class;
+    Class<? extends Annotation> annotation() default Event.class; 
     String[] channels() default {};
     boolean createChannels() default false;
  //   Class<? extends Channel> default ChannelImpl.class;

@@ -1,5 +1,10 @@
 package org.kasource.kaevent.event.config;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -9,6 +14,7 @@ import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
 import org.kasource.kaevent.bean.BeanResolver;
+import org.kasource.kaevent.event.method.AnnotatedMethodMethodResolver;
 import org.kasource.kaevent.event.method.MethodResolver;
 
 /**
@@ -66,9 +72,84 @@ public class EventFactoryImpl implements EventFactory {
         if (eventAnnotation == null) {
             throw new IllegalArgumentException(event + " is not annotated with @Event!");
         }
-        return newFromAnnotatedInterfaceClass(event, event.getAnnotation(Event.class).listener(), name);
+        return newFromAnnotatedInterfaceAndOrAnnotationClass(eventAnnotation, event, name);
     }
 
+    /**
+     * Create a new event from an event class and an interface class annotated for Method resolving.
+     * 
+     * If @MethodResolving is missing from the listener, this method tries to find a event method on the listener class
+     * to use automatically.
+     * 
+     * @param event
+     *            Event class to create EventConfig for.
+     * @param listener
+     *            Event Listener Interface class to create EventConfig for.
+     * @param name
+     *            Name of the event.
+     * @return a new EventConfig.
+     **/
+    public EventConfig newFromAnnotatedInterfaceAndOrAnnotationClass(Event eventAnnotation, Class<? extends EventObject> event, String name) {
+        if (eventAnnotation.listener() != EventListener.class && eventAnnotation.annotation() != Event.class) {
+            return newFromInterfaceAndMethodAnnotation(event, eventAnnotation.listener(), eventAnnotation.annotation(), name);
+        } else if (eventAnnotation.listener() != EventListener.class) {
+            return newFromAnnotatedInterfaceClass(event, eventAnnotation.listener(), name);
+        } else if (eventAnnotation.annotation() != Event.class) {
+            return newFromMethodAnnotation(event, eventAnnotation.annotation(), name);
+        } else {
+            throw new IllegalArgumentException("@Event of " + event + " must have either the listener or the annotation attribute set");
+        }
+        
+    }
+
+    /**
+     * Create a new event from an event class and an annotation class.
+     * 
+     * 
+     * @param event            Event class to create EventConfig for.
+     * @param eventAnnotation  Event Method Annotation to create EventConfig for.
+     * @param name             Name of the event.
+     * @return a new EventConfig.
+     **/
+    public EventConfig newFromMethodAnnotation(Class<? extends EventObject> event,
+                Class<? extends Annotation> targetAnnotation, String name) {
+        validateTargetAnnotation(targetAnnotation);
+        AnnotatedMethodMethodResolver methodResolver = new AnnotatedMethodMethodResolver(targetAnnotation, null);
+        EventConfigImpl eventConfig = new EventConfigImpl(event, methodResolver, name);
+        
+        return eventConfig;
+    }
+
+    
+
+    
+    /**
+     * Validates that the target annotation is a valid annotation for a event method annotation.
+     * 
+     * @param targetAnnotation
+     * @throws IllegalStateException if target annotation does not have Retention.RUNTIME and Target does not include ElementType.METHOD.
+     **/
+    private void validateTargetAnnotation(Class<? extends Annotation> targetAnnotation) throws IllegalStateException{
+        Retention annotationRetention = targetAnnotation.getAnnotation(Retention.class);
+        if(annotationRetention == null || annotationRetention.value() != RetentionPolicy.RUNTIME) {
+            throw new IllegalStateException(targetAnnotation + " must have use retention policy RUNTIME to be used as an Event Method Annotation");
+        }
+        Target annotationTarget = targetAnnotation.getAnnotation(Target.class);
+        boolean methodTarget = false;
+        if(annotationTarget != null) {
+            ElementType[] elemntTypes = annotationTarget.value();
+            for (ElementType type : elemntTypes) {
+                if(type == ElementType.METHOD) {
+                    methodTarget = true;
+                    break;
+                }
+            }
+        }
+        if(!methodTarget) {
+            throw new IllegalStateException("It must be possible to annotate a methd with " + targetAnnotation + " in order to use it as a Event Method Annotation, ensure that the @Target annotation has ElementType.METHOD set.");
+        }
+    }
+    
     /**
      * Create a new event from an event class and an interface class annotated for Method resolving.
      * 
@@ -95,6 +176,36 @@ public class EventFactoryImpl implements EventFactory {
         return eventConfig;
     }
 
+    /**
+     * Create a new event from an event class, an interface class and an annotation class.
+     * 
+     * 
+     * @param event            Event class to create EventConfig for.
+     * @param listener Event Listener Interface class to create EventConfig for.
+     * @param eventAnnotation  Event Method Annotation to create EventConfig for.
+     * @param name             Name of the event.
+     * @return a new EventConfig.
+     **/
+    public EventConfig newFromInterfaceAndMethodAnnotation(Class<? extends EventObject> event,
+                Class<? extends EventListener> listener, Class<? extends Annotation> eventAnnotation, String name) {
+        EventConfigImpl eventConfig = new EventConfigImpl(event, listener, name);
+        MethodResolving methodResolving = listener.getAnnotation(MethodResolving.class);
+        @SuppressWarnings("rawtypes")
+        MethodResolver interfaceMethodResolver = null;
+        if (methodResolving != null) {
+            interfaceMethodResolver = methodResolverExtractor.getMethodResolver(event, listener, methodResolving);
+        } else {
+            setDefaultMethod(eventConfig, event, listener);
+        }
+        validateTargetAnnotation(eventAnnotation);
+        AnnotatedMethodMethodResolver methodResolver = new AnnotatedMethodMethodResolver(eventAnnotation, interfaceMethodResolver);
+        eventConfig.setMethodResolver(methodResolver);
+        eventConfig.setEventAnnotation(eventAnnotation);
+        return eventConfig;
+        
+    }
+
+    
     /**
      * Find the default method to invoke on listener and sets it on the eventConfig.
      * 
@@ -161,5 +272,7 @@ public class EventFactoryImpl implements EventFactory {
         eventConfig.setMethodResolver(methodResolver);
         return eventConfig;
     }
+
+    
 
 }

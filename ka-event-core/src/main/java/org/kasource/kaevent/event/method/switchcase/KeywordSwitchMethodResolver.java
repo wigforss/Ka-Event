@@ -207,7 +207,7 @@ public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> 
     }
  
     @Override
-    public Method resolveMethod(EventObject event) {
+    public Method resolveMethod(EventObject event, Object target) {
 
         Object keyword = null;
         try {

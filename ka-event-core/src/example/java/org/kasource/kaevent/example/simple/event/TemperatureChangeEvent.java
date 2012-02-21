@@ -8,6 +8,7 @@ import org.kasource.kaevent.example.simple.Thermometer;
 //CHECKSTYLE:OFF
 ///CLOVER:OFF
 @Event(listener = TemperatureChangeListener.class)
+//@Event(annotation=OnTemperatureChange.class)
 public class TemperatureChangeEvent extends EventObject {
 	private static final long serialVersionUID = 1L;
 	private double currentTemperature;

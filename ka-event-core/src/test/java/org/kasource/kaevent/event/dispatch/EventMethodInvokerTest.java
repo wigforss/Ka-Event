@@ -67,11 +67,12 @@ public class EventMethodInvokerTest {
         }
         ChangeListener listener = new MyChangeListener(methodInvoked); 
         Set<EventListenerRegistration> listeners = new HashSet<EventListenerRegistration>();
+        
         listeners.add(new EventListenerRegistration(listener, null));
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        EasyMock.expect(eventConfig.getEventMethod(event))
+        EasyMock.expect(eventConfig.getEventMethod(event, listener))
             .andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
         
         EasyMockUnitils.replay();
@@ -92,7 +93,7 @@ public class EventMethodInvokerTest {
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        EasyMock.expect(eventConfig.getEventMethod(event))
+        EasyMock.expect(eventConfig.getEventMethod(event, listener))
             .andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
         
         logger.error(EasyMock.isA(String.class), EasyMock.isA(RuntimeException.class));
@@ -120,7 +121,7 @@ public class EventMethodInvokerTest {
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        EasyMock.expect(eventConfig.getEventMethod(event))
+        EasyMock.expect(eventConfig.getEventMethod(event, listener))
             .andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
         
         EasyMockUnitils.replay();
@@ -142,7 +143,7 @@ public class EventMethodInvokerTest {
         EventObject event = new ChangeEvent("Test");
        
         EasyMock.expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        EasyMock.expect(eventConfig.getEventMethod(event))
+        EasyMock.expect(eventConfig.getEventMethod(event, listener))
             .andReturn(ChangeListener.class.getDeclaredMethod("stateChanged", ChangeEvent.class));
         
         EasyMockUnitils.replay();

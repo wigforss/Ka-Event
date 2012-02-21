@@ -1,5 +1,6 @@
 package org.kasource.kaevent.event.config;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -28,7 +29,7 @@ public interface EventConfig {
      * 
      * @return Returns the interface method to be invoked
      **/
-    public Method getEventMethod(EventObject event);
+    public Method getEventMethod(EventObject event, Object target);
 
     /**
      * Return the actual event class.
@@ -44,6 +45,13 @@ public interface EventConfig {
      * @return name of the event
      */
     public String getName();
+    
+    /**
+     * Returns the event method annotation in use.
+     * 
+     * @return the event method annotation in use, null if no annotation is used for this Event.
+     **/
+    public Class<? extends Annotation> getEventAnnotation();
     
 
 }

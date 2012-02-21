@@ -132,20 +132,20 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     }
 
     @Override
-    public void registerListener(EventListener listener,
+    public void registerListener(Object listener,
             Object sourceObject) {
         sourceObjectListenerRegister.registerListener(listener, sourceObject);
     }
 
     
     @Override
-    public void registerListener(EventListener listener, Object sourceObject, List<EventFilter<EventObject>> filters) {
+    public void registerListener(Object listener, Object sourceObject, List<EventFilter<EventObject>> filters) {
         sourceObjectListenerRegister.registerListener(listener, sourceObject);
         
     }
     
     @Override
-    public void registerListenerAtChannel(EventListener listener,
+    public void registerListenerAtChannel(Object listener,
             String channelName) {
     	Channel channel = channelRegister.getChannel(channelName);
     	if (channel instanceof ListenerChannel) {
@@ -156,7 +156,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     }
     
     @Override
-    public void registerListenerAtChannel(EventListener listener,
+    public void registerListenerAtChannel(Object listener,
             String channelName, List<EventFilter<EventObject>> filters) {
     	Channel channel = channelRegister.getChannel(channelName);
     	if (channel instanceof ListenerChannel) {
@@ -290,13 +290,13 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     }
 
     @Override
-    public void unregisterListener(EventListener listener, Object sourceObject) {
+    public void unregisterListener(Object listener, Object sourceObject) {
        sourceObjectListenerRegister.unregisterListener(listener, sourceObject);
         
     }
 
     @Override
-    public void unregisterListenerFromChannel(EventListener listener, String channelName)
+    public void unregisterListenerFromChannel(Object listener, String channelName)
                 throws IllegalArgumentException {
         Channel channel = channelRegister.getChannel(channelName);
         if(channel instanceof ListenerChannel) {

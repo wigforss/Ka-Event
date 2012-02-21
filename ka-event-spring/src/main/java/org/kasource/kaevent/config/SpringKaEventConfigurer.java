@@ -1,7 +1,7 @@
 package org.kasource.kaevent.config;
 
 
-import java.util.EventListener;
+
 import java.util.EventObject;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +31,10 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 	
 	private ApplicationContext applicationContext;
 	
-	private Map<Object, List<EventListener>> listeners;
+	private Map<Object, List<Object>> listeners;
 	
 
-	private Map<EventListener, List<EventFilter<EventObject>>> filterMap;
+	private Map<Object, List<EventFilter<EventObject>>> filterMap;
 	 
 	/**
 	 * Constructor.
@@ -71,8 +71,8 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 		SourceObjectListenerRegister sourceObjectListenerRegister = 
 			configuration.getSourceObjectListenerRegister();
     	if (listeners != null) {
-    		for (Map.Entry<Object, List<EventListener>>  listenerEntry : listeners.entrySet()) {
-    			for (EventListener listener : listenerEntry.getValue()) {
+    		for (Map.Entry<Object, List<Object>>  listenerEntry : listeners.entrySet()) {
+    			for (Object listener : listenerEntry.getValue()) {
     				List<EventFilter<EventObject>> filters = getFilter(listener);
         			if (filters != null) {
         				sourceObjectListenerRegister
@@ -90,7 +90,7 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 	
 	private void registerSpringEvents(EventFactory eventFactory, EventRegister eventRegister) {
 	    for(SpringEvent springEvent : SpringEvent.values()) {
-	        eventRegister.registerEvent(eventFactory.newFromAnnotatedInterfaceClass(springEvent.getEvent(), springEvent.getListener(), springEvent.getEvent().getName()));
+	        eventRegister.registerEvent(eventFactory.newFromInterfaceAndMethodAnnotation(springEvent.getEvent(), springEvent.getListener(), springEvent.getMethodAnnotation(), springEvent.getEvent().getName()));
 	    }
 	}
 	
@@ -126,7 +126,7 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 	 * 
 	 * @param filterMap Map of filters.
 	 **/
-	public void setFilterMap(Map<EventListener, List<EventFilter<EventObject>>> filterMap) {
+	public void setFilterMap(Map<Object, List<EventFilter<EventObject>>> filterMap) {
 		this.filterMap = filterMap;
 	}
 	
@@ -142,7 +142,7 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 	 * 
 	 * @param listeners Listeners to add.
 	 **/
-	public void setListeners(Map<Object, List<EventListener>>  listeners) {
+	public void setListeners(Map<Object, List<Object>>  listeners) {
 		this.listeners = listeners;		
 	}
 

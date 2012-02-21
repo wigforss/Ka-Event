@@ -1,5 +1,6 @@
 package org.kasource.kaevent.event.config;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -47,6 +48,31 @@ public interface EventFactory {
      **/
     public abstract EventConfig newFromAnnotatedInterfaceClass(Class<? extends EventObject> event,
             Class<? extends EventListener> listener, String name);
+    
+   /**
+    * Create a new event from an event class and an annotation class.
+    * 
+    * 
+    * @param event            Event class to create EventConfig for.
+    * @param eventAnnotation  Event Method Annotation to create EventConfig for.
+    * @param name             Name of the event.
+    * @return a new EventConfig.
+    **/
+   public abstract EventConfig newFromMethodAnnotation(Class<? extends EventObject> event,
+                Class<? extends Annotation> eventAnnotation, String name);
+   
+   /**
+    * Create a new event from an event class, an interface class and an annotation class.
+    * 
+    * 
+    * @param event            Event class to create EventConfig for.
+    * @param listener Event Listener Interface class to create EventConfig for.
+    * @param eventAnnotation  Event Method Annotation to create EventConfig for.
+    * @param name             Name of the event.
+    * @return a new EventConfig.
+    **/
+   public abstract EventConfig newFromInterfaceAndMethodAnnotation(Class<? extends EventObject> event,
+               Class<? extends EventListener> listener, Class<? extends Annotation> eventAnnotation, String name);
 
     /**
      * Create a new event from an event class, interface class and the event listener method to invoke.

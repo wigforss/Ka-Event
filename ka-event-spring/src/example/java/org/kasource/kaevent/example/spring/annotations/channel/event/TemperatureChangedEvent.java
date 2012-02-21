@@ -7,7 +7,7 @@ import org.kasource.kaevent.example.spring.annotations.channel.Thermometer;
 
 ///CLOVER:OFF
 //CHECKSTYLE:OFF
-@Event(listener = TemperatureChangedListener.class, channels = "temperatureChannel", createChannels = true)
+@Event(annotation = OnTemperatureChanged.class, channels = "temperatureChannel", createChannels = true)
 public class TemperatureChangedEvent extends BaseEvent {
 	private static final long serialVersionUID = 1L;
 

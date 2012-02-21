@@ -31,7 +31,7 @@ public interface ListenerChannel extends Channel {
      * @param  filters
      *             List of event filters.            
      **/
-    public abstract void registerListener(EventListener listener, List<EventFilter<EventObject>> filters);
+    public abstract void registerListener(Object listener, List<EventFilter<EventObject>> filters);
     
     /**
      * Register a new listener object to this channel.
@@ -39,7 +39,7 @@ public interface ListenerChannel extends Channel {
      * @param listener
      *            Listener  object to register
      **/
-    public abstract void registerListener(EventListener listener);
+    public abstract void registerListener(Object listener);
 
     /**
      * Remove a registered listener from this channel.
@@ -47,6 +47,6 @@ public interface ListenerChannel extends Channel {
      * @param listener
      *            Listener object to unregister
      **/
-    public abstract void unregisterListener(EventListener listener);  
+    public abstract void unregisterListener(Object listener);  
    
 }

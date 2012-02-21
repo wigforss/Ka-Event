@@ -64,7 +64,7 @@ public abstract class ListenerChannelAdapter extends ChannelAdapter implements L
      *             The event filters to use for this listener.
      **/ 
     @Override
-    public void registerListener(EventListener listener, List<EventFilter<EventObject>> filters) {
+    public void registerListener(Object listener, List<EventFilter<EventObject>> filters) {
         listenerRegister.registerListener(listener, filters);
     }
     
@@ -75,7 +75,7 @@ public abstract class ListenerChannelAdapter extends ChannelAdapter implements L
      *            Listener object to register
      **/
     @Override
-    public void registerListener(EventListener listener) {
+    public void registerListener(Object listener) {
         listenerRegister.registerListener(listener);
     }
 
@@ -86,7 +86,7 @@ public abstract class ListenerChannelAdapter extends ChannelAdapter implements L
      *            Listener object to unregister
      **/
     @Override
-    public void unregisterListener(EventListener listener) {
+    public void unregisterListener(Object listener) {
         listenerRegister.unregisterListener(listener);
 
     }

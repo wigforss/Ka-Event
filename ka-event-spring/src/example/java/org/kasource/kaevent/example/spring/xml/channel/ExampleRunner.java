@@ -20,7 +20,7 @@ public class ExampleRunner  {
 
     public static void main(String[] args) {
     	  ApplicationContext context = 
-    	      new ClassPathXmlApplicationContext("org/kasource/kaevent/example/spring/channel/channel-context.xml");
+    	      new ClassPathXmlApplicationContext("org/kasource/kaevent/example/spring/xml/channel/channel-context.xml");
   	    Thermometer thermometer = (Thermometer) context.getBean("thermometer");
   	    thermometer.run();
     }

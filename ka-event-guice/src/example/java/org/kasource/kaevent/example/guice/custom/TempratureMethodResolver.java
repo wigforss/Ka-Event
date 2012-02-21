@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.example.guice.custom;
 
 import java.lang.reflect.Method;
@@ -25,7 +22,7 @@ public class TempratureMethodResolver implements MethodResolver<TemperatureChang
     }
 
     @Override
-    public Method resolveMethod(TemperatureChangeEvent event) {
+    public Method resolveMethod(TemperatureChangeEvent event, Object target) {
     	System.out.println("Resolve method");
         if (event.getCurrentTemperature() > optimalTemp) {
             return ReflectionUtils.getDeclaredMethod(TemperatureChangeListener.class, "highTemperature",

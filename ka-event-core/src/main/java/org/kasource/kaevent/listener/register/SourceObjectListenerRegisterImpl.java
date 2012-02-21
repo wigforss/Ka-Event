@@ -1,7 +1,6 @@
 package org.kasource.kaevent.listener.register;
 
 import java.util.Collection;
-import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
@@ -22,11 +21,11 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
 
     private Map<Class<? extends EventObject>, 
                 Map<Object, 
-                    Map<EventListener, 
+                    Map<Object, 
                     EventListenerRegistration>
                 >
             > objectListenersByEvent = 
-                new HashMap<Class<? extends EventObject>, Map<Object, Map<EventListener, EventListenerRegistration>>>();
+                new HashMap<Class<? extends EventObject>, Map<Object, Map<Object, EventListenerRegistration>>>();
 
     /**
      * Constructor.
@@ -40,10 +39,10 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
 
     @Override
     public Collection<EventListenerRegistration> getListenersByEvent(EventObject event) {
-        Map<Object, Map<EventListener, EventListenerRegistration>> objectListenerMap = objectListenersByEvent.get(event
+        Map<Object, Map<Object, EventListenerRegistration>> objectListenerMap = objectListenersByEvent.get(event
                     .getClass());
         if (objectListenerMap != null) {
-            Map<EventListener, EventListenerRegistration> listenerByObjectMap = objectListenerMap
+            Map<Object, EventListenerRegistration> listenerByObjectMap = objectListenerMap
                         .get(event.getSource());
             if (listenerByObjectMap != null) {
                 return listenerByObjectMap.values();
@@ -53,17 +52,17 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
     }
 
     @Override
-    protected void addListener(EventListener listener, Class<? extends EventObject> eventClass, Object sourceObject,
+    protected void addListener(Object listener, Class<? extends EventObject> eventClass, Object sourceObject,
                 List<EventFilter<EventObject>> filters) {
-        Map<Object, Map<EventListener, EventListenerRegistration>> objectListenerMap = objectListenersByEvent
+        Map<Object, Map<Object, EventListenerRegistration>> objectListenerMap = objectListenersByEvent
                     .get(eventClass);
         if (objectListenerMap == null) {
-            objectListenerMap = new WeakHashMap<Object, Map<EventListener, EventListenerRegistration>>();
+            objectListenerMap = new WeakHashMap<Object, Map<Object, EventListenerRegistration>>();
             objectListenersByEvent.put(eventClass, objectListenerMap);
         }
-        Map<EventListener, EventListenerRegistration> listenerByObjectMap = objectListenerMap.get(sourceObject);
+        Map<Object, EventListenerRegistration> listenerByObjectMap = objectListenerMap.get(sourceObject);
         if (listenerByObjectMap == null) {
-            listenerByObjectMap = new WeakHashMap<EventListener, EventListenerRegistration>();
+            listenerByObjectMap = new WeakHashMap<Object, EventListenerRegistration>();
             objectListenerMap.put(sourceObject, listenerByObjectMap);
         }
 
@@ -74,11 +73,11 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
     }
 
     @Override
-    public void unregisterListener(EventListener listener, Object sourceObject) {
+    public void unregisterListener(Object listener, Object sourceObject) {
 
-        for (Map<Object, Map<EventListener, EventListenerRegistration>> objectListenerMap : objectListenersByEvent
+        for (Map<Object, Map<Object, EventListenerRegistration>> objectListenerMap : objectListenersByEvent
                     .values()) {
-            Map<EventListener, EventListenerRegistration> listenerByObjectMap = objectListenerMap.get(sourceObject);
+            Map<Object, EventListenerRegistration> listenerByObjectMap = objectListenerMap.get(sourceObject);
             if (listenerByObjectMap != null) {
                 listenerByObjectMap.remove(listener);
             }
@@ -87,13 +86,13 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
     }
 
     @Override
-    public void registerListener(EventListener listener, Object sourceObject) {
+    public void registerListener(Object listener, Object sourceObject) {
         super.register(listener, sourceObject);
 
     }
 
     @Override
-    public void registerListener(EventListener listener, Object sourceObject, List<EventFilter<EventObject>> filters) {
+    public void registerListener(Object listener, Object sourceObject, List<EventFilter<EventObject>> filters) {
         super.register(listener, sourceObject, filters);
 
     }

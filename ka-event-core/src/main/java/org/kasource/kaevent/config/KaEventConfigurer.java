@@ -255,10 +255,14 @@ public class KaEventConfigurer {
     private void configureDefaultEventQueue(KaEventConfig xmlConfig, ThreadPoolQueueExecutor threadPoolExecutor) {
         if (xmlConfig.getThreadPoolExecutor() != null) {
             if (xmlConfig.getThreadPoolExecutor().getMaximumPoolSize() != null) {
-                threadPoolExecutor.setMaximumPoolSize(xmlConfig.getThreadPoolExecutor().getMaximumPoolSize());
+                int maxPoolSize = xmlConfig.getThreadPoolExecutor().getMaximumPoolSize();
+                if(threadPoolExecutor.getCorePoolSize() > maxPoolSize) {
+                    threadPoolExecutor.setCorePoolSize(maxPoolSize);
+                }
+                threadPoolExecutor.setMaximumPoolSize(maxPoolSize);
             }
             if (xmlConfig.getThreadPoolExecutor().getCorePoolSize() != null) {
-                threadPoolExecutor.setCorePoolSize(xmlConfig.getThreadPoolExecutor().getCorePoolSize());
+                threadPoolExecutor.setCorePoolSize((int) xmlConfig.getThreadPoolExecutor().getCorePoolSize());
             }
             if (xmlConfig.getThreadPoolExecutor().getKeepAliveTime() != null) {
                 threadPoolExecutor.setKeepAliveTime(xmlConfig.getThreadPoolExecutor().getKeepAliveTime()

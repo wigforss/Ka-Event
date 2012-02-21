@@ -1,5 +1,6 @@
 package org.kasource.kaevent.event.register;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventFactory;
 
@@ -22,6 +24,9 @@ public class DefaultEventRegister implements EventRegister {
     
     private Map<Class<? extends EventListener>, EventConfig> eventsByInterface = 
     	new HashMap<Class<? extends EventListener>, EventConfig>();
+    
+    private Map<Class<? extends Annotation>, EventConfig> eventsByAnnotation = 
+        new HashMap<Class<? extends Annotation>, EventConfig>();
     
     private Map<String, EventConfig> eventsByName = new HashMap<String, EventConfig>();
     
@@ -101,12 +106,29 @@ public class DefaultEventRegister implements EventRegister {
     @Override
     public void registerEvent(EventConfig event) {
         eventsByClass.put(event.getEventClass(), event);
-        eventsByInterface.put(event.getListener(), event);
+        if (event.getListener() != EventListener.class) {
+            eventsByInterface.put(event.getListener(), event);
+        } 
+        if(event.getEventAnnotation() != Event.class) {
+            eventsByAnnotation.put(event.getEventAnnotation(), event);
+        }
         eventsByName.put(event.getName(), event);
     }
     
     
 
+    public Set<Class<? extends Annotation>> getRegisteredEventAnnotations() {
+        return eventsByAnnotation.keySet();
+    }
+    
+    public EventConfig getEventByAnnotation(Class<? extends Annotation> eventAnnotation) {
+        EventConfig event = eventsByAnnotation.get(eventAnnotation);
+        if (event == null) {
+            throw new NoSuchEventException("Can not find any event by annotation " + eventAnnotation);
+        }
+        return event;
+    }
+    
     @Override
     public void registerEvent(Class<? extends EventObject> eventClass) {
             EventConfig eventConfig = eventFactory.newFromAnnotatedEventClass(

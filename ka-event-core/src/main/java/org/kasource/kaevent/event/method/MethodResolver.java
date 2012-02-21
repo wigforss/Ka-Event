@@ -32,5 +32,5 @@ public interface MethodResolver<T extends EventObject> {
      * 
      * @throws IllegalStateException
      **/
-    public  Method resolveMethod(T event);
+    public  Method resolveMethod(T event, Object target);
 }
