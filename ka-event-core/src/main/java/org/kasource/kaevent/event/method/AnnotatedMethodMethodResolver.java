@@ -69,6 +69,10 @@ public class AnnotatedMethodMethodResolver implements MethodResolver<EventObject
     private Method resolveAnnotatedMethod(EventObject event, Object target) {
         Set<Method> methods = new HashSet<Method>();
         methods.addAll(Arrays.asList(target.getClass().getDeclaredMethods()));
+        Class<?> clazz = target.getClass();
+        while((clazz = clazz.getSuperclass()) != null) {
+            methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
+        }
         Set<Method> candidates = ReflectionUtils.filterAnnotatedMethods(methods, targetAnnotation);
         for(Method candidate : candidates) {
             if(candidate.getParameterTypes().length == 1 
@@ -77,7 +81,7 @@ public class AnnotatedMethodMethodResolver implements MethodResolver<EventObject
                 
             }
         }
-       
+        
         return null;
     }
 

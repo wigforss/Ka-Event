@@ -176,10 +176,10 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
                         + " but the method has more than one paremeter, should have one paramter of type " + eventClass);   
         }
         
-        if (method.getParameterTypes()[0].isAssignableFrom(eventClass)) {
+        if (!method.getParameterTypes()[0].isAssignableFrom(eventClass)) {
         throw new IllegalStateException(listener + "." + method.getName() + " is annotated with @"
                     + annotation.getSimpleName()
-                    + " but the method parameter pasrameter could no be assigned from "
+                    + " but the method parameter could no be assigned from "
                     + eventClass);
         }
     }
