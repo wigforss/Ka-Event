@@ -12,11 +12,13 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.kasource.commons.reflection.ReflectionUtils;
 import org.kasource.kaevent.annotations.listener.EventListenerFilter;
 import org.kasource.kaevent.bean.BeanResolver;
+import org.kasource.kaevent.event.config.InvalidEventConfigurationException;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 
@@ -131,36 +133,17 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
                 }
             }
         }
-        Method methods[] = listener.getClass().getDeclaredMethods();
         Set<Class<? extends Annotation>> registeredAnnotations = eventRegister.getRegisteredEventAnnotations();
-        for (Method method : methods) {
-            Annotation[] annotations = method.getDeclaredAnnotations();
+        Map<Class<? extends Annotation>, Method>  methodAnnotations = ReflectionUtils.findAnnotatedMethods(listener.getClass(), registeredAnnotations);
+        for (Map.Entry<Class<? extends Annotation>, Method> annotation : methodAnnotations.entrySet()){
+            validateAnnotatedEventMethod(listener, annotation.getValue(), annotation.getKey(), eventRegister.getEventByAnnotation(annotation.getKey()).getEventClass());
+                addListener(listener, eventRegister.getEventByAnnotation(annotation.getKey())
+                            .getEventClass(), sourceObject, filters);
+                listenerAdded = true;
             
-            for (Annotation annotation : annotations) {
-                if (registeredAnnotations.contains(annotation.annotationType())) {
-                    if (method.getParameterTypes().length == 1) {
-                        if (method.getParameterTypes()[0].isAssignableFrom(eventRegister.getEventByAnnotation(
-                                    annotation.annotationType()).getEventClass())) {
-                            addListener(listener, eventRegister.getEventByAnnotation(annotation.annotationType())
-                                        .getEventClass(), sourceObject, filters);
-                            listenerAdded = true;
-                        } else {
-                          
-                            throw new IllegalStateException(listener + "." + method.getName() + " is annotated with @"
-                                        + annotation.getClass().getSimpleName()
-                                        + " but the method parameter pasrameter could no be assigned from "
-                                        + eventRegister.getEventByAnnotation(annotation.getClass()).getEventClass());
-                        }
-                    } else {
-                        throw new IllegalStateException(listener + "." + method.getName() + " is annotated with @"
-                                    + annotation.getClass().getSimpleName() + " but does not have only one pasrameter.");
-                    }
-
-                }
-
-            }
-
         }
+        
+       
         if (!listenerAdded) {
             throw new IllegalStateException(
                         listener
@@ -169,6 +152,38 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
 
     }
 
+    /**
+     * Validate that the method is valid for event invocation, that is has only parameter that
+     * can be assigned from the eventClass. Throws exception of validation fails.
+     * 
+     * @param listener      Listener object which has the method
+     * @param method        Method annotated with annotation
+     * @param annotation    Annotation method is annotated with.
+     * @param eventClass    Event Class associated with the annotation.
+     * @throws IllegalStateException if the annotated is not valid for event invocation.
+     **/
+    private void validateAnnotatedEventMethod(Object listener, 
+                                              Method method, 
+                                              Class<? extends Annotation> annotation, 
+                                              Class<? extends EventObject> eventClass) throws IllegalStateException {
+        if (method.getParameterTypes().length == 0) {
+            throw new IllegalStateException(listener + "." + method.getName() + " is annotated with @"
+                        + annotation.getSimpleName()
+                        + " but the method has no paremeters, should have one paramter of type " + eventClass);
+        } else if (method.getParameterTypes().length > 1) {
+            throw new IllegalStateException(listener + "." + method.getName() + " is annotated with @"
+                        + annotation.getSimpleName()
+                        + " but the method has more than one paremeter, should have one paramter of type " + eventClass);   
+        }
+        
+        if (method.getParameterTypes()[0].isAssignableFrom(eventClass)) {
+        throw new IllegalStateException(listener + "." + method.getName() + " is annotated with @"
+                    + annotation.getSimpleName()
+                    + " but the method parameter pasrameter could no be assigned from "
+                    + eventClass);
+        }
+    }
+    
     /**
      * Returns a list of EventFilters based on EventListenerFilterAnnotation.
      * 

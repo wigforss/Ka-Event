@@ -7,8 +7,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -84,7 +86,7 @@ public class ReflectionUtils {
 
     /**
      * Returns true if the supplied class <i>clazz</i> has any declared method annotated
-     * with any annotation in <i>annotations</i>.
+     * with <i>annotation</i>.
      * 
      * @param clazz
      *            The class to inspect
@@ -104,6 +106,56 @@ public class ReflectionUtils {
             }
         }
         return false;
+    }
+    
+    /**
+     * Returns the method of the supplied class <i>clazz</i> that is  annotated
+     * with <i>annotation</i>.
+     * 
+     * @param clazz
+     *            The class to inspect
+     * @param annotation
+     *            The annotation to look for
+     * 
+     * @return The method annotated with annotation 
+     */
+    public static Method getAnnotatatedMethod(Class<?> clazz, Class<? extends Annotation> annotation) {
+        Method[] methods = clazz.getDeclaredMethods();
+        for (Method method : methods) {
+            Annotation[] methodAnnotations = method.getAnnotations();
+            for (Annotation anno : methodAnnotations) {
+                if (anno.annotationType().equals(annotation)) {
+                    return method;
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Returns a map of methods annotated with an annotation from the annotations parameter.
+     * 
+     * @param clazz         The class to inspect
+     * @param annotations   Method annotations to find methods for
+     * @return Methods that is annotated with the supplied annotation set.
+     **/
+    public static Map<Class<? extends Annotation>, Method> findAnnotatedMethods(Class<?> clazz, Set<Class<? extends Annotation>> annotations) {
+        Map<Class<? extends Annotation>, Method> annotatedMethods = new HashMap<Class<? extends Annotation>, Method>();
+        Method method = null;
+        for (Class<? extends Annotation> annotation : annotations) {          
+            if((method = ReflectionUtils.getAnnotatatedMethod(clazz, annotation)) != null) {
+                annotatedMethods.put(annotation, method);
+            }
+        }
+        while((clazz = clazz.getSuperclass()) != null) {
+            for (Class<? extends Annotation> annotation : annotations) {
+                if((method = ReflectionUtils.getAnnotatatedMethod(clazz, annotation)) != null && !annotatedMethods.containsKey(annotation)) {
+                    annotatedMethods.put(annotation, method);
+                }
+            }
+        }
+        
+        return annotatedMethods;
     }
 
     // //////////////////////////////////////
