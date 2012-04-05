@@ -2,6 +2,7 @@ package org.kasource.kaevent.inttest.spring.jms;
 
 import javax.annotation.Resource;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ public class JmsChannelTest implements Runnable {
     @Resource
     private EventMessageListener listener;
     
+   
     @Test
     public void sendMessage() throws InterruptedException {
         eventDispatcher.fire(new MyEvent("test"));

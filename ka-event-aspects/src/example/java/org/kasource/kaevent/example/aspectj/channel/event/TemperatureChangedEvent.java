@@ -3,7 +3,7 @@ package org.kasource.kaevent.example.aspectj.channel.event;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.event.BaseEvent;
 import org.kasource.kaevent.example.aspectj.channel.Thermometer;
-import org.kasource.kaevent.example.channel.event.TemperatureChangedListener;
+
 
 ///CLOVER:OFF
 @Event(listener=TemperatureChangedListener.class, channels="temperatureChannel")

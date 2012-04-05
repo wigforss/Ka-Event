@@ -7,6 +7,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashSet;
@@ -120,6 +121,7 @@ public class ChannelFactoryTest {
         expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
         expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
         expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class);
+        expect(eventRegister.getRegisteredEventAnnotations()).andReturn(Collections.EMPTY_SET);
         EasyMockUnitils.replay();
         ListenerChannel channel = factory.createChannel(ChannelImpl.class, "testChannel", events, listeners);
         assertEquals(channel, capturedChannel.getValue());

@@ -78,7 +78,9 @@ public class RegisterBeanListenerBeanDefinitionDecorator extends
 				list = new ManagedList();
 				map.put(soureBeanRef, list);
 			}
-			list.add(listenerRef);
+			if(!list.contains(listenerRef)) {
+			    list.add(listenerRef);
+			}
 		}
 	}
 	

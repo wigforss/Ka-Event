@@ -5,7 +5,6 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
 
-
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.register.EventRegister;

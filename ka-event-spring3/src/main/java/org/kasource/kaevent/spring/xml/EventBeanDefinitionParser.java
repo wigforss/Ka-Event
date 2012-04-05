@@ -38,12 +38,13 @@ public class EventBeanDefinitionParser extends
 	protected void doParse(Element element, BeanDefinitionBuilder bean) {
 		bean.addPropertyValue("name", element.getAttribute(ID_ATTRIBUTE));
 		bean.addPropertyValue("eventClass", element.getAttribute("eventClass"));
+		bean.addPropertyValue("annotation", element.getAttribute("annotation"));
 		String listenerInterface = element.getAttribute("listenerInterface");
 		if (listenerInterface != null && listenerInterface.length() > 0) {
 			bean.addPropertyValue("listenerClass", element.getAttribute("listenerInterface"));
 		}
 		bean.addDependsOn(KaEventSpringBean.EVENT_REGISTER.getId());
-		bean.addDependsOn(KaEventSpringBean.EVENT_FACTORY.getId());
+		bean.addDependsOn(KaEventSpringBean.EVENT_BUILDER_FACTORY.getId());
 		
 		Element switchMethodResolver = DomUtils.getChildElementByTagName(element, "switchMethodResolver");
 		if (switchMethodResolver != null) {

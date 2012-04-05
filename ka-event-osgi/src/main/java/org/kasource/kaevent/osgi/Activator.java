@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.kasource.commons.reflection.AnnotationClassFilter;
-import org.kasource.commons.reflection.AssignableFromClassFilter;
-import org.kasource.commons.reflection.FilterList;
+import org.kasource.commons.reflection.classfilter.AnnotationClassFilter;
+import org.kasource.commons.reflection.classfilter.AssignableFromClassFilter;
+import org.kasource.commons.reflection.classfilter.FilterList;
 import org.kasource.kaevent.config.KaEventConfig;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.annotations.listener.ChannelListener;
@@ -21,7 +21,7 @@ import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.event.dispatch.DefaultEventDispatcher;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.osgi.util.OsgiUtils;
@@ -37,7 +37,7 @@ public class Activator implements BundleActivator, BundleListener, KaEventInitia
 	private BundleContext bundleContext;
 	private EventDispatcher eventDispatcher;
 	private EventRegister eventRegister;
-	private EventFactory eventFactory;
+	private EventBuilderFactory eventBuilderFactory;
 	private ChannelFactory channelFactory;
 	private ChannelRegister channelRegister;
 	
@@ -93,8 +93,8 @@ public class Activator implements BundleActivator, BundleListener, KaEventInitia
 	private void registerEvents(Bundle bundle) {
 		Set<Class<?>> eventClasses = getEventClasses(bundle);
 		for(Class<?> eventClass : eventClasses) {
-			System.out.println("Register Event: "+eventClass);
-			EventConfig event = eventFactory.newFromAnnotatedEventClass((Class<? extends EventObject>)eventClass);
+			
+			EventConfig event = eventBuilderFactory.getBuilder((Class<? extends EventObject>)eventClass).build();
 			eventRegister.registerEvent(event);
 			Event eventAnnotation = eventClass.getAnnotation(Event.class);
 			String[] channels = eventAnnotation.channels();
@@ -159,7 +159,7 @@ public class Activator implements BundleActivator, BundleListener, KaEventInitia
 	@Override
 	public void doInitialize(KaEventConfiguration configuration) {
 		this.eventRegister = configuration.getEventRegister();
-		this.eventFactory = configuration.getEventFactory();
+		this.eventBuilderFactory = configuration.getEventBuilderFactory();
 		this.channelFactory = configuration.getChannelFactory();
 		this.channelRegister = configuration.getChannelRegister();
 	}

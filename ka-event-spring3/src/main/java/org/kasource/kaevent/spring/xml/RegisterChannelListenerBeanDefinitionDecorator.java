@@ -59,11 +59,11 @@ public class RegisterChannelListenerBeanDefinitionDecorator
 		 MutablePropertyValues props = channel.getPropertyValues();
 		PropertyValue value = props.getPropertyValue("listeners");
 		 if (value == null) {
-			 ManagedList list = new ManagedList();
+			 ManagedList<RuntimeBeanReference> list = new ManagedList<RuntimeBeanReference>();
 			 list.add(new RuntimeBeanReference(definition.getBeanName()));
 			 props.addPropertyValue("listeners", list);
 		 } else {
-			 ManagedList list = (ManagedList) value.getValue();
+			 ManagedList<RuntimeBeanReference> list = (ManagedList<RuntimeBeanReference>) value.getValue();
 			 list.add(new RuntimeBeanReference(definition.getBeanName()));
 		 }
 	}

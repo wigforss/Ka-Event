@@ -1,4 +1,5 @@
-package org.kasource.commons.reflection;
+package org.kasource.commons.reflection.classfilter;
+
 
 /**
  * Filters classes which are assignable from the supplied assignable class.

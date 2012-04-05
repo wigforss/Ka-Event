@@ -6,7 +6,6 @@
   	<relativePath>../pom.xml</relativePath>
   </parent>
 	<modelVersion>4.0.0</modelVersion>
-	<version>0.8-SNAPSHOT</version>
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-event-core</artifactId>
 	<packaging>jar</packaging>

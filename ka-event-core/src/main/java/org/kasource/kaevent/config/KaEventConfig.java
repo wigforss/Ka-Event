@@ -779,8 +779,10 @@ public class KaEventConfig {
             protected String name;
             @XmlAttribute(required = true)
             protected String eventClass;
-            @XmlAttribute(required = true)
-            protected String listenerInterface;
+            @XmlAttribute
+            protected String listenerInterface;           
+            @XmlAttribute
+            protected String annotation;
 
             /**
              * Gets the value of the annotationMethodResolver property.
@@ -950,6 +952,19 @@ public class KaEventConfig {
                 this.listenerInterface = value;
             }
 
+            /**
+             * @return the annotation
+             */
+            public String getAnnotation() {
+                return annotation;
+            }
+
+            /**
+             * @param annotation the annotation to set
+             */
+            public void setAnnotation(String annotation) {
+                this.annotation = annotation;
+            }
 
             /**
              * <p>Java class for anonymous complex type.
@@ -1372,6 +1387,9 @@ public class KaEventConfig {
                 }
 
             }
+
+
+            
 
         }
 

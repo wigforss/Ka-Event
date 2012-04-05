@@ -1,9 +1,7 @@
-/**
- * 
- */
 package org.kasource.kaevent.event.config;
 
 import java.util.EventListener;
+import java.util.EventObject;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -20,16 +18,9 @@ import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
-/**
- * @author rikardwigforss
- *
- */
-//CHECKSTYLE:OFF
 @RunWith(UnitilsJUnit4TestClassRunner.class)
-public class EventFactoryTest {
+public class EventBuilderImplTest {
 
-    
-    
     private BeanResolver beanResolver = EasyMockUnitils.createMock(BeanResolver.class);
     
     @SuppressWarnings("rawtypes")
@@ -38,13 +29,14 @@ public class EventFactoryTest {
     
     
     @TestedObject
-    private EventFactory factory = new EventFactoryImpl(beanResolver);
+    private EventBuilderImpl builder = new EventBuilderImpl(beanResolver, EventObject.class);
     
     @Test
     public void createEventConfig() {
+        builder = new EventBuilderImpl(beanResolver, TemperatureBeanChangedEvent.class);
         EasyMock.expect(beanResolver.getBean("testBean", MethodResolver.class)).andReturn(methodResolver);
         EasyMockUnitils.replay();
-        factory.newFromAnnotatedEventClass(TemperatureBeanChangedEvent.class);
+        builder.build();
     }
     
     @Event(listener = TemperatureBeanEventListener.class)

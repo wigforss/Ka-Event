@@ -15,8 +15,10 @@ import javax.swing.event.ChangeListener;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kasource.kaevent.annotations.event.Event;
+import org.kasource.kaevent.event.config.EventBuilder;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
@@ -36,11 +38,13 @@ public class DefaultEventRegisterTest {
     
     @Mock
     @InjectIntoByType
-    private EventFactory eventFactory;
+    private EventBuilderFactory eventBuilderFactory;
     
+    @Mock
+    private EventBuilder builder;
    
     @TestedObject
-    private DefaultEventRegister register = new DefaultEventRegister(eventFactory);
+    private DefaultEventRegister register = new DefaultEventRegister(eventBuilderFactory);
     
     
     @SuppressWarnings("rawtypes")
@@ -48,9 +52,11 @@ public class DefaultEventRegisterTest {
     public void registerEventTest() throws IOException {
         Set<EventConfig> importedEvents = new HashSet<EventConfig>();
         importedEvents.add(eventConfig);
-        EasyMock.expect(eventFactory.newFromAnnotatedEventClass(ChangeEvent.class)).andReturn(eventConfig);
+        EasyMock.expect(eventBuilderFactory.getBuilder(ChangeEvent.class)).andReturn(builder);
+        EasyMock.expect(builder.build()).andReturn(eventConfig);
         EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class);
-        EasyMock.expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class);
+        EasyMock.expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class).times(2);
+        EasyMock.expect((Class) eventConfig.getEventAnnotation()).andReturn(Event.class);
         EasyMock.expect(eventConfig.getName()).andReturn("Test event");
         EasyMockUnitils.replay();
         register.registerEvent(ChangeEvent.class);

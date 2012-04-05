@@ -38,7 +38,7 @@ public class ExampleConfiguration {
     
     /*
     @Produces @Named("tempEvent")
-    EventConfig getTempratureEvent(EventFactory eventFactory) {
+    EventConfig getTempratureEvent(EventBuilderFactory eventFactory) {
         return eventFactory.newFromAnnotatedEventClass(TemperatureChangeEvent.class, "tempEvent");
     }
     */

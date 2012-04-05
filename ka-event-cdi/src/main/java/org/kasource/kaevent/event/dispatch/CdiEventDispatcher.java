@@ -12,7 +12,6 @@ import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.config.CdiKaEventConfigurer;
 import org.kasource.kaevent.event.ForwardedCdiEvent;
-import org.kasource.kaevent.event.ForwardedEvent;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 

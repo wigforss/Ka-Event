@@ -8,7 +8,7 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Map;
 
-import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.commons.util.reflection.MethodUtils;
 
 /**
  * Verifies a KeywordSwitchMethodResolver configuration.
@@ -30,7 +30,7 @@ public class KeywordSwitchVerifier {
             Class<? extends EventListener> listenerClass) throws IllegalArgumentException {
         verifyListenerMethod(resolver.getDefaultMethod(), eventClass, listenerClass);
         verifyKeywordMethod(resolver.getEventKeywordMethod(), eventClass);
-        ReflectionUtils.verifyMethodSignature(resolver.getDefaultMethod(), Void.TYPE, eventClass);
+        MethodUtils.verifyMethodSignature(resolver.getDefaultMethod(), Void.TYPE, eventClass);
         verifyMethodMap(resolver.getMethodMap(), eventClass, listenerClass);
     }
     
@@ -46,7 +46,7 @@ public class KeywordSwitchVerifier {
      **/
     private void verifyListenerMethod(Method method, Class<? extends EventObject> eventClass,
             Class<? extends EventListener> listenerClass) throws IllegalArgumentException {
-        ReflectionUtils.verifyMethodSignature(method, Void.TYPE, eventClass);
+        MethodUtils.verifyMethodSignature(method, Void.TYPE, eventClass);
         if (!method.getDeclaringClass().equals(listenerClass)) {
             throw new IllegalArgumentException("Event method " + method + " must be declared in "
                     + listenerClass);

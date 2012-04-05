@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.commons.util.reflection.MethodUtils;
 
 /**
  * Method resolver that resolves what method to invoke by inspecting annotated methods on the target Object.
@@ -73,7 +73,7 @@ public class AnnotatedMethodMethodResolver implements MethodResolver<EventObject
         while((clazz = clazz.getSuperclass()) != null) {
             methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
         }
-        Set<Method> candidates = ReflectionUtils.filterAnnotatedMethods(methods, targetAnnotation);
+        Set<Method> candidates = MethodUtils.filterAnnotatedMethods(methods, targetAnnotation);
         for(Method candidate : candidates) {
             if(candidate.getParameterTypes().length == 1 
                         && candidate.getParameterTypes()[0].isAssignableFrom(event.getClass())) {

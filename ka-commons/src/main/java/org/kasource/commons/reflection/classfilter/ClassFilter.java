@@ -1,4 +1,4 @@
-package org.kasource.commons.reflection;
+package org.kasource.commons.reflection.classfilter;
 
 /**
  * Filters classes

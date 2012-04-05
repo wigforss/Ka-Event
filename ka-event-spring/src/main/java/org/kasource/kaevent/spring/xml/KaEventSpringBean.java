@@ -4,7 +4,7 @@ import org.kasource.kaevent.bean.SpringBeanResolver;
 import org.kasource.kaevent.channel.ChannelRegisterImpl;
 import org.kasource.kaevent.channel.SpringChannelFactory;
 import org.kasource.kaevent.config.KaEventConfigurationImpl;
-import org.kasource.kaevent.event.config.EventFactoryImpl;
+import org.kasource.kaevent.event.config.EventBuilderFactoryImpl;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
 import org.kasource.kaevent.event.dispatch.EventRouterImpl;
 import org.kasource.kaevent.event.dispatch.SpringEventDispatcher;
@@ -25,13 +25,13 @@ public enum KaEventSpringBean {
 			      new String[]{},
 			      new String[]{},
 			      new String[]{}),
-    REGISTER_LISTENERS(RegisterListenerBeanPostProcessor.class, "kaEvent.postBeanProcessor  ",
+    REGISTER_LISTENERS(RegisterListenerBeanPostProcessor.class, "kaEvent.postBeanProcessor",
 			                  "",
 			                  new String[]{},
 			                  new String[]{},
 			                  new String[]{}),
-	EVENT_FACTORY(EventFactoryImpl.class,
-			"kaEvent.eventFactory", 
+	EVENT_BUILDER_FACTORY(EventBuilderFactoryImpl.class,
+			"kaEvent.eventBuilderFactory", 
 			"",
 			new String[]{"kaEvent.beanResolver"},
 			new String[]{},
@@ -39,7 +39,7 @@ public enum KaEventSpringBean {
 	EVENT_REGISTER(DefaultEventRegister.class,
 			"kaEvent.eventRegister",
 			"",
-			new String[]{"kaEvent.eventFactory"},
+			new String[]{"kaEvent.eventBuilderFactory"},
 			new String[]{},
 			new String[]{}),
 	CHANNEL_REGISTER(ChannelRegisterImpl.class,
@@ -101,7 +101,7 @@ public enum KaEventSpringBean {
 			new String[]{},
 			new String[]{"eventDispatcher",
 						 "beanResolver",
-						 "eventFactory",
+						 "eventBuilderFactory",
 						 "eventRegister",
 						 "eventMethodInvoker",
 						 "sourceObjectListenerRegister",
@@ -111,7 +111,7 @@ public enum KaEventSpringBean {
 						 "queueThread"},
 			new String[]{"kaEvent.eventDispatcher",
 						 "kaEvent.beanResolver",
-						 "kaEvent.eventFactory",
+						 "kaEvent.eventBuilderFactory",
 						 "kaEvent.eventRegister", 
 						 "kaEvent.eventMethodInvoker",
 						 "kaEvent.sourceObjectListenerRegister",

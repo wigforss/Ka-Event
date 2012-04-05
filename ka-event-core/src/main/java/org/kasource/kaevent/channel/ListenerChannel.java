@@ -1,6 +1,5 @@
 package org.kasource.kaevent.channel;
 
-import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
 

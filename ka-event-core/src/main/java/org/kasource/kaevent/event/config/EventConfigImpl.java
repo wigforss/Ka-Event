@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
 
-import org.kasource.kaevent.event.method.AnnotatedMethodMethodResolver;
 import org.kasource.kaevent.event.method.MethodResolver;
 
 
@@ -21,9 +20,9 @@ public class EventConfigImpl implements EventConfig {
     private Class<? extends EventListener> listener;
     private Class<? extends Annotation> eventAnnotation;
     private String name;
-    private Method defaultMethod; // May be null  
+    private Method defaultMethod;  
     @SuppressWarnings({ "rawtypes" })
-    private MethodResolver methodResolver;
+    private MethodResolver methodResolver; 
  
     /**
      * Constructor.
@@ -32,11 +31,11 @@ public class EventConfigImpl implements EventConfig {
      * @param listener		Event Listener interface class.
      * @param name			Name of the event.
      **/
-    EventConfigImpl(Class<? extends EventObject> eventClass, 
-                           Class<? extends EventListener> listener,
+    EventConfigImpl(Class<? extends EventObject> eventClass /*, 
+                           Class<? extends EventListener> listener */,
                            String name) {
         this.eventClass = eventClass;
-        this.listener = listener;
+      //  this.listener = listener;
         this.name = name;
     }
     
@@ -47,7 +46,7 @@ public class EventConfigImpl implements EventConfig {
      * @param listener      Event Listener interface class.
      * @param name          Name of the event.
      **/
-    EventConfigImpl(Class<? extends EventObject> eventClass, 
+   /* EventConfigImpl(Class<? extends EventObject> eventClass, 
                            AnnotatedMethodMethodResolver methodResolver,
                            String name) {
         this.eventClass = eventClass;
@@ -55,7 +54,7 @@ public class EventConfigImpl implements EventConfig {
         this.name = name;
         this.eventAnnotation = methodResolver.getTargetAnnotation();
     }
-
+*/
     
 
     /**
@@ -92,7 +91,11 @@ public class EventConfigImpl implements EventConfig {
     }
 
     
-
+    @SuppressWarnings("rawtypes")
+    MethodResolver getMethodResolver() {
+        return methodResolver;
+    }
+    
     /**
      * Return the actual event class.
      * 
@@ -142,6 +145,13 @@ public class EventConfigImpl implements EventConfig {
      **/
     public Class<? extends Annotation> getEventAnnotation() {
         return eventAnnotation;
+    }
+
+    /**
+     * @param listener the listener to set
+     */
+     void setListener(Class<? extends EventListener> listener) {
+        this.listener = listener;
     }
 
 }

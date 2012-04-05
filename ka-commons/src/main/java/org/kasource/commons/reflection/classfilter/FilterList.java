@@ -1,4 +1,5 @@
-package org.kasource.commons.reflection;
+package org.kasource.commons.reflection.classfilter;
+
 
 /**
  * Composite filter that runs the filter list supplied in the constructor.

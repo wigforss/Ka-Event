@@ -39,7 +39,7 @@ public class KaEventConfigurerTest {
                 assertNotNull(config.getBeanResolver());
                 assertNotNull(config.getChannelFactory());
                 assertNotNull(config.getChannelRegister());
-                assertNotNull(config.getEventFactory());
+                assertNotNull(config.getEventBuilderFactory());
                 assertNotNull(config.getEventMethodInvoker());
                 assertNotNull(config.getEventRegister());
                 assertNotNull(config.getEventRouter());
@@ -61,7 +61,7 @@ public class KaEventConfigurerTest {
                 assertNotNull(config.getBeanResolver());
                 assertNotNull(config.getChannelFactory());
                 assertNotNull(config.getChannelRegister());
-                assertNotNull(config.getEventFactory());
+                assertNotNull(config.getEventBuilderFactory());
                 assertNotNull(config.getEventMethodInvoker());
                 assertNotNull(config.getEventRegister());
                 assertNotNull(config.getEventRouter());
@@ -82,7 +82,7 @@ public class KaEventConfigurerTest {
                 assertNotNull(config.getBeanResolver());
                 assertNotNull(config.getChannelFactory());
                 assertNotNull(config.getChannelRegister());
-                assertNotNull(config.getEventFactory());
+                assertNotNull(config.getEventBuilderFactory());
                 assertNotNull(config.getEventMethodInvoker());
                 assertNotNull(config.getEventRegister());
                 assertNotNull(config.getEventRouter());

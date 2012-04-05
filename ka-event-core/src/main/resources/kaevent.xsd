@@ -126,7 +126,7 @@
 										defined, declare one of annotationMethodResolver,
 										factoryMethodResolver, beanMethodResolver or
 										switchMethodResolver.
-			</xs:documentation>
+									</xs:documentation>
 								</xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
@@ -136,7 +136,7 @@
 													<xs:documentation>
 														Find a method resolver by inspecting the
 														@MethodResolving annotation on the interface class
-			</xs:documentation>
+													</xs:documentation>
 												</xs:annotation>
 											</xs:element>
 											<xs:element name="factoryMethodResolver">
@@ -145,7 +145,7 @@
 														Use a custom method resolver obtained by invoking a
 														static factory
 														method.
-		</xs:documentation>
+													</xs:documentation>
 												</xs:annotation>
 												<xs:complexType>
 													<xs:attribute name="factoryClass" type="javaClass"
@@ -154,7 +154,7 @@
 															<xs:documentation>
 																Class that has the static factory method to be
 																invoked.
-					</xs:documentation>
+															</xs:documentation>
 														</xs:annotation>
 													</xs:attribute>
 													<xs:attribute name="factoryMethod" type="javaMethodName"
@@ -182,7 +182,7 @@
 													<xs:documentation>
 														Find a custom method resolver by looking up a bean
 														by name.
-			</xs:documentation>
+													</xs:documentation>
 												</xs:annotation>
 												<xs:complexType>
 													<xs:attribute name="bean" type="xs:Name" use="required">
@@ -212,7 +212,7 @@
 																<xs:documentation>
 																	A case entry which specifies a keyword value and
 																	method.
-			</xs:documentation>
+																</xs:documentation>
 															</xs:annotation>
 															<xs:complexType>
 																<xs:attribute name="value" type="xs:string"
@@ -220,7 +220,7 @@
 																	<xs:annotation>
 																		<xs:documentation>
 																			The keyword value to match.
-					</xs:documentation>
+																		</xs:documentation>
 																	</xs:annotation>
 																</xs:attribute>
 																<xs:attribute name="method" type="javaMethodName"
@@ -265,7 +265,7 @@
 																as
 																the
 																keyword in the switch. 
-					</xs:documentation>
+															</xs:documentation>
 														</xs:annotation>
 													</xs:attribute>
 												</xs:complexType>
@@ -276,7 +276,7 @@
 										<xs:annotation>
 											<xs:documentation>
 												Name of the event so it can be referenced.
-					</xs:documentation>
+											</xs:documentation>
 										</xs:annotation>
 									</xs:attribute>
 									<xs:attribute name="eventClass" type="javaClass"
@@ -285,15 +285,24 @@
 											<xs:documentation>
 												The event class that extends
 												java.util.EventObject
-					</xs:documentation>
+											</xs:documentation>
 										</xs:annotation>
 									</xs:attribute>
 									<xs:attribute name="listenerInterface" type="javaClass"
-										use="required">
+										use="optional">
 										<xs:annotation>
 											<xs:documentation>
 												The listener interface the handles events (of the
 												eventClass type) and extends java.util.EventListener
+											</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="annotation" type="javaClass"
+										use="optional">
+										<xs:annotation>
+											<xs:documentation>
+												The listener method annotation used to mark method that handle events (of the
+												eventClass type) with. Note that the annotation must have retention RUNTIME.
 											</xs:documentation>
 										</xs:annotation>
 									</xs:attribute>

@@ -316,7 +316,15 @@
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
-			
+			<xsd:attribute name="annotation" type="javaClass"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						The listener method annotation the handles event, this annotation must
+						have retention set to RUNTIME. 
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 			

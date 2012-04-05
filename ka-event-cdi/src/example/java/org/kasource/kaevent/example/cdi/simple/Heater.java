@@ -20,12 +20,12 @@ public class Heater implements TemperatureChangeListener {
     public void temperatureChanged(TemperatureChangeEvent event) {
         if (event.getCurrentTemperature() < event.getSource().getOptimalTemperature()) {
             if (!enabled) {
-                System.out.println("Heater started.");
+                System.out.println("Heater started. Message " + event.getId());
             }
             enabled = true;
         } else {
             if (enabled) {
-                System.out.println("Heater turned off.");
+                System.out.println("Heater turned off. Message " + event.getId());
             }
             enabled = false;
         }

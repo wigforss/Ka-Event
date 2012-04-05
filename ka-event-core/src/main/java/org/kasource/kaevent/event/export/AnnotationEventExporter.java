@@ -14,7 +14,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.event.config.InvalidEventConfigurationException;
 import org.scannotation.AnnotationDB;
 import org.scannotation.ClasspathUrlFinder;
@@ -47,12 +47,12 @@ public class AnnotationEventExporter implements EventExporter {
      * Returns all events found by scanning the classpath for classes
      * annotated with @Event.
      * 
-     * @param eventFactory    Factory used to create EventConfig instances with.
+     * @param eventBuilderFactory    Factory used to create EventConfig instances with.
      * 
      * @return Events found.
      * @throws IOException if exception occurs.
      */
-    public Set<EventConfig> exportEvents(EventFactory eventFactory) throws IOException {
+    public Set<EventConfig> exportEvents(EventBuilderFactory eventBuilderFactory) throws IOException {
         Set<EventConfig> eventsFound = new HashSet<EventConfig>();
         if (scanPath.contains(".")) {
             scanPath = scanPath.replace('.', '/');
@@ -66,7 +66,7 @@ public class AnnotationEventExporter implements EventExporter {
         Set<String> eventClassNames = annotationIndex.get(Event.class.getName());
         if (eventClassNames != null) {
             for (String eventClassName : eventClassNames) {
-                addEvent(eventFactory, eventsFound, includeRegExp, eventClassName);
+                addEvent(eventBuilderFactory, eventsFound, includeRegExp, eventClassName);
             }
         }
 
@@ -77,13 +77,13 @@ public class AnnotationEventExporter implements EventExporter {
     /**
      * Created and adds the event to the eventsFound set, if its package matches the includeRegExp.
      * 
-     * @param eventFactory      Event Factory used to create the EventConfig instance with.
+     * @param eventBuilderFactory      Event Factory used to create the EventConfig instance with.
      * @param eventsFound       Set of events found, to add the newly created EventConfig to.
      * @param includeRegExp     Regular expression to test eventClassName with.
      * @param eventClassName    Name of the class.
      **/
     @SuppressWarnings("unchecked")
-    private void addEvent(EventFactory eventFactory, 
+    private void addEvent(EventBuilderFactory eventBuilderFactory, 
                          Set<EventConfig> eventsFound, 
                          String includeRegExp,
                          String eventClassName) {
@@ -91,8 +91,7 @@ public class AnnotationEventExporter implements EventExporter {
         try {
             Class<?> eventClass = Class.forName(eventClassName);
             eventClass.asSubclass(EventObject.class);
-            EventConfig eventConfig = eventFactory.newFromAnnotatedEventClass(
-                    (Class<? extends EventObject>) eventClass);
+            EventConfig eventConfig = eventBuilderFactory.getBuilder((Class<? extends EventObject>) eventClass).build();
             eventsFound.add(eventConfig);
         } catch (ClassNotFoundException cnfe) {
             LOG.error("Scannotation found a class that does not exist " + eventClassName + " !", cnfe);

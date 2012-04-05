@@ -2,7 +2,7 @@ package org.kasource.kaevent.config;
 
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.kasource.kaevent.event.register.EventRegister;
 
@@ -30,7 +30,7 @@ public class GuiceKaEventConfigurer extends KaEventConfigurer {
 	private EventRegister eventRegister;
 	
 	@Inject
-	private EventFactory eventFactory;
+	private EventBuilderFactory eventBuilderFactory;
 	
 	@Nullable
 	@Inject
@@ -43,7 +43,7 @@ public class GuiceKaEventConfigurer extends KaEventConfigurer {
 	public void configure() {
 		registerEvents();
 		if (scanClassPath != null && scanClassPath.length() > 0) {
-            importAndRegisterEvents(new AnnotationEventExporter(scanClassPath), eventFactory, eventRegister);
+            importAndRegisterEvents(new AnnotationEventExporter(scanClassPath), eventBuilderFactory, eventRegister);
         }
 		createChannels();
 		//creating the configuration will cause  

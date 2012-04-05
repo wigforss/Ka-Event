@@ -9,8 +9,8 @@ import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.channel.ChannelRegisterImpl;
 import org.kasource.kaevent.channel.GuiceChannelFactory;
 import org.kasource.kaevent.event.EventDispatcher;
-import org.kasource.kaevent.event.config.EventFactory;
-import org.kasource.kaevent.event.config.EventFactoryImpl;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactoryImpl;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
@@ -75,20 +75,20 @@ public class KaEventModule extends AbstractModule {
 	 * @return Event Factory to use.
 	 **/
 	@Provides @Singleton
-	EventFactory provideEventFactory(BeanResolver beanResolver) {
-		return new EventFactoryImpl(beanResolver);
+	EventBuilderFactory provideEventFactory(BeanResolver beanResolver) {
+		return new EventBuilderFactoryImpl(beanResolver);
 	}
 
 	/**
 	 * Provides Event Register.
 	 * 
-	 * @param eventFactory Event Factory.
+	 * @param eventBuilderFactory Event Factory.
 	 * 
 	 * @return Event Register to use.
 	 **/
 	@Provides @Singleton
-	EventRegister provideEventRegister(EventFactory eventFactory) {
-		return new DefaultEventRegister(eventFactory);
+	EventRegister provideEventRegister(EventBuilderFactory eventBuilderFactory) {
+		return new DefaultEventRegister(eventBuilderFactory);
 	}
 
 	/**
@@ -162,7 +162,7 @@ public class KaEventModule extends AbstractModule {
 	 * @param channelFactory   Channel Factory
 	 * @param channelRegister  Channel Register.
 	 * @param eventDispatcher  Event Dispatcher.
-	 * @param eventFactory     Event Factory
+	 * @param eventBuilderFactory     Event Factory
 	 * @param eventMethodInvoker Event Method Invoker.
 	 * @param eventRegister    Event Register.
 	 * @param eventRouter      Event Router.
@@ -178,7 +178,7 @@ public class KaEventModule extends AbstractModule {
 	                                ChannelFactory channelFactory, 
 									ChannelRegister channelRegister,
 									EventDispatcher eventDispatcher,
-									EventFactory eventFactory,
+									EventBuilderFactory eventBuilderFactory,
 									EventMethodInvoker eventMethodInvoker,
 									EventRegister eventRegister,
 									EventRouter eventRouter,
@@ -189,13 +189,13 @@ public class KaEventModule extends AbstractModule {
 		configuration.setChannelFactory(channelFactory);
 		configuration.setChannelRegister(channelRegister);
 		configuration.setEventDispatcher(eventDispatcher);
-		configuration.setEventFactory(eventFactory);
+		configuration.setEventBuilderFactory(eventBuilderFactory);
 		configuration.setEventMethodInvoker(eventMethodInvoker);
 		configuration.setEventRegister(eventRegister);
 		configuration.setEventRouter(eventRouter);
 		configuration.setQueueThread(queueThread);
 		configuration.setSourceObjectListenerRegister(sourceObjectListenerRegister);
-		System.out.println("Initialized");
+		
 		KaEventInitializer.setConfiguration(configuration);
 		return configuration;
 	}

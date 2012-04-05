@@ -1,33 +1,25 @@
 package org.kasource.kaevent.config;
 
-import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import org.jboss.weld.exceptions.DeploymentException;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.cdi.EventScanPackage;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.channel.ChannelRegisterImpl;
-import org.kasource.kaevent.channel.NoSuchChannelException;
-import org.kasource.kaevent.config.KaEventConfiguration;
-import org.kasource.kaevent.config.KaEventConfigurationImpl;
-import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.event.EventDispatcher;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactoryImpl;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventFactory;
-import org.kasource.kaevent.event.config.EventFactoryImpl;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
@@ -49,7 +41,7 @@ public class CdiKaEventConfigurer  extends KaEventConfigurer {
 	private KaEventConfiguration configuration;
 	
 	@Inject
-	private EventFactory eventFactory;
+	private EventBuilderFactory eventBuilderFactory;
 	
 	@Inject
 	private EventRegister eventRegister;
@@ -71,7 +63,7 @@ public class CdiKaEventConfigurer  extends KaEventConfigurer {
 	public void configure() {
 	    String scanClasspath = getScanClasspath();
 	    if(scanClasspath != null) {
-	        importAndRegisterEvents(new AnnotationEventExporter(scanClasspath), eventFactory, eventRegister);
+	        importAndRegisterEvents(new AnnotationEventExporter(scanClasspath), eventBuilderFactory, eventRegister);
 	    }
 	    Set<EventConfig> events = findEvents();
 	    for(EventConfig event : events) {
@@ -129,20 +121,20 @@ public class CdiKaEventConfigurer  extends KaEventConfigurer {
 	 * @return Event Factory to use.
 	 **/
 	@Produces @ApplicationScoped
-	EventFactory provideEventFactory(BeanResolver beanResolver) {
-		return new EventFactoryImpl(beanResolver);
+	EventBuilderFactory provideEventFactory(BeanResolver beanResolver) {
+		return new EventBuilderFactoryImpl(beanResolver);
 	}
 
 	/**
 	 * Provides Event Register.
 	 * 
-	 * @param eventFactory Event Factory.
+	 * @param eventBuilderFactory Event Factory.
 	 * 
 	 * @return Event Register to use.
 	 **/
 	@Produces @ApplicationScoped
-	EventRegister provideEventRegister(EventFactory eventFactory) {
-		return new DefaultEventRegister(eventFactory);
+	EventRegister provideEventRegister(EventBuilderFactory eventBuilderFactory) {
+		return new DefaultEventRegister(eventBuilderFactory);
 	}
 
 	/**
@@ -216,7 +208,7 @@ public class CdiKaEventConfigurer  extends KaEventConfigurer {
 	 * @param channelFactory   Channel Factory
 	 * @param channelRegister  Channel Register.
 	 * @param eventDispatcher  Event Dispatcher.
-	 * @param eventFactory     Event Factory
+	 * @param eventBuilderFactory     Event Factory
 	 * @param eventMethodInvoker Event Method Invoker.
 	 * @param eventRegister    Event Register.
 	 * @param eventRouter      Event Router.
@@ -232,7 +224,7 @@ public class CdiKaEventConfigurer  extends KaEventConfigurer {
 	                                ChannelFactory channelFactory, 
 									ChannelRegister channelRegister,
 									EventDispatcher eventDispatcher,
-									EventFactory eventFactory,
+									EventBuilderFactory eventBuilderFactory,
 									EventMethodInvoker eventMethodInvoker,
 									EventRegister eventRegister,
 									EventRouter eventRouter,
@@ -243,13 +235,13 @@ public class CdiKaEventConfigurer  extends KaEventConfigurer {
 		configuration.setChannelFactory(channelFactory);
 		configuration.setChannelRegister(channelRegister);
 		configuration.setEventDispatcher(eventDispatcher);
-		configuration.setEventFactory(eventFactory);
+		configuration.setEventBuilderFactory(eventBuilderFactory);
 		configuration.setEventMethodInvoker(eventMethodInvoker);
 		configuration.setEventRegister(eventRegister);
 		configuration.setEventRouter(eventRouter);
 		configuration.setQueueThread(queueThread);
 		configuration.setSourceObjectListenerRegister(sourceObjectListenerRegister);
-		System.out.println("Initialized");
+		
 		KaEventInitializer.setConfiguration(configuration);
 		return configuration;
 	}

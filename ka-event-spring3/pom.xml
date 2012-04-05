@@ -10,7 +10,6 @@
 	<artifactId>ka-event-spring3</artifactId>
 	<packaging>jar</packaging>
 	<name>Ka Event Spring 3.x</name>
-	<version>0.8-SNAPSHOT</version>
 	<url>http://kasource.org</url>
 	<!-- Build properties -->
 	<properties>
@@ -36,13 +35,15 @@
 					<include>**/*.xml</include>
 				</includes>
 			</resource>
-			<resource>
+		</resources>
+		<testResources>
+			<testResource>
 				<directory>src/inttest/java</directory>
 				<includes>
 					<include>**/*.xml</include>
 				</includes>
-			</resource>
-		</resources>
+			</testResource>
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

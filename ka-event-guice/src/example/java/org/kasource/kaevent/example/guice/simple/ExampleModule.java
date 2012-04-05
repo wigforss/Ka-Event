@@ -2,7 +2,7 @@ package org.kasource.kaevent.example.guice.simple;
 
 import org.kasource.kaevent.config.KaEventModule;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.example.guice.simple.event.TemperatureChangeEvent;
 
 import com.google.inject.Provides;
@@ -27,8 +27,8 @@ public class ExampleModule extends KaEventModule {
 	
 	@Provides
 	@Named("temparatureEvent")
-	EventConfig provideTempEvent(EventFactory eventFactory) {
+	EventConfig provideTempEvent(EventBuilderFactory eventBuilderFactory) {
 		System.out.println("Provide event");
-		return eventFactory.newFromAnnotatedEventClass(TemperatureChangeEvent.class, "temparatureEvent");
+		return eventBuilderFactory.getBuilder(TemperatureChangeEvent.class).name("temparatureEvent").build();
 	}
 }

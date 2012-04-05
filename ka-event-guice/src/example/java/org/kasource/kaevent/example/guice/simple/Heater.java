@@ -2,8 +2,9 @@ package org.kasource.kaevent.example.guice.simple;
 
 import org.kasource.kaevent.annotations.listener.BeanListener;
 import org.kasource.kaevent.annotations.listener.RegisterListener;
+import org.kasource.kaevent.example.guice.simple.event.OnTemperatureChange;
 import org.kasource.kaevent.example.guice.simple.event.TemperatureChangeEvent;
-import org.kasource.kaevent.example.guice.simple.event.TemperatureChangeListener;
+
 
 import com.google.inject.Singleton;
 
@@ -11,7 +12,7 @@ import com.google.inject.Singleton;
 ///CLOVER:OFF
 @Singleton
 @BeanListener("thermometer")
-public class Heater implements TemperatureChangeListener {
+public class Heater {
 
 	private boolean enabled = false;
 	
@@ -29,7 +30,7 @@ public class Heater implements TemperatureChangeListener {
 		return enabled;
 	}
 
-	@Override
+	@OnTemperatureChange
 	public void temperatureChanged(TemperatureChangeEvent event) {
 		if (event.getCurrentTemperature() < event.getSource().getOptimalTemperatur()) {
             if (!enabled) {

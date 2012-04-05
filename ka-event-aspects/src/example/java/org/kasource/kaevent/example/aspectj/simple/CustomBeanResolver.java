@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.kasource.kaevent.example.aspectj.simple;
 
 import java.util.HashMap;

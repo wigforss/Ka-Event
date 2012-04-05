@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.annotations.event.EventKeyword;
 import org.kasource.kaevent.annotations.event.methodresolving.CustomCase;
 import org.kasource.kaevent.annotations.event.methodresolving.DefaultListenerMethod;
@@ -54,9 +54,9 @@ public class KeywordSwitchAnnotationConfigurer {
      **/
     public void configure() throws IllegalStateException, IllegalArgumentException {
         Set<Method> defaultMethods = 
-            ReflectionUtils.getDeclaredAnnotatedMethods(listenerClass, DefaultListenerMethod.class);
+            MethodUtils.getDeclaredAnnotatedMethods(listenerClass, DefaultListenerMethod.class);
         if (defaultMethods.size() == 1) {
-            ReflectionUtils.verifyMethodSignature(defaultMethods.iterator().next(), Void.TYPE, eventClass);
+            MethodUtils.verifyMethodSignature(defaultMethods.iterator().next(), Void.TYPE, eventClass);
             resolver.setDefaultMethod(defaultMethods.iterator().next());
             setCaseMethods();
             setCustomKeywordMethods();
@@ -78,9 +78,9 @@ public class KeywordSwitchAnnotationConfigurer {
      **/
     private void setCaseMethods() throws IllegalArgumentException {
         Map<String, Method> methodMap = new HashMap<String, Method>();
-        Set<Method> caseMethods = ReflectionUtils.getDeclaredAnnotatedMethods(listenerClass, KeywordCase.class);
+        Set<Method> caseMethods = MethodUtils.getDeclaredAnnotatedMethods(listenerClass, KeywordCase.class);
         for (Method method : caseMethods) {
-            ReflectionUtils.verifyMethodSignature(method, Void.TYPE, eventClass);
+            MethodUtils.verifyMethodSignature(method, Void.TYPE, eventClass);
             KeywordCase caseAnnotation = method.getAnnotation(KeywordCase.class);
             methodMap.put(caseAnnotation.value(), method);
         }
@@ -95,7 +95,7 @@ public class KeywordSwitchAnnotationConfigurer {
      * with @KeywordMethod.
      **/
     private void setKeywordMethod() throws IllegalStateException {
-        Method method = ReflectionUtils.getDeclaredAnnotatedMethod(eventClass, EventKeyword.class);
+        Method method = MethodUtils.getDeclaredAnnotatedMethod(eventClass, EventKeyword.class);
         if (method == null) {
             throw new IllegalStateException(eventClass + " must declare one method annotated with @EventKeyword!");
         }
@@ -113,10 +113,10 @@ public class KeywordSwitchAnnotationConfigurer {
     private void setCustomKeywordMethods() throws IllegalArgumentException {
         Map<String, Method> methodMap = new HashMap<String, Method>();
         Set<Method> customCaseMethods = 
-            ReflectionUtils.getDeclaredInheritlyAnnotatedMethods(listenerClass, CustomCase.class);
+            MethodUtils.getDeclaredInheritlyAnnotatedMethods(listenerClass, CustomCase.class);
         
         for (Method method : customCaseMethods) {
-            ReflectionUtils.verifyMethodSignature(method, Void.TYPE, eventClass);
+            MethodUtils.verifyMethodSignature(method, Void.TYPE, eventClass);
             Annotation[] annotations = method.getAnnotations();
             setCustomAnnotatedKeywordMethod(methodMap, method, annotations);
            // KeywordCase caseAnnotation = method.getAnnotation(KeywordCase.class);

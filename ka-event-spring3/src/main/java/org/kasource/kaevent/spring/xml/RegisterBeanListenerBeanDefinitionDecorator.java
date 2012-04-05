@@ -1,7 +1,5 @@
 package org.kasource.kaevent.spring.xml;
 
-import java.util.EventListener;
-
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -64,23 +62,25 @@ public class RegisterBeanListenerBeanDefinitionDecorator extends
 		RuntimeBeanReference soureBeanRef = new RuntimeBeanReference(sourceBeanName);
 		MutablePropertyValues props = sol.getPropertyValues();
 		PropertyValue value = props.getPropertyValue("listeners");
-		ManagedMap map = null;
+		ManagedMap<RuntimeBeanReference, ManagedList<RuntimeBeanReference>> map = null;
 		if (value == null) {
 			// Map<Object, List<EventListener>>
-			map = new ManagedMap();
-			ManagedList list = new ManagedList();
+			map = new ManagedMap<RuntimeBeanReference, ManagedList<RuntimeBeanReference>>();
+			ManagedList<RuntimeBeanReference> list = new ManagedList<RuntimeBeanReference>();
 			list.add(listenerRef);
 			map.put(soureBeanRef, list);
 			props.addPropertyValue("listeners", map);
 		} else {
-			map = (ManagedMap) value.getValue();
+			map = (ManagedMap<RuntimeBeanReference, ManagedList<RuntimeBeanReference>>) value.getValue();
 
-			ManagedList list = (ManagedList) map.get(soureBeanRef);
+			ManagedList<RuntimeBeanReference> list =  map.get(soureBeanRef);
 			if (list == null) {
-				list = new ManagedList();
+				list = new ManagedList<RuntimeBeanReference>();
 				map.put(soureBeanRef, list);
 			}
-			list.add(listenerRef);
+			if(!list.contains(listenerRef)) {
+			    list.add(listenerRef);
+			}
 		}
 	}
 	

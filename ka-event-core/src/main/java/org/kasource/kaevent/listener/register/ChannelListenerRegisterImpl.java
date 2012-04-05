@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.commons.util.reflection.InterfaceUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.event.config.EventConfig;
@@ -90,7 +90,7 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
        EventConfig eventConfig = getEventRegister().getEventByClass(eventClass); 
        for (Map<Object, EventListenerRegistration> listenerMap : listenersByEvent.values()) {
            for (Object listener : listenerMap.keySet()) {
-               if (ReflectionUtils.implementsInterface(listener, eventConfig.getListener())) {
+               if (InterfaceUtils.implementsInterface(listener, eventConfig.getListener())) {
                    addListener(listener, eventClass, channel, null);
                }
            }

@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
 
 /**
  * @author rikardwigforss
@@ -31,16 +31,16 @@ public class DefaultEventRegister implements EventRegister {
     private Map<String, EventConfig> eventsByName = new HashMap<String, EventConfig>();
     
   
-    private EventFactory eventFactory;
+    private EventBuilderFactory eventBuilderFactory;
     
     
     /**
      * Constructor.
      * 
-     * @param eventFactory Event Factory to use.
+     * @param eventBuilderFactory Event Factory to use.
      **/
-    public DefaultEventRegister(EventFactory eventFactory) {
-        this.eventFactory = eventFactory;
+    public DefaultEventRegister(EventBuilderFactory eventBuilderFactory) {
+        this.eventBuilderFactory = eventBuilderFactory;
     }
     
 
@@ -131,8 +131,7 @@ public class DefaultEventRegister implements EventRegister {
     
     @Override
     public void registerEvent(Class<? extends EventObject> eventClass) {
-            EventConfig eventConfig = eventFactory.newFromAnnotatedEventClass(
-                (Class<? extends EventObject>) eventClass);
+            EventConfig eventConfig = eventBuilderFactory.getBuilder(eventClass).build();
             registerEvent(eventConfig);
     }
     

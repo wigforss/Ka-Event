@@ -1,14 +1,14 @@
 package org.kasource.kaevent.example.cdi.simple.event;
 
-import java.util.EventObject;
 
 import org.kasource.kaevent.annotations.event.Event;
+import org.kasource.kaevent.event.BaseEvent;
 import org.kasource.kaevent.example.cdi.simple.Thermometer;
 
 //CHECKSTYLE:OFF
 ///CLOVER:OFF
-@Event(listener = TemperatureChangeListener.class, channels="temperatureChannel")
-public class TemperatureChangeEvent extends EventObject {
+@Event(listener = TemperatureChangeListener.class, annotation = OnTemperatureChange.class, channels="temperatureChannel")
+public class TemperatureChangeEvent extends BaseEvent {
 	private static final long serialVersionUID = 1L;
 	private double currentTemperature;
     

@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
@@ -51,13 +51,13 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 	public void configure() {
 		if (scanClassPath != null && scanClassPath.length() > 0) {
             importAndRegisterEvents(new AnnotationEventExporter(scanClassPath),
-            					    configuration.getEventFactory(), 
+            					    configuration.getEventBuilderFactory(), 
             					    configuration.getEventRegister());
         }
-		// Initialize Events
+		// Initialize Events, if lazy.
 		applicationContext.getBeansOfType(EventConfig.class);
-		registerSpringEvents(configuration.getEventFactory(), configuration.getEventRegister());
-		// Initialize Channels
+		registerSpringEvents(configuration.getEventBuilderFactory(), configuration.getEventRegister());
+		// Initialize Channels, if lazy.
 		applicationContext.getBeansOfType(Channel.class);
 		registerListeners();
 		registerEventsAtChannels(configuration.getEventRegister(), configuration.getChannelFactory(), configuration.getChannelRegister());
@@ -88,9 +88,11 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
     	}
     }
 	
-	private void registerSpringEvents(EventFactory eventFactory, EventRegister eventRegister) {
+	private void registerSpringEvents(EventBuilderFactory eventBuilderFactory, EventRegister eventRegister) {
 	    for(SpringEvent springEvent : SpringEvent.values()) {
-	        eventRegister.registerEvent(eventFactory.newFromInterfaceAndMethodAnnotation(springEvent.getEvent(), springEvent.getListener(), springEvent.getMethodAnnotation(), springEvent.getEvent().getName()));
+	        eventRegister.registerEvent(eventBuilderFactory.getBuilder(springEvent.getEvent()).bindInterface(springEvent.getListener(), springEvent.getListenerMethod())
+                        .bindAnnotation(springEvent.getMethodAnnotation())
+                        .build());
 	    }
 	}
 	

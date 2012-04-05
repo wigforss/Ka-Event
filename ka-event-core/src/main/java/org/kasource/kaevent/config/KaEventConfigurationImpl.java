@@ -4,7 +4,7 @@ import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.event.EventDispatcher;
-import org.kasource.kaevent.event.config.EventFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.dispatch.EventRouter;
@@ -25,7 +25,7 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
     
     private BeanResolver beanResolver;
 
-    private EventFactory eventFactory;
+    private EventBuilderFactory eventBuilderFactory;
 
     private EventRegister eventRegister;
 
@@ -55,16 +55,16 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
     }
 
     @Override
-    public EventFactory getEventFactory() {
-        return eventFactory;
+    public EventBuilderFactory getEventBuilderFactory() {
+        return eventBuilderFactory;
     }
 
     /**
-     * @param eventFactory
-     *            the eventFactory to set
+     * @param eventBuilderFactory
+     *            the eventBuilderFactory to set
      */
-    public void setEventFactory(EventFactory eventFactory) {
-        this.eventFactory = eventFactory;
+    public void setEventBuilderFactory(EventBuilderFactory eventBuilderFactory) {
+        this.eventBuilderFactory = eventBuilderFactory;
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.commons.util.reflection.ConstructorUtils;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.DefaultBeanResolver;
@@ -23,8 +23,8 @@ import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.NoSuchChannelException;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventFactory;
-import org.kasource.kaevent.event.config.EventFactoryImpl;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactoryImpl;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
@@ -110,7 +110,7 @@ public class KaEventConfigurer {
      **/
     public void scanClassPathForEvents(String scanClassPath) {
         if (scanClassPath != null && scanClassPath.length() > 0) {
-            importAndRegisterEvents(new AnnotationEventExporter(scanClassPath), configuration.getEventFactory(),
+            importAndRegisterEvents(new AnnotationEventExporter(scanClassPath), configuration.getEventBuilderFactory(),
                         configuration.getEventRegister());
         }
     }
@@ -125,8 +125,8 @@ public class KaEventConfigurer {
         // Bean resolver
         config.setBeanResolver(new DefaultBeanResolver());
         // Events
-        config.setEventFactory(new EventFactoryImpl(config.getBeanResolver()));
-        config.setEventRegister(new DefaultEventRegister(config.getEventFactory()));
+        config.setEventBuilderFactory(new EventBuilderFactoryImpl(config.getBeanResolver()));
+        config.setEventRegister(new DefaultEventRegister(config.getEventBuilderFactory()));
 
         // Channel Register
         config.setChannelRegister(new ChannelRegisterImpl());
@@ -163,14 +163,14 @@ public class KaEventConfigurer {
         BeanResolver beanResolver = null;
         KaEventConfig.BeanResolver beanResolverConfig = xmlConfig.getBeanResolver();
         if (beanResolverConfig != null && beanResolverConfig.getClazz() != null) {
-            config.setBeanResolver(ReflectionUtils.getInstance(beanResolverConfig.getClazz(), BeanResolver.class));
+            config.setBeanResolver(ConstructorUtils.getInstance(beanResolverConfig.getClazz(), BeanResolver.class));
         } else {
             config.setBeanResolver(new DefaultBeanResolver());
         }
 
         // Events
-        config.setEventFactory(new EventFactoryImpl(config.getBeanResolver()));
-        config.setEventRegister(new DefaultEventRegister(config.getEventFactory()));
+        config.setEventBuilderFactory(new EventBuilderFactoryImpl(config.getBeanResolver()));
+        config.setEventRegister(new DefaultEventRegister(config.getEventBuilderFactory()));
         config.setEventMethodInvoker(new EventMethodInvokerImpl(config.getEventRegister()));
         config.setSourceObjectListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config
                     .getBeanResolver()));
@@ -213,11 +213,11 @@ public class KaEventConfigurer {
         if (events != null) {
             String scanPath = events.getScanClassPath();
             if (scanPath != null && scanPath.length() > 0) {
-                importAndRegisterEvents(new AnnotationEventExporter(scanPath), config.getEventFactory(),
+                importAndRegisterEvents(new AnnotationEventExporter(scanPath), config.getEventBuilderFactory(),
                             config.getEventRegister());
             }
             importAndRegisterEvents(new XmlConfigEventExporter(events.getEvent(), beanResolver),
-                        config.getEventFactory(), config.getEventRegister());
+                        config.getEventBuilderFactory(), config.getEventRegister());
         }
     }
 
@@ -235,11 +235,11 @@ public class KaEventConfigurer {
             config.setQueueThread(threadPoolExecutor);
         } else {
             try {
-                config.setQueueThread(ReflectionUtils.getInstance(xmlConfig.getQueueThread().getClazz(),
+                config.setQueueThread(ConstructorUtils.getInstance(xmlConfig.getQueueThread().getClazz(),
                             DispatcherQueueThread.class, new Class<?>[] { EventRouter.class },
                             new Object[] { config.getEventRouter() }));
             } catch (IllegalStateException ise) {
-                config.setQueueThread(ReflectionUtils.getInstance(xmlConfig.getQueueThread().getClazz(),
+                config.setQueueThread(ConstructorUtils.getInstance(xmlConfig.getQueueThread().getClazz(),
                             DispatcherQueueThread.class));
             }
 
@@ -463,16 +463,16 @@ public class KaEventConfigurer {
      * 
      * @param eventExporter
      *            Creates the events to register.
-     * @param eventFactory
+     * @param eventBuilderFactory
      *            Used by the exporter.
      * @param eventRegister
      *            Event Register.
      **/
-    protected void importAndRegisterEvents(EventExporter eventExporter, EventFactory eventFactory,
+    protected void importAndRegisterEvents(EventExporter eventExporter, EventBuilderFactory eventBuilderFactory,
                 EventRegister eventRegister) {
         Set<EventConfig> events;
         try {
-            events = eventExporter.exportEvents(eventFactory);
+            events = eventExporter.exportEvents(eventBuilderFactory);
             for (EventConfig event : events) {
                 eventRegister.registerEvent(event);
             }

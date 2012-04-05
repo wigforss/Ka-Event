@@ -1,8 +1,10 @@
 package org.kasource.kaevent.config;
 
 
+import java.lang.annotation.Annotation;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,7 +44,7 @@ public class KaEventConfigBuilder {
     private Byte corePoolSize;
     private Long keepAliveTime;
     private Set<ChannelReg> channelRegs = new HashSet<ChannelReg>();
-    private Set<Class<? extends EventObject>> events = new HashSet<Class<? extends EventObject>>();
+    private Set<EventReg> events = new HashSet<EventReg>();
     private Map<Class<? extends EventObject>, KaEventConfig.Events.Event> eventMap = 
         new HashMap<Class<? extends EventObject>, KaEventConfig.Events.Event>();
 
@@ -203,7 +205,7 @@ public class KaEventConfigBuilder {
         if (xmlConfig.events.event == null) {
             xmlConfig.events.event = new ArrayList<KaEventConfig.Events.Event>();
         }
-        for (Class<? extends EventObject> eventClass : events) {
+        for (EventReg eventClass : events) {
             if (!eventMap.containsKey(eventClass)) {
                 buildEvent(xmlConfig, eventClass);
             }
@@ -237,7 +239,7 @@ public class KaEventConfigBuilder {
         for (ChannelReg channelReg : channelRegs) {
             for (Class<? extends EventObject> eventClass : channelReg.getEvents()) {
                 if (!eventMap.containsKey(eventClass)) {
-                    buildEvent(xmlConfig, eventClass);
+                    buildEvent(xmlConfig, new EventReg(eventClass));
                 }
             }
         }
@@ -249,14 +251,28 @@ public class KaEventConfigBuilder {
      * @param xmlConfig The configuration.
      * @param eventClass Event to build configuration for.
      **/
-    private void buildEvent(KaEventConfig xmlConfig, Class<? extends EventObject> eventClass) {
+    private void buildEvent(KaEventConfig xmlConfig, EventReg eventReg) {
         KaEventConfig.Events.Event event = new KaEventConfig.Events.Event();
-        event.eventClass = eventClass.getName();
-        Event eventAnnotation = eventClass.getAnnotation(Event.class);
-        event.listenerInterface = eventAnnotation.listener().getName();
-        event.name = eventClass.getName();
+        event.eventClass = eventReg.getEventClass().getName();
+        Event eventAnnotation = eventReg.getEventClass().getAnnotation(Event.class);
+        if(eventAnnotation != null) {
+            if(eventAnnotation.listener() != EventListener.class) {
+                event.listenerInterface = eventAnnotation.listener().getName();
+            } 
+            if(eventAnnotation.annotation() != Event.class) {
+                event.annotation = eventAnnotation.annotation().getName();
+            }
+        } else {
+            if(eventReg.getInterfaceClass() != null) {
+                event.listenerInterface = eventReg.getInterfaceClass().getName();
+            } 
+            if(eventReg.getAnnotationClass() != null) {
+                event.annotation = eventReg.getAnnotationClass().getName();
+            }
+        }
+        event.name = eventReg.getEventClass().getName();
         xmlConfig.events.event.add(event);
-        eventMap.put(eventClass, event);
+        eventMap.put(eventReg.getEventClass(), event);
     }
 
     /**
@@ -374,7 +390,8 @@ public class KaEventConfigBuilder {
      * @param channelClass
      *            The Channel Implementation class to use.            
      * @param eventsToChannel
-     *            Events this channel should handle
+     *            Events this channel should handle, if not added  with addEvent, addEventByInterface or addEventByAnnotation these 
+     *            event classes  must be annotated with @Event
      * 
      * @return the builder
      **/
@@ -404,10 +421,79 @@ public class KaEventConfigBuilder {
             throw new IllegalArgumentException("Only events annotated with @Event can used in addEvent " + eventClass
                         + " is not annotated with @Event");
         }
-        events.add(eventClass);
+        events.add(new EventReg(eventClass));
 
         return this;
     }
+    
+    /**
+    * Add an event to the configuration.
+    * 
+    * @param eventClass
+    *            The class name of the event to add, must be annotated with @Event.
+    * @param listenerInterfaceClass
+    *            The Listener Interface to associate the eventClass with.
+    * 
+    * @return the builder
+    **/
+   public KaEventConfigBuilder addEventByInterface(Class<? extends EventObject> eventClass, Class<? extends EventListener> listenerInterfaceClass) {
+
+       if (!eventClass.isAnnotationPresent(Event.class)) {
+           throw new IllegalArgumentException("Only events annotated with @Event can used in addEvent " + eventClass
+                       + " is not annotated with @Event");
+       }
+       events.add(new EventReg(eventClass, listenerInterfaceClass, null));
+
+       return this;
+   }
+   
+   /**
+    * Add an event to the configuration.
+    * 
+    * @param eventClass
+    *            The class of the event to add, should not be annotated with @Event.
+    * @param listenerInterfaceClass
+    *            The Listener Interface to associate the eventClass with, may be null if eventMethodAnnotation is set.
+    * @param eventMethodAnnotation
+    *            The listener method annotation to associate the event with, must have retention RUNTIME, may be null if listenerInterfaceClass is set.
+    * 
+    * @return the builder
+    **/
+   public KaEventConfigBuilder addEvent(Class<? extends EventObject> eventClass, 
+                                        Class<? extends EventListener> listenerInterfaceClass, 
+                                        Class<? extends Annotation> eventMethodAnnotation) {
+
+       if (!eventClass.isAnnotationPresent(Event.class)) {
+           throw new IllegalArgumentException("Only events annotated with @Event can used in addEvent " + eventClass
+                       + " is not annotated with @Event");
+       }
+       events.add(new EventReg(eventClass, listenerInterfaceClass, eventMethodAnnotation));
+
+       return this;
+   }
+   
+   /**
+    * Add an event to the configuration.
+    * 
+    * @param eventClass
+    *            The class name of the event to add, should not be annotated with @Event.
+    * @param eventMethodAnnotation
+    *            The listener method annotation to associate the event with, must have retention RUNTIME.
+    * 
+    * @return the builder
+    **/
+   public KaEventConfigBuilder addEventByAnnotation(Class<? extends EventObject> eventClass, Class<? extends Annotation> eventMethodAnnotation) {
+
+       if (!eventClass.isAnnotationPresent(Event.class)) {
+           throw new IllegalArgumentException("Only events annotated with @Event can used in addEvent " + eventClass
+                       + " is not annotated with @Event");
+       }
+       events.add(new EventReg(eventClass, null, eventMethodAnnotation));
+
+       return this;
+   }
+    
+    
 
     /**
      * Channel Registration.
@@ -461,5 +547,65 @@ public class KaEventConfigBuilder {
             return channelClass;
         }
 
+    }
+    
+    private static class EventReg {
+        private Class<? extends EventObject> eventClass;
+        private Class<? extends EventListener> interfaceClass;
+        private Class<? extends Annotation> annotationClass;
+        
+        public EventReg(Class<? extends EventObject> eventClass) {
+            this.eventClass = eventClass;
+        }
+        
+        public EventReg(Class<? extends EventObject> eventClass, 
+                        Class<? extends EventListener> interfaceClass,
+                        Class<? extends Annotation> annotationClass) {
+            this(eventClass);
+            this.interfaceClass = interfaceClass;
+            this.annotationClass = annotationClass;
+        }
+
+        /**
+         * @return the eventClass
+         */
+        public Class<? extends EventObject> getEventClass() {
+            return eventClass;
+        }
+
+        /**
+         * @param eventClass the eventClass to set
+         */
+        public void setEventClass(Class<? extends EventObject> eventClass) {
+            this.eventClass = eventClass;
+        }
+
+        /**
+         * @return the interfaceClass
+         */
+        public Class<? extends EventListener> getInterfaceClass() {
+            return interfaceClass;
+        }
+
+        /**
+         * @param interfaceClass the interfaceClass to set
+         */
+        public void setInterfaceClass(Class<? extends EventListener> interfaceClass) {
+            this.interfaceClass = interfaceClass;
+        }
+
+        /**
+         * @return the annotationClass
+         */
+        public Class<? extends Annotation> getAnnotationClass() {
+            return annotationClass;
+        }
+
+        /**
+         * @param annotationClass the annotationClass to set
+         */
+        public void setAnnotationClass(Class<? extends Annotation> annotationClass) {
+            this.annotationClass = annotationClass;
+        }
     }
 }

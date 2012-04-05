@@ -1,6 +1,7 @@
-package org.kasource.commons.reflection;
+package org.kasource.commons.reflection.classfilter;
 
 import java.lang.annotation.Annotation;
+
 
 /**
  * Filters classes by presence of a certain annotation

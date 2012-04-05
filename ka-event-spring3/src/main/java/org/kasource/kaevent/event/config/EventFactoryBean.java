@@ -1,9 +1,14 @@
 package org.kasource.kaevent.event.config;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Map;
+import java.util.Set;
 
+import org.kasource.commons.util.reflection.MethodUtils;
+import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType;
 import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.event.method.MethodResolverFactory;
@@ -24,6 +29,8 @@ public class EventFactoryBean implements FactoryBean<EventConfig>, ApplicationCo
 	private Class<? extends EventObject> eventClass;
 	
 	private Class<? extends EventListener> listenerClass;
+	
+	private Class<? extends Annotation> annotation;
 	
 	private MethodResolver<EventObject> methodResolver;
 	
@@ -85,28 +92,38 @@ public class EventFactoryBean implements FactoryBean<EventConfig>, ApplicationCo
 	 * @return new Event Configuration instance.
 	 **/
 	private EventConfig getEventConfig() {
-		 EventFactory eventFactory = 
-			 (EventFactory) applicationContext.getBean(KaEventSpringBean.EVENT_FACTORY.getId());
-			if (methodResolverType == null) {
-				if (listenerClass == null) {
-					return eventFactory.newFromAnnotatedEventClass(eventClass, name);
-				} else {
-					return eventFactory
-					   .newFromAnnotatedInterfaceClass(eventClass, 
-							                           listenerClass, 
-							                           name);
-				}
-			} else {
-			    setMethodResolver();
-				return eventFactory
-				   .newWithMethodResolver(eventClass, 
-						                  listenerClass, 
-						                  methodResolver, 
-						                  name);
-				
-			}
+	    EventBuilderFactory eventBuilderFactory = 
+            (EventBuilderFactory) applicationContext.getBean(KaEventSpringBean.EVENT_BUILDER_FACTORY.getId());
+        Event eventAnnotation = eventClass.getAnnotation(Event.class);
+        EventBuilder eventBuilder = eventBuilderFactory.getBuilder(eventClass).name(name);
+        if(eventAnnotation == null) {
+           if(listenerClass != null) {
+               if(methodResolverType != null) {
+                   setMethodResolver();
+                   eventBuilder = eventBuilder.bindInterface(listenerClass, methodResolver);
+               } else {
+                   eventBuilder = eventBuilder.bindInterface(listenerClass, getSingleInterfaceMethod());
+               }
+           }
+           if(annotation != null) {
+               eventBuilder = eventBuilder.bindAnnotation(annotation);
+           }
+        } 
+        return eventBuilder.build();
 	}
 
+	
+	private Method getSingleInterfaceMethod() {
+        Set<Method> interfaceMethods = MethodUtils.getDeclaredMethodsMatchingReturnType(listenerClass, Void.TYPE, eventClass);
+        if(interfaceMethods.size() == 0) {
+            throw new InvalidEventConfigurationException("Could not find any void method which takes " + eventClass + " as its only parameter");
+        } else if (interfaceMethods.size() > 1) {
+            throw new InvalidEventConfigurationException("Found more than one method which takes " + eventClass + " as its only parameter");
+        } else {
+            return interfaceMethods.iterator().next();
+        }
+    }
+	
 	/**
 	 * Sets the method resolver for this event
 	 * depending on the methodResolverType.
@@ -228,5 +245,13 @@ public class EventFactoryBean implements FactoryBean<EventConfig>, ApplicationCo
 		this.applicationContext = applicationContext;
 		
 	}
+
+   
+    /**
+     * @param annotation the annotation to set
+     */
+    public void setAnnotation(Class<? extends Annotation> annotation) {
+        this.annotation = annotation;
+    }
 
 }

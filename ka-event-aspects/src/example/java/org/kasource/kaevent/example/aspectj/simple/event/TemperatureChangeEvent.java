@@ -4,7 +4,7 @@ import java.util.EventObject;
 
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.example.aspectj.simple.Thermometer;
-import org.kasource.kaevent.example.simple.event.TemperatureChangeListener;
+
 
 ///CLOVER:OFF
 @Event(listener=TemperatureChangeListener.class)

@@ -6,11 +6,12 @@ package org.kasource.kaevent.event.listener.register;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.easymock.EasyMock;
+import static org.easymock.EasyMock.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.bean.BeanResolver;
@@ -59,9 +60,10 @@ public class SourceObjectListenerRegisterImplTest {
             }
         };
         EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
-        EasyMock.expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
-        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
-        EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
+        expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
+        expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
+        expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
+        expect(eventRegister.getRegisteredEventAnnotations()).andReturn(Collections.EMPTY_SET);
         EasyMockUnitils.replay();
         
         register.registerListener(listener, source);
@@ -82,9 +84,10 @@ public class SourceObjectListenerRegisterImplTest {
             }
         };
         EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
-        EasyMock.expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
-        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
-        EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
+        expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
+        expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
+        expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
+        expect(eventRegister.getRegisteredEventAnnotations()).andReturn(Collections.EMPTY_SET);
         EasyMockUnitils.replay();
         
         register.registerListener(listener, source);

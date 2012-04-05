@@ -9,7 +9,6 @@
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-event-guice</artifactId>
 	<packaging>jar</packaging>
-	<version>0.8-SNAPSHOT</version>
 	<name>Ka Event Guice</name>
 	<url>http://maven.apache.org</url>
 	<!-- Build properties -->

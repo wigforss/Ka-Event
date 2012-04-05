@@ -1,14 +1,8 @@
 package org.kasource.kaevent.channel;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EventObject;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.kasource.kaevent.bean.BeanResolver;
-import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;

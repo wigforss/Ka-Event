@@ -6,7 +6,7 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.event.config.InvalidEventConfigurationException;
 import org.kasource.kaevent.event.method.MethodResolver;
 
@@ -160,7 +160,7 @@ public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> 
      * @return the event keyword method.
      **/
     private Method getEventKeywordMethod(Class<? extends EventObject> eventClass, String eventKeywordMethodName) {
-        Method method = ReflectionUtils.getDeclaredMethod(eventClass, eventKeywordMethodName);
+        Method method = MethodUtils.getDeclaredMethod(eventClass, eventKeywordMethodName);
         if (method.getReturnType().equals(Void.TYPE)) {
             throw new InvalidEventConfigurationException("The method " + eventKeywordMethodName 
                         + " in class " + eventClass + " must return value");
@@ -182,7 +182,7 @@ public class KeywordSwitchMethodResolver implements MethodResolver<EventObject> 
     private Method getListenerMethod(Class<? extends EventObject> eventClass, 
                                      Class<? extends EventListener> listenerClass, 
                                      String methodName) throws InvalidEventConfigurationException {
-        Method method = ReflectionUtils.getDeclaredMethod(listenerClass, methodName, eventClass);
+        Method method = MethodUtils.getDeclaredMethod(listenerClass, methodName, eventClass);
         if (!method.getReturnType().equals(Void.TYPE)) {
             throw new InvalidEventConfigurationException("The method " + methodName + " in class " 
                         + listenerClass + " should not have a return value");

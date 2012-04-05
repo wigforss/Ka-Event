@@ -1,8 +1,10 @@
 package org.kasource.kaevent.event.listener.register;
 
+import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EventListener;
 import java.util.Set;
 
@@ -66,11 +68,12 @@ public class ChannelListenerRegisterImplTest {
             }
         };
         EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
-        EasyMock.expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
-        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
-        EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
-        EasyMock.expect((Collection) channel.getSupportedInterfaces()).andReturn(events);
-        EasyMock.expect(events.contains(ChangeListener.class)).andReturn(true);
+        expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
+        expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
+        expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
+        expect((Collection) channel.getSupportedInterfaces()).andReturn(events);
+        expect(events.contains(ChangeListener.class)).andReturn(true);
+        expect(eventRegister.getRegisteredEventAnnotations()).andReturn(Collections.EMPTY_SET);
         EasyMockUnitils.replay();
         register.registerListener(listener);
         Collection<EventListenerRegistration> listeners = register.getListenersByEvent(new ChangeEvent("Hej"));
@@ -88,11 +91,12 @@ public class ChannelListenerRegisterImplTest {
             }
         };
         EventListenerRegistration listenerReg = new EventListenerRegistration(listener, null);
-        EasyMock.expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
-        EasyMock.expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
-        EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
-        EasyMock.expect((Collection) channel.getSupportedInterfaces()).andReturn(events);
-        EasyMock.expect(events.contains(ChangeListener.class)).andReturn(true);
+        expect(eventRegister.hasEventByInterface(ChangeListener.class)).andReturn(true);
+        expect(eventRegister.getEventByInterface(ChangeListener.class)).andReturn(eventConfig);
+        expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class).times(1);
+        expect((Collection) channel.getSupportedInterfaces()).andReturn(events);
+        expect(events.contains(ChangeListener.class)).andReturn(true);
+        expect(eventRegister.getRegisteredEventAnnotations()).andReturn(Collections.EMPTY_SET);
         EasyMockUnitils.replay();
         register.registerListener(listener);
         Collection<EventListenerRegistration> listeners = register.getListenersByEvent(new ChangeEvent("Hej"));

@@ -115,15 +115,15 @@ public class RegisterEventFilterBeanDefinitionDecorator extends AbstractDecorato
 	@SuppressWarnings("unchecked")
 	private void addFilters(String filters, BeanDefinitionHolder definition,
 			MutablePropertyValues props, PropertyValue value) {
-		ManagedMap filterMap = null;
+		ManagedMap<RuntimeBeanReference, ManagedList<RuntimeBeanReference>> filterMap = null;
 		if (value == null) {
-			filterMap = new ManagedMap();
+			filterMap = new ManagedMap<RuntimeBeanReference, ManagedList<RuntimeBeanReference>>();
 			props.addPropertyValue("filterMap", filterMap);
 		} else {
-			filterMap = (ManagedMap) value.getValue();
+			filterMap = (ManagedMap<RuntimeBeanReference, ManagedList<RuntimeBeanReference>>) value.getValue();
 		}
 		String[] filterNames = filters.split(",");
-		ManagedList list = new ManagedList();
+		ManagedList<RuntimeBeanReference> list = new ManagedList<RuntimeBeanReference>();
 		for (String filterName : filterNames) {
 			list.add(new RuntimeBeanReference(filterName.trim()));
 		}

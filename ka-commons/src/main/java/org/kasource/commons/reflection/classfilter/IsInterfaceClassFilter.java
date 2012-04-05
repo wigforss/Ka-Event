@@ -1,4 +1,5 @@
-package org.kasource.commons.reflection;
+package org.kasource.commons.reflection.classfilter;
+
 
 /**
  * Filter that keeps only interface classes.

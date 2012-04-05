@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.commons.util.reflection.AnnotationsUtils;
+import org.kasource.commons.util.reflection.InterfaceUtils;
 import org.kasource.kaevent.annotations.listener.EventListenerFilter;
 import org.kasource.kaevent.bean.BeanResolver;
-import org.kasource.kaevent.event.config.InvalidEventConfigurationException;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 
@@ -64,7 +64,7 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
      **/
     @SuppressWarnings("unchecked")
     private Set<Class<? extends EventListener>> getRegisteredInterfaces(EventListener listener) {
-        Set<Class<?>> interfaces = ReflectionUtils.getInterfacesExtending(listener, EventListener.class);
+        Set<Class<?>> interfaces = InterfaceUtils.getInterfacesExtending(listener, EventListener.class);
         Set<Class<? extends EventListener>> registeredEvents = new HashSet<Class<? extends EventListener>>();
         for (Class<?> interfaceClass : interfaces) {
             if (eventRegister.hasEventByInterface((Class<? extends EventListener>) interfaceClass)) {
@@ -134,7 +134,7 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
             }
         }
         Set<Class<? extends Annotation>> registeredAnnotations = eventRegister.getRegisteredEventAnnotations();
-        Map<Class<? extends Annotation>, Method>  methodAnnotations = ReflectionUtils.findAnnotatedMethods(listener.getClass(), registeredAnnotations);
+        Map<Class<? extends Annotation>, Method>  methodAnnotations = AnnotationsUtils.findAnnotatedMethods(listener.getClass(), registeredAnnotations);
         for (Map.Entry<Class<? extends Annotation>, Method> annotation : methodAnnotations.entrySet()){
             validateAnnotatedEventMethod(listener, annotation.getValue(), annotation.getKey(), eventRegister.getEventByAnnotation(annotation.getKey()).getEventClass());
                 addListener(listener, eventRegister.getEventByAnnotation(annotation.getKey())

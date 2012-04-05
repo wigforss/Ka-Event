@@ -5,7 +5,7 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Map;
 
-import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.bean.CouldNotResolveBeanException;
 import org.kasource.kaevent.event.method.switchcase.KeywordSwitchMethodResolver;
@@ -38,10 +38,10 @@ public final class MethodResolverFactory {
         throws IllegalStateException {
         try {
             if (parameter == null || parameter.length() == 0) {
-                Method method = ReflectionUtils.getDeclaredMethod(factoryClass, methodName);
+                Method method = MethodUtils.getDeclaredMethod(factoryClass, methodName);
                 return (MethodResolver) method.invoke(null);
             } else {
-                Method method = ReflectionUtils.getDeclaredMethod(factoryClass, methodName, String.class);
+                Method method = MethodUtils.getDeclaredMethod(factoryClass, methodName, String.class);
                 return (MethodResolver) method.invoke(null, parameter);
             }
         } catch (Exception e) {

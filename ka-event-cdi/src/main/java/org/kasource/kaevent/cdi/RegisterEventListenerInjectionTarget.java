@@ -6,7 +6,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
-import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.commons.util.reflection.AnnotationsUtils;
 import org.kasource.kaevent.annotations.listener.BeanListener;
 import org.kasource.kaevent.annotations.listener.ChannelListener;
 import org.kasource.kaevent.listener.register.RegisterListenerByAnnotation;
@@ -65,7 +65,7 @@ public  class RegisterEventListenerInjectionTarget<T> implements InjectionTarget
     }
     
     private void registerChannelListener(T instance, boolean doRegister) {
-        ChannelListener channelListener = ReflectionUtils.getAnnotation(instance.getClass(), ChannelListener.class);
+        ChannelListener channelListener = AnnotationsUtils.getAnnotation(instance.getClass(), ChannelListener.class);
         if(channelListener != null) {
             if(doRegister) {
                 register.registerChannelListener(channelListener, instance);
@@ -76,7 +76,7 @@ public  class RegisterEventListenerInjectionTarget<T> implements InjectionTarget
     }
     
     private void registerBeanListener(T instance, boolean doRegister) {
-        BeanListener beanListener = ReflectionUtils.getAnnotation(instance.getClass(), BeanListener.class);
+        BeanListener beanListener = AnnotationsUtils.getAnnotation(instance.getClass(), BeanListener.class);
         if(beanListener != null) {
             if(doRegister) {
                 register.registerBeanListener(beanListener, instance);

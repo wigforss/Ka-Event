@@ -10,7 +10,6 @@
 	<groupId>org.kasource</groupId>
 	<artifactId>ka-event-osgi</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.8-SNAPSHOT</version>
 	<name>Ka Event OSGi Bundle</name>
 	<url>http://kasource.org</url>
 
@@ -79,6 +78,8 @@
 							org.kasource.kaevent.osgi,
 							org.kasource.kaevent.osgi.util,
 							org.kasource.commons.reflection,
+							org.kasource.commons.reflection.classfilter,
+							org.kasource.commons.util.reflection,
 							org.kasource.commons.util								
 						</Private-Package>
 						<Bundle-Activator>org.kasource.kaevent.osgi.Activator</Bundle-Activator>

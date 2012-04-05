@@ -4,6 +4,7 @@
 package org.kasource.kaevent.event.export;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -13,11 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kasource.commons.reflection.ReflectionUtils;
+import org.kasource.commons.util.reflection.ClassUtils;
+import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.config.KaEventConfig;
+import org.kasource.kaevent.event.config.EventBuilder;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventFactory;
 import org.kasource.kaevent.event.config.InvalidEventConfigurationException;
 import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.event.method.MethodResolverFactory;
@@ -48,17 +51,17 @@ public class XmlConfigEventExporter implements EventExporter {
    /**
     * Returns all events found in the eventList.
     * 
-    * @param eventFactory    Factory used to create EventConfig instances with.
+    * @param eventBuilderFactory    Factory used to create EventConfig instances with.
     * 
     * @return Events found.
     * @throws IOException if exception occurs.
     */
 	@Override
-    public Set<EventConfig> exportEvents(EventFactory eventFactory) throws IOException {
+    public Set<EventConfig> exportEvents(EventBuilderFactory eventBuilderFactory) throws IOException {
         Set<EventConfig> eventsFound = new HashSet<EventConfig>();
         if (eventList != null && !eventList.isEmpty()) {
             for (KaEventConfig.Events.Event event : eventList) {
-                addEvent(eventFactory, eventsFound, event);
+                addEvent(eventBuilderFactory, eventsFound, event);
             }
         }
         return eventsFound;
@@ -67,37 +70,39 @@ public class XmlConfigEventExporter implements EventExporter {
 	/**
 	 * Creates and adds the event to the events found set.
 	 * 
-	 * @param eventFactory Factory to use when creating the EventConfig instance.
+	 * @param eventBuilderFactory Factory to use when creating the EventConfig instance.
 	 * @param eventsFound  Set of events to add the newly created event to.
 	 * @param event        XML Configuration element.
 	 **/
-	@SuppressWarnings("unchecked")
-    private void addEvent(EventFactory eventFactory, Set<EventConfig> eventsFound, KaEventConfig.Events.Event event) {
-        Class<? extends EventListener> interfaceClass = 
-            ReflectionUtils.getInterfaceClass(event.getListenerInterface(), EventListener.class);
-        
+    private void addEvent(EventBuilderFactory eventBuilderFactory, Set<EventConfig> eventsFound, KaEventConfig.Events.Event event) {
+	    Class<? extends EventListener> interfaceClass = null;
+	    if(event.getListenerInterface() != null) {
+	        interfaceClass = 
+	            ClassUtils.getInterfaceClass(event.getListenerInterface(), EventListener.class);
+	    }
+	    Class<? extends Annotation> annotationClass = null;
+	    if(event.getAnnotation() != null) {
+	        annotationClass = ClassUtils.getClass(event.getAnnotation(), Annotation.class);
+	    }
         Class<? extends EventObject> eventClass = 
-            ReflectionUtils.getClass(event.getEventClass(), EventObject.class);
+            ClassUtils.getClass(event.getEventClass(), EventObject.class);
         
-        if (!hasMethodResolver(event)) {
-            Method eventMethod = getEventMethod(eventClass, interfaceClass);
-            eventsFound.add(eventFactory.newWithEventMethod(eventClass, 
-                                                            interfaceClass, 
-                                                            eventMethod, 
-                                                            event.getName()));
-            
-        } else if (event.getAnnotationMethodResolver() != null) {
-           eventsFound.add(eventFactory.newFromAnnotatedInterfaceClass(eventClass, 
-                                                                       interfaceClass, 
-                                                                       event.getName()));
-        } else {
-            eventsFound.add(eventFactory.newWithMethodResolver(eventClass, 
-                                                               interfaceClass, 
-                                                               getMethodResolver(event, 
-                                                                                 eventClass, 
-                                                                                 interfaceClass), 
-                                                                                 event.getName()));
+        EventBuilder eventBuilder = eventBuilderFactory.getBuilder(eventClass).name(event.getName());
+        
+        if(interfaceClass != null) {
+            if(!hasMethodResolver(event)) {
+                eventBuilder = eventBuilder.bindInterface(interfaceClass, getEventMethod(eventClass, interfaceClass));
+            } else {
+                eventBuilder = eventBuilder.bindInterface(interfaceClass, getMethodResolver(event, 
+                            eventClass, 
+                            interfaceClass));
+            }
         }
+        if(annotationClass != null) {
+            eventBuilder = eventBuilder.bindAnnotation(annotationClass);
+        }
+       
+        eventsFound.add(eventBuilder.build());
     }
     
     /**
@@ -116,7 +121,7 @@ public class XmlConfigEventExporter implements EventExporter {
                                   Class<? extends EventListener> listenerInterface) 
         throws InvalidEventConfigurationException {
         Set<Method> methods = 
-            ReflectionUtils.getDeclaredMethodsMatchingReturnType(listenerInterface, Void.TYPE, eventClass);
+            MethodUtils.getDeclaredMethodsMatchingReturnType(listenerInterface, Void.TYPE, eventClass);
         
         if (methods.size() == 1) {
            return methods.iterator().next();

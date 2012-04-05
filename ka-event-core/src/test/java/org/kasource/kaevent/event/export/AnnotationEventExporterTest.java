@@ -11,8 +11,9 @@ import java.util.Set;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kasource.kaevent.event.config.EventBuilder;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.config.EventFactory;
+import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.event.export.test.event.SimpleEvent;
 import org.kasource.kaevent.event.export.test.event2.SimpleEvent2;
 import org.unitils.UnitilsJUnit4TestClassRunner;
@@ -30,7 +31,10 @@ public class AnnotationEventExporterTest {
     
 
     @Mock
-    private EventFactory eventFactory;
+    private EventBuilderFactory eventBuilderFactory;
+    
+    @Mock
+    private EventBuilder eventBuilder;
     
     @Mock
     private EventConfig eventConfig;
@@ -46,10 +50,12 @@ public class AnnotationEventExporterTest {
     
     @Test
     public void scanAnnotationTest() throws IOException {
-        EasyMock.expect(eventFactory.newFromAnnotatedEventClass(SimpleEvent.class)).andReturn(eventConfig);
-        EasyMock.expect(eventFactory.newFromAnnotatedEventClass(SimpleEvent2.class)).andReturn(eventConfig2);
-        EasyMockUnitils.replay();
-        Set<EventConfig> eventSet = exporter.exportEvents(eventFactory);   
+       EasyMock.expect(eventBuilderFactory.getBuilder(SimpleEvent.class)).andReturn(eventBuilder);
+       EasyMock.expect(eventBuilder.build()).andReturn(eventConfig);
+       EasyMock.expect(eventBuilderFactory.getBuilder(SimpleEvent2.class)).andReturn(eventBuilder);
+       EasyMock.expect(eventBuilder.build()).andReturn(eventConfig2);
+       EasyMockUnitils.replay();
+        Set<EventConfig> eventSet = exporter.exportEvents(eventBuilderFactory);   
         assertEquals(2, eventSet.size());
     }
     

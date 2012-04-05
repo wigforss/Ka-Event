@@ -34,9 +34,8 @@ public class RegisterListenerInterceptor implements MethodInterceptor {
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		//System.out.println("Interceptor: " + invocation.getThis());
 		Object listener = invocation.getThis();
-		@SuppressWarnings("unchecked")
-		Class<? extends EventListener> listenerClass = 
-		    (Class<? extends EventListener>) invocation.getMethod().getDeclaringClass();
+		
+		Class<?> listenerClass =  invocation.getMethod().getDeclaringClass();
 		ChannelListener channelListener = listenerClass.getAnnotation(ChannelListener.class);
 		if (channelListener != null) {
 			if (doRegister) {
