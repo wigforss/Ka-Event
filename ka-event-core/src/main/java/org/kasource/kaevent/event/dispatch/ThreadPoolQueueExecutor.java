@@ -30,23 +30,14 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
     /**
      * Constructor, using the default values.
      **/
-    protected ThreadPoolQueueExecutor() {
+    public ThreadPoolQueueExecutor() {
         super(DEFAULT_CORE_POOL_SIZE, 
                 DEFAULT_MAXIMUM_POOL_SIZE, 
                 DEFAULT_KEEP_ALIVE_TIME, 
                 DEFAULT_KEEP_ALIVE_TIME_UNIT, new LinkedBlockingDeque<Runnable>(DEFAULT_QUEUE_CAPACITY));   
     }
     
-    /**
-     * Constructor, using the default values.
-     * 
-     * @param eventRouter Event Router to use.
-     **/
-    public ThreadPoolQueueExecutor(EventRouter eventRouter) {
-        super(DEFAULT_CORE_POOL_SIZE, 
-                DEFAULT_MAXIMUM_POOL_SIZE, 
-                DEFAULT_KEEP_ALIVE_TIME, 
-                DEFAULT_KEEP_ALIVE_TIME_UNIT, new LinkedBlockingDeque<Runnable>(DEFAULT_QUEUE_CAPACITY));
+    public void setEventRouter(EventRouter eventRouter) {
         this.eventRouter = eventRouter;
     }
     
@@ -173,5 +164,26 @@ public class ThreadPoolQueueExecutor extends ThreadPoolExecutor implements Dispa
 			this.setMaximumPoolSize(1);
 		}
 	}
+
+    @Override
+    public void setMaxThreads(int maxThreads) {
+        if(getCorePoolSize() > maxThreads) {
+            setCorePoolSize(maxThreads);
+        }
+        setMaximumPoolSize(maxThreads);
+        
+    }
+
+    @Override
+    public void setCoreThreads(int coreThreads) {
+        setCorePoolSize(coreThreads);
+        
+    }
+
+    @Override
+    public void setKeepAliveTime(long keepAliveTime) {
+        setKeepAliveTime(keepAliveTime, TimeUnit.MILLISECONDS);
+        
+    }
 
 }

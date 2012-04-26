@@ -6,7 +6,7 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kasource.kaevent.event.ForwardedApplicationEvent;
+import org.kasource.kaevent.event.ForwardedSpringApplicationEvent;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
@@ -60,7 +60,7 @@ public class SpringEventChannelTest {
     
     @Test
     public void acceptForwardedEventFalse() {
-        ForwardedApplicationEvent event = new ForwardedApplicationEvent(new ContextStoppedEvent(applicationContext)); 
+        ForwardedSpringApplicationEvent event = new ForwardedSpringApplicationEvent(new ContextStoppedEvent(applicationContext)); 
         assertFalse(channel.acceptForwardedEvent(event)); 
        
     }

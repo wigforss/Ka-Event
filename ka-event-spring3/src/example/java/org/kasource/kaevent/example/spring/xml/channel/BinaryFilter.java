@@ -2,6 +2,7 @@ package org.kasource.kaevent.example.spring.xml.channel;
 
 import java.util.EventObject;
 
+import org.kasource.kaevent.event.BaseEvent;
 import org.kasource.kaevent.event.filter.EventFilter;
 
 ///CLOVER:OFF
@@ -19,4 +20,8 @@ public class BinaryFilter implements EventFilter<EventObject> {
 		return allow;
 	}
 
+	@Override
+    public boolean isApplicable(Class<? extends EventObject> eventClass) {
+        return true;
+    }
 }

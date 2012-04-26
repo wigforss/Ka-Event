@@ -91,7 +91,7 @@ public interface EventDispatcher {
      * @param filters       List of filters to apply on events dispatched to the listener.
      **/
     public void registerListener(Object listener,
-                Object sourceObject, List<EventFilter<EventObject>> filters);
+                Object sourceObject, List<EventFilter<? extends EventObject>> filters);
     
     /**
      * Register listener as a Channel listener of the named channel.
@@ -129,7 +129,7 @@ public interface EventDispatcher {
      * a ListenerChannel. 
      **/
     public void registerListenerAtChannel(Object listener,
-            String channelName, List<EventFilter<EventObject>> filters) throws IllegalArgumentException;
+            String channelName, List<EventFilter<? extends EventObject>> filters) throws IllegalArgumentException;
     
     
     /**
@@ -148,6 +148,22 @@ public interface EventDispatcher {
      * Fire all events in this threads batch.
      **/
     public void fireBatch();
+    
+    /**
+     * Bridge an event from an external event system into Ka-Event.
+     * 
+     * @param event Event to fire in Ka-Event
+     */
+    public void bridgeEvent(EventObject event);
    
+    /**
+     * Add filter to be applied on all bridged events.
+     * Can be used to stop infinite loops if an external
+     * event system is connected to ka-event on both ingoing and outgoing 
+     * events. 
+     * 
+     * @param filter Filter to be applied when bridging events.
+     **/
+    public <T extends EventObject> void addBridgeFilter(EventFilter<T> filter);
     
 }

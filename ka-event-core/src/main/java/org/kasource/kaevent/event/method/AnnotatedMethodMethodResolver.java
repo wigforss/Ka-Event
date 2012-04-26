@@ -9,6 +9,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.kasource.commons.reflection.filter.methods.AnnotatedMethodFilter;
+import org.kasource.commons.reflection.filter.methods.AssignableFromMethodFilter;
+import org.kasource.commons.reflection.filter.methods.MethodFilter;
+import org.kasource.commons.reflection.filter.methods.MethodFilterList;
+import org.kasource.commons.reflection.filter.methods.SignatureMethodFilter;
 import org.kasource.commons.util.reflection.MethodUtils;
 
 /**
@@ -67,22 +72,16 @@ public class AnnotatedMethodMethodResolver implements MethodResolver<EventObject
      * @return The method on target that has a registered annotation or null if no such method could be found.
      **/
     private Method resolveAnnotatedMethod(EventObject event, Object target) {
-        Set<Method> methods = new HashSet<Method>();
-        methods.addAll(Arrays.asList(target.getClass().getDeclaredMethods()));
-        Class<?> clazz = target.getClass();
-        while((clazz = clazz.getSuperclass()) != null) {
-            methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
-        }
-        Set<Method> candidates = MethodUtils.filterAnnotatedMethods(methods, targetAnnotation);
-        for(Method candidate : candidates) {
-            if(candidate.getParameterTypes().length == 1 
-                        && candidate.getParameterTypes()[0].isAssignableFrom(event.getClass())) {
-                return candidate;
-                
-            }
+        MethodFilter filter = new MethodFilterList(new AnnotatedMethodFilter(targetAnnotation), 
+                              new AssignableFromMethodFilter(event.getClass()));
+        Set<Method> methods = MethodUtils.getMethods(target.getClass(), filter);
+       
+        if(methods.isEmpty()) {
+            return null;
+        } else {
+            return methods.iterator().next();
         }
         
-        return null;
     }
 
     /**

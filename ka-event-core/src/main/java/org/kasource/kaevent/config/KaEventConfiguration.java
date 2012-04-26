@@ -1,5 +1,7 @@
 package org.kasource.kaevent.config;
 
+import java.util.Map;
+
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
@@ -7,6 +9,7 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
+import org.kasource.kaevent.event.dispatch.EventQueueRegister;
 import org.kasource.kaevent.event.dispatch.EventRouter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
@@ -71,6 +74,11 @@ public interface KaEventConfiguration {
     /**
      * @return the queueThread
      */
-    public abstract DispatcherQueueThread getQueueThread();
+    public abstract DispatcherQueueThread getDefaultEventQueue();
+    
+    /**
+     * @return the eventQueueRegister
+     */
+    public EventQueueRegister getEventQueueRegister();
 
 }

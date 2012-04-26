@@ -15,7 +15,7 @@ import org.kasource.kaevent.event.filter.EventFilter;
  */
 public class EventListenerRegistration {
     private Object listener;
-    private List<EventFilter<EventObject>> filters;
+    private List<EventFilter<? extends EventObject>> filters;
     
     /**
      * Constructor.
@@ -23,7 +23,7 @@ public class EventListenerRegistration {
      * @param listener  Listener
      * @param filters   Filter list
      **/
-    public EventListenerRegistration(Object listener, List<EventFilter<EventObject>> filters) {
+    public EventListenerRegistration(Object listener, List<EventFilter<? extends EventObject>> filters) {
         this.listener = listener;
         this.filters = filters;
     }
@@ -55,7 +55,7 @@ public class EventListenerRegistration {
     /**
      * @return the filters
      */
-    public List<EventFilter<EventObject>> getFilters() {
+    public List<EventFilter<? extends EventObject>> getFilters() {
         return filters;
     }
     

@@ -5,8 +5,8 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kasource.commons.reflection.classfilter.ClassFilter;
-import org.kasource.commons.reflection.classfilter.IsInterfaceClassFilter;
+import org.kasource.commons.reflection.filter.classes.ClassFilter;
+import org.kasource.commons.reflection.filter.classes.IsInterfaceClassFilter;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;

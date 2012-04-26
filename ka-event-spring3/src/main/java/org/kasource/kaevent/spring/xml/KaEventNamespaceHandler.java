@@ -20,7 +20,7 @@ public class KaEventNamespaceHandler extends NamespaceHandlerSupport {
         registerBeanDefinitionParser("channel", new ChannelBeanDefinitionParser()); 
         registerBeanDefinitionParser("event", new EventBeanDefinitionParser()); 
         registerBeanDefinitionParser("kaevent", new KaEventConfigurerBeanDefinitionParser()); 
-
+        registerBeanDefinitionParser("eventQueue", new EventQueueBeanDefinitionParser());
         registerBeanDefinitionDecoratorForAttribute("listen-on-bean", 
         		new RegisterBeanListenerBeanDefinitionDecorator());
         registerBeanDefinitionDecoratorForAttribute("listen-on-channel", 

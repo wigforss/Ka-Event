@@ -11,11 +11,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 
 
 
@@ -35,8 +37,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  **/
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "queueThread",
-    "threadPoolExecutor",
+    "eventQueue",
     "beanResolver",
     "channelFactory",
     "events",
@@ -45,8 +46,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "kaEventConfig")
 public class KaEventConfig {
 
-    protected KaEventConfig.QueueThread queueThread;
-	protected KaEventConfig.ThreadPoolExecutor threadPoolExecutor;
+   
+	protected List<KaEventConfig.EventQueue> eventQueue;
     protected KaEventConfig.BeanResolver beanResolver;
     protected KaEventConfig.ChannelFactory channelFactory;
     protected KaEventConfig.Events events;
@@ -63,53 +64,38 @@ public class KaEventConfig {
     	}
     }
     
-    /**
-     * Gets the value of the queueThread property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link KaEventConfig.QueueThread }
-     *     
-     */
-    public KaEventConfig.QueueThread getQueueThread() {
-        return queueThread;
-    }
+    
 
     /**
-     * Sets the value of the queueThread property.
+     * Gets the value of the eventQueue property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link KaEventConfig.QueueThread }
-     *     
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the eventQueue property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getEventQueue().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link EventQueue }
+     * 
+     * 
      */
-    public void setQueueThread(KaEventConfig.QueueThread value) {
-        this.queueThread = value;
+    public List<KaEventConfig.EventQueue> getEventQueue() {
+        if (eventQueue == null) {
+            eventQueue = new ArrayList<KaEventConfig.EventQueue>();
+        }
+        return this.eventQueue;
     }
 
-    /**
-     * Gets the value of the threadPoolExecutor property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link KaEventConfig.ThreadPoolExecutor }
-     *     
-     */
-    public KaEventConfig.ThreadPoolExecutor getThreadPoolExecutor() {
-        return threadPoolExecutor;
-    }
-
-    /**
-     * Sets the value of the threadPoolExecutor property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link KaEventConfig.ThreadPoolExecutor }
-     *     
-     */
-    public void setThreadPoolExecutor(KaEventConfig.ThreadPoolExecutor value) {
-        this.threadPoolExecutor = value;
-    }
+    
 
     /**
      * Gets the value of the beanResolver property.
@@ -686,79 +672,25 @@ public class KaEventConfig {
 
 
         /**
-         * <p>Java class for anonymous complex type.
+         * Event configuration.
          * 
-         * <p>The following schema fragment specifies the expected content contained within this class.
+         * An event configuration, consist of an Event class
+         * which must extend java.util.EventObject and a listener interface
+         * which must extend java.util.EventListener or a runtime method annotation.
+         *                               
+         * If more than one method is
+         * declared in the listener interface a method resolver must be
+         * defined, declare one of annotationMethodResolver,
+         * factoryMethodResolver, beanMethodResolver or
+         * switchMethodResolver.
          * 
-         * <pre>
-         * &lt;complexType>
-         *   &lt;complexContent>
-         *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-         *       &lt;sequence>
-         *         &lt;choice minOccurs="0">
-         *           &lt;element name="annotationMethodResolver" type="{http://www.w3.org/2001/XMLSchema}anyType"/>
-         *           &lt;element name="factoryMethodResolver">
-         *             &lt;complexType>
-         *               &lt;complexContent>
-         *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-         *                   &lt;attribute name="factoryClass" use="required" type="{http://kasource.org}javaClass" />
-         *                   &lt;attribute name="factoryMethod" use="required" type="{http://kasource.org}javaMethodName" />
-         *                   &lt;attribute name="factoryMethodArgument" type="{http://www.w3.org/2001/XMLSchema}string" />
-         *                 &lt;/restriction>
-         *               &lt;/complexContent>
-         *             &lt;/complexType>
-         *           &lt;/element>
-         *           &lt;element name="beanMethodResolver">
-         *             &lt;complexType>
-         *               &lt;complexContent>
-         *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-         *                   &lt;attribute name="bean" use="required" type="{http://www.w3.org/2001/XMLSchema}Name" />
-         *                 &lt;/restriction>
-         *               &lt;/complexContent>
-         *             &lt;/complexType>
-         *           &lt;/element>
-         *           &lt;element name="switchMethodResolver">
-         *             &lt;complexType>
-         *               &lt;complexContent>
-         *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-         *                   &lt;sequence>
-         *                     &lt;element name="case" maxOccurs="unbounded">
-         *                       &lt;complexType>
-         *                         &lt;complexContent>
-         *                           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-         *                             &lt;attribute name="value" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
-         *                             &lt;attribute name="method" use="required" type="{http://kasource.org}javaMethodName" />
-         *                           &lt;/restriction>
-         *                         &lt;/complexContent>
-         *                       &lt;/complexType>
-         *                     &lt;/element>
-         *                     &lt;element name="default">
-         *                       &lt;complexType>
-         *                         &lt;complexContent>
-         *                           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-         *                             &lt;attribute name="method" use="required" type="{http://kasource.org}javaMethodName" />
-         *                           &lt;/restriction>
-         *                         &lt;/complexContent>
-         *                       &lt;/complexType>
-         *                     &lt;/element>
-         *                   &lt;/sequence>
-         *                   &lt;attribute name="keywordMethod" use="required" type="{http://kasource.org}javaMethodName" />
-         *                 &lt;/restriction>
-         *               &lt;/complexContent>
-         *             &lt;/complexType>
-         *           &lt;/element>
-         *         &lt;/choice>
-         *       &lt;/sequence>
-         *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}ID" />
-         *       &lt;attribute name="eventClass" use="required" type="{http://kasource.org}javaClass" />
-         *       &lt;attribute name="listenerInterface" use="required" type="{http://kasource.org}javaClass" />
-         *     &lt;/restriction>
-         *   &lt;/complexContent>
-         * &lt;/complexType>
-         * </pre>
+         * A minimal configuration would be only eventClass relying on the
+         * presence of an @Event annotation of that class, since annotationMethodResolver
+         * is used by default.
          * 
-         * 
-         */
+         * If the @Event annotation is not set on the eventClass either listenerInterface
+         * or annotation must be set.
+         **/
         @XmlAccessorType(XmlAccessType.FIELD)
         @XmlType(name = "", propOrder = {
             "annotationMethodResolver",
@@ -779,11 +711,30 @@ public class KaEventConfig {
             protected String name;
             @XmlAttribute(required = true)
             protected String eventClass;
+            
+            /**
+             * Optional listener interface the handles events (of the
+             * eventClass type) and extends java.util.EventListener
+             */
             @XmlAttribute
-            protected String listenerInterface;           
+            protected String listenerInterface;
+            
+            /**
+             *  Optional listener method annotation used to mark method that handle events (of the
+             *  eventClass type) with. Note that the annotation must have retention RUNTIME.
+             */
             @XmlAttribute
             protected String annotation;
-
+            
+            /**
+             * Use this attribute to dispatch this events another 
+             *  event queue than the default one.
+             **/
+            @XmlAttribute(name = "eventQueue")
+            @XmlIDREF
+            @XmlSchemaType(name = "IDREF")
+            protected Object eventQueue;
+            
             /**
              * Gets the value of the annotationMethodResolver property.
              * 
@@ -966,6 +917,30 @@ public class KaEventConfig {
                 this.annotation = annotation;
             }
 
+            /**
+             * Gets the value of the eventQueue property.
+             * 
+             * @return
+             *     possible object is
+             *     {@link Object }
+             *     
+             */
+            public Object getEventQueue() {
+                return eventQueue;
+            }
+
+            /**
+             * Sets the value of the eventQueue property.
+             * 
+             * @param value
+             *     allowed object is
+             *     {@link Object }
+             *     
+             */
+            public void setEventQueue(Object value) {
+                this.eventQueue = value;
+            }
+            
             /**
              * <p>Java class for anonymous complex type.
              * 
@@ -1397,29 +1372,65 @@ public class KaEventConfig {
 
 
     /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;attribute name="class" use="required" type="{http://kasource.org}javaClass" />
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     * 
-     * 
-     */
+     * Configure the event queue for the event dispatcher. If no eventQueue is 
+     * configured a default multi-threaded event queue will be created
+     * To guarantee that events are dispatched in a sequential order an event queue
+     * needs to be configured with maximumPoolSize attribute set to 1. See
+     * http://download.oracle.com/javase/6/docs/api/java/util/concurrent/ThreadPoolExecutor.html
+     **/
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class QueueThread {
+    public static class EventQueue {
 
-        @XmlAttribute(name = "class", required = true)
+        /**
+         * Name of the event queue. Use kaEvent.defaultQueue to configure 
+         * the default event queue.
+         */
+        @XmlAttribute(name = "name", required = true)
+        @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+        @XmlID
+        @XmlSchemaType(name = "ID")
+        protected String name;
+        
+        /**
+         * Optional class that implements
+         * org.kasource.kaevent.event.dispatch.DispatcherQueueThread,
+         * which will be used instead of the standard event queue
+         * implementation.
+         **/
+        @XmlAttribute(name = "class")
         protected String clazz;
+        @XmlAttribute
+        protected Short maxThreads;
+        @XmlAttribute
+        protected Short coreThreads;
+        @XmlAttribute
+        protected Long keepAliveTime;
 
+        /**
+         * Gets the value of the name property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link String }
+         *     
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * Sets the value of the name property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link String }
+         *     
+         */
+        public void setName(String value) {
+            this.name = value;
+        }
+        
         /**
          * Gets the value of the clazz property.
          * 
@@ -1443,50 +1454,17 @@ public class KaEventConfig {
         public void setClazz(String value) {
             this.clazz = value;
         }
-
-    }
-
-
-    /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;attribute name="maximumPoolSize" type="{http://www.w3.org/2001/XMLSchema}byte" />
-     *       &lt;attribute name="corePoolSize" type="{http://www.w3.org/2001/XMLSchema}byte" />
-     *       &lt;attribute name="keepAliveTime" type="{http://www.w3.org/2001/XMLSchema}integer" />
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     * 
-     * 
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
-    public static class ThreadPoolExecutor {
-
-        @XmlAttribute
-        protected Byte maximumPoolSize;
-        @XmlAttribute
-        protected Byte corePoolSize;
-        @XmlAttribute
-        protected BigInteger keepAliveTime;
-
+        
         /**
          * Gets the value of the maximumPoolSize property.
          * 
          * @return
          *     possible object is
-         *     {@link Byte }
+         *     {@link Short }
          *     
          */
-        public Byte getMaximumPoolSize() {
-            return maximumPoolSize;
+        public Short getMaxThreads() {
+            return maxThreads;
         }
 
         /**
@@ -1494,11 +1472,11 @@ public class KaEventConfig {
          * 
          * @param value
          *     allowed object is
-         *     {@link Byte }
+         *     {@link Short }
          *     
          */
-        public void setMaximumPoolSize(Byte value) {
-            this.maximumPoolSize = value;
+        public void setMaxThreads(Short value) {
+            this.maxThreads = value;
         }
 
         /**
@@ -1506,11 +1484,11 @@ public class KaEventConfig {
          * 
          * @return
          *     possible object is
-         *     {@link Byte }
+         *     {@link Short }
          *     
          */
-        public Byte getCorePoolSize() {
-            return corePoolSize;
+        public Short getCoreThreads() {
+            return coreThreads;
         }
 
         /**
@@ -1518,11 +1496,11 @@ public class KaEventConfig {
          * 
          * @param value
          *     allowed object is
-         *     {@link Byte }
+         *     {@link Short }
          *     
          */
-        public void setCorePoolSize(Byte value) {
-            this.corePoolSize = value;
+        public void setCoreThreads(Short value) {
+            this.coreThreads = value;
         }
 
         /**
@@ -1533,7 +1511,7 @@ public class KaEventConfig {
          *     {@link BigInteger }
          *     
          */
-        public BigInteger getKeepAliveTime() {
+        public Long getKeepAliveTime() {
             return keepAliveTime;
         }
 
@@ -1545,7 +1523,7 @@ public class KaEventConfig {
          *     {@link BigInteger }
          *     
          */
-        public void setKeepAliveTime(BigInteger value) {
+        public void setKeepAliveTime(Long value) {
             this.keepAliveTime = value;
         }
 

@@ -5,18 +5,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.filter.EventFilter;
+import org.kasource.kaevent.event.filter.EventFilterExecutor;
 import org.kasource.kaevent.event.register.EventRegister;
 
 public class ChannelFilterHandler {
 
     private EventRegister eventRegister;
      
-    private Map<Class<? extends EventObject>, Collection<EventFilter<EventObject>>> filtersByEvent = 
-        new HashMap<Class<? extends EventObject>, Collection<EventFilter<EventObject>>>();
+    private EventFilterExecutor filterExecutor = new EventFilterExecutor();
+    
+    private Map<Class<? extends EventObject>, List<EventFilter<? extends EventObject>>> filtersByEvent = 
+        new HashMap<Class<? extends EventObject>, List<EventFilter<? extends EventObject>>>();
     
     
     /**
@@ -36,22 +40,13 @@ public class ChannelFilterHandler {
      * @return
      **/
     public boolean filterEvent(EventObject event) {
-        Collection<EventFilter<EventObject>> filters = filtersByEvent.get(event.getClass());
+        List<EventFilter<? extends EventObject>> filters = filtersByEvent.get(event.getClass());
         if (filters != null) {
-            boolean passFilter = true;
-            for (EventFilter<EventObject> filter : filters) {
-                if (!filter.passFilter(event)) {
-                    passFilter = false;
-                    break;
-                }
-            }
-            if (passFilter) {
-                return true;
-            }
+            return filterExecutor.passFilters(filters, event);
         } else {
            return true;
         }
-        return false;
+        
     }
     
     
@@ -76,7 +71,7 @@ public class ChannelFilterHandler {
      * @return Returns true if filter added else false.
      **/
     @SuppressWarnings("unchecked")
-    public boolean registerFilter(EventFilter<EventObject> filter) {
+    public boolean registerFilter(EventFilter<? extends EventObject> filter) {
         
         Class<? extends EventObject> eventClass = (Class<? extends EventObject>) ((ParameterizedType) filter
                 .getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
@@ -85,9 +80,9 @@ public class ChannelFilterHandler {
         boolean found = false;
         for (EventConfig eventConfig : events) {
             if (eventClass.isAssignableFrom(eventConfig.getEventClass())) {
-                Collection<EventFilter<EventObject>> filters = filtersByEvent.get(eventClass);
+                List<EventFilter<? extends EventObject>> filters = filtersByEvent.get(eventClass);
                 if (filters == null) {
-                    filters = new ArrayList<EventFilter<EventObject>>();
+                    filters = new ArrayList<EventFilter<? extends EventObject>>();
                     filtersByEvent.put(eventConfig.getEventClass(), filters);
                 }
                 filters.add(filter);

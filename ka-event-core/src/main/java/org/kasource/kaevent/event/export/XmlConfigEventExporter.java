@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kasource.commons.reflection.filter.methods.MethodFilterBuilder;
+import org.kasource.commons.reflection.filter.methods.MethodFilterList;
+import org.kasource.commons.reflection.filter.methods.ReturnTypeMethodFilter;
+import org.kasource.commons.reflection.filter.methods.SignatureMethodFilter;
 import org.kasource.commons.util.reflection.ClassUtils;
 import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.bean.BeanResolver;
@@ -121,8 +125,8 @@ public class XmlConfigEventExporter implements EventExporter {
                                   Class<? extends EventListener> listenerInterface) 
         throws InvalidEventConfigurationException {
         Set<Method> methods = 
-            MethodUtils.getDeclaredMethodsMatchingReturnType(listenerInterface, Void.TYPE, eventClass);
-        
+            MethodUtils.getDeclaredMethods(listenerInterface, new MethodFilterBuilder().hasReturnType(Void.TYPE).hasSignature(eventClass).build());
+            
         if (methods.size() == 1) {
            return methods.iterator().next();
         } else if (methods.size() == 0) {

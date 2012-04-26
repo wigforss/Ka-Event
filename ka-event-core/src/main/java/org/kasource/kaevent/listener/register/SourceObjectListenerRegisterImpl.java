@@ -53,7 +53,7 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
 
     @Override
     protected void addListener(Object listener, Class<? extends EventObject> eventClass, Object sourceObject,
-                List<EventFilter<EventObject>> filters) {
+                List<EventFilter<? extends EventObject>> filters) {
         Map<Object, Map<Object, EventListenerRegistration>> objectListenerMap = objectListenersByEvent
                     .get(eventClass);
         if (objectListenerMap == null) {
@@ -92,7 +92,7 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
     }
 
     @Override
-    public void registerListener(Object listener, Object sourceObject, List<EventFilter<EventObject>> filters) {
+    public void registerListener(Object listener, Object sourceObject, List<EventFilter<? extends EventObject>> filters) {
         super.register(listener, sourceObject, filters);
 
     }

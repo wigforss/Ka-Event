@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.kasource.commons.reflection.classfilter.AnnotationClassFilter;
-import org.kasource.commons.reflection.classfilter.AssignableFromClassFilter;
-import org.kasource.commons.reflection.classfilter.FilterList;
+import org.kasource.commons.reflection.filter.classes.AnnotationClassFilter;
+import org.kasource.commons.reflection.filter.classes.AssignableFromClassFilter;
+import org.kasource.commons.reflection.filter.classes.ClassFilterList;
 import org.kasource.kaevent.config.KaEventConfig;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.annotations.listener.ChannelListener;
@@ -116,7 +116,7 @@ public class Activator implements BundleActivator, BundleListener, KaEventInitia
 	}
 	
 	private Set<Class<?>>  getEventClasses(Bundle bundle) {
-		return OsgiUtils.getClasses(bundleContext, bundle, new FilterList(new AssignableFromClassFilter(EventObject.class), new AnnotationClassFilter(Event.class)));
+		return OsgiUtils.getClasses(bundleContext, bundle, new ClassFilterList(new AssignableFromClassFilter(EventObject.class), new AnnotationClassFilter(Event.class)));
 	}
 	
 	private void registerListeners(Bundle bundle) {

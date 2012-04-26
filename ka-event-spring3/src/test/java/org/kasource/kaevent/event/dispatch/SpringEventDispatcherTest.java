@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
-import org.kasource.kaevent.event.ForwardedApplicationEvent;
+import org.kasource.kaevent.event.ForwardedSpringApplicationEvent;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.kasource.spring.transaction.TransactionResult;
@@ -119,7 +119,7 @@ public class SpringEventDispatcherTest {
     
     @Test
     public void onApplicationEventTest() {
-        Capture<ForwardedApplicationEvent> forwardedEvent = new Capture<ForwardedApplicationEvent>();
+        Capture<ForwardedSpringApplicationEvent> forwardedEvent = new Capture<ForwardedSpringApplicationEvent>();
         expect(eventRegister.hasEventByClass(springEvent.getClass())).andReturn(true);
         eventQueue.enqueue(capture(forwardedEvent));
         expectLastCall();

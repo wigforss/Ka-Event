@@ -35,11 +35,20 @@ public interface DispatcherQueueThread {
     
     /**
      * Set the true to enable concurrent event dispatching false for 
-     * dispatching events in strict sequence.
+     * dispatching events in strict sequence. This will have the same effect as setting
+     * maxThreads to 1.
      * 
      * @param concurrent true if queue can use multiple threads to dispatch events.
      */
     public void setConcurrent(boolean concurrent);
+    
+    /**
+     * Set the event router, which is used to dispatch
+     * events.
+     * 
+     * @param eventRouter Event Router
+     **/
+    public void setEventRouter(EventRouter eventRouter);
     
     /**
      * Returns true if the queue uses multiple threads to dispatch events, else false.
@@ -47,4 +56,19 @@ public interface DispatcherQueueThread {
      * @return concurrent.
      **/
     public boolean isConcurrent();
+    
+    /**
+     * @param maxPoolSize the maxPoolSize to set
+     */
+    public void setMaxThreads(int maxThreads);
+    
+    /**
+     * @param corePoolSize the corePoolSize to set
+     */
+    public void setCoreThreads(int coreThreads);
+    
+    /**
+     * @param keepAliveTime the keepAliveTime of worker threads in milliseconds.
+     */
+    public void setKeepAliveTime(long keepAliveTime);
 }

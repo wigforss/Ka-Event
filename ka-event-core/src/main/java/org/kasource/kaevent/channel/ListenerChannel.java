@@ -30,7 +30,7 @@ public interface ListenerChannel extends Channel {
      * @param  filters
      *             List of event filters.            
      **/
-    public abstract void registerListener(Object listener, List<EventFilter<EventObject>> filters);
+    public abstract void registerListener(Object listener, List<EventFilter<? extends EventObject>> filters);
     
     /**
      * Register a new listener object to this channel.

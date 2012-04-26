@@ -37,7 +37,7 @@ public interface ChannelListenerRegister extends EventListenerRegister {
      * @param filters
      *            Filters to be applied on all events passed to this listener.
      **/
-    public void registerListener(Object listener, List<EventFilter<EventObject>> filters);
+    public void registerListener(Object listener, List<EventFilter<? extends EventObject>> filters);
     
     /**
      * Remove a registered listener from this channel.

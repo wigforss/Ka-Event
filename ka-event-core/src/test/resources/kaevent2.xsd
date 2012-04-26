@@ -13,15 +13,11 @@
 				</xs:documentation>
 			</xs:annotation>
 			<xs:sequence>
-				<xs:choice maxOccurs="1" minOccurs="0">
-					<xs:element ref="queueThread" />
-					<xs:element ref="threadPoolExecutor" />
-				</xs:choice>
+				<xs:element ref="eventQueue" minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="beanResolver" maxOccurs="1" minOccurs="0" />
 				<xs:element ref="events" maxOccurs="1" minOccurs="0" />
 				<xs:element ref="channels" maxOccurs="1" minOccurs="0" />
 			</xs:sequence>
-
 		</xs:complexType>
 	</xs:element>
 
@@ -46,39 +42,38 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Queue Thread -->
-	<xs:element name="queueThread">
-		<xs:annotation>
-			<xs:documentation>
-				Override the default queue thread implementation.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:attribute name="class" type="javaClass" use="required">
-				<xs:annotation>
-					<xs:documentation>
-						Class that implements
-						org.kasource.kaevent.event.dispatch.DispatcherQueueThread which
-						will
-						be used instead of the standard thread pool executor implementation.
-					</xs:documentation>
-				</xs:annotation>
-			</xs:attribute>
-		</xs:complexType>
-	</xs:element>
+	
 
 	<!-- Thread Pool Queue Executor -->
-	<xs:element name="threadPoolExecutor">
+	<xs:element name="eventQueue">
 		<xs:annotation>
 			<xs:documentation>
-				Configure the standard queue thread implementation.
-				To guarantee that events are dispatched in a sequential order the
-				maximumPoolSize attribute needs to be set to 1. See
+				Configure the event queue for the event dispatcher. If no eventQueue is 
+				configured a default multi-threaded event queue will be created
+				To guarantee that events are dispatched in a sequential order an event queue
+				needs to be configured with maximumPoolSize attribute set to 1. See
 				http://download.oracle.com/javase/6/docs/api/java/util/concurrent/ThreadPoolExecutor.html
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
-			<xs:attribute name="maximumPoolSize" type="xs:byte" use="optional">
+			<xs:attribute name="name" type="xs:ID" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						Name of the event queue. Use kaEvent.defaultQueue to configure 
+						the default event queue.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="class" type="javaClass" use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						Class that implements
+						org.kasource.kaevent.event.dispatch.DispatcherQueueThread which
+						will be used instead of the standard event queue implementation.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="maxThreads" type="xs:short" use="optional">
 				<xs:annotation>
 					<xs:documentation>
 						The maximum number of thread working with event
@@ -86,7 +81,7 @@
 					</xs:documentation>
 				</xs:annotation>
 			</xs:attribute>
-			<xs:attribute name="corePoolSize" type="xs:byte" use="optional">
+			<xs:attribute name="coreThreads" type="xs:short" use="optional">
 				<xs:annotation>
 					<xs:documentation>
 						The number of core threads to start should not be
@@ -278,12 +273,27 @@
 					</xs:documentation>
 				</xs:annotation>
 			</xs:attribute>
-			<xs:attribute name="listenerInterface" type="javaClass"
-				use="required">
+			<xs:attribute name="listenerInterface" type="javaClass" use="optional">
 				<xs:annotation>
 					<xs:documentation>
 						The listener interface the handles events (of the
 						eventClass type) and extends java.util.EventListener
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="annotation" type="javaClass" use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						The listener method annotation associated with the event. This needs
+						to be a @Retention(RUNTIME) event with @Target(ElementType.METHOD).
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="eventQueue" type="xs:IDREF" use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						Use this attribute to dispatch these events another 
+						event queue than the default one.
 					</xs:documentation>
 				</xs:annotation>
 			</xs:attribute>

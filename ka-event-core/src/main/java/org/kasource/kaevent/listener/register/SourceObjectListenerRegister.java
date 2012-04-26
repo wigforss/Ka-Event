@@ -33,7 +33,7 @@ public interface SourceObjectListenerRegister extends EventListenerRegister {
      *            Filters to be applied on all events passed to this listener.
      **/
     public abstract void registerListener(Object listener, Object sourceObject,
-                List<EventFilter<EventObject>> filters);
+                List<EventFilter<? extends EventObject>> filters);
 
     /**
      * Unregister a listener to listen on events from sourceObject.

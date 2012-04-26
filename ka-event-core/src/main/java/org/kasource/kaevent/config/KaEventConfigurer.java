@@ -5,7 +5,6 @@ import java.lang.reflect.Constructor;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.kasource.commons.util.reflection.ConstructorUtils;
@@ -22,12 +21,14 @@ import org.kasource.kaevent.channel.FilterableChannel;
 import org.kasource.kaevent.channel.ListenerChannel;
 import org.kasource.kaevent.channel.NoSuchChannelException;
 import org.kasource.kaevent.event.EventDispatcher;
-import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.event.config.EventBuilderFactoryImpl;
+import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
+import org.kasource.kaevent.event.dispatch.EventQueueRegister;
+import org.kasource.kaevent.event.dispatch.EventQueueRegisterImpl;
 import org.kasource.kaevent.event.dispatch.EventRouter;
 import org.kasource.kaevent.event.dispatch.EventRouterImpl;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
@@ -47,7 +48,7 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
  **/
 public class KaEventConfigurer {
     private static final Logger LOG = Logger.getLogger(KaEventConfigurer.class);
-
+    
     private KaEventConfigurationImpl configuration = null;
     private ConfigurationXmlFileLoader xmlLoader = new ConfigurationXmlFileLoader();
     
@@ -125,7 +126,7 @@ public class KaEventConfigurer {
         // Bean resolver
         config.setBeanResolver(new DefaultBeanResolver());
         // Events
-        config.setEventBuilderFactory(new EventBuilderFactoryImpl(config.getBeanResolver()));
+        config.setEventBuilderFactory(new EventBuilderFactoryImpl(config.getBeanResolver(), new EventQueueRegisterImpl()));
         config.setEventRegister(new DefaultEventRegister(config.getEventBuilderFactory()));
 
         // Channel Register
@@ -142,8 +143,9 @@ public class KaEventConfigurer {
         // Channel Factory
         config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(), config
                     .getEventMethodInvoker(), config.getBeanResolver()));
-
-        config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventRouter()));
+        ThreadPoolQueueExecutor defaultEventQueue = new ThreadPoolQueueExecutor();
+        defaultEventQueue.setEventRouter(config.getEventRouter());
+        config.setDefaultEventQueue(defaultEventQueue);
 
         return config;
 
@@ -167,9 +169,10 @@ public class KaEventConfigurer {
         } else {
             config.setBeanResolver(new DefaultBeanResolver());
         }
-
+        
+        
         // Events
-        config.setEventBuilderFactory(new EventBuilderFactoryImpl(config.getBeanResolver()));
+        
         config.setEventRegister(new DefaultEventRegister(config.getEventBuilderFactory()));
         config.setEventMethodInvoker(new EventMethodInvokerImpl(config.getEventRegister()));
         config.setSourceObjectListenerRegister(new SourceObjectListenerRegisterImpl(config.getEventRegister(), config
@@ -181,6 +184,9 @@ public class KaEventConfigurer {
         config.setEventRouter(new EventRouterImpl(config.getChannelRegister(),
                     config.getSourceObjectListenerRegister(), config.getEventMethodInvoker()));
 
+        // Event Queue
+        configureEventQueue(xmlConfig, config);
+        config.setEventBuilderFactory(new EventBuilderFactoryImpl(config.getBeanResolver(),config.getEventQueueRegister()));
         // Channel Factory
         if (xmlConfig.getChannelFactory() != null && xmlConfig.getChannelFactory().getClazz() != null) {
             ChannelFactory channelFactory = createChannelFactory(xmlConfig.getChannelFactory().getClazz(),
@@ -191,8 +197,7 @@ public class KaEventConfigurer {
             config.setChannelFactory(new ChannelFactoryImpl(config.getChannelRegister(), config.getEventRegister(),
                         config.getEventMethodInvoker(), config.getBeanResolver()));
         }
-        // Queue Thread
-        configureEventQueue(xmlConfig, config);
+       
         // import events
         importEvents(xmlConfig, config, beanResolver);
         createChannels(xmlConfig, config);
@@ -228,48 +233,75 @@ public class KaEventConfigurer {
      * @param config    Configuration result.
      **/
     private void configureEventQueue(KaEventConfig xmlConfig, KaEventConfigurationImpl config) {
-        if (xmlConfig.getQueueThread() == null) {
-            config.setQueueThread(new ThreadPoolQueueExecutor(config.getEventRouter()));
-            ThreadPoolQueueExecutor threadPoolExecutor = new ThreadPoolQueueExecutor(config.getEventRouter());
-            configureDefaultEventQueue(xmlConfig, threadPoolExecutor);
-            config.setQueueThread(threadPoolExecutor);
-        } else {
-            try {
-                config.setQueueThread(ConstructorUtils.getInstance(xmlConfig.getQueueThread().getClazz(),
-                            DispatcherQueueThread.class, new Class<?>[] { EventRouter.class },
-                            new Object[] { config.getEventRouter() }));
-            } catch (IllegalStateException ise) {
-                config.setQueueThread(ConstructorUtils.getInstance(xmlConfig.getQueueThread().getClazz(),
-                            DispatcherQueueThread.class));
+        boolean defaultCreated = false;
+        EventQueueRegister eventQueueRegister = new EventQueueRegisterImpl();
+        for(KaEventConfig.EventQueue eventQueueXml : xmlConfig.getEventQueue()) {
+            if(eventQueueXml.getName() == null) {
+                throw new IllegalStateException("eventQueue without a name is not allowed.");
             }
-
+            DispatcherQueueThread eventQueue = createEventQueue(eventQueueXml, config.getEventRouter());
+            if(Event.DEFAULT_EVENT_QUEUE_NAME.equals(eventQueueXml.getName())) {
+                defaultCreated = true;
+                config.setDefaultEventQueue(eventQueue);
+            } else {
+                eventQueueRegister.registerEventQueue(eventQueueXml.getName(), eventQueue);
+            }
+            
         }
+        if(!defaultCreated){
+            DispatcherQueueThread defaultEventQueue = new ThreadPoolQueueExecutor();
+            defaultEventQueue.setEventRouter(config.getEventRouter());
+            config.setDefaultEventQueue(defaultEventQueue);
+        }
+        config.setEventQueueRegister(eventQueueRegister);
+        
+      
     }
-
+    
     /**
-     * Configure the default Event Queue Implementation (ThreadPoolExecutor).
+     * Creates an Event Queue from configuration and returns it.
      * 
-     * @param xmlConfig           XML Configuration.
-     * @param threadPoolExecutor  Configuration result.
+     * @param eventQueueConfig XML Configuration
+     * @param eventRouter      EventRouter used as constructor argument.
+     * 
+     * @return a new Event Queue instance.
      **/
-    private void configureDefaultEventQueue(KaEventConfig xmlConfig, ThreadPoolQueueExecutor threadPoolExecutor) {
-        if (xmlConfig.getThreadPoolExecutor() != null) {
-            if (xmlConfig.getThreadPoolExecutor().getMaximumPoolSize() != null) {
-                int maxPoolSize = xmlConfig.getThreadPoolExecutor().getMaximumPoolSize();
-                if(threadPoolExecutor.getCorePoolSize() > maxPoolSize) {
-                    threadPoolExecutor.setCorePoolSize(maxPoolSize);
-                }
-                threadPoolExecutor.setMaximumPoolSize(maxPoolSize);
-            }
-            if (xmlConfig.getThreadPoolExecutor().getCorePoolSize() != null) {
-                threadPoolExecutor.setCorePoolSize((int) xmlConfig.getThreadPoolExecutor().getCorePoolSize());
-            }
-            if (xmlConfig.getThreadPoolExecutor().getKeepAliveTime() != null) {
-                threadPoolExecutor.setKeepAliveTime(xmlConfig.getThreadPoolExecutor().getKeepAliveTime()
-                            .longValue(), TimeUnit.MILLISECONDS);
+    private DispatcherQueueThread createEventQueue(KaEventConfig.EventQueue eventQueueConfig, EventRouter eventRouter) {
+        DispatcherQueueThread eventQueue = null;
+        if(eventQueueConfig.getClazz() == null || eventQueueConfig.getClazz().equals(ThreadPoolQueueExecutor.class.getName())) {
+            eventQueue = new ThreadPoolQueueExecutor();
+        } else { 
+            try {
+                Class.forName(eventQueueConfig.getClazz()).newInstance();
+            } catch(ClassNotFoundException e) {
+                throw new IllegalStateException("Could not load " + eventQueueConfig, e);
+            } catch(Exception e) {
+                throw new IllegalStateException("Could not create instance of " + eventQueueConfig + " no empty public constructor found!", e);
             }
         }
+        eventQueue.setEventRouter(eventRouter);
+        eventQueueConfigureThreads(eventQueueConfig, eventQueue);
+        return eventQueue;
     }
+    
+    /**
+     * Configure threads for an event queue.
+     * 
+     * @param eventQueueConfig Configuration to use.
+     * @param eventQueue       Event Queue instance to modify.
+     **/
+    private void eventQueueConfigureThreads(KaEventConfig.EventQueue eventQueueConfig, DispatcherQueueThread eventQueue) {      
+        if (eventQueueConfig.getMaxThreads() != null) {
+            eventQueue.setMaxThreads(eventQueueConfig.getMaxThreads());
+        }
+        if (eventQueueConfig.getCoreThreads() != null) {
+            eventQueue.setCoreThreads(eventQueueConfig.getCoreThreads());
+        }
+        if (eventQueueConfig.getKeepAliveTime() != null) {
+            eventQueue.setKeepAliveTime(eventQueueConfig.getKeepAliveTime().longValue());
+        }
+    }
+
 
     /**
      * Create the channel factory from clazz.

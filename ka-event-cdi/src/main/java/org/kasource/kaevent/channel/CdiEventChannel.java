@@ -47,7 +47,7 @@ public class CdiEventChannel extends ChannelAdapter implements FilterableChannel
     }
     
     @Override
-    public boolean registerFilter(EventFilter<EventObject> filter) {
+    public boolean registerFilter(EventFilter<? extends EventObject> filter) {
         return filterHandler.registerFilter(filter);
     }
     

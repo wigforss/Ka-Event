@@ -13,54 +13,51 @@
 				</xs:documentation>
 			</xs:annotation>
 			<xs:sequence>
-				<xs:choice maxOccurs="1" minOccurs="0">
-					<xs:element name="queueThread">
+					<xs:element name="eventQueue" minOccurs="0" maxOccurs="unbounded">
 						<xs:annotation>
 							<xs:documentation>
-								Override the default queue thread implementation.
-			</xs:documentation>
-						</xs:annotation>
-						<xs:complexType>
-							<xs:attribute name="class" type="javaClass" use="required">
-								<xs:annotation>
-									<xs:documentation>
-										Class that implements
-										org.kasource.kaevent.event.dispatch.DispatcherQueueThread
-										which
-										will
-										be used instead of the standard thread pool executor
-										implementation.
-					</xs:documentation>
-								</xs:annotation>
-							</xs:attribute>
-						</xs:complexType>
-					</xs:element>
-					<xs:element name="threadPoolExecutor">
-						<xs:annotation>
-							<xs:documentation>
-								Configure the standard queue thread implementation.
-								To guarantee that events are dispatched in a sequential order the
-								maximumPoolSize attribute needs to be set to 1. See
+								Configure the event queue for the event dispatcher. If no eventQueue is 
+								configured a default multi-threaded event queue will be created
+								To guarantee that events are dispatched in a sequential order an event queue
+								needs to be configured with maximumPoolSize attribute set to 1. See
 								http://download.oracle.com/javase/6/docs/api/java/util/concurrent/ThreadPoolExecutor.html
 							</xs:documentation>
 						</xs:annotation>
 						<xs:complexType>
-							<xs:attribute name="maximumPoolSize" type="xs:byte"
+							<xs:attribute name="name" type="xs:ID" use="required">
+								<xs:annotation>
+									<xs:documentation>
+										Name of the event queue. Use kaEvent.defaultQueue to configure 
+										the default event queue.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						    <xs:attribute name="class" type="javaClass" use="optional">
+								<xs:annotation>
+									<xs:documentation>
+										Class that implements
+										org.kasource.kaevent.event.dispatch.DispatcherQueueThread
+										which will be used instead of the standard event queue
+										implementation.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="maxThreads" type="xs:short"
 								use="optional">
 								<xs:annotation>
 									<xs:documentation>
 										The maximum number of thread working with event
 										dispatching.
-					</xs:documentation>
+									</xs:documentation>
 								</xs:annotation>
 							</xs:attribute>
-							<xs:attribute name="corePoolSize" type="xs:byte"
+							<xs:attribute name="coreThreads" type="xs:short"
 								use="optional">
 								<xs:annotation>
 									<xs:documentation>
 										The number of core threads to start should not be
 										set to more than maximumPoolSize.
-					</xs:documentation>
+									</xs:documentation>
 								</xs:annotation>
 							</xs:attribute>
 							<xs:attribute name="keepAliveTime" type="xs:integer"
@@ -69,12 +66,11 @@
 									<xs:documentation>
 										Keep alive time in ms, before idle threads are
 										killed.
-					</xs:documentation>
+									</xs:documentation>
 								</xs:annotation>
 							</xs:attribute>
 						</xs:complexType>
 					</xs:element>
-				</xs:choice>
 				<xs:element name="beanResolver" maxOccurs="1" minOccurs="0">
 					<xs:annotation>
 						<xs:documentation>
@@ -110,7 +106,7 @@
 										defined, declare one of annotationMethodResolver,
 										factoryMethodResolver, beanMethodResolver or
 										switchMethodResolver.
-			</xs:documentation>
+									</xs:documentation>
 								</xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
@@ -120,7 +116,7 @@
 													<xs:documentation>
 														Find a method resolver by inspecting the
 														@MethodResolving annotation on the interface class
-			</xs:documentation>
+													</xs:documentation>
 												</xs:annotation>
 											</xs:element>
 											<xs:element name="factoryMethodResolver">
@@ -129,7 +125,7 @@
 														Use a custom method resolver obtained by invoking a
 														static factory
 														method.
-		</xs:documentation>
+													</xs:documentation>
 												</xs:annotation>
 												<xs:complexType>
 													<xs:attribute name="factoryClass" type="javaClass"
@@ -138,7 +134,7 @@
 															<xs:documentation>
 																Class that has the static factory method to be
 																invoked.
-					</xs:documentation>
+															</xs:documentation>
 														</xs:annotation>
 													</xs:attribute>
 													<xs:attribute name="factoryMethod" type="javaMethodName"
@@ -166,7 +162,7 @@
 													<xs:documentation>
 														Find a custom method resolver by looking up a bean
 														by name.
-			</xs:documentation>
+													</xs:documentation>
 												</xs:annotation>
 												<xs:complexType>
 													<xs:attribute name="bean" type="xs:Name" use="required">
@@ -196,7 +192,7 @@
 																<xs:documentation>
 																	A case entry which specifies a keyword value and
 																	method.
-			</xs:documentation>
+																</xs:documentation>
 															</xs:annotation>
 															<xs:complexType>
 																<xs:attribute name="value" type="xs:string"
@@ -204,7 +200,7 @@
 																	<xs:annotation>
 																		<xs:documentation>
 																			The keyword value to match.
-					</xs:documentation>
+																		</xs:documentation>
 																	</xs:annotation>
 																</xs:attribute>
 																<xs:attribute name="method" type="javaMethodName"
@@ -245,11 +241,9 @@
 														<xs:annotation>
 															<xs:documentation>
 																The name of a "non void" "no argument" method on
-																the event class, that returns an object which will be used
-																as
-																the
-																keyword in the switch. 
-					</xs:documentation>
+																the event class, that returns an object which will 
+																be used as the keyword in the switch. 
+															</xs:documentation>
 														</xs:annotation>
 													</xs:attribute>
 												</xs:complexType>
@@ -260,24 +254,38 @@
 										<xs:annotation>
 											<xs:documentation>
 												Name of the event so it can be referenced.
-					</xs:documentation>
+											</xs:documentation>
 										</xs:annotation>
 									</xs:attribute>
-									<xs:attribute name="eventClass" type="javaClass"
-										use="required">
+									<xs:attribute name="eventClass" type="javaClass" use="required">
 										<xs:annotation>
 											<xs:documentation>
 												The event class that extends
 												java.util.EventObject
-					</xs:documentation>
+											</xs:documentation>
 										</xs:annotation>
 									</xs:attribute>
-									<xs:attribute name="listenerInterface" type="javaClass"
-										use="required">
+									<xs:attribute name="listenerInterface" type="javaClass" use="optional">
 										<xs:annotation>
 											<xs:documentation>
 												The listener interface the handles events (of the
 												eventClass type) and extends java.util.EventListener
+											</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="annotation" type="javaClass" use="optional">
+										<xs:annotation>
+											<xs:documentation>
+												The listener method annotation associated with the event. This needs
+												to be a @Retention(RUNTIME) event with @Target(ElementType.METHOD).
+											</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="eventQueue" type="xs:IDREF" use="optional">
+										<xs:annotation>
+											<xs:documentation>
+												Use this attribute to dispatch this events another 
+												event queue than the default one.
 											</xs:documentation>
 										</xs:annotation>
 									</xs:attribute>
@@ -300,7 +308,7 @@
 					<xs:annotation>
 						<xs:documentation>
 							List of all channels
-			</xs:documentation>
+						</xs:documentation>
 					</xs:annotation>
 					<xs:complexType>
 						<xs:sequence>
@@ -308,7 +316,7 @@
 								<xs:annotation>
 									<xs:documentation>
 										Declares a channel
-						</xs:documentation>
+									</xs:documentation>
 								</xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
@@ -316,7 +324,7 @@
 											<xs:annotation>
 												<xs:documentation>
 													Handles the specified event.
-									</xs:documentation>
+												</xs:documentation>
 											</xs:annotation>
 											<xs:complexType>
 												<xs:attribute name="event" type="xs:IDREF" use="required">
@@ -324,7 +332,7 @@
 														<xs:documentation>
 															event should refer to the name of a declared
 															event.
-											</xs:documentation>
+														</xs:documentation>
 													</xs:annotation>
 												</xs:attribute>
 											</xs:complexType>
@@ -336,7 +344,7 @@
 											<xs:documentation>
 												A unique name of the channel so it can be
 												referenced.
-								</xs:documentation>
+											</xs:documentation>
 										</xs:annotation>
 									</xs:attribute>
 								</xs:complexType>

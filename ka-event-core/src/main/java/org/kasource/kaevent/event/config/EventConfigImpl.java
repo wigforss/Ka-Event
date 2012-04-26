@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
 
+import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.method.MethodResolver;
 
 
@@ -23,7 +24,8 @@ public class EventConfigImpl implements EventConfig {
     private Method defaultMethod;  
     @SuppressWarnings({ "rawtypes" })
     private MethodResolver methodResolver; 
- 
+    private DispatcherQueueThread eventQueue;
+    
     /**
      * Constructor.
      * 
@@ -152,6 +154,20 @@ public class EventConfigImpl implements EventConfig {
      */
      void setListener(Class<? extends EventListener> listener) {
         this.listener = listener;
+    }
+
+    /**
+     * @return the eventQueue
+     */
+    public DispatcherQueueThread getEventQueue() {
+        return eventQueue;
+    }
+
+    /**
+     * @param eventQueue the eventQueue to set
+     */
+     void setEventQueue(DispatcherQueueThread eventQueue) {
+        this.eventQueue = eventQueue;
     }
 
 }

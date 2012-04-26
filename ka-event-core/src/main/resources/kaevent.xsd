@@ -13,54 +13,51 @@
 				</xs:documentation>
 			</xs:annotation>
 			<xs:sequence>
-				<xs:choice maxOccurs="1" minOccurs="0">
-					<xs:element name="queueThread">
+					<xs:element name="eventQueue" minOccurs="0" maxOccurs="unbounded">
 						<xs:annotation>
 							<xs:documentation>
-								Override the default queue thread implementation.
-							</xs:documentation>
-						</xs:annotation>
-						<xs:complexType>
-							<xs:attribute name="class" type="javaClass" use="required">
-								<xs:annotation>
-									<xs:documentation>
-										Class that implements
-										org.kasource.kaevent.event.dispatch.DispatcherQueueThread
-										which
-										will
-										be used instead of the standard thread pool executor
-										implementation.
-									</xs:documentation>
-								</xs:annotation>
-							</xs:attribute>
-						</xs:complexType>
-					</xs:element>
-					<xs:element name="threadPoolExecutor">
-						<xs:annotation>
-							<xs:documentation>
-								Configure the standard queue thread implementation.
-								To guarantee that events are dispatched in a sequential order the
-								maximumPoolSize attribute needs to be set to 1. See
+								Configure the event queue for the event dispatcher. If no eventQueue is 
+								configured a default multi-threaded event queue will be created
+								To guarantee that events are dispatched in a sequential order an event queue
+								needs to be configured with maximumPoolSize attribute set to 1. See
 								http://download.oracle.com/javase/6/docs/api/java/util/concurrent/ThreadPoolExecutor.html
 							</xs:documentation>
 						</xs:annotation>
 						<xs:complexType>
-							<xs:attribute name="maximumPoolSize" type="xs:byte"
+							<xs:attribute name="name" type="xs:ID" use="required">
+								<xs:annotation>
+									<xs:documentation>
+										Name of the event queue. Use kaEvent.defaultQueue to configure 
+										the default event queue.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						    <xs:attribute name="class" type="javaClass" use="required">
+								<xs:annotation>
+									<xs:documentation>
+										Class that implements
+										org.kasource.kaevent.event.dispatch.DispatcherQueueThread
+										which will be used instead of the standard event queue
+										implementation.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="maxThreads" type="xs:short"
 								use="optional">
 								<xs:annotation>
 									<xs:documentation>
 										The maximum number of thread working with event
 										dispatching.
-					</xs:documentation>
+								</xs:documentation>
 								</xs:annotation>
 							</xs:attribute>
-							<xs:attribute name="corePoolSize" type="xs:byte"
+							<xs:attribute name="coreThreads" type="xs:short"
 								use="optional">
 								<xs:annotation>
 									<xs:documentation>
 										The number of core threads to start should not be
 										set to more than maximumPoolSize.
-					</xs:documentation>
+									</xs:documentation>
 								</xs:annotation>
 							</xs:attribute>
 							<xs:attribute name="keepAliveTime" type="xs:integer"
@@ -69,12 +66,12 @@
 									<xs:documentation>
 										Keep alive time in ms, before idle threads are
 										killed.
-					</xs:documentation>
+									</xs:documentation>
 								</xs:annotation>
 							</xs:attribute>
 						</xs:complexType>
 					</xs:element>
-				</xs:choice>
+				
 				<xs:element name="beanResolver" maxOccurs="1" minOccurs="0">
 					<xs:annotation>
 						<xs:documentation>
@@ -89,7 +86,7 @@
 								<xs:documentation>
 									The fully qualified class name of the bean
 									resolver to use, must implement org.kasource.kaevent.bean.BeanResolver.
-					</xs:documentation>
+								</xs:documentation>
 							</xs:annotation>
 						</xs:attribute>
 					</xs:complexType>
@@ -262,9 +259,7 @@
 															<xs:documentation>
 																The name of a "non void" "no argument" method on
 																the event class, that returns an object which will be used
-																as
-																the
-																keyword in the switch. 
+																as the keyword in the switch. 
 															</xs:documentation>
 														</xs:annotation>
 													</xs:attribute>
@@ -303,6 +298,14 @@
 											<xs:documentation>
 												The listener method annotation used to mark method that handle events (of the
 												eventClass type) with. Note that the annotation must have retention RUNTIME.
+											</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="eventQueue" type="xs:IDREF" use="optional">
+										<xs:annotation>
+											<xs:documentation>
+												Use this attribute to dispatch this events another 
+												event queue than the default one.
 											</xs:documentation>
 										</xs:annotation>
 									</xs:attribute>

@@ -47,6 +47,15 @@ public interface EventBuilder {
      */
     public EventBuilder bindAnnotation(Class<? extends Annotation> annotationClass)
                 throws InvalidEventConfigurationException;
+    
+    /**
+     * Set a specific event queue to handle these events.
+     * 
+     * @param eventQueueName Name of event queue to handle events.
+     * 
+     * @return This builder to allow chaining.
+     **/
+    public EventBuilder eventQueue(String eventQueueName);
 
     public EventConfig build();
 

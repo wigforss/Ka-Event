@@ -14,6 +14,8 @@ import org.kasource.kaevent.event.config.EventBuilderFactoryImpl;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
 import org.kasource.kaevent.event.dispatch.EventMethodInvokerImpl;
+import org.kasource.kaevent.event.dispatch.EventQueueRegister;
+import org.kasource.kaevent.event.dispatch.EventQueueRegisterImpl;
 import org.kasource.kaevent.event.dispatch.EventRouter;
 import org.kasource.kaevent.event.dispatch.EventRouterImpl;
 import org.kasource.kaevent.event.dispatch.GuiceEventDispatcher;
@@ -75,8 +77,8 @@ public class KaEventModule extends AbstractModule {
 	 * @return Event Factory to use.
 	 **/
 	@Provides @Singleton
-	EventBuilderFactory provideEventFactory(BeanResolver beanResolver) {
-		return new EventBuilderFactoryImpl(beanResolver);
+	EventBuilderFactory provideEventBuilderFactory(BeanResolver beanResolver, EventQueueRegister eventQueueRegister) {
+		return new EventBuilderFactoryImpl(beanResolver, eventQueueRegister);
 	}
 
 	/**
@@ -89,6 +91,11 @@ public class KaEventModule extends AbstractModule {
 	@Provides @Singleton
 	EventRegister provideEventRegister(EventBuilderFactory eventBuilderFactory) {
 		return new DefaultEventRegister(eventBuilderFactory);
+	}
+	
+	@Provides @Singleton
+	EventQueueRegister provideEventQueueRegister() {
+	    return new EventQueueRegisterImpl();
 	}
 
 	/**
@@ -152,7 +159,9 @@ public class KaEventModule extends AbstractModule {
 	 */
 	@Provides @Singleton
 	DispatcherQueueThread provideQueueThread(EventRouter eventRouter) {
-		return new ThreadPoolQueueExecutor(eventRouter);
+	    DispatcherQueueThread eventQueue = new ThreadPoolQueueExecutor();
+	    eventQueue.setEventRouter(eventRouter);
+		return eventQueue;
 	}
 
 	/**
@@ -172,11 +181,13 @@ public class KaEventModule extends AbstractModule {
 	 * @return The result of configuring Ka-Event.
 	 **/
 	//CHECKSTYLE:OFF
-	// Motivation: Number of parameters
+	// Motivation: Number of parameters can not be less, since injection 
+	// will be used automatically on these parameters.
 	@Provides @Singleton
 	KaEventConfiguration provideKaEventConfiguration(BeanResolver beanResolver, 
 	                                ChannelFactory channelFactory, 
 									ChannelRegister channelRegister,
+									EventQueueRegister eventQueueRegister,
 									EventDispatcher eventDispatcher,
 									EventBuilderFactory eventBuilderFactory,
 									EventMethodInvoker eventMethodInvoker,
@@ -188,12 +199,13 @@ public class KaEventModule extends AbstractModule {
 		configuration.setBeanResolver(beanResolver);
 		configuration.setChannelFactory(channelFactory);
 		configuration.setChannelRegister(channelRegister);
+		configuration.setEventQueueRegister(eventQueueRegister);
 		configuration.setEventDispatcher(eventDispatcher);
 		configuration.setEventBuilderFactory(eventBuilderFactory);
 		configuration.setEventMethodInvoker(eventMethodInvoker);
 		configuration.setEventRegister(eventRegister);
 		configuration.setEventRouter(eventRouter);
-		configuration.setQueueThread(queueThread);
+		configuration.setDefaultEventQueue(queueThread);
 		configuration.setSourceObjectListenerRegister(sourceObjectListenerRegister);
 		
 		KaEventInitializer.setConfiguration(configuration);

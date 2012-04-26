@@ -88,7 +88,7 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
      * @return Returns true if filter added else false.
      **/
     @Override
-    public boolean registerFilter(EventFilter<EventObject> filter) {
+    public boolean registerFilter(EventFilter<? extends EventObject> filter) {
         return filterHandler.registerFilter(filter);
     }
 

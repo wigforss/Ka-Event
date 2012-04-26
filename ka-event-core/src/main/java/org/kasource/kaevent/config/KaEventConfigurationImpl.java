@@ -1,5 +1,7 @@
 package org.kasource.kaevent.config;
 
+import java.util.Map;
+
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
@@ -7,6 +9,7 @@ import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.EventMethodInvoker;
+import org.kasource.kaevent.event.dispatch.EventQueueRegister;
 import org.kasource.kaevent.event.dispatch.EventRouter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
@@ -39,7 +42,9 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
 
     private ChannelFactory channelFactory;
 
-    private DispatcherQueueThread queueThread;
+    private DispatcherQueueThread defaultEventQueue;
+    
+    private EventQueueRegister eventQueueRegister;
 
     @Override
     public BeanResolver getBeanResolver() {
@@ -150,16 +155,16 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
     }
 
     @Override
-    public DispatcherQueueThread getQueueThread() {
-        return queueThread;
+    public DispatcherQueueThread getDefaultEventQueue() {
+        return defaultEventQueue;
     }
 
     /**
-     * @param queueThread
-     *            the queueThread to set
+     * @param eventQueue
+     *            the eventQueue to set
      */
-    public void setQueueThread(DispatcherQueueThread queueThread) {
-        this.queueThread = queueThread;
+    public void setDefaultEventQueue(DispatcherQueueThread eventQueue) {
+        this.defaultEventQueue = eventQueue;
     }
 
     /**
@@ -177,4 +182,19 @@ public class KaEventConfigurationImpl implements KaEventConfiguration {
         this.eventDispatcher = eventDispatcher;
     }
 
+    /**
+     * @return the eventQueueRegister
+     */
+    public EventQueueRegister getEventQueueRegister() {
+        return eventQueueRegister;
+    }
+
+    /**
+     * @param eventQueueRegister the eventQueueRegister to set
+     */
+    public void setEventQueueRegister(EventQueueRegister eventQueueRegister) {
+        this.eventQueueRegister = eventQueueRegister;
+    }
+
+    
 }

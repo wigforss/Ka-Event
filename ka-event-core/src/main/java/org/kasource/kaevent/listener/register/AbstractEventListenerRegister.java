@@ -89,7 +89,7 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
      *            Event Filters.
      **/
     protected abstract void addListener(Object listener, Class<? extends EventObject> eventClass, Object sourceObject,
-                List<EventFilter<EventObject>> filters);
+                List<EventFilter<? extends EventObject>> filters);
 
     /**
      * Register listener to listening on sourceObject.
@@ -114,10 +114,10 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
      * @param filters
      *            List of filters.
      **/
-    protected void register(Object listener, Object sourceObject, List<EventFilter<EventObject>> filters) {
+    protected void register(Object listener, Object sourceObject, List<EventFilter<? extends EventObject>> filters) {
         boolean listenerAdded = false;
         if (filters == null) {
-            filters = new ArrayList<EventFilter<EventObject>>();
+            filters = new ArrayList<EventFilter<? extends EventObject>>();
         }
         if (listener instanceof EventListener) {
             // find filters by annotation
@@ -145,9 +145,8 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
         
        
         if (!listenerAdded) {
-            throw new IllegalStateException(
-                        listener
-                                    + " does not implement any registered Event listener interfaces or any registered Event annotations!");
+            throw new IllegalStateException(listener
+             + " does not implement any registered Event listener interfaces or any registered Event annotations!");
         }
 
     }
@@ -193,11 +192,11 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
      *            List of filters to add found filters to.
      **/
     @SuppressWarnings("unchecked")
-    private void addEventFilterByAnnotation(EventListener listener, List<EventFilter<EventObject>> filters) {
+    private void addEventFilterByAnnotation(EventListener listener, List<EventFilter<? extends EventObject>> filters) {
         EventListenerFilter filterAnnotation = listener.getClass().getAnnotation(EventListenerFilter.class);
         if (filterAnnotation != null && filterAnnotation.value().length > 0) {
             if (filters == null) {
-                filters = new ArrayList<EventFilter<EventObject>>();
+                filters = new ArrayList<EventFilter<? extends EventObject>>();
             }
             for (String beanName : filterAnnotation.value()) {
 
@@ -219,10 +218,10 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
      * @return List of filters that can be applied to the eventClass.
      **/
     @SuppressWarnings("unchecked")
-    protected List<EventFilter<EventObject>> getApplicableFilters(Class<? extends EventObject> eventClass,
-                List<EventFilter<EventObject>> filters) {
-        List<EventFilter<EventObject>> applicableFilters = new ArrayList<EventFilter<EventObject>>();
-        for (EventFilter<EventObject> filter : filters) {
+    protected List<EventFilter<? extends EventObject>> getApplicableFilters(Class<? extends EventObject> eventClass,
+                List<EventFilter<? extends EventObject>> filters) {
+        List<EventFilter<? extends EventObject>> applicableFilters = new ArrayList<EventFilter<? extends EventObject>>();
+        for (EventFilter<? extends EventObject> filter : filters) {
 
             Class<? extends EventObject> filterEventClass = (Class<? extends EventObject>) ((ParameterizedType) filter
                         .getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];

@@ -126,7 +126,7 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
      * @param filters List<EventFilter<? extends EventObject>> filters
      **/
     @Override
-    public void registerListener(Object listener, List<EventFilter<EventObject>> filters) {
+    public void registerListener(Object listener, List<EventFilter<? extends EventObject>> filters) {
        super.register(listener, channel, filters);
     }
 
@@ -141,7 +141,7 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
     protected void addListener(Object listener, 
     						   Class<? extends EventObject> eventClass, 
     						   Object dummy,
-    						   List<EventFilter<EventObject>> filters) {
+    						   List<EventFilter<? extends EventObject>> filters) {
         Map<Object, EventListenerRegistration> listenerMap = listenersByEvent.get(eventClass);
         if (listenerMap == null) {
             listenerMap = new WeakHashMap<Object, EventListenerRegistration>();

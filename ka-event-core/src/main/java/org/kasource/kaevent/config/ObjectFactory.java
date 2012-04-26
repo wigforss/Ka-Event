@@ -35,8 +35,8 @@ public class ObjectFactory {
      * Create an instance of {@link KaEventConfig.ThreadPoolExecutor }
      * 
      */
-    public KaEventConfig.ThreadPoolExecutor createKaEventConfigThreadPoolExecutor() {
-        return new KaEventConfig.ThreadPoolExecutor();
+    public KaEventConfig.EventQueue createKaEventConfigThreadPoolExecutor() {
+        return new KaEventConfig.EventQueue();
     }
 
     /**
@@ -47,13 +47,7 @@ public class ObjectFactory {
         return new KaEventConfig.Events.Event.FactoryMethodResolver();
     }
 
-    /**
-     * Create an instance of {@link KaEventConfig.QueueThread }
-     * 
-     */
-    public KaEventConfig.QueueThread createKaEventConfigQueueThread() {
-        return new KaEventConfig.QueueThread();
-    }
+    
 
     /**
      * Create an instance of {@link KaEventConfig.Events }

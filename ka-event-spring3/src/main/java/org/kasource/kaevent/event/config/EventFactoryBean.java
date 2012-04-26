@@ -7,6 +7,10 @@ import java.util.EventObject;
 import java.util.Map;
 import java.util.Set;
 
+import org.kasource.commons.reflection.filter.methods.MethodFilterBuilder;
+import org.kasource.commons.reflection.filter.methods.MethodFilterList;
+import org.kasource.commons.reflection.filter.methods.ReturnTypeMethodFilter;
+import org.kasource.commons.reflection.filter.methods.SignatureMethodFilter;
 import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolverType;
@@ -114,7 +118,8 @@ public class EventFactoryBean implements FactoryBean<EventConfig>, ApplicationCo
 
 	
 	private Method getSingleInterfaceMethod() {
-        Set<Method> interfaceMethods = MethodUtils.getDeclaredMethodsMatchingReturnType(listenerClass, Void.TYPE, eventClass);
+        Set<Method> interfaceMethods =
+            MethodUtils.getDeclaredMethods(listenerClass, new MethodFilterBuilder().hasReturnType(Void.TYPE).hasSignature(eventClass).build());
         if(interfaceMethods.size() == 0) {
             throw new InvalidEventConfigurationException("Could not find any void method which takes " + eventClass + " as its only parameter");
         } else if (interfaceMethods.size() > 1) {

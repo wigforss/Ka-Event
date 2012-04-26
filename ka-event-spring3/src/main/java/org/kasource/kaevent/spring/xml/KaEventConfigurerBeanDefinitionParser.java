@@ -142,7 +142,7 @@ public class KaEventConfigurerBeanDefinitionParser extends
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder
 				.rootBeanDefinition(clazz);
 		if (setEventRouter) {
-			builder.addConstructorArgReference(KaEventSpringBean.EVENT_ROUTER.getId());
+		    builder.addPropertyReference("eventRouter", KaEventSpringBean.EVENT_ROUTER.getId());
 		}
 		builder.addPropertyValue("concurrent", concurrent);
 		builder.setLazyInit(false);

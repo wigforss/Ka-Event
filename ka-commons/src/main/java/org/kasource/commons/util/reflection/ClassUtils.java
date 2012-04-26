@@ -61,7 +61,7 @@ public class ClassUtils {
         try {
             Class<?> clazz = Class.forName(className);
          
-            if(superClass == null || ! EventObject.class.isAssignableFrom(superClass)) {
+            if(superClass == null || ! superClass.isAssignableFrom(clazz)) {
                 throw new IllegalArgumentException("Class "+className+" must extend "+superClass+"!");
             }
             return (Class<? extends T>) clazz;

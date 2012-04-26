@@ -12,7 +12,7 @@ spring/schema/kaevent-spring.xsd"
 	<kaevent:kaevent scanClassPath="org.kasource.kaevent.example.spring.xml.simple"/>
 
 	
-		
+	<kaevent:eventQueue id="eventQueue" maxThreads="1"/>
 	
 
 	<bean name="thermometer" class="org.kasource.kaevent.example.spring.xml.simple.Thermometer">

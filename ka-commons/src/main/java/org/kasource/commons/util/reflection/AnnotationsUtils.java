@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.kasource.commons.reflection.filter.methods.MethodFilterBuilder;
+
 /**
  * Utility class for Annotation based introspection of classes.
  * 
@@ -77,20 +79,12 @@ public class AnnotationsUtils {
      * @return true if clazz has any method annotated with any annotation 
      */
     public static boolean hasAnnotatatedMethod(Class<?> clazz, Class<? extends Annotation> annotation) {
-        Method[] methods = clazz.getDeclaredMethods();
-        for (Method method : methods) {
-            Annotation[] methodAnnotations = method.getAnnotations();
-            for (Annotation anno : methodAnnotations) {
-                if (anno.annotationType().equals(annotation)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        Set<Method> methods = MethodUtils.getDeclaredMethods(clazz, new MethodFilterBuilder().annotated(annotation).build());
+        return !methods.isEmpty();
     }
     
     /**
-     * Returns the method of the supplied class <i>clazz</i> that is  annotated
+     * Returns the first method found of the supplied class <i>clazz</i> that is  annotated
      * with <i>annotation</i>.
      * 
      * @param clazz
@@ -101,16 +95,11 @@ public class AnnotationsUtils {
      * @return The method annotated with annotation 
      */
     public static Method getAnnotatatedMethod(Class<?> clazz, Class<? extends Annotation> annotation) {
-        Method[] methods = clazz.getDeclaredMethods();
-        for (Method method : methods) {
-            Annotation[] methodAnnotations = method.getAnnotations();
-            for (Annotation anno : methodAnnotations) {
-                if (anno.annotationType().equals(annotation)) {
-                    return method;
-                }
-            }
+        Set<Method> methods = MethodUtils.getDeclaredMethods(clazz, new MethodFilterBuilder().annotated(annotation).build());
+        if(methods.isEmpty()) {
+            return null;
         }
-        return null;
+        return methods.iterator().next();
     }
     
     /**
@@ -121,21 +110,15 @@ public class AnnotationsUtils {
      * @return Methods that is annotated with the supplied annotation set.
      **/
     public static Map<Class<? extends Annotation>, Method> findAnnotatedMethods(Class<?> clazz, Set<Class<? extends Annotation>> annotations) {
+        
         Map<Class<? extends Annotation>, Method> annotatedMethods = new HashMap<Class<? extends Annotation>, Method>();
-        Method method = null;
-        for (Class<? extends Annotation> annotation : annotations) {          
-            if((method = getAnnotatatedMethod(clazz, annotation)) != null) {
+        
+        for (Class<? extends Annotation> annotation : annotations) { 
+            Set<Method> methods = MethodUtils.getMethods(clazz, new MethodFilterBuilder().annotated(annotation).build());
+            for(Method method : methods) {
                 annotatedMethods.put(annotation, method);
             }
         }
-        while((clazz = clazz.getSuperclass()) != null) {
-            for (Class<? extends Annotation> annotation : annotations) {
-                if((method = getAnnotatatedMethod(clazz, annotation)) != null && !annotatedMethods.containsKey(annotation)) {
-                    annotatedMethods.put(annotation, method);
-                }
-            }
-        }
-        
         return annotatedMethods;
     }
 }

@@ -63,7 +63,7 @@ public abstract class ListenerChannelAdapter extends ChannelAdapter implements L
      *             The event filters to use for this listener.
      **/ 
     @Override
-    public void registerListener(Object listener, List<EventFilter<EventObject>> filters) {
+    public void registerListener(Object listener, List<EventFilter<? extends EventObject>> filters) {
         listenerRegister.registerListener(listener, filters);
     }
     

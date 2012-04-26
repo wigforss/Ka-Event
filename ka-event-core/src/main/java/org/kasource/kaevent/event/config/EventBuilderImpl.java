@@ -10,10 +10,15 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Set;
 
+import org.kasource.commons.reflection.filter.methods.MethodFilterList;
+import org.kasource.commons.reflection.filter.methods.ReturnTypeMethodFilter;
+import org.kasource.commons.reflection.filter.methods.SignatureMethodFilter;
 import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.annotations.event.Event;
 import org.kasource.kaevent.annotations.event.methodresolving.MethodResolving;
 import org.kasource.kaevent.bean.BeanResolver;
+import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
+import org.kasource.kaevent.event.dispatch.EventQueueRegister;
 import org.kasource.kaevent.event.method.AnnotatedMethodMethodResolver;
 import org.kasource.kaevent.event.method.MethodResolver;
 
@@ -26,6 +31,8 @@ public class EventBuilderImpl implements EventBuilder {
     @SuppressWarnings("rawtypes")
     private MethodResolver methodResolver;
     private Class<? extends Annotation> annotationClass;
+    private String eventQueue;
+    private EventQueueRegister eventQueueRegister;
     
     /**
      * Creates a new builder for an event. If no name is given the name used
@@ -36,9 +43,10 @@ public class EventBuilderImpl implements EventBuilder {
      * 
      * @param eventClass    The Event Class to build the event for.
      **/
-    public EventBuilderImpl(BeanResolver beanResolver, Class<? extends EventObject> eventClass){
+    public EventBuilderImpl(BeanResolver beanResolver, EventQueueRegister eventQueueRegister, Class<? extends EventObject> eventClass){
         this.eventClass = eventClass;
         this.methodResolverExtractor = new AnnotationMethodResolverExtractor(beanResolver);
+        this.eventQueueRegister = eventQueueRegister;
     }
     
     
@@ -80,9 +88,7 @@ public class EventBuilderImpl implements EventBuilder {
         return this;
     }
     
-    /* (non-Javadoc)
-     * @see org.kasource.kaevent.event.config.EventBuilder#bindInterface(java.lang.Class, org.kasource.kaevent.event.method.MethodResolver)
-     */
+  
     @Override
     public EventBuilder bindInterface(Class<? extends EventListener> interfaceClass, @SuppressWarnings("rawtypes") MethodResolver methodResolver) throws InvalidEventConfigurationException {
         if(this.interfaceClass != null){
@@ -96,9 +102,7 @@ public class EventBuilderImpl implements EventBuilder {
         return this;
     }
     
-    /* (non-Javadoc)
-     * @see org.kasource.kaevent.event.config.EventBuilder#bindAnnotation(java.lang.Class)
-     */
+   
     @Override
     public EventBuilder bindAnnotation(Class<? extends Annotation> annotationClass) throws InvalidEventConfigurationException {
         if(this.annotationClass != null){
@@ -111,9 +115,20 @@ public class EventBuilderImpl implements EventBuilder {
         return this;
     }
     
-    /* (non-Javadoc)
-     * @see org.kasource.kaevent.event.config.EventBuilder#build()
-     */
+    /**
+     * Set a specific event queue to handle these events.
+     * 
+     * @param eventQueueName Name of event queue to handle events.
+     * 
+     * @return This builder to allow chaining.
+     **/
+    @Override
+    public EventBuilder eventQueue(String eventQueueName) {
+       this.eventQueue = eventQueueName;
+       return this;
+    }
+    
+   
     @Override
     public EventConfig build() {
         if(name == null) {
@@ -150,7 +165,9 @@ public class EventBuilderImpl implements EventBuilder {
                 setDefaultMethod(eventConfig, eventClass, interfaceClass);
             }
         }
+        
         addAnnotationBinding(eventConfig);
+        addEventQueue(eventConfig, eventAnnotation.eventQueue());
         return eventConfig;
     }
     
@@ -166,6 +183,7 @@ public class EventBuilderImpl implements EventBuilder {
             }
         }
         addAnnotationBinding(eventConfig);
+        addEventQueue(eventConfig, eventQueue);
         return eventConfig;
     }
     
@@ -182,6 +200,18 @@ public class EventBuilderImpl implements EventBuilder {
          }
     }
     
+    private void addEventQueue(EventConfigImpl eventConfig, String eventQueueName) {
+        if(eventQueueName != null && !Event.DEFAULT_EVENT_QUEUE_NAME.equals(eventQueueName)) {
+           try {
+               DispatcherQueueThread eventQueue = eventQueueRegister.get(eventQueueName);
+               eventConfig.setEventQueue(eventQueue);
+           } catch(IllegalArgumentException e) {   
+               throw new IllegalStateException("Event Queue named " + eventQueueName + " for event "+ eventClass + " could not be found.");
+           }
+           
+        }
+    }
+    
     /**
      * Find the default method to invoke on listener and sets it on the eventConfig.
      * 
@@ -196,7 +226,7 @@ public class EventBuilderImpl implements EventBuilder {
     private void setDefaultMethod(EventConfigImpl eventConfig, Class<? extends EventObject> event,
                 Class<? extends EventListener> listener) {
         if (MethodUtils.getDeclaredMethodCount(listener) == 1) {
-            Set<Method> methodSet = MethodUtils.getDeclaredMethodsMatchingReturnType(listener, Void.TYPE, event);
+            Set<Method> methodSet = MethodUtils.getDeclaredMethods(listener, new MethodFilterList(new ReturnTypeMethodFilter(Void.TYPE), new SignatureMethodFilter(event)));
             eventConfig.setDefaultMethod(methodSet.iterator().next());
         } else {
             throw new IllegalStateException("EventListener " + listener
@@ -230,4 +260,7 @@ public class EventBuilderImpl implements EventBuilder {
             throw new IllegalStateException("It must be possible to annotate a methd with " + targetAnnotation + " in order to use it as a Event Method Annotation, ensure that the @Target annotation has ElementType.METHOD set.");
         }
     }
+
+
+    
 }

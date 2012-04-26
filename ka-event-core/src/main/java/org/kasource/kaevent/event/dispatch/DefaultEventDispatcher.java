@@ -15,7 +15,11 @@ import org.kasource.kaevent.config.KaEventConfigurer;
 import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.event.EventDispatcher;
+import org.kasource.kaevent.event.ForwardedEvent;
+import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.filter.EventFilter;
+import org.kasource.kaevent.event.filter.EventFilterExecutor;
+import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 /**
@@ -34,9 +38,9 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     private ChannelFactory channelFactory;
     private SourceObjectListenerRegister sourceObjectListenerRegister;
     private DispatcherQueueThread eventQueue;
-    
-    
-
+    private EventRegister eventRegister;
+    private List<EventFilter<? extends EventObject>> bridgeFilters = new LinkedList<EventFilter<? extends EventObject>>();
+    private EventFilterExecutor filterExecutor = new EventFilterExecutor();
 	private KaEventConfigurer configurer = new KaEventConfigurer();
     
     /**
@@ -97,18 +101,36 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     public void doInitialize(KaEventConfiguration config) {
         this.channelRegister = config.getChannelRegister();
         this.sourceObjectListenerRegister = config.getSourceObjectListenerRegister();
-        this.eventQueue = config.getQueueThread();
+        this.eventQueue = config.getDefaultEventQueue();
         this.eventRouter = config.getEventRouter();
         this.channelFactory = config.getChannelFactory();
+        this.eventRegister = config.getEventRegister();
     }
    
     
     @Override
     public void fire(EventObject event) {
-        eventQueue.enqueue(event);        
+        EventConfig config = null;
+        if(!ForwardedEvent.class.isAssignableFrom(event.getClass())) {
+            config = eventRegister.getEventByClass(event.getClass());
+        } else {
+            config = eventRegister.getEventByClass(((ForwardedEvent) event).getSource().getClass());
+        }
+       
+        if(config.getEventQueue() != null) {
+            config.getEventQueue().enqueue(event);       
+        } else {
+            eventQueue.enqueue(event); 
+        }
     }
 
    
+    public void bridgeEvent(EventObject event) {
+        if(filterExecutor.passFilters(bridgeFilters, event)) {
+            fire(event);
+        }
+    }
+    
     @Override
     public void fireBlocked(EventObject event) {
         eventRouter.routeEvent(event, true);       
@@ -139,7 +161,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
 
     
     @Override
-    public void registerListener(Object listener, Object sourceObject, List<EventFilter<EventObject>> filters) {
+    public void registerListener(Object listener, Object sourceObject, List<EventFilter<? extends EventObject>> filters) {
         sourceObjectListenerRegister.registerListener(listener, sourceObject);
         
     }
@@ -157,7 +179,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     
     @Override
     public void registerListenerAtChannel(Object listener,
-            String channelName, List<EventFilter<EventObject>> filters) {
+            String channelName, List<EventFilter<? extends EventObject>> filters) {
     	Channel channel = channelRegister.getChannel(channelName);
     	if (channel instanceof ListenerChannel) {
     		((ListenerChannel) channel).registerListener(listener, filters);
@@ -289,6 +311,20 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
         this.configurer = configurer;
     }
 
+    /**
+     * @return the eventRegister
+     */
+    protected EventRegister getEventRegister() {
+        return eventRegister;
+    }
+
+    /**
+     * @param eventRegister the eventRegister to set
+     */
+    protected void setEventRegister(EventRegister eventRegister) {
+        this.eventRegister = eventRegister;
+    }
+    
     @Override
     public void unregisterListener(Object listener, Object sourceObject) {
        sourceObjectListenerRegister.unregisterListener(listener, sourceObject);
@@ -305,4 +341,12 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
         }
         
     }
+
+    @Override
+    public <T extends EventObject> void addBridgeFilter(EventFilter<T> filter) {
+       bridgeFilters.add(filter);
+        
+    }
+
+    
 }

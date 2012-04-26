@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.EventObject;
 
+import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
+
 
 /**
  * Holds information on how an event has been configured.
@@ -53,5 +55,5 @@ public interface EventConfig {
      **/
     public Class<? extends Annotation> getEventAnnotation();
     
-
+    public DispatcherQueueThread getEventQueue();
 }

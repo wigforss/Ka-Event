@@ -4,10 +4,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.EventObject;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.filter.EventFilter;
+import org.kasource.kaevent.event.filter.EventFilterExecutor;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
 
@@ -22,7 +24,7 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
     
    
     private EventRegister eventRegister;
-
+    private EventFilterExecutor filterExecutor = new EventFilterExecutor();
   
     /**
      * Constructor.
@@ -63,7 +65,7 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
      * @param listener  Listener.
      */
     private void invokeEvent(EventObject event, boolean throwException, Method method, EventListenerRegistration listener) {
-        if (passFilters(listener, event)) {
+        if (filterExecutor.passFilters(listener.getFilters(), event)) {
             if (throwException) {
                 invokeBlocked(method, listener, event);
             } else {
@@ -117,25 +119,6 @@ public class EventMethodInvokerImpl implements EventMethodInvoker {
         }
     }
 
-    /**
-     * Return true if event passed the filters from eventRegistration.
-     * 
-     * @param eventRegistration Event Registration, holds the filters.
-     * @param event             Event Object to test.
-     * 
-     * @return true if event passes filters, else false.
-     */
-    @SuppressWarnings("unchecked")
-    private boolean passFilters(EventListenerRegistration eventRegistration, EventObject event) {
-        if (eventRegistration.getFilters() != null) {
-            for (EventFilter<? extends EventObject> filter : eventRegistration.getFilters()) {
-                EventFilter<EventObject> eventFilter = (EventFilter<EventObject>) filter;
-                if (!eventFilter.passFilter(event)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+    
 
 }

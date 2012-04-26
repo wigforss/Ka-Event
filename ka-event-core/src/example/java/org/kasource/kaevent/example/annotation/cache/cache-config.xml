@@ -2,6 +2,6 @@
 <kaEventConfig xmlns="http://kasource.org/schema/kaevent"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://kasource.org/schema/kaevent kaevent.xsd">
-	<threadPoolExecutor maximumPoolSize="1"/>
+	<eventQueue name="cacheEventQueue" maxThreads="1"/> 
 	<events scanClassPath="org.kasource.kaevent.example.annotation.cache"/> 
 </kaEventConfig>

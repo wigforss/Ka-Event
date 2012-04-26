@@ -2,7 +2,6 @@ package org.kasource.kaevent.config;
 
 
 import java.lang.annotation.Annotation;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -17,7 +16,9 @@ import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.config.KaEventConfig.Channels;
+import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
+import org.kasource.kaevent.event.method.MethodResolver;
 
 /**
  * Builds the XML Configuration programmatically.
@@ -26,7 +27,7 @@ import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
  * build method.
  * <p/>
  * <p/>
- * KaEventConfig config = new KaEventConfigBuilder().scan("org.abc.my").maxPoolSize(1).build()
+ * KaEventConfig config = new KaEventConfigBuilder().scan("org.abc.my").defaultEventQueueMaxThreads(1).build()
  * <p/>
  * Which will create a new configuration the scans for @Event annotated classes under org.abc.my and
  * set the event queue max size to 1 (allowing only one thread making it strictly sequential).
@@ -35,18 +36,17 @@ import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
  * @version $Id: $
  **/
 public class KaEventConfigBuilder {
-
+    
+    
     private String scanClassPath;
     private Class<? extends BeanResolver> beanResolverClass;
     private Class<? extends ChannelFactory> channelFactoryClass;
-    private Class<? extends ThreadPoolQueueExecutor> queueClass = ThreadPoolQueueExecutor.class;
-    private Byte maxPoolSize;
-    private Byte corePoolSize;
-    private Long keepAliveTime;
+    private EventQueueReg defaultEventQueue = null;
+    private Map<String, EventQueueReg> eventQueues = new HashMap<String, KaEventConfigBuilder.EventQueueReg>();
     private Set<ChannelReg> channelRegs = new HashSet<ChannelReg>();
     private Set<EventReg> events = new HashSet<EventReg>();
     private Map<Class<? extends EventObject>, KaEventConfig.Events.Event> eventMap = 
-        new HashMap<Class<? extends EventObject>, KaEventConfig.Events.Event>();
+            new HashMap<Class<? extends EventObject>, KaEventConfig.Events.Event>();
 
     
     /**
@@ -56,13 +56,15 @@ public class KaEventConfigBuilder {
      **/
     public KaEventConfig build() {
         KaEventConfig xmlConfig = new KaEventConfig();
+        buildDefaultEventQueue(xmlConfig);
+        buildEventQueues(xmlConfig);
         buildScanClassPath(xmlConfig);
         buildBeanResolver(xmlConfig);
         buildChannelFactory(xmlConfig);
         if (!events.isEmpty()) {
             buildEvents(xmlConfig);
         }
-        buildQueueClass(xmlConfig);
+       
         if (!channelRegs.isEmpty()) {
             buildChannels(xmlConfig);
         }
@@ -106,63 +108,25 @@ public class KaEventConfigBuilder {
     }
     
     /**
-     * Sets the queue class in the configuration.
+     *  Builds the default Event Queue
      * 
      * @param xmlConfig
      *            The configuration
      **/
-    private void buildQueueClass(KaEventConfig xmlConfig) {
-        if (queueClass != ThreadPoolQueueExecutor.class) {
-            xmlConfig.queueThread = new KaEventConfig.QueueThread();
-            xmlConfig.queueThread.clazz = queueClass.getName();
-        } else {
-            configureQueue(xmlConfig);
+    private void buildDefaultEventQueue(KaEventConfig xmlConfig) {
+        if(defaultEventQueue != null) {
+            xmlConfig.getEventQueue().add(defaultEventQueue.toXmlObject());
         }
     }
     
-    /**
-     * Configure the default event queue implementation (thread pool executor).
-     * 
-     * @param xmlConfig the configuration
-     **/
-    private void configureQueue(KaEventConfig xmlConfig) {
-        if (maxPoolSize != null || corePoolSize != null || keepAliveTime != null) {
-            xmlConfig.threadPoolExecutor = new KaEventConfig.ThreadPoolExecutor();
-            configureMaxPoolSize(xmlConfig);
-            configureCorePoolSize(xmlConfig);
-            configureKeepAlive(xmlConfig);
-        }
-    }
-    
-    /**
-     * Configure the max pool size for the event queue.
-     * 
-     * @param xmlConfig the configuration.
-     **/
-    private void configureMaxPoolSize(KaEventConfig xmlConfig) {
-        if (maxPoolSize != null) {
-            xmlConfig.threadPoolExecutor.maximumPoolSize = maxPoolSize;
-        }
-    }
-
-    /**
-     * Configure the core pool size for the event queue.
-     * 
-     * @param xmlConfig the configuration.
-     **/
-    private void configureCorePoolSize(KaEventConfig xmlConfig) {
-        if (corePoolSize != null) {
-            xmlConfig.threadPoolExecutor.corePoolSize = corePoolSize;
-        }
-    }
-    
-    /**
-     * Configure the keep alive time for the event queue.
-     * @param xmlConfig the configuration.
-     */
-    private void configureKeepAlive(KaEventConfig xmlConfig) {
-        if (keepAliveTime != null) {
-            xmlConfig.threadPoolExecutor.keepAliveTime = new BigInteger(keepAliveTime.toString());
+   /**
+    * Builds additional event queues.
+    * 
+    * @param xmlConfig The configuration
+    */
+    private void buildEventQueues(KaEventConfig xmlConfig) {
+        for(EventQueueReg eventQueueReg : eventQueues.values()) {
+            xmlConfig.getEventQueue().add(eventQueueReg.toXmlObject());
         }
     }
     
@@ -205,9 +169,9 @@ public class KaEventConfigBuilder {
         if (xmlConfig.events.event == null) {
             xmlConfig.events.event = new ArrayList<KaEventConfig.Events.Event>();
         }
-        for (EventReg eventClass : events) {
-            if (!eventMap.containsKey(eventClass)) {
-                buildEvent(xmlConfig, eventClass);
+        for (EventReg event : events) {
+            if (!eventMap.containsKey(event)) {
+                buildEvent(xmlConfig, event);
             }
         }
     }
@@ -255,20 +219,20 @@ public class KaEventConfigBuilder {
         KaEventConfig.Events.Event event = new KaEventConfig.Events.Event();
         event.eventClass = eventReg.getEventClass().getName();
         Event eventAnnotation = eventReg.getEventClass().getAnnotation(Event.class);
-        if(eventAnnotation != null) {
-            if(eventAnnotation.listener() != EventListener.class) {
-                event.listenerInterface = eventAnnotation.listener().getName();
-            } 
-            if(eventAnnotation.annotation() != Event.class) {
-                event.annotation = eventAnnotation.annotation().getName();
-            }
-        } else {
+        if(eventAnnotation == null) {
             if(eventReg.getInterfaceClass() != null) {
                 event.listenerInterface = eventReg.getInterfaceClass().getName();
             } 
             if(eventReg.getAnnotationClass() != null) {
                 event.annotation = eventReg.getAnnotationClass().getName();
             }
+        }
+        String eventQueue = eventReg.getEventQueueName();
+        if(eventQueue != null) {
+            if (!eventQueues.containsKey(eventQueue) && !Event.DEFAULT_EVENT_QUEUE_NAME.equals(eventQueue)) {
+                throw new IllegalStateException("Event Queue " + eventQueue + " set for event " + eventReg.getEventClass() + " could not be found!");
+            }
+            event.eventQueue = eventQueue;
         }
         event.name = eventReg.getEventClass().getName();
         xmlConfig.events.event.add(event);
@@ -315,61 +279,146 @@ public class KaEventConfigBuilder {
     }
 
     /**
-     * Sets the queue (worker thread) implementation to use. Overrides the default implementation.
+     * Optionally sets the event queue implementation to use for the default event queue. 
+     * Overrides the default implementation.
      * 
      * @param queue
      *            Event Queue Thread implementation class to use.
      * 
      * @return the builder
      **/
-    public KaEventConfigBuilder queueClass(Class<? extends ThreadPoolQueueExecutor> queue) {
-        this.queueClass = queue;
+    public KaEventConfigBuilder defaultEventQueueClass(Class<? extends DispatcherQueueThread> queue) {
+        getDefaultEventQueue().setQueueClass(queue);
         return this;
     }
 
+    private EventQueueReg getDefaultEventQueue() {
+        if(defaultEventQueue == null) {
+            defaultEventQueue = new EventQueueReg(Event.DEFAULT_EVENT_QUEUE_NAME);;
+        }
+        return defaultEventQueue;
+    }
+    
     /**
-     * Set the maximum pool size on the default Queue Thread implementation, set this to 1 to get a pure serial event
-     * execution thread. Note this value will not have any effect if the default Queue Thread is overridden by
-     * queueClass().
+     * Set the maximum threads on the default Event Queue, set this to 1 to get  pure serial event
+     * event execution. 
      * 
-     * @param queueMaxPoolSize
+     * @param maxThreads
      *            The maximum number of threads to use by the event queue.
      * 
      * @return the builder
      **/
-    public KaEventConfigBuilder maxPoolSize(byte queueMaxPoolSize) {
-        this.maxPoolSize = queueMaxPoolSize;
+    public KaEventConfigBuilder defaultEventQueueMaxThreads(short maxThreads) {
+        getDefaultEventQueue().setMaxThreads(maxThreads);
         return this;
     }
-
+    
     /**
-     * Set the core pool size on the default Queue Thread implementation. Note this value will not have any effect if
-     * the default Queue Thread is overridden by queueClass().
+     * Configure threads of the default Event Queue, set maxThreads to 1 to get pure serial event
+     * event execution. 
      * 
-     * @param queueCorePoolSize
-     *            The number of threads to initialize the event queue worker pool with.
-     * 
-     * @return the builder
-     **/
-    public KaEventConfigBuilder corePoolSize(byte queueCorePoolSize) {
-        this.corePoolSize = queueCorePoolSize;
-        return this;
-    }
-
-    /**
-     * Set the keep alive time on the default Queue Thread implementation. Note this value will not have any effect if
-     * the default Queue Thread is overridden by queueClass().
-     * 
-     * @param queueKeepAliveTime
+     * @param maxThreads
+     *            The maximum number of threads to use by the event queue.
+     * @param coreThreads
+     *            The number of threads to start with.
+     * @param keepAliveTime
      *            Keep alive time in milliseconds, idle threads of the event queue will be stopped after this timeout.
      * 
      * @return the builder
      **/
-    public KaEventConfigBuilder keepAliveTime(long queueKeepAliveTime) {
-        this.keepAliveTime = queueKeepAliveTime;
+    public KaEventConfigBuilder defaultEventQueueThreads(byte maxThreads, byte coreThreads, long keepAliveTime) {
+        getDefaultEventQueue().setMaxThreads(maxThreads);
+        getDefaultEventQueue().setCoreThreads(coreThreads);
+        getDefaultEventQueue().setKeepAliveTime(keepAliveTime);
         return this;
     }
 
+    /**
+     * Adds a new named EventQueue.
+     * 
+     * @param name Name of the new event queue.
+     * 
+     * @return the builder.
+     **/
+    public KaEventConfigBuilder addEventQueue(String name) {
+        EventQueueReg eventQueue = new EventQueueReg(name);
+        eventQueues.put(name, eventQueue);
+        return this;
+    }
+    
+    
+    /**
+     * Adds a new named EventQueue.
+     * 
+     * @param name Name of the new event queue.
+     * 
+     * @return the builder.
+     **/
+    public KaEventConfigBuilder addEventQueue(String name, int maxThreads) {
+        EventQueueReg eventQueue = new EventQueueReg(name);
+        eventQueue.setMaxThreads((short) maxThreads);
+        eventQueues.put(name, eventQueue);
+        return this;
+    }
+    
+    /**
+     * Adds a new named EventQueue using the supplied eventQueue class
+     * 
+     * @param name              Name of the event queue
+     * @param eventQueueClass   Class of the event queue
+     * 
+     * @return the builder.
+     **/
+    public KaEventConfigBuilder addEventQueue(String name, Class<? extends DispatcherQueueThread> eventQueueClass) {
+        EventQueueReg eventQueue = new EventQueueReg(name);
+        eventQueue.setQueueClass(eventQueueClass);
+        eventQueues.put(name, eventQueue);
+        return this;
+    }
+    
+    /**
+     * Adds a new named EventQueue using the supplied eventQueue class
+     * 
+     * @param name              Name of the event queue
+     * @param eventQueueClass   Class of the event queue
+     * 
+     * @return the builder.
+     **/
+    public KaEventConfigBuilder addEventQueue(String name, int maxThreads, Class<? extends DispatcherQueueThread> eventQueueClass) {
+        EventQueueReg eventQueue = new EventQueueReg(name);
+        eventQueue.setQueueClass(eventQueueClass);
+        eventQueue.setMaxThreads((short) maxThreads);
+        eventQueues.put(name, eventQueue);
+        return this;
+    }
+    
+    
+    
+    /**
+     * Set thread configuration on a previously added event queue.
+     * 
+     * @param name
+     *            Name of the event queue to modify.
+     * @param maxThreads
+     *            The maximum number of threads to use by the event queue.
+     * @param coreThreads
+     *            The number of threads to start with.
+     * @param keepAliveTime
+     *            Keep alive time in milliseconds, idle threads of the event queue will be stopped after this timeout.
+     * @return the builder.
+     * @throws IllegalArgumentException if no event queue has been added with name.
+     */
+    public KaEventConfigBuilder eventQueueThreads(String name, short maxThreads, short coreThreads, long keepAliveTime) throws IllegalArgumentException{
+        EventQueueReg eventQueue = eventQueues.get(name);
+        if(eventQueue == null) {
+            throw new IllegalArgumentException("No eventQueue with name: " + name + " has been added!");
+        }
+        eventQueue.setMaxThreads(maxThreads);
+        eventQueue.setCoreThreads(coreThreads);
+        eventQueue.setKeepAliveTime(keepAliveTime);
+        return this;
+    }
+   
     /**
      * Add a channel to the configuration.
      * 
@@ -397,12 +446,6 @@ public class KaEventConfigBuilder {
      **/
     public KaEventConfigBuilder addChannel(String channelName, Class<? extends Channel> channelClass,
                 Class<? extends EventObject>... eventsToChannel) {
-        for (Class<? extends EventObject> eventClass : eventsToChannel) {
-            if (!eventClass.isAnnotationPresent(Event.class)) {
-                throw new IllegalArgumentException("Only events annotated with @Event can used in addChannel "
-                            + eventClass + " is not annotated with @Event");
-            }
-        }
         channelRegs.add(new ChannelReg(channelName, channelClass, eventsToChannel));
         return this;
     }
@@ -416,10 +459,13 @@ public class KaEventConfigBuilder {
      * @return the builder
      **/
     public KaEventConfigBuilder addEvent(Class<? extends EventObject> eventClass) {
-
-        if (!eventClass.isAnnotationPresent(Event.class)) {
+        Event eventAnnotation = eventClass.getAnnotation(Event.class);
+        if (eventAnnotation == null) {
             throw new IllegalArgumentException("Only events annotated with @Event can used in addEvent " + eventClass
                         + " is not annotated with @Event");
+        } else if(eventAnnotation.listener().equals(EventListener.class) && eventAnnotation.annotation().equals(Event.class)){
+            throw new IllegalArgumentException("@Event attribute listener and / or annotation must be set for " + eventClass
+                        + " to bind event to an interaface and / or an annotation.");
         }
         events.add(new EventReg(eventClass));
 
@@ -436,13 +482,30 @@ public class KaEventConfigBuilder {
     * 
     * @return the builder
     **/
-   public KaEventConfigBuilder addEventByInterface(Class<? extends EventObject> eventClass, Class<? extends EventListener> listenerInterfaceClass) {
+   public KaEventConfigBuilder addEventBoundToInterface(Class<? extends EventObject> eventClass, Class<? extends EventListener> listenerInterfaceClass) {
 
-       if (!eventClass.isAnnotationPresent(Event.class)) {
-           throw new IllegalArgumentException("Only events annotated with @Event can used in addEvent " + eventClass
-                       + " is not annotated with @Event");
-       }
        events.add(new EventReg(eventClass, listenerInterfaceClass, null));
+
+       return this;
+   }
+   
+   /**
+    * Add an event to the configuration.
+    * 
+    * @param eventClass
+    *            The class name of the event to add, must be annotated with @Event.
+    * @param listenerInterfaceClass
+    *            The Listener Interface to associate the eventClass with.
+    * @param eventQueue
+    *            Name of the event queue to handle this event.
+    * 
+    * @return the builder
+    **/
+   public KaEventConfigBuilder addEventBoundToInterface(Class<? extends EventObject> eventClass, Class<? extends EventListener> listenerInterfaceClass, String eventQueue) {
+
+       EventReg event = new EventReg(eventClass, listenerInterfaceClass, null);
+       event.setEventQueueName(eventQueue);
+       events.add(event);
 
        return this;
    }
@@ -463,14 +526,38 @@ public class KaEventConfigBuilder {
                                         Class<? extends EventListener> listenerInterfaceClass, 
                                         Class<? extends Annotation> eventMethodAnnotation) {
 
-       if (!eventClass.isAnnotationPresent(Event.class)) {
-           throw new IllegalArgumentException("Only events annotated with @Event can used in addEvent " + eventClass
-                       + " is not annotated with @Event");
-       }
+       
        events.add(new EventReg(eventClass, listenerInterfaceClass, eventMethodAnnotation));
 
        return this;
    }
+   
+   /**
+    * Add an event to the configuration.
+    * 
+    * @param eventClass
+    *            The class of the event to add, should not be annotated with @Event.
+    * @param listenerInterfaceClass
+    *            The Listener Interface to associate the eventClass with, may be null if eventMethodAnnotation is set.
+    * @param eventMethodAnnotation
+    *            The listener method annotation to associate the event with, must have retention RUNTIME, may be null if listenerInterfaceClass is set.
+    * @param eventQueue
+    *            Name of the event queue to handle this event. 
+    * @return the builder
+    **/
+   public KaEventConfigBuilder addEvent(Class<? extends EventObject> eventClass, 
+                                        Class<? extends EventListener> listenerInterfaceClass, 
+                                        Class<? extends Annotation> eventMethodAnnotation,
+                                        String eventQueue) {
+
+       EventReg event = new EventReg(eventClass, listenerInterfaceClass, eventMethodAnnotation);
+       event.setEventQueueName(eventQueue);
+       events.add(event);
+
+       return this;
+   }
+   
+   
    
    /**
     * Add an event to the configuration.
@@ -482,17 +569,34 @@ public class KaEventConfigBuilder {
     * 
     * @return the builder
     **/
-   public KaEventConfigBuilder addEventByAnnotation(Class<? extends EventObject> eventClass, Class<? extends Annotation> eventMethodAnnotation) {
+   public KaEventConfigBuilder addEventBoundToAnnotation(Class<? extends EventObject> eventClass, Class<? extends Annotation> eventMethodAnnotation) {
 
-       if (!eventClass.isAnnotationPresent(Event.class)) {
-           throw new IllegalArgumentException("Only events annotated with @Event can used in addEvent " + eventClass
-                       + " is not annotated with @Event");
-       }
        events.add(new EventReg(eventClass, null, eventMethodAnnotation));
 
        return this;
    }
+   
+   /**
+    * Add an event to the configuration.
+    * 
+    * @param eventClass
+    *            The class name of the event to add, should not be annotated with @Event.
+    * @param eventMethodAnnotation
+    *            The listener method annotation to associate the event with, must have retention RUNTIME.
+    * @param eventQueue
+    *            Name of the event queue to handle this event.
+    * @return the builder
+    **/
+   public KaEventConfigBuilder addEventBoundToAnnotation(Class<? extends EventObject> eventClass, Class<? extends Annotation> eventMethodAnnotation, String eventQueue) {
+
+       EventReg event = new EventReg(eventClass, null, eventMethodAnnotation);
+       event.setEventQueueName(eventQueue);
+       events.add(event);
+
+       return this;
+   }
     
+  
     
 
     /**
@@ -553,6 +657,7 @@ public class KaEventConfigBuilder {
         private Class<? extends EventObject> eventClass;
         private Class<? extends EventListener> interfaceClass;
         private Class<? extends Annotation> annotationClass;
+        private String eventQueueName;
         
         public EventReg(Class<? extends EventObject> eventClass) {
             this.eventClass = eventClass;
@@ -573,12 +678,7 @@ public class KaEventConfigBuilder {
             return eventClass;
         }
 
-        /**
-         * @param eventClass the eventClass to set
-         */
-        public void setEventClass(Class<? extends EventObject> eventClass) {
-            this.eventClass = eventClass;
-        }
+       
 
         /**
          * @return the interfaceClass
@@ -587,12 +687,7 @@ public class KaEventConfigBuilder {
             return interfaceClass;
         }
 
-        /**
-         * @param interfaceClass the interfaceClass to set
-         */
-        public void setInterfaceClass(Class<? extends EventListener> interfaceClass) {
-            this.interfaceClass = interfaceClass;
-        }
+      
 
         /**
          * @return the annotationClass
@@ -601,11 +696,84 @@ public class KaEventConfigBuilder {
             return annotationClass;
         }
 
+      
         /**
-         * @param annotationClass the annotationClass to set
+         * @return the eventQueueName
          */
-        public void setAnnotationClass(Class<? extends Annotation> annotationClass) {
-            this.annotationClass = annotationClass;
+        public String getEventQueueName() {
+            return eventQueueName;
         }
+
+        /**
+         * @param eventQueueName the eventQueueName to set
+         */
+        public void setEventQueueName(String eventQueueName) {
+            this.eventQueueName = eventQueueName;
+        }
+    }
+    
+    private static class EventQueueReg {
+        private String name;
+        private Class<? extends DispatcherQueueThread> queueClass = ThreadPoolQueueExecutor.class;
+        private short maxThreads;
+        private short coreThreads;
+        private long keepAliveTime;
+        
+        public EventQueueReg(String name) {
+            this.name = name;
+        }
+
+       
+
+        
+
+        /**
+         * @param queueClass the queueClass to set
+         */
+        public void setQueueClass(Class<? extends DispatcherQueueThread> queueClass) {
+            this.queueClass = queueClass;
+        }
+
+       
+
+        /**
+         * @param maxThreads to set
+         */
+        public void setMaxThreads(short maxThreads) {
+            this.maxThreads = maxThreads;
+        }
+
+      
+        /**
+         * @param coreThreads to set
+         */
+        public void setCoreThreads(short coreThreads) {
+            this.coreThreads = coreThreads;
+        }
+
+        
+        /**
+         * @param keepAliveTime the keepAliveTime to set
+         */
+        public void setKeepAliveTime(Long keepAliveTime) {
+            this.keepAliveTime = keepAliveTime;
+        }
+        
+        public KaEventConfig.EventQueue toXmlObject() {
+            KaEventConfig.EventQueue eventQueue = new KaEventConfig.EventQueue();
+            eventQueue.setName(name);
+            eventQueue.setClazz(queueClass.getName());
+            if (maxThreads > 0) {
+                eventQueue.setMaxThreads(maxThreads);
+            }
+            if (coreThreads > 0) {
+                eventQueue.setCoreThreads(coreThreads);
+            }
+            if (keepAliveTime > 0) {
+                eventQueue.setKeepAliveTime(keepAliveTime);
+            }
+            return eventQueue;
+        }
+        
     }
 }
