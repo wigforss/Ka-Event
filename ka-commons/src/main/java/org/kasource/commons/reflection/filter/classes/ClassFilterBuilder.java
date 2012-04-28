@@ -94,6 +94,11 @@ public class ClassFilterBuilder {
         return this;
     }
     
+    public ClassFilterBuilder metaAnnotated(Class<? extends Annotation> annotation) {
+        add(new MetaAnnotatedClassFilter(annotation));
+        return this;
+    }
+    
     public ClassFilterBuilder name(String nameRegExp) {
         add(new NameClassFilter(nameRegExp));
         return this;

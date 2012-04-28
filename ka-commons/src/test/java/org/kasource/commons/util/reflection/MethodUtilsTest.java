@@ -11,24 +11,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.EventListener;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.junit.Test;
 import org.kasource.commons.reflection.filter.methods.AnnotatedMethodFilter;
+import org.kasource.commons.reflection.filter.methods.MethodFilterBuilder;
 import org.kasource.commons.reflection.filter.methods.SignatureMethodFilter;
 import org.kasource.commons.util.reflection.MethodUtils;
 
 
 public class MethodUtilsTest {
-    @Test
-    public void getMethodCountOneTest() {
-        assertEquals(1, MethodUtils.getDeclaredMethodCount(Foo.class));
-    }
-    
-    @Test
-    public void getMethodCountZeroTest() {
-        assertEquals(0, MethodUtils.getDeclaredMethodCount(Buzz.class));
-    }
+   
     
     @Test
     public void getMethodTest() {
@@ -44,26 +38,25 @@ public class MethodUtilsTest {
     
     @Test
     public void getMethodsTestTwo() {
-        Set<Method> methods = MethodUtils.getDeclaredMethods(Bar.class, new SignatureMethodFilter());
+        Set<Method> methods = MethodUtils.getDeclaredMethods(Bar.class, new MethodFilterBuilder().parametersTypesFilter().isPublic().build());
         assertEquals(2, methods.size());
     }
     
     @Test
     public void getAnnotatedMethodTest(){
-        Method method = MethodUtils.getDeclaredMethods(Foo.class, new AnnotatedMethodFilter(RuntimeMethodAnnotation.class)).iterator().next();
+        Method method = MethodUtils.getDeclaredMethods(Foo.class, new MethodFilterBuilder().annotated(RuntimeMethodAnnotation.class).build()).iterator().next();
         assertEquals("run", method.getName());
     }
     
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void getAnnotatedMethodNotRuntimeAnnotationTest(){
-        Method method = MethodUtils.getDeclaredMethods(Bar.class, new AnnotatedMethodFilter(CompileMethodAnnotation.class)).iterator().next();
-        assertNull(method);
+        MethodUtils.getDeclaredMethods(Bar.class, new MethodFilterBuilder().annotated(CompileMethodAnnotation.class).build()).iterator().next();
+        
     }
     
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void getAnnotatedMethodNoMethodsTest(){
-        Method method = MethodUtils.getDeclaredMethods(Buzz.class, new AnnotatedMethodFilter(RuntimeMethodAnnotation.class)).iterator().next();
-        assertNull(method);
+        MethodUtils.getDeclaredMethods(Buzz.class, new MethodFilterBuilder().annotated(RuntimeMethodAnnotation.class).build()).iterator().next();
     }
     
     
@@ -72,12 +65,12 @@ public class MethodUtilsTest {
     
     @Test
     public void hasMethodVoidReturnTypeTrueTest() {
-       assertTrue( MethodUtils.hasMethodVoidReturnType( MethodUtils.getDeclaredMethod(Fuzz.class, "run")) );
+       assertTrue( MethodUtils.hasMethodNoReturnType( MethodUtils.getDeclaredMethod(Fuzz.class, "run")) );
     }
     
     @Test
     public void hasMethodVoidReturnTypeFalseTest() {
-       assertFalse( MethodUtils.hasMethodVoidReturnType( MethodUtils.getDeclaredMethod(Fuzz.class, "getName")) );
+       assertFalse( MethodUtils.hasMethodNoReturnType( MethodUtils.getDeclaredMethod(Fuzz.class, "getName")) );
     }
     
     @Target(ElementType.TYPE)

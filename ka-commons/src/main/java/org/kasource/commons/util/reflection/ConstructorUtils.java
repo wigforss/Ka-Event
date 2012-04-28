@@ -43,12 +43,16 @@ public class ConstructorUtils {
             Class<?> clazz = Class.forName(className);
             constructor = clazz.getConstructor(constructorParams);
             return (T) constructor.newInstance(constructorArgs);
-        } catch (Exception e) {
-            if(e instanceof ClassCastException) {
-                throw new IllegalStateException(className + " is not of type "+ ofType.getName());
-            } else {
-                throw new IllegalStateException("Could not instanceiate using" + className + ((constructorParams.length == 0) ? " the default constructor!" : constructor));
-            }
+        } catch (Exception e) {       
+                String errorMessage = "Could not instanceiate " + className+".";
+                if(constructor == null) {
+                    errorMessage += " No constructor found with parameters "+constructorParams;
+                } else if(constructorParams.length == 0) {
+                    errorMessage += " Using default constructor.";
+                } else {
+                    errorMessage += " " + constructor;
+                }
+                throw new IllegalStateException(errorMessage, e);          
         } 
     }
     

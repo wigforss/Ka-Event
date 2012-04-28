@@ -50,6 +50,12 @@ public class FieldFilterBuilder {
         return this;
     }
     
+    
+    public FieldFilterBuilder metaAnnotated(Class<? extends Annotation> annotation) {
+        add(new MetaAnnotatedFieldFilter(annotation));
+        return this;
+    }
+    
     public FieldFilterBuilder extendsType(Class<?> assignbleFromClass) {
         add(new AssignableFromFieldFilter(assignbleFromClass));
         return this;

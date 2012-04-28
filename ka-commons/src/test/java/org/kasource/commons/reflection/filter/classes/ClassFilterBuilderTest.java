@@ -148,8 +148,13 @@ public class ClassFilterBuilderTest {
     @Test
     public void annotated() {
         ClassFilter filter = builder.annotated(Retention.class).build();
-        assertTrue(filter instanceof AnnotationClassFilter);
-       
+        assertTrue(filter instanceof AnnotationClassFilter);     
+    }
+    
+    @Test
+    public void metaAnnotated() {
+        ClassFilter filter = builder.metaAnnotated(Retention.class).build();
+        assertTrue(filter instanceof MetaAnnotatedClassFilter);     
     }
     
     @Test

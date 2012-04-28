@@ -23,6 +23,25 @@ public class MethodFilterBuilderTest {
         builder.build();
     }
 
+    
+    @Test
+    public void notTest() {
+        MethodFilter filter = builder.not().isPublic().build();
+        assertTrue(filter instanceof NegationMethodFilter);
+    }
+    
+    @Test
+    public void orTest() {
+        MethodFilter filter = builder.isPublic().or().isPrivate().or().isProtected().build();
+        assertTrue(filter instanceof OrMethodFilter);
+    }
+    
+    @Test
+    public void listTest() {
+        MethodFilter filter = builder.isPublic().isSynchronized().build();
+        assertTrue(filter instanceof MethodFilterList);
+    }
+    
     @Test
     public void isPublic() {
         MethodFilter filter = builder.isPublic().build();
@@ -79,6 +98,12 @@ public class MethodFilterBuilderTest {
     }
 
     @Test
+    public void metaAnnotated() {
+        MethodFilter filter = builder.metaAnnotated(Retention.class).build();
+        assertTrue(filter instanceof MetaAnnotatedMethodFilter);
+    }
+    
+    @Test
     public void hasSignature() {
         MethodFilter filter = builder.hasSignature(int.class).build();
         assertTrue(filter instanceof SignatureMethodFilter);
@@ -86,8 +111,14 @@ public class MethodFilterBuilderTest {
 
     @Test
     public void hasReturnType() {
-        MethodFilter filter = builder.hasReturnType(Void.TYPE).build();
+        MethodFilter filter = builder.returnType(Void.TYPE).build();
         assertTrue(filter instanceof ReturnTypeMethodFilter);
+    }
+    
+    @Test
+    public void returnTypeExtends() {
+        MethodFilter filter = builder.returnTypeExtends(Void.TYPE).build();
+        assertTrue(filter instanceof ReturnTypeAssignableFromMethodFilter);
     }
 
     @Test
@@ -108,11 +139,7 @@ public class MethodFilterBuilderTest {
         assertTrue(filter instanceof AssignableFromMethodFilter);
     }
 
-    @Test
-    public void inheritedAnnotation() {
-        MethodFilter filter = builder.inheritedAnnotation(Retention.class).build();
-        assertTrue(filter instanceof InheritlyAnnotatedMethodFilter);
-    }
+   
 
     @Test
     public void parameterTypeFilter() {

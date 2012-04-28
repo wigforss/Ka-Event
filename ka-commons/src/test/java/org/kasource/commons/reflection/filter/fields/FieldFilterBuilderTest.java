@@ -1,14 +1,14 @@
 package org.kasource.commons.reflection.filter.fields;
 
+import static org.junit.Assert.assertTrue;
+
 import java.lang.annotation.Retention;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.commons.reflection.filter.classes.NameClassFilter;
-import org.springframework.beans.factory.config.ListFactoryBean;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.inject.annotation.TestedObject;
 
@@ -51,6 +51,12 @@ public class FieldFilterBuilderTest {
     public void annotated() {
         FieldFilter filter = builder.annotated(Retention.class).build();
         assertTrue(filter instanceof AnnotatedFieldFilter);
+    }
+    
+    @Test
+    public void metaAnnotated() {
+        FieldFilter filter = builder.metaAnnotated(Retention.class).build();
+        assertTrue(filter instanceof MetaAnnotatedFieldFilter);
     }
     
     @Test

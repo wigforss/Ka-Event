@@ -14,7 +14,9 @@ public class FieldUtils {
         Set<Field> fields = new HashSet<Field>();
         Field[] allFields = clazz.getDeclaredFields();
         for(Field field : allFields) {
-            fields.add(field);
+            if(filter.passFilter(field)) {
+                fields.add(field);
+            }
         }
         return fields;
     }

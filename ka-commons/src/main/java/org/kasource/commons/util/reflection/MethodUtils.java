@@ -16,13 +16,7 @@ public class MethodUtils {
     
     private MethodUtils() {}
     
-    /**
-     * Returns the number of methods declared by a class <i>clazz</i>.
-     */
-    public static int getDeclaredMethodCount(Class<?> clazz) {
-        return clazz.getDeclaredMethods().length;
-    }
-
+    
     /**
      * Returns the named method from class <i>clazz</i>.
      * 
@@ -99,7 +93,7 @@ public class MethodUtils {
      * 
      * @return true if return type is void
      **/
-    public static boolean hasMethodVoidReturnType(Method method) {
+    public static boolean hasMethodNoReturnType(Method method) {
         return method.getReturnType().equals(Void.TYPE);
     }
 
