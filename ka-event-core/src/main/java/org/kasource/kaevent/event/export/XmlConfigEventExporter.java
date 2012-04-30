@@ -14,10 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kasource.commons.reflection.filter.methods.MethodFilterBuilder;
-import org.kasource.commons.reflection.filter.methods.MethodFilterList;
-import org.kasource.commons.reflection.filter.methods.ReturnTypeMethodFilter;
-import org.kasource.commons.reflection.filter.methods.SignatureMethodFilter;
+import org.kasource.commons.reflection.MethodFilterBuilder;
 import org.kasource.commons.util.reflection.ClassUtils;
 import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.bean.BeanResolver;
@@ -82,7 +79,7 @@ public class XmlConfigEventExporter implements EventExporter {
 	    Class<? extends EventListener> interfaceClass = null;
 	    if(event.getListenerInterface() != null) {
 	        interfaceClass = 
-	            ClassUtils.getInterfaceClass(event.getListenerInterface(), EventListener.class);
+	            ClassUtils.getClass(event.getListenerInterface(), EventListener.class);
 	    }
 	    Class<? extends Annotation> annotationClass = null;
 	    if(event.getAnnotation() != null) {
@@ -125,7 +122,7 @@ public class XmlConfigEventExporter implements EventExporter {
                                   Class<? extends EventListener> listenerInterface) 
         throws InvalidEventConfigurationException {
         Set<Method> methods = 
-            MethodUtils.getDeclaredMethods(listenerInterface, new MethodFilterBuilder().hasReturnType(Void.TYPE).hasSignature(eventClass).build());
+            MethodUtils.getDeclaredMethods(listenerInterface, new MethodFilterBuilder().returnType(Void.TYPE).hasSignature(eventClass).build());
             
         if (methods.size() == 1) {
            return methods.iterator().next();

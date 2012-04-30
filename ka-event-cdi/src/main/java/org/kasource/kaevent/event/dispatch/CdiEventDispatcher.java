@@ -11,54 +11,55 @@ import javax.inject.Named;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.config.CdiKaEventConfigurer;
-import org.kasource.kaevent.event.ForwardedCdiEvent;
+import org.kasource.kaevent.event.filter.AlreadySeenEventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 @ApplicationScoped @Named("kaEvent.eventDispatcher")
 public class CdiEventDispatcher extends DefaultEventDispatcher {
 
-	@Inject
-	private CdiKaEventConfigurer configurer;
-	
-	@Inject
-	private ChannelFactory channelFactory;
-	
-	@Inject
-	private ChannelRegister channelRegister;
-	
-	@Inject
-	private SourceObjectListenerRegister sourceObjectListenerRegister;
-	
-	@Inject
-	private DispatcherQueueThread eventQueue;
-	
-	@Inject
-	private EventRouter eventRouter;
-	
-	@Inject
-	private EventRegister eventRegister;
-	
-	public CdiEventDispatcher() { 
-		
-	}
-	
-	
-	@PostConstruct
-	public void initialize() {
-	    setChannelFactory(channelFactory);
+    @Inject
+    private CdiKaEventConfigurer configurer;
+    
+    @Inject
+    private ChannelFactory channelFactory;
+    
+    @Inject
+    private ChannelRegister channelRegister;
+    
+    @Inject
+    private SourceObjectListenerRegister sourceObjectListenerRegister;
+    
+    @Inject
+    private DispatcherQueueThread eventQueue;
+    
+    @Inject
+    private EventRouter eventRouter;
+    
+    @Inject
+    private EventRegister eventRegister;
+    
+    public CdiEventDispatcher() { 
+        
+    }
+    
+    
+    @PostConstruct
+    public void initialize() {
+        setChannelFactory(channelFactory);
         setChannelRegister(channelRegister);
         setSourceObjectListenerRegister(sourceObjectListenerRegister);
         setEventQueue(eventQueue);
         setEventRouter(eventRouter);
-		configurer.configure();
-	}
-	
-	public void eventListener(@Observes EventObject event) {
-	    if(eventRegister.hasEventByClass(event.getClass())) {
-	        fire(new ForwardedCdiEvent(event));
-	    }
-	}
+        configurer.configure();
+        addBridgeFilter(new AlreadySeenEventFilter());
+    }
+    
+    public void eventListener(@Observes EventObject event) {
+        if(eventRegister.hasEventByClass(event.getClass())) {
+            bridgeEvent(event);
+        }
+    }
 
-	
+    
 }

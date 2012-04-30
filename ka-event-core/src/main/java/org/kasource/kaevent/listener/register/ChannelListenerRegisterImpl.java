@@ -90,7 +90,7 @@ public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister i
        EventConfig eventConfig = getEventRegister().getEventByClass(eventClass); 
        for (Map<Object, EventListenerRegistration> listenerMap : listenersByEvent.values()) {
            for (Object listener : listenerMap.keySet()) {
-               if (InterfaceUtils.implementsInterface(listener, eventConfig.getListener())) {
+               if (InterfaceUtils.implementsInterface(listener.getClass(), eventConfig.getListener())) {
                    addListener(listener, eventClass, channel, null);
                }
            }

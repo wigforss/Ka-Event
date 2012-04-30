@@ -1,6 +1,5 @@
 package org.kasource.kaevent.event.dispatch;
 
-import java.util.EventListener;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,8 +14,8 @@ import org.kasource.kaevent.config.KaEventConfigurer;
 import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.event.EventDispatcher;
-import org.kasource.kaevent.event.ForwardedEvent;
 import org.kasource.kaevent.event.config.EventConfig;
+import org.kasource.kaevent.event.filter.AlreadySeenEventFilter;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.filter.EventFilterExecutor;
 import org.kasource.kaevent.event.register.EventRegister;
@@ -85,6 +84,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     protected void initialize(String configLocation) {
     	KaEventInitializer.getInstance().addListener(this);
     	configurer.configure(this, configLocation);
+    	addBridgeFilter(new AlreadySeenEventFilter());
     }
     
     /**
@@ -95,6 +95,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     protected void initialize(KaEventConfig config) {
     	KaEventInitializer.getInstance().addListener(this);
     	configurer.configure(this, config);
+    	addBridgeFilter(new AlreadySeenEventFilter());
     }
     
     @Override
@@ -110,13 +111,8 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     
     @Override
     public void fire(EventObject event) {
-        EventConfig config = null;
-        if(!ForwardedEvent.class.isAssignableFrom(event.getClass())) {
-            config = eventRegister.getEventByClass(event.getClass());
-        } else {
-            config = eventRegister.getEventByClass(((ForwardedEvent) event).getSource().getClass());
-        }
-       
+        EventConfig config = eventRegister.getEventByClass(event.getClass());
+        
         if(config.getEventQueue() != null) {
             config.getEventQueue().enqueue(event);       
         } else {

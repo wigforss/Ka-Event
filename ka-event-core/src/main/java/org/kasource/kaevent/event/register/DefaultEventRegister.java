@@ -106,10 +106,10 @@ public class DefaultEventRegister implements EventRegister {
     @Override
     public void registerEvent(EventConfig event) {
         eventsByClass.put(event.getEventClass(), event);
-        if (event.getListener() != EventListener.class) {
+        if (event.getListener() != null && event.getListener() != EventListener.class) {
             eventsByInterface.put(event.getListener(), event);
         } 
-        if(event.getEventAnnotation() != Event.class) {
+        if(event.getEventAnnotation() != null && event.getEventAnnotation() != Event.class) {
             eventsByAnnotation.put(event.getEventAnnotation(), event);
         }
         eventsByName.put(event.getName(), event);

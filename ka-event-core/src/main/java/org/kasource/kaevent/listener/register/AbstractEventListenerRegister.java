@@ -15,8 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kasource.commons.reflection.ClassFilterBuilder;
+import org.kasource.commons.reflection.MethodFilterBuilder;
 import org.kasource.commons.util.reflection.AnnotationsUtils;
 import org.kasource.commons.util.reflection.InterfaceUtils;
+import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.annotations.listener.EventListenerFilter;
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.filter.EventFilter;
@@ -64,7 +67,7 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
      **/
     @SuppressWarnings("unchecked")
     private Set<Class<? extends EventListener>> getRegisteredInterfaces(EventListener listener) {
-        Set<Class<?>> interfaces = InterfaceUtils.getInterfacesExtending(listener, EventListener.class);
+        Set<Class<?>> interfaces = InterfaceUtils.getInterfaces(listener.getClass(), new ClassFilterBuilder().extendsType(EventListener.class).build());
         Set<Class<? extends EventListener>> registeredEvents = new HashSet<Class<? extends EventListener>>();
         for (Class<?> interfaceClass : interfaces) {
             if (eventRegister.hasEventByInterface((Class<? extends EventListener>) interfaceClass)) {
@@ -119,30 +122,8 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
         if (filters == null) {
             filters = new ArrayList<EventFilter<? extends EventObject>>();
         }
-        if (listener instanceof EventListener) {
-            // find filters by annotation
-            addEventFilterByAnnotation((EventListener) listener, filters);
-
-            // Add one lister registration per registered interface of the listener
-            Set<Class<? extends EventListener>> interfaces = getRegisteredInterfaces(((EventListener) listener));
-            if (!interfaces.isEmpty()) {
-                for (Class<? extends EventListener> interfaceClass : interfaces) {
-                    addListener(listener, eventRegister.getEventByInterface(interfaceClass).getEventClass(),
-                                sourceObject, filters);
-                    listenerAdded = true;
-                }
-            }
-        }
-        Set<Class<? extends Annotation>> registeredAnnotations = eventRegister.getRegisteredEventAnnotations();
-        Map<Class<? extends Annotation>, Method>  methodAnnotations = AnnotationsUtils.findAnnotatedMethods(listener.getClass(), registeredAnnotations);
-        for (Map.Entry<Class<? extends Annotation>, Method> annotation : methodAnnotations.entrySet()){
-            validateAnnotatedEventMethod(listener, annotation.getValue(), annotation.getKey(), eventRegister.getEventByAnnotation(annotation.getKey()).getEventClass());
-                addListener(listener, eventRegister.getEventByAnnotation(annotation.getKey())
-                            .getEventClass(), sourceObject, filters);
-                listenerAdded = true;
-            
-        }
-        
+        listenerAdded = registerEventListenerByInterface(listener, sourceObject, filters);
+        listenerAdded |= registerEventListenerByAnnotation(listener, sourceObject, filters);        
        
         if (!listenerAdded) {
             throw new IllegalStateException(listener
@@ -151,6 +132,70 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
 
     }
 
+    private boolean registerEventListenerByAnnotation(Object listener, Object sourceObject,
+                List<EventFilter<? extends EventObject>> filters) {
+        boolean listenerAdded = false;
+        Set<Class<? extends Annotation>> registeredAnnotations = eventRegister.getRegisteredEventAnnotations();
+        @SuppressWarnings("unchecked")
+        Class<? extends Annotation>[] annotationsArray = new Class[registeredAnnotations.size()];
+        registeredAnnotations.toArray(annotationsArray);
+        Map<Class<? extends Annotation>, Set<Method>>  methodAnnotations = AnnotationsUtils.findAnnotatedMethods(listener.getClass(), annotationsArray);
+        for (Map.Entry<Class<? extends Annotation>, Set<Method>> annotationEntry : methodAnnotations.entrySet()){
+            Set<Method> methods = annotationEntry.getValue();
+            Class<? extends Annotation> annotation = annotationEntry.getKey();
+            if(methods.size() > 1) {
+                throw new IllegalStateException("More than one method found annotated with " + annotation + " in class " + listener.getClass());
+            }            
+            addAnnotatedListenerMethod(listener, sourceObject, annotation, methods.iterator().next(), filters);
+            listenerAdded = true;
+        }
+        return listenerAdded;
+    }
+
+    private boolean registerEventListenerByInterface(Object listener, Object sourceObject,
+                List<EventFilter<? extends EventObject>> filters) {
+        boolean listenerAdded = false;
+        if (listener instanceof EventListener) {
+            // Add one lister registration per registered interface of the listener
+            Set<Class<? extends EventListener>> interfaces = getRegisteredInterfaces(((EventListener) listener));
+            if (!interfaces.isEmpty()) {
+                for (Class<? extends EventListener> interfaceClass : interfaces) {
+                    registerInterfaceListener(listener, sourceObject, filters, interfaceClass);
+                    listenerAdded = true;
+                }
+            }
+        }
+        return listenerAdded;
+    }
+
+    private void registerInterfaceListener(Object listener, Object sourceObject,
+                List<EventFilter<? extends EventObject>> filters, Class<? extends EventListener> interfaceClass) {
+        List<EventFilter<? extends EventObject>> regFilters = new ArrayList<EventFilter<? extends EventObject>>();
+        regFilters.addAll(filters);
+        Set<Method> methods = MethodUtils.getDeclaredMethods(interfaceClass, new MethodFilterBuilder().returnType(Void.TYPE).numberOfParameters(1).build());
+        // Only inspect method level @EventListerFilter on single method interfaces
+        if(methods.size() == 1) {
+            addEventFilterByAnnotation(listener, methods.iterator().next(), filters);
+        } else {
+            addEventFilterByAnnotation(listener, null, filters);
+            // If any method is annotated with @EventListenerFilter an
+            // exception could be thrown here.
+        }
+        addListener(listener, eventRegister.getEventByInterface(interfaceClass).getEventClass(),
+                    sourceObject, filters);
+    }
+
+    private void addAnnotatedListenerMethod(Object listener, Object sourceObject, Class<? extends Annotation> annotation, Method method, List<EventFilter<? extends EventObject>> filters){
+        List<EventFilter<? extends EventObject>> regFilters = new ArrayList<EventFilter<? extends EventObject>>();
+        regFilters.addAll(filters);
+        addEventFilterByAnnotation(listener, method, regFilters);
+        validateAnnotatedEventMethod(listener, method, annotation, eventRegister.getEventByAnnotation(annotation).getEventClass());
+        addListener(listener, eventRegister.getEventByAnnotation(annotation)
+                    .getEventClass(), sourceObject, regFilters);
+       
+    }
+    
+    
     /**
      * Validate that the method is valid for event invocation, that is has only parameter that
      * can be assigned from the eventClass. Throws exception of validation fails.
@@ -184,7 +229,7 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
     }
     
     /**
-     * Returns a list of EventFilters based on EventListenerFilterAnnotation.
+     * Returns a list of EventFilters based on EventListenerFilter Annotation.
      * 
      * @param listener
      *            Listener to inspect.
@@ -192,18 +237,25 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
      *            List of filters to add found filters to.
      **/
     @SuppressWarnings("unchecked")
-    private void addEventFilterByAnnotation(EventListener listener, List<EventFilter<? extends EventObject>> filters) {
-        EventListenerFilter filterAnnotation = listener.getClass().getAnnotation(EventListenerFilter.class);
-        if (filterAnnotation != null && filterAnnotation.value().length > 0) {
-            if (filters == null) {
-                filters = new ArrayList<EventFilter<? extends EventObject>>();
+    private void addEventFilterByAnnotation(Object listener, Method method, List<EventFilter<? extends EventObject>> filters) {
+        EventListenerFilter classfilter = listener.getClass().getAnnotation(EventListenerFilter.class);
+        EventListenerFilter methodFilter = null;
+        if(method != null) {
+            methodFilter = method.getAnnotation(EventListenerFilter.class);
+        }
+        // Method annotations overrides any class level annotations.
+        if(methodFilter != null) {
+            for (String beanName : methodFilter.value()) {
+                EventFilter<EventObject> filter = beanResolver.getBean(beanName, EventFilter.class);
+                filters.add(filter);
             }
-            for (String beanName : filterAnnotation.value()) {
-
+        } else {
+            for (String beanName : classfilter.value()) {
                 EventFilter<EventObject> filter = beanResolver.getBean(beanName, EventFilter.class);
                 filters.add(filter);
             }
         }
+        
 
     }
 

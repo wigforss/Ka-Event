@@ -111,10 +111,10 @@ public final class SpringEventDispatcher extends DefaultEventDispatcher implemen
 
     @Override
     public void onApplicationEvent(ApplicationEvent springEvent) {
-        bridgeEvent(springEvent);
-        /*if(getEventRegister().hasEventByClass(springEvent.getClass())) {
-            fire(new ForwardedSpringApplicationEvent(springEvent));
-        }*/
+        
+        if(getEventRegister().hasEventByClass(springEvent.getClass())) {
+            bridgeEvent(springEvent);
+        }
         
     }
 

@@ -4,11 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.EventObject;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.filter.EventFilterExecutor;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;

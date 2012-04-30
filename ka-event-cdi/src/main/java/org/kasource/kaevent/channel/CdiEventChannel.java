@@ -5,8 +5,6 @@ import java.util.EventObject;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.kasource.kaevent.event.ForwardedCdiEvent;
-import org.kasource.kaevent.event.ForwardedEvent;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 
@@ -49,10 +47,6 @@ public class CdiEventChannel extends ChannelAdapter implements FilterableChannel
     @Override
     public boolean registerFilter(EventFilter<? extends EventObject> filter) {
         return filterHandler.registerFilter(filter);
-    }
-    
-    public boolean acceptForwardedEvent(ForwardedEvent event) {
-        return !(event instanceof ForwardedCdiEvent);
     }
 
 

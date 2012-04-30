@@ -5,7 +5,7 @@
     	<version>7</version>
   	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.kasource</groupId>
+	<groupId>org.kasource.kaevent</groupId>
 	<artifactId>ka-event-base</artifactId>
 	<packaging>pom</packaging>
 	<name>Ka-Event Base Project</name>
@@ -47,14 +47,13 @@
 		<unitils.version>3.1</unitils.version>
 		<log4j.version>1.2.16</log4j.version>
 		<clover.version>2.6.3</clover.version>
+		<ka-commons.version>1.0-SNAPSHOT</ka-commons.version>
+		<ka-spring.version>1.0-SNAPSHOT</ka-spring.version>
 	</properties>
   	<modules>
-  			<module>ka-commons</module>
   			<module>ka-event-annotations</module>
 			<module>ka-event-core</module> 
 			<module>ka-event-aspects</module>
-			<module>ka-spring</module>
-			<module>ka-spring3</module>
 			<module>ka-event-spring</module>
 			<module>ka-event-spring3</module>
 			<module>ka-event-osgi</module>
@@ -126,6 +125,21 @@
 				<version>${junit.version}</version>
 				<scope>test</scope>
 			</dependency>	
+			<dependency>
+				<groupId>org.kasource.commons</groupId>
+				<artifactId>ka-commons</artifactId>
+				<version>${ka-commons.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.kasource.kaspring</groupId>
+				<artifactId>ka-spring-3</artifactId>
+				<version>${ka-spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.kasource.kaspring</groupId>
+				<artifactId>ka-spring-2.5</artifactId>
+				<version>${ka-spring.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>

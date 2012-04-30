@@ -2,8 +2,6 @@ package org.kasource.kaevent.channel;
 
 import java.util.EventObject;
 
-import org.kasource.kaevent.event.ForwardedApplicationEvent;
-import org.kasource.kaevent.event.ForwardedEvent;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.event.register.NoSuchEventException;
@@ -86,12 +84,9 @@ public class SpringEventChannel extends ChannelAdapter implements ApplicationEve
     }
 
     @Override
-    public boolean registerFilter(EventFilter<EventObject> filter) {
+    public boolean registerFilter(EventFilter<? extends EventObject> filter) {
         return filterHandler.registerFilter(filter);
     }
     
-    public boolean acceptForwardedEvent(ForwardedEvent event) {
-        return !(event instanceof ForwardedApplicationEvent);
-    }
 
 }

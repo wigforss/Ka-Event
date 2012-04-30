@@ -55,8 +55,8 @@ public class DefaultEventRegisterTest {
         EasyMock.expect(eventBuilderFactory.getBuilder(ChangeEvent.class)).andReturn(builder);
         EasyMock.expect(builder.build()).andReturn(eventConfig);
         EasyMock.expect((Class) eventConfig.getEventClass()).andReturn(ChangeEvent.class);
-        EasyMock.expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class).times(2);
-        EasyMock.expect((Class) eventConfig.getEventAnnotation()).andReturn(Event.class);
+        EasyMock.expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class).times(3);
+        EasyMock.expect((Class) eventConfig.getEventAnnotation()).andReturn(Event.class).times(2);
         EasyMock.expect(eventConfig.getName()).andReturn("Test event");
         EasyMockUnitils.replay();
         register.registerEvent(ChangeEvent.class);

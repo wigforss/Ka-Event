@@ -34,7 +34,7 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 	private Map<Object, List<Object>> listeners;
 	
 
-	private Map<Object, List<EventFilter<EventObject>>> filterMap;
+	private Map<Object, List<EventFilter<? extends EventObject>>> filterMap;
 	 
 	/**
 	 * Constructor.
@@ -73,7 +73,7 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
     	if (listeners != null) {
     		for (Map.Entry<Object, List<Object>>  listenerEntry : listeners.entrySet()) {
     			for (Object listener : listenerEntry.getValue()) {
-    				List<EventFilter<EventObject>> filters = getFilter(listener);
+    				List<EventFilter<? extends EventObject>> filters = getFilter(listener);
         			if (filters != null) {
         				sourceObjectListenerRegister
         					.registerListener(listener, 
@@ -103,7 +103,7 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 	 * 
 	 * @return Filters for listener of  null if no filters found.
 	 **/
-	private List<EventFilter<EventObject>> getFilter(Object listener) {
+	private List<EventFilter<? extends EventObject>> getFilter(Object listener) {
 		if (filterMap != null) {
 			return filterMap.get(listener);
 		}
@@ -128,7 +128,7 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 	 * 
 	 * @param filterMap Map of filters.
 	 **/
-	public void setFilterMap(Map<Object, List<EventFilter<EventObject>>> filterMap) {
+	public void setFilterMap(Map<Object, List<EventFilter<? extends EventObject>>> filterMap) {
 		this.filterMap = filterMap;
 	}
 	

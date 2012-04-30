@@ -15,5 +15,10 @@ public class PassFilter implements EventFilter<EventObject> {
        System.out.println("Apply filter");
        return true;
     }
+    
+    @Override
+    public boolean isApplicable(Class<? extends EventObject> eventClass) {
+        return true;
+    }
 
 }

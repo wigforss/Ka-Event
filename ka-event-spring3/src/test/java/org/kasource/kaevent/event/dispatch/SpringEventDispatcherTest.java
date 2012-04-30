@@ -11,12 +11,10 @@ import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.easymock.Capture;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
-import org.kasource.kaevent.event.ForwardedSpringApplicationEvent;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.kasource.spring.transaction.TransactionResult;
@@ -119,12 +117,12 @@ public class SpringEventDispatcherTest {
     
     @Test
     public void onApplicationEventTest() {
-        Capture<ForwardedSpringApplicationEvent> forwardedEvent = new Capture<ForwardedSpringApplicationEvent>();
+      
         expect(eventRegister.hasEventByClass(springEvent.getClass())).andReturn(true);
-        eventQueue.enqueue(capture(forwardedEvent));
+        eventQueue.enqueue(springEvent);
         expectLastCall();
         EasyMockUnitils.replay();
         eventDispatcher.onApplicationEvent(springEvent);
-        assertEquals(springEvent, forwardedEvent.getValue().getSource());
+       
     }
 }

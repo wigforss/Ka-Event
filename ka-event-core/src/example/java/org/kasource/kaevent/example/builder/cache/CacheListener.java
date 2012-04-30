@@ -1,8 +1,8 @@
 package org.kasource.kaevent.example.builder.cache;
 
-import org.kasource.kaevent.example.annotation.cache.event.CacheEvent;
-import org.kasource.kaevent.example.annotation.cache.event.OnEviction;
-import org.kasource.kaevent.example.annotation.cache.event.OnPut;
+import org.kasource.kaevent.example.builder.cache.event.CacheEvent;
+import org.kasource.kaevent.example.builder.cache.event.OnEviction;
+import org.kasource.kaevent.example.builder.cache.event.OnPut;
 
 public class CacheListener {
 

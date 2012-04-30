@@ -2,18 +2,13 @@ package org.kasource.kaevent.event.method;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.EventObject;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kasource.commons.reflection.filter.methods.AnnotatedMethodFilter;
-import org.kasource.commons.reflection.filter.methods.AssignableFromMethodFilter;
+import org.kasource.commons.reflection.MethodFilterBuilder;
 import org.kasource.commons.reflection.filter.methods.MethodFilter;
-import org.kasource.commons.reflection.filter.methods.MethodFilterList;
-import org.kasource.commons.reflection.filter.methods.SignatureMethodFilter;
 import org.kasource.commons.util.reflection.MethodUtils;
 
 /**
@@ -72,8 +67,8 @@ public class AnnotatedMethodMethodResolver implements MethodResolver<EventObject
      * @return The method on target that has a registered annotation or null if no such method could be found.
      **/
     private Method resolveAnnotatedMethod(EventObject event, Object target) {
-        MethodFilter filter = new MethodFilterList(new AnnotatedMethodFilter(targetAnnotation), 
-                              new AssignableFromMethodFilter(event.getClass()));
+       
+        MethodFilter filter = new MethodFilterBuilder().annotated(targetAnnotation).parametersSuperType(event.getClass()).build();
         Set<Method> methods = MethodUtils.getMethods(target.getClass(), filter);
        
         if(methods.isEmpty()) {

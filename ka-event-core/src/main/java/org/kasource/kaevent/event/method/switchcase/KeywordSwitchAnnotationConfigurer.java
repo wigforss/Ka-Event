@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kasource.commons.reflection.filter.methods.AnnotatedMethodFilter;
-import org.kasource.commons.reflection.filter.methods.InheritlyAnnotatedMethodFilter;
-import org.kasource.commons.reflection.filter.methods.MethodFilterBuilder;
+import org.kasource.commons.reflection.filter.methods.MetaAnnotatedMethodFilter;
+import org.kasource.commons.reflection.MethodFilterBuilder;
 import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.annotations.event.EventKeyword;
 import org.kasource.kaevent.annotations.event.methodresolving.CustomCase;
@@ -116,7 +116,7 @@ public class KeywordSwitchAnnotationConfigurer {
     private void setCustomKeywordMethods() throws IllegalArgumentException {
         Map<String, Method> methodMap = new HashMap<String, Method>();
         Set<Method> customCaseMethods = 
-            MethodUtils.getMethods(listenerClass, new InheritlyAnnotatedMethodFilter(CustomCase.class));
+            MethodUtils.getMethods(listenerClass, new MethodFilterBuilder().metaAnnotated(CustomCase.class).build());
         
         for (Method method : customCaseMethods) {
             MethodUtils.verifyMethodSignature(method, Void.TYPE, eventClass);

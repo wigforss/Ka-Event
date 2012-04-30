@@ -53,7 +53,7 @@ public class SpringJmsChannel extends ChannelAdapter implements FilterableChanne
     }
 
     @Override
-    public boolean registerFilter(EventFilter<EventObject> filter) {
+    public boolean registerFilter(EventFilter<? extends EventObject> filter) {
         return filterHandler.registerFilter(filter);
     }
 

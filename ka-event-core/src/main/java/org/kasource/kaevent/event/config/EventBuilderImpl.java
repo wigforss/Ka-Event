@@ -225,7 +225,7 @@ public class EventBuilderImpl implements EventBuilder {
      **/
     private void setDefaultMethod(EventConfigImpl eventConfig, Class<? extends EventObject> event,
                 Class<? extends EventListener> listener) {
-        if (MethodUtils.getDeclaredMethodCount(listener) == 1) {
+        if (listener.getDeclaredMethods().length == 1) {
             Set<Method> methodSet = MethodUtils.getDeclaredMethods(listener, new MethodFilterList(new ReturnTypeMethodFilter(Void.TYPE), new SignatureMethodFilter(event)));
             eventConfig.setDefaultMethod(methodSet.iterator().next());
         } else {

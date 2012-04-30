@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.channel.ChannelRegister;
-import org.kasource.kaevent.event.ForwardedEvent;
 import org.kasource.kaevent.listener.register.EventListenerRegistration;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
@@ -54,20 +53,13 @@ public class EventRouterImpl implements EventRouter {
 	 * @param throwException	true to invoke the method in a blocked fashion, else false.
 	 **/
     @Override
-    public void routeEvent(EventObject eventObject, boolean throwException) {
-        boolean isForwarded = false;
-        EventObject event = eventObject;
-        if(event instanceof ForwardedEvent) {
-            event = ((ForwardedEvent) eventObject).getSource();
-            isForwarded = true;
-        }
+    public void routeEvent(EventObject event, boolean throwException) {    
         Set<Channel> channels = channelRegister.getChannelsByEvent(event.getClass());
         if (channels != null) {
             for (Channel channel : channels) {
-                if(!isForwarded || 
-                            (isForwarded && channel.acceptForwardedEvent((ForwardedEvent) eventObject))) {
+               
                     channel.fireEvent(event, throwException);
-                }
+                
             }
         }
         Collection<EventListenerRegistration> listeners = sourceObjectListenerRegister.getListenersByEvent(event);

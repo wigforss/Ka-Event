@@ -2,6 +2,7 @@ package org.kasource.kaevent.example.guice.custom;
 
 import java.lang.reflect.Method;
 
+import org.kasource.commons.reflection.MethodFilterBuilder;
 import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.event.method.MethodResolver;
 import org.kasource.kaevent.example.guice.custom.event.TemperatureChangeEvent;
@@ -23,16 +24,16 @@ public class TempratureMethodResolver implements MethodResolver<TemperatureChang
 
     @Override
     public Method resolveMethod(TemperatureChangeEvent event, Object target) {
-    	System.out.println("Resolve method");
         if (event.getCurrentTemperature() > optimalTemp) {
-            return MethodUtils.getDeclaredMethod(TemperatureChangeListener.class, "highTemperature",
-                    TemperatureChangeEvent.class);
+            return MethodUtils.getDeclaredMethods(TemperatureChangeListener.class, 
+                        new MethodFilterBuilder().name("highTemperature").hasSignature(TemperatureChangeEvent.class).build()).iterator().next();
+                   
         } else if (event.getCurrentTemperature() > 10) {
-            return MethodUtils.getDeclaredMethod(TemperatureChangeListener.class, "mediumTemperature",
-                    TemperatureChangeEvent.class);
+            return MethodUtils.getDeclaredMethods(TemperatureChangeListener.class, 
+                        new MethodFilterBuilder().name("mediumTemperature").hasSignature(TemperatureChangeEvent.class).build()).iterator().next();
         } else {
-            return MethodUtils.getDeclaredMethod(TemperatureChangeListener.class, "lowTemperature",
-                    TemperatureChangeEvent.class);
+            return MethodUtils.getDeclaredMethods(TemperatureChangeListener.class, 
+                        new MethodFilterBuilder().name("lowTemperature").hasSignature(TemperatureChangeEvent.class).build()).iterator().next();
         }
     }
 

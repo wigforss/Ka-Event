@@ -32,7 +32,7 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
     
     private List<EventListener> listeners;
     
-    private Map<EventListener, List<EventFilter<EventObject>>> filterMap;
+    private Map<EventListener, List<EventFilter<? extends EventObject>>> filterMap;
     
     private Channel channelRef;
 
@@ -63,7 +63,7 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
 	 * @param channel  Channel to register at.
 	 **/
 	private void registerListener(EventListener listener, Channel channel) {
-	    List<EventFilter<EventObject>> filters = getFilter(listener);
+	    List<EventFilter<? extends EventObject>> filters = getFilter(listener);
         if (filters != null) {
             ((ListenerChannel) channel).registerListener(listener, filters);
         } else {
@@ -78,7 +78,7 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
 	 * 
 	 * @return List of filter for listener.
 	 **/
-	private List<EventFilter<EventObject>> getFilter(Object listener) {
+	private List<EventFilter<? extends EventObject>> getFilter(Object listener) {
 		if (filterMap != null) {
 			return filterMap.get(listener);
 		}
@@ -200,7 +200,7 @@ public class ChannelFactoryBean implements FactoryBean, ApplicationContextAware 
 	 * 
 	 * @param filterMap Map of all listener filters.
 	 **/
-	public void setFilterMap(Map<EventListener, List<EventFilter<EventObject>>> filterMap) {
+	public void setFilterMap(Map<EventListener, List<EventFilter<? extends EventObject>>> filterMap) {
 		this.filterMap = filterMap;
 	}
 

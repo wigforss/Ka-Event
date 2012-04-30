@@ -2,16 +2,13 @@ package org.kasource.kaevent.channel;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
-import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kasource.kaevent.event.ForwardedApplicationEvent;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.ContextStoppedEvent;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
@@ -57,11 +54,5 @@ public class SpringEventChannelTest {
     }
     
     
-    
-    @Test
-    public void acceptForwardedEventFalse() {
-        ForwardedApplicationEvent event = new ForwardedApplicationEvent(new ContextStoppedEvent(applicationContext)); 
-        assertFalse(channel.acceptForwardedEvent(event)); 
-       
-    }
+ 
 }
