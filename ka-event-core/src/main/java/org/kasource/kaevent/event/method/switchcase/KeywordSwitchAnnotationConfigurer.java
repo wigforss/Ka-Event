@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.kasource.commons.reflection.filter.methods.AnnotatedMethodFilter;
-import org.kasource.commons.reflection.filter.methods.MetaAnnotatedMethodFilter;
 import org.kasource.commons.reflection.MethodFilterBuilder;
 import org.kasource.commons.util.reflection.MethodUtils;
 import org.kasource.kaevent.annotations.event.EventKeyword;

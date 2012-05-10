@@ -9,7 +9,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context-3.0.xsd
 http://kasource.org/schema/kaevent-spring
-spring/schema/kaevent-spring.xsd"
+http://kasource.org/schema/kaevent-spring/kaevent-spring.xsd"
 >
 
     <context:component-scan base-package="org.kasource.kaevent.example.spring.annotations.simple"/>

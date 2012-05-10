@@ -51,38 +51,68 @@
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
-			<xsd:attribute name="queueBean" type="xsd:boolean" default="false"
-				use="optional">
-				<xsd:annotation>
-					<xsd:documentation>
-						Use the declared DispatcherQueueThread bean instead of the default, will override
-						the queueClass and concurrentQueue attributes.
-					</xsd:documentation>
-				</xsd:annotation>
-				</xsd:attribute>
-			<xsd:attribute name="queueClass" type="javaClass"
-				use="optional">
-				<xsd:annotation>
-					<xsd:documentation>
-						Class that implements
-						org.kasource.kaevent.event.dispatch.DispatcherQueueThread which
-						will be used instead of the standard thread pool executor implementation. 
-						Will not have any effect if a queueBean is set.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-	
-				<xsd:attribute name="concurrentQueue" type="xsd:boolean" default="true"
-				use="optional">
-				<xsd:annotation>
-					<xsd:documentation>
-						Set the concurrency mode of the event dispatcher queue. Will not have any effect if
-						queueBean is set. 
-					</xsd:documentation>
-				</xsd:annotation>
-				</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
+	
+	<xsd:element name="eventQueue">
+		<xsd:annotation>
+			<xsd:documentation>
+				Declares an event queue
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		<xsd:attribute name="id" type="xsd:ID" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					A unique name of the event queue so it can be
+					referenced.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="class" type="javaClass" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					Use to set a event queue implementation class, if not set the standard
+					Event Queue Implementation will be used. This class must implement the 
+					org.kasource.kaevent.event.dispatch.DispatcherQueueThread interface.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="ref" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					Reference to a event queue bean to use. The bean referenced must implement
+					the org.kasource.kaevent.event.dispatch.DispatcherQueueThread  interface.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="maxThreads" type="xsd:short" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					The maximum number of thread working with event
+					dispatching.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="coreThreads" type="xsd:short" use="optional">
+		<xsd:annotation>
+				<xsd:documentation>
+					The number of core threads to start should not be
+					set to more than maximumPoolSize.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="keepAliveTime" type="xsd:integer" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					Keep alive time in ms, before idle threads are
+					killed.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
 	
 				<xsd:element name="channel">
 					<xsd:annotation>

@@ -14,4 +14,9 @@ public class BlockAllEventFilter extends AbstractControllableEventFilter<EventOb
        return false;
     }
 
+    @Override
+    public Class<EventObject> handlesEvent() {
+        return EventObject.class;
+    }
+
 }

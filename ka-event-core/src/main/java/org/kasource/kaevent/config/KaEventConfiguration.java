@@ -1,7 +1,5 @@
 package org.kasource.kaevent.config;
 
-import java.util.Map;
-
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;

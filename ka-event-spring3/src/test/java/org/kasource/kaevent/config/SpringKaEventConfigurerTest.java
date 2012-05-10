@@ -15,8 +15,11 @@ import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.event.config.EventBuilder;
 import org.kasource.kaevent.event.config.EventBuilderFactory;
 import org.kasource.kaevent.event.config.EventConfig;
+import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
+import org.kasource.kaevent.event.dispatch.EventQueueRegister;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
+import org.kasource.kaevent.spring.xml.KaEventSpringBean;
 import org.springframework.context.ApplicationContext;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
@@ -64,11 +67,16 @@ public class SpringKaEventConfigurerTest {
     @Mock
     private BeanResolver beanResolver;
     
+    @Mock
+    private EventQueueRegister eventQueueRegister;
+    
     @TestedObject
     private SpringKaEventConfigurer configurer = new SpringKaEventConfigurer(configuration);
     
     @Test
     public void minimalConfigurationTest() {
+      
+        expect(applicationContext.getBeansOfType(DispatcherQueueThread.class)).andReturn(Collections.EMPTY_MAP);
         expect(configuration.getEventBuilderFactory()).andReturn(eventBuilderFactory);
         expect(configuration.getEventRegister()).andReturn(eventRegister);
         expect(applicationContext.getBeansOfType(EventConfig.class)).andReturn(null);

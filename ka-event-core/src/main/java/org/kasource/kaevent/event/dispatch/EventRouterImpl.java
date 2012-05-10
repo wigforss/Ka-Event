@@ -27,7 +27,12 @@ public class EventRouterImpl implements EventRouter {
     
     private EventMethodInvoker invoker;
     
+    private int numberOfEventsInHistory = 100;
+    
+    private EventMap eventsFired = new EventMap(numberOfEventsInHistory);
    
+    private boolean loopProtection = true;
+    
    /**
     * Constructor.
     *  
@@ -46,14 +51,21 @@ public class EventRouterImpl implements EventRouter {
     /**
 	 * Route the event to the correct destination.
 	 * 
-	 * Forwarded events (of class ForwardedEvent) will only be routed
-	 * to a channel if the channel accepts forwarded events.
+	 * If loop protection is enabled only events not seen before
+	 * in history will be fired.
 	 * 
 	 * @param event		Event to route.
 	 * @param throwException	true to invoke the method in a blocked fashion, else false.
 	 **/
     @Override
-    public void routeEvent(EventObject event, boolean throwException) {    
+    public void routeEvent(EventObject event, boolean throwException) {   
+        if(loopProtection) {
+            if(eventsFired.containsKey(event)) {
+                return;
+            } else {
+                eventsFired.put(event, null);
+            }
+        }
         Set<Channel> channels = channelRegister.getChannelsByEvent(event.getClass());
         if (channels != null) {
             for (Channel channel : channels) {
@@ -65,5 +77,19 @@ public class EventRouterImpl implements EventRouter {
         Collection<EventListenerRegistration> listeners = sourceObjectListenerRegister.getListenersByEvent(event);
         
         invoker.invokeEventMethod(event, listeners, throwException);
+    }
+
+    /**
+     * @return the loopProtection
+     */
+    public boolean isLoopProtection() {
+        return loopProtection;
+    }
+
+    /**
+     * @param loopProtection the loopProtection to set
+     */
+    public void setLoopProtection(boolean loopProtection) {
+        this.loopProtection = loopProtection;
     }
 }

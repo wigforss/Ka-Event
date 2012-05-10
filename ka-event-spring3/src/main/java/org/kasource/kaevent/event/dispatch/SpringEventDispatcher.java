@@ -6,8 +6,6 @@ import java.util.Queue;
 
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
-import org.kasource.kaevent.event.filter.AlreadySeenEventFilter;
-import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.kasource.spring.transaction.TransactionListener;
@@ -33,8 +31,7 @@ public final class SpringEventDispatcher extends DefaultEventDispatcher implemen
 
 	private TransactionSupport txSupport = new TransactionSupportImpl();
     
-	private EventFilter<? extends EventObject> bridgeFilter = new AlreadySeenEventFilter();
-    
+   
     /**
      * Used when configured in XML.
      * 
@@ -44,7 +41,7 @@ public final class SpringEventDispatcher extends DefaultEventDispatcher implemen
      * @param eventQueue    Event Queue.
      * @param eventRouter   Event Router.
      */
-     SpringEventDispatcher(ChannelRegister channelRegister, 
+     public SpringEventDispatcher(ChannelRegister channelRegister, 
     							  ChannelFactory channelFactory,
     							  SourceObjectListenerRegister sourceObjectListenerRegister, 
     							  DispatcherQueueThread eventQueue,
@@ -56,7 +53,6 @@ public final class SpringEventDispatcher extends DefaultEventDispatcher implemen
         setEventQueue(eventQueue);
         setEventRouter(eventRouter);
         setEventRegister(eventRegister);
-        addBridgeFilter(bridgeFilter);
        
     }
 

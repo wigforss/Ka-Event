@@ -97,6 +97,7 @@ public class DefaultEventDispatcherTest {
     @Test
     public void fireBlocked() {
         ChangeEvent event = new ChangeEvent("test");
+        expect(eventRegister.hasEventByClass(event.getClass())).andReturn(true);
         eventRouter.routeEvent(event, true);
         expectLastCall();
         EasyMockUnitils.replay();
@@ -149,6 +150,7 @@ public class DefaultEventDispatcherTest {
     
     @Test
     public void bridgeEventPassTest() {
+        expect(eventRegister.hasEventByClass(event.getClass())).andReturn(true);
         expect(filterExecutor.passFilters(bridgeFilters, event)).andReturn(true);
         expect(eventRegister.getEventByClass(event.getClass())).andReturn(eventConfig);
         expect(eventConfig.getEventQueue()).andReturn(null);
@@ -160,6 +162,7 @@ public class DefaultEventDispatcherTest {
     
     @Test
     public void bridgeEventNotPassTest() {
+        expect(eventRegister.hasEventByClass(event.getClass())).andReturn(true);
         expect(filterExecutor.passFilters(bridgeFilters, event)).andReturn(false);
         EasyMockUnitils.replay();
         dispatcher.bridgeEvent(event);

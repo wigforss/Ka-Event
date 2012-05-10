@@ -136,10 +136,8 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
                 List<EventFilter<? extends EventObject>> filters) {
         boolean listenerAdded = false;
         Set<Class<? extends Annotation>> registeredAnnotations = eventRegister.getRegisteredEventAnnotations();
-        @SuppressWarnings("unchecked")
-        Class<? extends Annotation>[] annotationsArray = new Class[registeredAnnotations.size()];
-        registeredAnnotations.toArray(annotationsArray);
-        Map<Class<? extends Annotation>, Set<Method>>  methodAnnotations = AnnotationsUtils.findAnnotatedMethods(listener.getClass(), annotationsArray);
+        
+        Map<Class<? extends Annotation>, Set<Method>>  methodAnnotations = AnnotationsUtils.findAnnotatedMethods(listener.getClass(), registeredAnnotations);
         for (Map.Entry<Class<? extends Annotation>, Set<Method>> annotationEntry : methodAnnotations.entrySet()){
             Set<Method> methods = annotationEntry.getValue();
             Class<? extends Annotation> annotation = annotationEntry.getKey();
@@ -249,7 +247,7 @@ public abstract class AbstractEventListenerRegister implements EventListenerRegi
                 EventFilter<EventObject> filter = beanResolver.getBean(beanName, EventFilter.class);
                 filters.add(filter);
             }
-        } else {
+        } else if (classfilter != null){
             for (String beanName : classfilter.value()) {
                 EventFilter<EventObject> filter = beanResolver.getBean(beanName, EventFilter.class);
                 filters.add(filter);

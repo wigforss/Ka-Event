@@ -4,17 +4,21 @@ import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.eq;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.util.EventObject;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
+import org.kasource.kaevent.event.config.EventConfig;
+import org.kasource.kaevent.event.filter.EventFilterExecutor;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 import org.kasource.spring.transaction.TransactionResult;
@@ -60,6 +64,10 @@ public class SpringEventDispatcherTest {
     
     @InjectIntoByType
     @Mock
+    private EventFilterExecutor filterExecutor;
+    
+    @InjectIntoByType
+    @Mock
     private EventRouter eventRouter;
     
     @Mock
@@ -70,6 +78,9 @@ public class SpringEventDispatcherTest {
     
     @Mock
     private ApplicationEvent springEvent;
+    
+    @Mock
+    private EventConfig eventConfig;
     
     @TestedObject
     private SpringEventDispatcher eventDispatcher = new SpringEventDispatcher(channelRegister, 
@@ -119,6 +130,9 @@ public class SpringEventDispatcherTest {
     public void onApplicationEventTest() {
       
         expect(eventRegister.hasEventByClass(springEvent.getClass())).andReturn(true);
+        expect(filterExecutor.passFilters(isA(List.class), eq(springEvent))).andReturn(true);
+        expect(eventRegister.getEventByClass(springEvent.getClass())).andReturn(eventConfig);
+        expect(eventConfig.getEventQueue()).andReturn(null);
         eventQueue.enqueue(springEvent);
         expectLastCall();
         EasyMockUnitils.replay();

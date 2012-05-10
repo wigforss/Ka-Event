@@ -43,7 +43,7 @@ public class Thermometer implements Runnable {
 				currentTemperature += 1.0d;
 			}
 			System.out.println("Thermometer  temp is now: " + currentTemperature);
-			eventDispatcher.fireBlocked(new TemperatureChangedEvent(this, currentTemperature));
+			eventDispatcher.fire(new TemperatureChangedEvent(this, currentTemperature));
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {

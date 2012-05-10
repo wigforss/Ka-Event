@@ -23,5 +23,5 @@ public interface FilterableChannel extends Channel {
      * @return Returns true if filter added else false if no 
      * applicable event is registered at the channel.
      **/
-    public boolean registerFilter(EventFilter<? extends EventObject> filter);
+    public void registerFilter(EventFilter<? extends EventObject> filter);
 }

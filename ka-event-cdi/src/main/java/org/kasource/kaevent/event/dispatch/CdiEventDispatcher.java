@@ -11,7 +11,6 @@ import javax.inject.Named;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.config.CdiKaEventConfigurer;
-import org.kasource.kaevent.event.filter.AlreadySeenEventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
@@ -51,14 +50,12 @@ public class CdiEventDispatcher extends DefaultEventDispatcher {
         setSourceObjectListenerRegister(sourceObjectListenerRegister);
         setEventQueue(eventQueue);
         setEventRouter(eventRouter);
+        setEventRegister(eventRegister);
         configurer.configure();
-        addBridgeFilter(new AlreadySeenEventFilter());
     }
     
     public void eventListener(@Observes EventObject event) {
-        if(eventRegister.hasEventByClass(event.getClass())) {
-            bridgeEvent(event);
-        }
+        bridgeEvent(event);
     }
 
     

@@ -20,7 +20,8 @@ import org.kasource.kaevent.listener.register.SourceObjectListenerRegisterImpl;
  * @author rikardwi
  **/
 public enum KaEventSpringBean {
-
+    
+    
 	BEAN_RESOLVER(SpringBeanResolver.class, "kaEvent.beanResolver",
 			      "",
 			      new String[]{},
@@ -87,9 +88,9 @@ public enum KaEventSpringBean {
 	QUEUE_BEAN(ThreadPoolQueueExecutor.class,
 			"kaEvent.eventQueue", 
 			"",
-			new String[]{"kaEvent.eventRouter"},
 			new String[]{},
-			new String[]{}),
+			new String[]{"eventRouter"},
+			new String[]{"kaEvent.eventRouter"}),
 	EVENT_DISPATCHER(SpringEventDispatcher.class,
 			"kaEvent.eventDispatcher", 
 			"",
@@ -128,6 +129,7 @@ public enum KaEventSpringBean {
 						 "kaEvent.eventQueue", 
 						 "kaEvent.eventQueueRegister"});
 	
+	static final String CONFIGURER_ID = "kaEvent.configurer";
 	
 	private String id;
 	private Class<?> beanClass;

@@ -1,12 +1,14 @@
 package org.kasource.kaevent.event.filter;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.EventObject;
+
 import javax.swing.event.ChangeEvent;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kasource.kaevent.event.BaseEvent;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.inject.annotation.TestedObject;
 
@@ -31,7 +33,7 @@ public class BlockAllEventFilterTest {
     }
     
     @Test
-    public void applicableTest() {
-        assertTrue(filter.isApplicable(ChangeEvent.class));
+    public void handlesEventTest() {
+        assertTrue(filter.handlesEvent().equals(EventObject.class));
     }
 }

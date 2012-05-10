@@ -18,7 +18,6 @@ import org.kasource.kaevent.channel.ChannelImpl;
 import org.kasource.kaevent.config.KaEventConfig.Channels;
 import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
-import org.kasource.kaevent.event.method.MethodResolver;
 
 /**
  * Builds the XML Configuration programmatically.

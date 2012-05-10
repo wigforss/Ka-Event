@@ -39,7 +39,7 @@ public class ChannelBeanDefinitionParser  extends AbstractSingleBeanDefinitionPa
          bean.addDependsOn(KaEventSpringBean.CHANNEL_REGISTER.getId());
          bean.addDependsOn(KaEventSpringBean.CHANNEL_FACTORY.getId());
          bean.addDependsOn(KaEventSpringBean.EVENT_REGISTER.getId());
-         element.setAttribute("lazy-init", "false");
+         bean.setLazyInit(false);
          List<Element> handles = DomUtils.getChildElementsByTagName(element, "handle");
          List<String> events = getEventsHandled(handles);
          if (!events.isEmpty()) {

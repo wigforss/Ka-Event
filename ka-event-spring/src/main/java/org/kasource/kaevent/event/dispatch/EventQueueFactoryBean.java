@@ -6,7 +6,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class EventQueueFactoryBean implements FactoryBean<DispatcherQueueThread>, ApplicationContextAware {
+public class EventQueueFactoryBean implements FactoryBean, ApplicationContextAware {
 
     private String name;
 

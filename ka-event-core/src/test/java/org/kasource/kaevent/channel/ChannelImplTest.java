@@ -72,7 +72,7 @@ public class ChannelImplTest {
     @Test
     public void registerEventTest() {
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig);
-        expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class);
+        expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class).times(2);
         channelRegister.registerEventHandler(channel, ChangeEvent.class);
         expectLastCall();
         EasyMockUnitils.replay();
@@ -85,7 +85,7 @@ public class ChannelImplTest {
     @Test
     public void registerEventTwiceTest() {
         expect(eventRegister.getEventByClass(ChangeEvent.class)).andReturn(eventConfig).times(2);
-        expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class);
+        expect((Class) eventConfig.getListener()).andReturn(ChangeListener.class).times(2);
         channelRegister.registerEventHandler(channel, ChangeEvent.class);
         expectLastCall();
         EasyMockUnitils.replay();

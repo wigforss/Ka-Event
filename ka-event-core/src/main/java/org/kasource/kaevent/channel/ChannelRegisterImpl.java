@@ -2,10 +2,10 @@ package org.kasource.kaevent.channel;
 
 import java.util.Collection;
 import java.util.EventObject;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Default implementation of ChannelRegister.
@@ -14,9 +14,9 @@ import java.util.Set;
  * @version $Id$
  **/
 public class ChannelRegisterImpl implements ChannelRegister {
-    private Map<String, Channel> channels = new HashMap<String, Channel>();
+    private Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
     private Map<Class<? extends EventObject>, Set<Channel>> channelsByEvent = 
-        new HashMap<Class<? extends EventObject>, Set<Channel>>();
+        new ConcurrentHashMap<Class<? extends EventObject>, Set<Channel>>();
  
 
     /**

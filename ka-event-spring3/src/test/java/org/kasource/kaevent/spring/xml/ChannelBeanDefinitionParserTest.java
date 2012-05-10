@@ -38,7 +38,8 @@ public class ChannelBeanDefinitionParserTest {
         expect(bean.addDependsOn(KaEventSpringBean.CHANNEL_REGISTER.getId())).andReturn(bean);
         expect(bean.addDependsOn(KaEventSpringBean.CHANNEL_FACTORY.getId())).andReturn(bean);
         expect(bean.addDependsOn(KaEventSpringBean.EVENT_REGISTER.getId())).andReturn(bean);
-        element.setAttribute("lazy-init", "false");
+        expect(bean.setLazyInit(false)).andReturn(bean);
+        
         expect(element.getChildNodes()).andReturn(nodeList);
         expect(nodeList.getLength()).andReturn(0);
         expectLastCall();

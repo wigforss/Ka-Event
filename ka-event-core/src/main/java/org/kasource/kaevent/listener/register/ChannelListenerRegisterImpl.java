@@ -3,11 +3,11 @@ package org.kasource.kaevent.listener.register;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kasource.commons.util.reflection.InterfaceUtils;
 import org.kasource.kaevent.bean.BeanResolver;
@@ -27,7 +27,7 @@ import org.kasource.kaevent.event.register.EventRegister;
 public class ChannelListenerRegisterImpl extends AbstractEventListenerRegister implements ChannelListenerRegister {
 
     private Map<Class<? extends EventObject>, Map<Object, EventListenerRegistration>> listenersByEvent = 
-    	new HashMap<Class<? extends EventObject>, Map<Object, EventListenerRegistration>>();
+    	new ConcurrentHashMap<Class<? extends EventObject>, Map<Object, EventListenerRegistration>>();
     
     private ListenerChannel channel;
    

@@ -3,6 +3,7 @@ package org.kasource.kaevent.event.dispatch;
 import org.kasource.kaevent.channel.ChannelFactory;
 import org.kasource.kaevent.channel.ChannelRegister;
 import org.kasource.kaevent.config.GuiceKaEventConfigurer;
+import org.kasource.kaevent.event.register.EventRegister;
 import org.kasource.kaevent.listener.register.SourceObjectListenerRegister;
 
 import com.google.inject.Inject;
@@ -26,6 +27,7 @@ public class GuiceEventDispatcher extends DefaultEventDispatcher {
      * @param sourceObjectListenerRegister Source Object Listener Register
      * @param eventQueue    Event Queue
      * @param eventRouter   Event Router
+     * @param eventRegister Event Register
      * @param configurer    Configurer for the Guice environment.
      */
 	@Inject
@@ -34,12 +36,14 @@ public class GuiceEventDispatcher extends DefaultEventDispatcher {
     							  SourceObjectListenerRegister sourceObjectListenerRegister, 
     							  DispatcherQueueThread eventQueue,
     							  EventRouter eventRouter,
+    							  EventRegister eventRegister,
     							  GuiceKaEventConfigurer configurer) {
         setChannelFactory(channelFactory);
         setChannelRegister(channelRegister);
         setSourceObjectListenerRegister(sourceObjectListenerRegister);
         setEventQueue(eventQueue);
         setEventRouter(eventRouter);
+        setEventRegister(eventRegister);
         configurer.configure();
     }
 	

@@ -18,4 +18,10 @@ public class AssignableFromEventFilter extends AbstractControllableEventFilter<E
         return eventClass.isAssignableFrom(event.getClass());
     }
 
+
+    @Override
+    public Class<EventObject> handlesEvent() {
+        return EventObject.class;
+    }
+
 }

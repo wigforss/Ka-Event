@@ -4,13 +4,13 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kasource.kaevent.annotations.event.Event;
-import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventBuilderFactory;
+import org.kasource.kaevent.event.config.EventConfig;
 
 /**
  * @author rikardwigforss
@@ -20,15 +20,15 @@ public class DefaultEventRegister implements EventRegister {
    // private static final Logger LOG = Logger.getLogger(DefaultEventRegister.class);
     
     private Map<Class<? extends EventObject>, EventConfig> eventsByClass = 
-    	new HashMap<Class<? extends EventObject>, EventConfig>();
+    	new ConcurrentHashMap<Class<? extends EventObject>, EventConfig>();
     
     private Map<Class<? extends EventListener>, EventConfig> eventsByInterface = 
-    	new HashMap<Class<? extends EventListener>, EventConfig>();
+    	new ConcurrentHashMap<Class<? extends EventListener>, EventConfig>();
     
     private Map<Class<? extends Annotation>, EventConfig> eventsByAnnotation = 
-        new HashMap<Class<? extends Annotation>, EventConfig>();
+        new ConcurrentHashMap<Class<? extends Annotation>, EventConfig>();
     
-    private Map<String, EventConfig> eventsByName = new HashMap<String, EventConfig>();
+    private Map<String, EventConfig> eventsByName = new ConcurrentHashMap<String, EventConfig>();
     
   
     private EventBuilderFactory eventBuilderFactory;

@@ -1,10 +1,6 @@
 package org.kasource.kaevent.spring.xml;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.kasource.kaevent.config.SpringKaEventConfigurer;
-import org.kasource.kaevent.event.dispatch.ThreadPoolQueueExecutor;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
@@ -40,53 +36,17 @@ public class KaEventConfigurerBeanDefinitionParser extends
 	@Override
 	protected void doParse(Element element, ParserContext pc,
 			BeanDefinitionBuilder bean) {
-		element.setAttribute(ID_ATTRIBUTE, "kaEvent.configurer");
+		element.setAttribute(ID_ATTRIBUTE, KaEventSpringBean.CONFIGURER_ID);
 		bean.addPropertyValue("scanClassPath", element
 				.getAttribute("scanClassPath"));
 
 		bean.addConstructorArgReference(KaEventSpringBean.CONFIGURATION.getId());
 		bean.setInitMethodName("configure");
 		bean.setLazyInit(false);
-		Set<KaEventSpringBean> excludeSet = new HashSet<KaEventSpringBean>();
-		excludeSet.add(KaEventSpringBean.QUEUE_BEAN);
-		createBeans(pc, excludeSet);
-		configureQueue(element, pc);
-	}
+		createBeans(pc);
 
-	/**
-	 * Configure Event Queue.
-	 * @param element kaevent XML element.
-	 * @param pc      Parser Context.
-	 **/
-	private void configureQueue(Element element, ParserContext pc) {
-	    String queueBean = element.getAttribute("queueBean");
-        if (!"true".equals(queueBean.toLowerCase())) {
-            String queueClass = element.getAttribute("queueClass");
-            String concurrent = element.getAttribute("concurrentQueue");
-            configureQueue(queueClass, pc, concurrent);
-        } 
-	}
+	}	
 	
-	/**
-	 * Configure Event Queue.
-	 * 
-	 * @param queueClass   Class name of queue class.
-	 * @param pc           Parser Context.
-	 * @param concurrent   true for Concurrent queue.
-	 **/
-	private void configureQueue(String queueClass, ParserContext pc, String concurrent) {
-	    if (queueClass != null
-                    && queueClass.length() > 0
-                    && !queueClass.equals(ThreadPoolQueueExecutor.class.getName())) {
-                try {
-                    createQueueBean(Class.forName(queueClass), pc, false, concurrent);
-                } catch (ClassNotFoundException e) {
-                    throw new IllegalStateException(e.getMessage(), e);
-                }
-            } else {
-                createQueueBean(ThreadPoolQueueExecutor.class, pc, true, concurrent);
-            }
-	}
 	
 	/**
 	 * Create beans needed by Ka-event, by looking at the KaEventSpringBean enumeration.
@@ -94,11 +54,9 @@ public class KaEventConfigurerBeanDefinitionParser extends
 	 * @param pc           Parser Context.
 	 * @param excludeSet   Set of bean to exclude from creation.
 	 **/
-	private void createBeans(ParserContext pc, Set<KaEventSpringBean> excludeSet) {
+	private void createBeans(ParserContext pc) {
 		for (KaEventSpringBean bean : KaEventSpringBean.values()) {
-			if (!excludeSet.contains(bean)) {
-			    addBean(bean, pc);
-			}
+			 addBean(bean, pc);
 		}
 	}
 	
@@ -130,25 +88,6 @@ public class KaEventConfigurerBeanDefinitionParser extends
     
 	}
 	
-	/**
-	 * Creates and registers the event queue bean.
-	 * 
-	 * @param clazz            Queue Class.
-	 * @param pc               Parser Context to register bean in.
-	 * @param setEventRouter   true to set the Event Router.
-	 * @param concurrent       true for concurrent
-	 **/
-	private void createQueueBean(Class<?> clazz, ParserContext pc, boolean setEventRouter, String concurrent) {
-		BeanDefinitionBuilder builder = BeanDefinitionBuilder
-				.rootBeanDefinition(clazz);
-		if (setEventRouter) {
-		    builder.addPropertyReference("eventRouter", KaEventSpringBean.EVENT_ROUTER.getId());
-		}
-		builder.addPropertyValue("concurrent", concurrent);
-		builder.setLazyInit(false);
-		pc.registerBeanComponent(new BeanComponentDefinition(builder
-				.getBeanDefinition(), KaEventSpringBean.QUEUE_BEAN.getId()));
-
-	}
+	
 
 }

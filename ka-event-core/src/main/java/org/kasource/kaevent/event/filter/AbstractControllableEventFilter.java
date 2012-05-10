@@ -26,7 +26,5 @@ public  abstract class AbstractControllableEventFilter<T extends EventObject> im
     
     protected abstract boolean passEventFilter(T event);
     
-    public boolean isApplicable(Class<? extends EventObject> eventClass) {
-        return true;
-    }
+   
 }

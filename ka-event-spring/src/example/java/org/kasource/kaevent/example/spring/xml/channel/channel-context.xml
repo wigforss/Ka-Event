@@ -9,11 +9,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context-2.5.xsd
 http://kasource.org/schema/kaevent-spring
-spring/schema/kaevent-spring.xsd"
->
-	
-   
-	
+http://kasource.org/schema/kaevent-spring/kaevent-spring.xsd">
 	 
 	<bean name="myChannel" class="org.kasource.kaevent.example.spring.xml.channel.MyChannel" scope="prototype">
 	  	<constructor-arg ref="kaEvent.channelRegister"/>

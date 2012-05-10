@@ -2,10 +2,10 @@ package org.kasource.kaevent.listener.register;
 
 import java.util.Collection;
 import java.util.EventObject;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kasource.kaevent.bean.BeanResolver;
 import org.kasource.kaevent.event.filter.EventFilter;
@@ -25,7 +25,7 @@ public class SourceObjectListenerRegisterImpl extends AbstractEventListenerRegis
                     EventListenerRegistration>
                 >
             > objectListenersByEvent = 
-                new HashMap<Class<? extends EventObject>, Map<Object, Map<Object, EventListenerRegistration>>>();
+                new ConcurrentHashMap<Class<? extends EventObject>, Map<Object, Map<Object, EventListenerRegistration>>>();
 
     /**
      * Constructor.

@@ -3,9 +3,9 @@ package org.kasource.kaevent.channel;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.register.EventRegister;
@@ -21,7 +21,7 @@ import org.kasource.kaevent.event.register.NoSuchEventException;
 public abstract class ChannelAdapter implements Channel {
 	
 	private Map<Class<? extends EventObject>, Class<? extends EventListener>> eventMap = 
-	    new HashMap<Class<? extends EventObject>, Class<? extends EventListener>>();
+	    new ConcurrentHashMap<Class<? extends EventObject>, Class<? extends EventListener>>();
 	
 	/** Name of the channel. **/
     private String name;
@@ -88,8 +88,10 @@ public abstract class ChannelAdapter implements Channel {
         EventConfig eventConfig = eventRegister.getEventByClass(eventClass);
        
         if (!eventMap.containsKey(eventClass)) { 
+            if(eventConfig.getListener() != null) {
                 eventMap.put(eventClass, eventConfig.getListener());
-                channelRegister.registerEventHandler(this, eventClass);
+            }
+            channelRegister.registerEventHandler(this, eventClass);
         }
     }
     

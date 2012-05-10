@@ -1,10 +1,9 @@
 package org.kasource.kaevent.event.filter;
 
-import javax.swing.event.ChangeEvent;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.event.BaseEvent;
 import org.unitils.UnitilsJUnit4TestClassRunner;
@@ -45,13 +44,8 @@ public class TimeoutEventFilterTest {
     }
     
     @Test
-    public void notApplicableTest() {
-        assertFalse(filter.isApplicable(ChangeEvent.class));
-    }
-    
-    @Test
-    public void applicableTest() {
-        assertTrue(filter.isApplicable(BaseEvent.class));
+    public void handlesEventTest() {
+        assertTrue(filter.handlesEvent().equals(BaseEvent.class));
     }
     
     

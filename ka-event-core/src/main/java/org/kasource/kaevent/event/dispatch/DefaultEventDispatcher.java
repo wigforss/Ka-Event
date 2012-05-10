@@ -15,7 +15,6 @@ import org.kasource.kaevent.config.KaEventInitializedListener;
 import org.kasource.kaevent.config.KaEventInitializer;
 import org.kasource.kaevent.event.EventDispatcher;
 import org.kasource.kaevent.event.config.EventConfig;
-import org.kasource.kaevent.event.filter.AlreadySeenEventFilter;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.filter.EventFilterExecutor;
 import org.kasource.kaevent.event.register.EventRegister;
@@ -83,8 +82,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
      **/
     protected void initialize(String configLocation) {
     	KaEventInitializer.getInstance().addListener(this);
-    	configurer.configure(this, configLocation);
-    	addBridgeFilter(new AlreadySeenEventFilter());
+    	configurer.configure(this, configLocation);   
     }
     
     /**
@@ -95,7 +93,6 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     protected void initialize(KaEventConfig config) {
     	KaEventInitializer.getInstance().addListener(this);
     	configurer.configure(this, config);
-    	addBridgeFilter(new AlreadySeenEventFilter());
     }
     
     @Override
@@ -110,9 +107,11 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
    
     
     @Override
-    public void fire(EventObject event) {
+    public void fire(EventObject event) throws IllegalArgumentException {
         EventConfig config = eventRegister.getEventByClass(event.getClass());
-        
+        if(config == null) {
+            throw new IllegalArgumentException(event.getClass() + " is not a registerd event.");
+        }
         if(config.getEventQueue() != null) {
             config.getEventQueue().enqueue(event);       
         } else {
@@ -122,14 +121,30 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
 
    
     public void bridgeEvent(EventObject event) {
-        if(filterExecutor.passFilters(bridgeFilters, event)) {
-            fire(event);
+        if(eventRegister.hasEventByClass(event.getClass()) 
+                    && filterExecutor.passFilters(bridgeFilters, event)){
+                fire(event);        
         }
     }
     
     @Override
     public void fireBlocked(EventObject event) {
+        validateEvent(event);
         eventRouter.routeEvent(event, true);       
+       
+    }
+    
+    /**
+     * Validates that the event is registered.
+     * 
+     * @param event Event to inspect
+     * 
+     * @throws IllegalArgumentException if the event is not registered.
+     **/
+    protected void validateEvent(EventObject event) throws IllegalArgumentException{
+        if(!eventRegister.hasEventByClass(event.getClass())) {
+            throw new IllegalArgumentException(event.getClass() + " is not a registerd event.");   
+        }
     }
 
   
@@ -191,6 +206,7 @@ public class DefaultEventDispatcher implements EventDispatcher, KaEventInitializ
     **/
     @Override
     public void addToBatch(EventObject event) {
+        validateEvent(event);
         LinkedList<EventObject> batchList = batchListByThread.get();
         if (batchList == null) {
             batchList = new LinkedList<EventObject>();

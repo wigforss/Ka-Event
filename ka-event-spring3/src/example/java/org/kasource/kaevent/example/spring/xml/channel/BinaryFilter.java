@@ -21,7 +21,7 @@ public class BinaryFilter implements EventFilter<EventObject> {
 	}
 
 	@Override
-    public boolean isApplicable(Class<? extends EventObject> eventClass) {
-        return true;
-    }
+	public Class<EventObject> handlesEvent() {    
+	   return EventObject.class;
+	}
 }

@@ -28,5 +28,5 @@ public interface EventFilter<T extends EventObject> {
 	 * 
 	 * @return true if the event is applicable for this filter, else true.
 	 **/
-	public boolean isApplicable(Class<? extends EventObject> eventClass);
+	public Class<T> handlesEvent();
 }

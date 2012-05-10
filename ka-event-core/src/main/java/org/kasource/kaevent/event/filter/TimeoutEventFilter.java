@@ -1,6 +1,6 @@
 package org.kasource.kaevent.event.filter;
 
-import java.util.EventObject;
+
 
 import org.kasource.kaevent.event.BaseEvent;
 
@@ -18,8 +18,11 @@ public class TimeoutEventFilter extends AbstractControllableEventFilter<BaseEven
         return (event.getCreationTimestamp() + timeoutMillis) >= System.currentTimeMillis();
     }
 
+
     @Override
-    public boolean isApplicable(Class<? extends EventObject> eventClass) {
-        return BaseEvent.class.isAssignableFrom(eventClass);
+    public Class<BaseEvent> handlesEvent() {    
+        return BaseEvent.class;
     }
+
+   
 }

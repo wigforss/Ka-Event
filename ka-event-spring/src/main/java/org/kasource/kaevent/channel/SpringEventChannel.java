@@ -37,7 +37,7 @@ public class SpringEventChannel extends ChannelAdapter implements ApplicationEve
     @Autowired
     public SpringEventChannel(ChannelRegister channelRegister, EventRegister eventRegister) {
         super(channelRegister, eventRegister);
-        filterHandler = new ChannelFilterHandler(eventRegister);
+        filterHandler = new ChannelFilterHandler();
       
     }
 
@@ -67,7 +67,6 @@ public class SpringEventChannel extends ChannelAdapter implements ApplicationEve
     @Override
     public void unregisterEvent(Class<? extends EventObject> eventClass) {
         super.unregisterEvent(eventClass);
-        filterHandler.unregisterFilterFor(eventClass);
     }
     
     @Override
@@ -84,8 +83,8 @@ public class SpringEventChannel extends ChannelAdapter implements ApplicationEve
     }
 
     @Override
-    public boolean registerFilter(EventFilter<? extends EventObject> filter) {
-        return filterHandler.registerFilter(filter);
+    public void registerFilter(EventFilter<? extends EventObject> filter) {
+         filterHandler.registerFilter(filter);
     }
     
 

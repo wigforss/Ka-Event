@@ -9,6 +9,7 @@ import java.util.Map;
 import org.kasource.kaevent.channel.Channel;
 import org.kasource.kaevent.event.config.EventConfig;
 import org.kasource.kaevent.event.config.EventBuilderFactory;
+import org.kasource.kaevent.event.dispatch.DispatcherQueueThread;
 import org.kasource.kaevent.event.export.AnnotationEventExporter;
 import org.kasource.kaevent.event.filter.EventFilter;
 import org.kasource.kaevent.event.register.EventRegister;
@@ -49,6 +50,7 @@ public class SpringKaEventConfigurer extends KaEventConfigurer implements Applic
 	 * Configure the Ka-Event environment.
 	 **/
 	public void configure() {
+	    applicationContext.getBeansOfType(DispatcherQueueThread.class);
 		if (scanClassPath != null && scanClassPath.length() > 0) {
             importAndRegisterEvents(new AnnotationEventExporter(scanClassPath),
             					    configuration.getEventBuilderFactory(), 

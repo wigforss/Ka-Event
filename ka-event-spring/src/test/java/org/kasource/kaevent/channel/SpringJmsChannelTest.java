@@ -49,8 +49,6 @@ public class SpringJmsChannelTest {
     public void unregisterEventTest() {
         channelRegister.unregisterEventHandler(channel, EventObject.class);
         expectLastCall();
-        filterHandler.unregisterFilterFor(EventObject.class);
-        expectLastCall();
         EasyMockUnitils.replay();
         channel.unregisterEvent(EventObject.class);
     }
@@ -66,7 +64,8 @@ public class SpringJmsChannelTest {
     
     @Test
     public void registerFilterTest() {
-        expect(filterHandler.registerFilter(filter)).andReturn(true);   
+        filterHandler.registerFilter(filter); 
+        expectLastCall();
         EasyMockUnitils.replay();
         channel.registerFilter(filter);
      

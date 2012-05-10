@@ -44,7 +44,7 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
                       BeanResolver beanResolver) {
     	super(name, channelRegister, eventRegister, beanResolver);
     	this.eventMethodInvoker = eventMethodInvoker;
-    	filterHandler = new ChannelFilterHandler(eventRegister);
+    	filterHandler = new ChannelFilterHandler();
     }
 
     
@@ -71,7 +71,7 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
     @Override
 	public void unregisterEvent(Class<? extends EventObject> eventClass) {
     	super.unregisterEvent(eventClass);
-    	filterHandler.unregisterFilterFor(eventClass);
+    
     }
   
     
@@ -84,12 +84,10 @@ public class ChannelImpl extends ListenerChannelAdapter  implements FilterableCh
      * to the channel.
      * 
      * @param filter	Filter to add to the channel filters list.
-     * 
-     * @return Returns true if filter added else false.
      **/
     @Override
-    public boolean registerFilter(EventFilter<? extends EventObject> filter) {
-        return filterHandler.registerFilter(filter);
+    public void registerFilter(EventFilter<? extends EventObject> filter) {
+         filterHandler.registerFilter(filter);
     }
 
 

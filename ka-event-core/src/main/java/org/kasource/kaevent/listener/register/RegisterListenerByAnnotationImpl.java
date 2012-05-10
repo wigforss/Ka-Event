@@ -1,7 +1,7 @@
 package org.kasource.kaevent.listener.register;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kasource.kaevent.annotations.listener.BeanListener;
 import org.kasource.kaevent.annotations.listener.ChannelListener;
@@ -30,8 +30,8 @@ public class RegisterListenerByAnnotationImpl implements
 	private ChannelRegister channelRegister;
 	private SourceObjectListenerRegister sourceObjectListenerRegister;
 	private BeanResolver beanResolver;
-	private Map<Object, String[]> channelListeners = new HashMap<Object, String[]>();
-	private Map<Object, String[]> beanListeners = new HashMap<Object, String[]>();
+	private Map<Object, String[]> channelListeners = new ConcurrentHashMap<Object, String[]>();
+	private Map<Object, String[]> beanListeners = new ConcurrentHashMap<Object, String[]>();
 
 	
 	private RegisterListenerByAnnotationImpl(){

@@ -3,8 +3,6 @@ package org.kasource.kaevent.event.filter;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import javax.swing.event.ChangeEvent;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.event.BaseEvent;
@@ -49,12 +47,7 @@ public class ThreadNameEventFilterTest {
     }
     
     @Test
-    public void notApplicableTest() {
-        assertFalse(filter.isApplicable(ChangeEvent.class));
-    }
-    
-    @Test
-    public void applicableTest() {
-        assertTrue(filter.isApplicable(BaseEvent.class));
+    public void handlesEventTest() {
+        assertTrue(filter.handlesEvent().equals(BaseEvent.class));
     }
 }

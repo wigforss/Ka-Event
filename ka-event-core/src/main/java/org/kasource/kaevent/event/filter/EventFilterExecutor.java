@@ -22,7 +22,7 @@ public class EventFilterExecutor {
             for (EventFilter<? extends EventObject> filter : filters) {
 
                 EventFilter<EventObject> eventFilter = (EventFilter<EventObject>) filter;
-                if (eventFilter.isApplicable(event.getClass())) {
+                if (eventFilter.handlesEvent().isAssignableFrom(event.getClass())) {
                     if (!eventFilter.passFilter(event)) {
                         passes = false;
                         break;

@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kasource.kaevent.config.SpringKaEventConfigurer;
+import org.kasource.kaevent.event.dispatch.EventQueueRegister;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
@@ -31,6 +32,8 @@ public class KaEventConfigurerBeanDefinitionParserTest {
     @Mock
     private BeanDefinitionBuilder bean;
     
+  
+    
     @Mock
     private ParserContext pc; 
     
@@ -49,6 +52,7 @@ public class KaEventConfigurerBeanDefinitionParserTest {
         Capture<BeanComponentDefinition> channelFactory = new Capture<BeanComponentDefinition>();
         Capture<BeanComponentDefinition> eventDispatcher = new Capture<BeanComponentDefinition>();
         Capture<BeanComponentDefinition> configuration = new Capture<BeanComponentDefinition>();
+        Capture<BeanComponentDefinition> eventQueueRegister = new Capture<BeanComponentDefinition>();
         String scanPath = "pathToScanForEvents";
         element.setAttribute(AbstractSingleBeanDefinitionParser.ID_ATTRIBUTE, "kaEvent.configurer");
         expectLastCall();
@@ -79,6 +83,7 @@ public class KaEventConfigurerBeanDefinitionParserTest {
         expectLastCall();
         pc.registerBeanComponent(capture(configuration));
         expectLastCall();
+        pc.registerBeanComponent(capture(eventQueueRegister));
         expect(element.getAttribute("queueBean")).andReturn("true");
         EasyMockUnitils.replay();
         parser.doParse(element, pc, bean);

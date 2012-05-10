@@ -51,36 +51,6 @@
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
-			<xsd:attribute name="queueBean" type="xsd:boolean" default="false"
-				use="optional">
-				<xsd:annotation>
-					<xsd:documentation>
-						Use the declared DispatcherQueueThread bean instead of the default, will override
-						the queueClass and concurrentQueue attributes.
-					</xsd:documentation>
-				</xsd:annotation>
-				</xsd:attribute>
-			<xsd:attribute name="queueClass" type="javaClass"
-				use="optional">
-				<xsd:annotation>
-					<xsd:documentation>
-						Class that implements
-						org.kasource.kaevent.event.dispatch.DispatcherQueueThread which
-						will be used instead of the standard thread pool executor implementation. 
-						Will not have any effect if a queueBean is set.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-	
-			<xsd:attribute name="concurrentQueue" type="xsd:boolean" default="true"
-				use="optional">
-				<xsd:annotation>
-					<xsd:documentation>
-						Set the concurrency mode of the event dispatcher queue. Will not have any effect if
-						queueBean is set. 
-					</xsd:documentation>
-				</xsd:annotation>
-				</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 	
