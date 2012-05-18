@@ -9,7 +9,7 @@
 	<artifactId>ka-event-base</artifactId>
 	<packaging>pom</packaging>
 	<name>Ka-Event Base Project</name>
-	<version>0.9-SNAPSHOT</version>
+	<version>0.9</version>
 	<description>
 		Ka-Event base project, which builds all modules.
 	</description>
