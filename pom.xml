@@ -51,14 +51,15 @@
 		<ka-spring.version>1.0-SNAPSHOT</ka-spring.version>
 	</properties>
   	<modules>
-  			<module>ka-event-annotations</module>
-			<module>ka-event-core</module> 
-			<module>ka-event-aspects</module>
-			<module>ka-event-spring</module>
-			<module>ka-event-spring3</module>
-			<module>ka-event-osgi</module>
-			<module>ka-event-guice</module>
-			<module>ka-event-cdi</module>
+  			<module>annotations</module>
+			<module>core</module> 
+			<module>aspectj</module>
+			<module>spring-baseline</module>
+			<module>spring-25</module>
+			<module>spring-3</module>
+			<module>osgi</module>
+			<module>guice</module>
+			<module>cdi</module>
 	</modules>
 	
 	<build>
