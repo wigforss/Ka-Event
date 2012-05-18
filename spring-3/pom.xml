@@ -118,6 +118,21 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.kasource.kaevent</groupId>
+			<artifactId>ka-event-spring-baseline</artifactId>
+			<version>${project.version}</version>
+			<exclusions>
+  				<exclusion>
+  					<groupId>org.springframework</groupId>
+  					<artifactId>spring</artifactId>
+  				</exclusion>
+  				<exclusion>
+  					<groupId>org.springframework</groupId>
+  					<artifactId>spring-jms</artifactId>
+  				</exclusion>
+  			</exclusions>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>

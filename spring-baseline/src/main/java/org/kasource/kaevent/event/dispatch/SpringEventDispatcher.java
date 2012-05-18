@@ -42,7 +42,7 @@ public final class SpringEventDispatcher extends DefaultEventDispatcher implemen
      * @param eventQueue    Event Queue.
      * @param eventRouter   Event Router.
      */
-     SpringEventDispatcher(ChannelRegister channelRegister, 
+     public SpringEventDispatcher(ChannelRegister channelRegister, 
     							  ChannelFactory channelFactory,
     							  SourceObjectListenerRegister sourceObjectListenerRegister, 
     							  DispatcherQueueThread eventQueue,
