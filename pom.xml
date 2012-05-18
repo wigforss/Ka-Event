@@ -47,8 +47,8 @@
 		<unitils.version>3.1</unitils.version>
 		<log4j.version>1.2.16</log4j.version>
 		<clover.version>2.6.3</clover.version>
-		<ka-commons.version>1.0-SNAPSHOT</ka-commons.version>
-		<ka-spring.version>1.0-SNAPSHOT</ka-spring.version>
+		<ka-commons.version>1.0</ka-commons.version>
+		<ka-spring.version>1.0</ka-spring.version>
 	</properties>
   	<modules>
   			<module>annotations</module>
